@@ -1,0 +1,504 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Variational message passing &mdash; bayespy 0.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="bayespy 0.0 documentation" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li><a href="index.html">bayespy 0.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="variational-message-passing">
+<h1>Variational message passing<a class="headerlink" href="#variational-message-passing" title="Permalink to this headline">¶</a></h1>
+<p>The general update equation for factorized approximation:</p>
+<div class="math" id="equation-vmp_general_update">
+<span class="eqno">(1)</span>\[\begin{split}\log q(\boldsymbol{\theta})
+&amp;=
+\langle
+  \log p\left( \boldsymbol{\theta} |
+               \mathrm{pa}(\boldsymbol{\theta}) \right)
+\rangle
++ \sum_{\mathbf{x} \in \mathrm{ch}(\boldsymbol{\theta})}
+  \langle \log p(\mathbf{x}|\mathrm{pa}(\mathbf{x})) \rangle
++ \mathrm{const},\end{split}\]</div>
+<p>where <span class="math">\(\mathrm{pa}(\boldsymbol{\theta})\)</span> and
+<span class="math">\(\mathrm{ch}(\boldsymbol{\theta})\)</span> are the set of parents and
+children of <span class="math">\(\boldsymbol{\theta}\)</span>, respectively.  The
+expectations are over the approximate distribution of all other
+variables than <span class="math">\(\boldsymbol{\theta}\)</span>.  Actually, not all the
+variables are needed, because the non-constant part uses only the
+Markov blanket of <span class="math">\(\boldsymbol{\theta}\)</span>.  Thus, the optimization
+can be done locally using messages from neighbouring nodes.</p>
+<p>The messages are simple for conjugate-exponential models.
+Exponential-family distributions have the form</p>
+<div class="math" id="equation-likelihood">
+<span class="eqno">(2)</span>\[\begin{split}\log p(\mathbf{x}|\mathbf{\Theta})
+&amp;=
+\mathbf{u}_{\mathbf{x}}(\mathbf{x})^{\mathrm{T}}
+\boldsymbol{\phi}_{\mathbf{x}}(\mathbf{\Theta})
++ g_{\mathbf{x}}(\mathbf{\Theta})
++ f_{\mathbf{x}}(\mathbf{x}),\end{split}\]</div>
+<p>where <span class="math">\(\mathbf{\Theta}=\{\boldsymbol{\theta}_j\}\)</span> is the set of
+parents.  If a parent has a conjugate prior, <a href="#equation-likelihood">(2)</a> is
+linear with respect to the parent&#8217;s natural statistics.  Thus,
+<a href="#equation-likelihood">(2)</a> can be re-organized with respect to
+<span class="math">\(\boldsymbol{\theta}_j\)</span> as</p>
+<div class="math">
+\[\begin{split}\log p(\mathbf{x}|\mathbf{\Theta})
+&amp;=
+\mathbf{u}_{\boldsymbol{\theta}_j}(\boldsymbol{\theta}_j)^{\mathrm{T}}
+\boldsymbol{\phi}_{\mathbf{x}\rightarrow\boldsymbol{\theta}_j}
+(\mathbf{x}, \{\boldsymbol{\theta}_k\}_{k\neq j})
++ \mathrm{const},\end{split}\]</div>
+<p>where <span class="math">\(\mathbf{u}_{\boldsymbol{\theta}_j}\)</span> is the natural
+statistics of <span class="math">\(\boldsymbol{\theta}_j\)</span>.  Thus, the update
+equation <a href="#equation-vmp_general_update">(1)</a> can be given as</p>
+<div class="math">
+\[\begin{split}\log q(\boldsymbol{\theta}_j)
+&amp;=
+\mathbf{u}_{\boldsymbol{\theta}_j}(\boldsymbol{\theta}_j)^{\mathrm{T}}
+\left(
+  \langle \boldsymbol{\phi}_{\boldsymbol{\theta}_j} \rangle
+  + \sum_{\mathbf{x} \in \mathrm{ch}(\boldsymbol{\theta}_j)}
+      \langle \boldsymbol{\phi}_{\mathbf{x}\rightarrow\boldsymbol{\theta}_j} \rangle
+\right)
++ f_{\boldsymbol{\theta}_j}(\boldsymbol{\theta}_j)
++ \mathrm{const},\end{split}\]</div>
+<p>where the summation is over all the child nodes of
+<span class="math">\(\boldsymbol{\theta}_j\)</span>.  Because of the conjugacy,
+<span class="math">\(\langle\boldsymbol{\phi}_{\boldsymbol{\theta}_j}\rangle\)</span>
+depends (multi)linearly on the expectations of the parents&#8217; natural
+statistics.  Similarly, <span class="math">\(\langle
+\boldsymbol{\phi}_{\mathbf{x}\rightarrow\boldsymbol{\theta}_j}
+\rangle\)</span> depends (multi)linearly on the expectations of the children&#8217;s
+and co-parents&#8217; natural statistics.</p>
+<p>The required expectations can be computed locally by using messages
+from the parents and the children.  The message from a parent node
+<span class="math">\(\boldsymbol{\theta}_j\)</span> to a child node <span class="math">\(\mathbf{x}\)</span> is</p>
+<div class="math">
+\[\begin{split}\mathbf{m}_{\mathbf{\boldsymbol{\theta}_j}\rightarrow\mathbf{x}}
+&amp;=
+\langle \mathbf{u}_{\boldsymbol{\theta}_j} \rangle
+=
+\tilde{\mathbf{u}}_{\boldsymbol{\theta}_j}
+(\tilde{\boldsymbol{\phi}}_{\mathbf{\boldsymbol{\theta}_j}}),\end{split}\]</div>
+<p>and the message from a child node <span class="math">\(\mathbf{x}\)</span> to a parent node
+<span class="math">\(\boldsymbol{\theta}_j\)</span> is</p>
+<div class="math">
+\[\begin{split}\mathbf{m}_{\mathbf{x}\rightarrow\boldsymbol{\theta}_j}
+&amp;=
+\langle \boldsymbol{\phi}_{\mathbf{x}\rightarrow\boldsymbol{\theta}_j} \rangle
+=
+\boldsymbol{\phi}_{\mathbf{x}\rightarrow\boldsymbol{\theta}_j}
+\left( \langle \mathbf{u}_{\mathbf{x}} \rangle,
+  \{ \mathbf{m}_{\theta_k\rightarrow\mathbf{x}} \}_
+  %\{ \langle \mathbf{u}_{\theta_k} \rangle \}_
+  {k \neq j}
+  %\in \mathrm{cp}({\boldsymbol{\theta}_j}, \mathbf{x})}
+  \right).\end{split}\]</div>
+<p>Using the messages, the natural parameters of
+<span class="math">\(q(\boldsymbol{\theta})\)</span> can be updated as</p>
+<div class="math">
+\[\begin{split}\tilde{\boldsymbol{\phi}}_{\boldsymbol{\theta}}
+&amp;=
+\boldsymbol{\phi}_{\boldsymbol{\theta}}
+\left(
+  \{ \mathbf{m}_{\mathbf{z}\rightarrow\boldsymbol{\theta}} \}_
+  {\mathbf{z} \in \mathrm{pa}(\boldsymbol{\theta})}
+\right)
++ \sum_{\mathbf{x} \in \mathrm{ch}(\boldsymbol{\theta})}
+  \mathbf{m}_{\mathbf{x}\rightarrow\boldsymbol{\theta}}.\end{split}\]</div>
+<div class="section" id="univariate-normal-distribution">
+<h2>Univariate normal distribution<a class="headerlink" href="#univariate-normal-distribution" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="multivariate-normal-distribution">
+<h2>Multivariate normal distribution<a class="headerlink" href="#multivariate-normal-distribution" title="Permalink to this headline">¶</a></h2>
+<div class="math">
+\[\begin{split}\mathbf{x} &amp;\sim \mathcal{N}(\boldsymbol{\mu}, \mathbf{\Lambda}),\end{split}\]</div>
+<div class="math">
+\[\mathbf{x},\boldsymbol{\mu} \in \mathbb{R}^{D},
+\quad \mathbf{\Lambda} \in \mathbb{R}^{D \times D},
+\quad \mathbf{\Lambda} \text{ symmetric positive definite}\]</div>
+<div class="math">
+\[\begin{split}\log\mathcal{N}( \mathbf{x} | \boldsymbol{\mu}, \mathbf{\Lambda} )
+&amp;=
+- \frac{1}{2} \mathbf{x}^{\mathrm{T}} \mathbf{\Lambda} \mathbf{x}
++ \mathbf{x}^{\mathrm{T}} \mathbf{\Lambda} \boldsymbol{\mu}
+- \frac{1}{2} \boldsymbol{\mu}^{\mathrm{T}} \mathbf{\Lambda}
+  \boldsymbol{\mu}
++ \frac{1}{2} \log |\mathbf{\Lambda}|
+- \frac{D}{2} \log (2\pi)\end{split}\]</div>
+<div class="math">
+\[\begin{split}\mathbf{u} (\mathbf{x})
+&amp;=
+\left[ \begin{matrix}
+  \mathbf{x}
+  \\
+  \mathbf{xx}^{\mathrm{T}}
+\end{matrix} \right]
+\\
+\boldsymbol{\phi} (\boldsymbol{\mu}, \mathbf{\Lambda})
+&amp;=
+\left[ \begin{matrix}
+  \mathbf{\Lambda} \boldsymbol{\mu}
+  \\
+  - \frac{1}{2} \mathbf{\Lambda}
+\end{matrix} \right]
+\\
+\boldsymbol{\phi}_{\boldsymbol{\mu}} (\mathbf{x}, \mathbf{\Lambda})
+&amp;=
+\left[ \begin{matrix}
+  \mathbf{\Lambda} \mathbf{x}
+  \\
+  - \frac{1}{2} \mathbf{\Lambda}
+\end{matrix} \right]
+\\
+\boldsymbol{\phi}_{\mathbf{\Lambda}} (\mathbf{x}, \boldsymbol{\mu})
+&amp;=
+\left[ \begin{matrix}
+  - \frac{1}{2} \mathbf{xx}^{\mathrm{T}}
+  + \frac{1}{2} \mathbf{x}\boldsymbol{\mu}^{\mathrm{T}}
+  + \frac{1}{2} \boldsymbol{\mu}\mathbf{x}^{\mathrm{T}}
+  - \frac{1}{2} \boldsymbol{\mu\mu}^{\mathrm{T}}
+  \\
+  \frac{1}{2}
+\end{matrix} \right]
+\\
+g (\boldsymbol{\mu}, \mathbf{\Lambda})
+&amp;=
+- \frac{1}{2} \operatorname{tr}(\boldsymbol{\mu\mu}^{\mathrm{T}}
+                                \mathbf{\Lambda} )
++ \frac{1}{2} \log |\mathbf{\Lambda}|
+\\
+g_{\boldsymbol{\phi}} (\boldsymbol{\phi})
+&amp;=
+\frac{1}{4} \boldsymbol{\phi}^{\mathrm{T}}_1 \boldsymbol{\phi}^{-1}_2
+\boldsymbol{\phi}_1
++ \frac{1}{2} \log | -2 \boldsymbol{\phi}_2 |
+\\
+f(\mathbf{x})
+&amp;= - \frac{D}{2} \log(2\pi)
+\\
+\overline{\mathbf{u}}  (\boldsymbol{\phi})
+&amp;=
+\left[ \begin{matrix}
+  - \frac{1}{2} \boldsymbol{\phi}^{-1}_2 \boldsymbol{\phi}_1
+  \\
+  \frac{1}{4} \boldsymbol{\phi}^{-1}_2 \boldsymbol{\phi}_1
+  \boldsymbol{\phi}^{\mathrm{T}}_1 \boldsymbol{\phi}^{-1}_2
+  - \frac{1}{2} \boldsymbol{\phi}^{-1}_2
+\end{matrix} \right]\end{split}\]</div>
+</div>
+<div class="section" id="gamma-distribution">
+<h2>Gamma distribution<a class="headerlink" href="#gamma-distribution" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="wishart-distribution">
+<h2>Wishart distribution<a class="headerlink" href="#wishart-distribution" title="Permalink to this headline">¶</a></h2>
+<div class="math">
+\[\begin{split}\mathbf{\Lambda}
+&amp;\sim \mathcal{W}(n, \mathbf{V}),\end{split}\]</div>
+<div class="math">
+\[\begin{split}n &gt; D-1,
+\quad \mathbf{\Lambda}, \mathbf{V} \in \mathbb{R}^{D \times D},
+\quad \mathbf{\Lambda}, \mathbf{V} \text{ symmetric positive definite}\end{split}\]</div>
+<div class="math">
+\[\begin{split}\log\mathcal{W}( \mathbf{\Lambda} | n, \mathbf{V} )
+&amp;=
+- \frac{1}{2} \operatorname{tr} (\mathbf{\Lambda V})
++ \frac{n}{2} \log |\mathbf{\Lambda}|
++ \frac{n}{2} \log |\mathbf{V}|
+- \frac{D+1}{2} \log |\mathbf{\Lambda}|
+- \frac{nD}{2} \log 2
+- \log \Gamma_D \left(\frac{n}{2}\right)\end{split}\]</div>
+<div class="math">
+\[\begin{split}\mathbf{u} (\mathbf{\Lambda})
+&amp;=
+\left[ \begin{matrix}
+  \mathbf{\Lambda}
+  \\
+  \log |\mathbf{\Lambda}|
+\end{matrix} \right]
+\\
+\boldsymbol{\phi} (n, \mathbf{V})
+&amp;=
+\left[ \begin{matrix}
+  - \frac{1}{2} \mathbf{V}
+  \\
+  \frac{1}{2} n
+\end{matrix} \right]
+\\
+\boldsymbol{\phi}_{n} (\mathbf{\Lambda}, \mathbf{V})
+&amp;=
+\left[ \begin{matrix}
+  \frac{1}{2}\log|\mathbf{\Lambda}|
+  + \frac{1}{2}\log|\mathbf{V}|
+  + \frac{D}{2} \log 2
+  \\
+  -1
+\end{matrix} \right]
+\\
+\boldsymbol{\phi}_{\mathbf{V}} (\mathbf{\Lambda}, n)
+&amp;=
+\left[ \begin{matrix}
+  - \frac{1}{2} \mathbf{\Lambda}
+  \\
+  \frac{1}{2} n
+\end{matrix} \right]
+\\
+g (n, \mathbf{V})
+&amp;=
+\frac{n}{2} \log|\mathbf{V}|
+- \frac{nD}{2}\log 2
+- \log \Gamma_D \left(\frac{n}{2}\right)
+\\
+g_{\boldsymbol{\phi}} (\boldsymbol{\phi})
+&amp;=
+\boldsymbol{\phi}_2 \log|-\boldsymbol{\phi}_1|
+- \log \Gamma_D (\boldsymbol{\phi}_2)
+\\
+f(\mathbf{\Lambda})
+&amp;=
+- \frac{D+1}{2} \log|\mathbf{\Lambda}|
+\\
+\overline{\mathbf{u}}  (\boldsymbol{\phi})
+&amp;=
+\left[ \begin{matrix}
+  - \boldsymbol{\phi}_2 \boldsymbol{\phi}^{-1}_1
+  \\
+  - \log|-\boldsymbol{\phi}_1|
+  + \psi_D(\boldsymbol{\phi}_2)
+\end{matrix} \right]\end{split}\]</div>
+</div>
+<div class="section" id="normal-gamma-distribution">
+<h2>Normal-Gamma distribution<a class="headerlink" href="#normal-gamma-distribution" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="gaussian-wishart-distribution">
+<h2>Gaussian-Wishart distribution<a class="headerlink" href="#gaussian-wishart-distribution" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="gaussian-gamma-distribution">
+<h2>Gaussian-Gamma distribution<a class="headerlink" href="#gaussian-gamma-distribution" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="mixture-distribution">
+<h2>Mixture distribution<a class="headerlink" href="#mixture-distribution" title="Permalink to this headline">¶</a></h2>
+<div class="math">
+\[\begin{split}\mathbf{x}
+&amp;\sim
+\mathrm{Mix}_{\mathcal{D}}
+\left(
+    \lambda,
+    \left\{ \mathbf{\Theta}^{(n)}_1, \ldots, \mathbf{\Theta}^{(n)}_K \right\}^N_{n=1}
+\right)\end{split}\]</div>
+<div class="math">
+\[\lambda \in \{1, \ldots, N\},
+\quad \mathcal{D} \text{ is an exp.fam. distribution},
+\quad \mathbf{\Theta}^{(n)}_k \text{ are parameters of } \mathcal{D}\]</div>
+<div class="math">
+\[\begin{split}\log\mathrm{Mix}_{\mathcal{D}}
+\left(
+    \mathbf{x}
+    \left| \lambda,
+           \left\{ \mathbf{\Theta}^{(n)}_1, \ldots, \mathbf{\Theta}^{(n)}_K \right\}^N_{n=1}
+    \right.
+\right)
+&amp;=
+\sum^N_{n=1} [\lambda=n]
+\mathbf{u}_{\mathcal{D}}(\mathbf{x})^{\mathrm{T}}
+\boldsymbol{\phi}_{\mathcal{D}}
+\left(
+    \mathbf{\Theta}^{(n)}_1, \ldots, \mathbf{\Theta}^{(n)}_K
+\right)
+\\
+&amp; \quad +
+\sum^N_{n=1} [\lambda=n]
+g_{\mathcal{D}}
+\left(
+    \mathbf{\Theta}^{(n)}_1, \ldots, \mathbf{\Theta}^{(n)}_K
+\right)
++ f_{\mathcal{D}} (\mathbf{x})\end{split}\]</div>
+<div class="math">
+\[\begin{split}\mathbf{u} (\mathbf{x})
+&amp;=
+\mathbf{u}_{\mathcal{D}} (\mathbf{x})
+\\
+\boldsymbol{\phi}
+\left(
+    \lambda,
+    \left\{ \mathbf{\Theta}^{(n)}_1, \ldots, \mathbf{\Theta}^{(n)}_K \right\}^N_{n=1}
+\right)
+&amp;=
+\sum^N_{n=1} [\lambda=n]
+\boldsymbol{\phi}_{\mathcal{D}}
+\left(
+    \mathbf{\Theta}^{(n)}_1, \ldots, \mathbf{\Theta}^{(n)}_K
+\right)
+%
+\\
+%
+\boldsymbol{\phi}_{\lambda}
+\left(
+  \mathbf{x},
+  \left\{ \mathbf{\Theta}^{(n)}_1, \ldots, \mathbf{\Theta}^{(n)}_K \right\}^N_{n=1}
+\right)
+&amp;=
+\left[\begin{matrix}
+    \mathbf{u}_{\mathcal{D}} (\mathbf{x})^{\mathrm{T}}
+    \boldsymbol{\phi}_{\mathcal{D}}
+    \left(
+      \mathbf{\Theta}^{(1)}_1, \ldots, \mathbf{\Theta}^{(1)}_K
+    \right)
+    + g_{\mathcal{D}}
+    \left(
+      \mathbf{\Theta}^{(1)}_1, \ldots, \mathbf{\Theta}^{(1)}_K
+    \right)
+    \\
+    \vdots
+    \\
+    \mathbf{u}_{\mathcal{D}} (\mathbf{x})^{\mathrm{T}}
+    \boldsymbol{\phi}_{\mathcal{D}}
+    \left(
+      \mathbf{\Theta}^{(N)}_1, \ldots, \mathbf{\Theta}^{(N)}_K
+    \right)
+    + g_{\mathcal{D}}
+    \left(
+      \mathbf{\Theta}^{(N)}_1, \ldots, \mathbf{\Theta}^{(N)}_K
+    \right)
+\end{matrix}\right]
+%
+\\
+%
+\boldsymbol{\phi}_{\mathbf{\Theta}^{(m)}_l}
+\left(
+  \mathbf{x},
+  \lambda,
+  \left\{ \mathbf{\Theta}^{(n)}_1, \ldots, \mathbf{\Theta}^{(n)}_K \right\}^N_{n=1}
+  \setminus \left\{ \mathbf{\Theta}^{(m)}_l \right\}
+\right)
+&amp;=
+[\lambda=m] \boldsymbol{\phi}_{\mathcal{D}\rightarrow\mathbf{\Theta}_l}
+\left(
+  \mathbf{x},
+  \left\{ \mathbf{\Theta}^{(m)}_k \right\}_{k\neq l}
+\right)
+%
+\\
+%
+g
+\left(
+  \lambda,
+  \left\{ \mathbf{\Theta}^{(n)}_1, \ldots, \mathbf{\Theta}^{(n)}_K \right\}^N_{n=1}
+\right)
+&amp;=
+\sum^N_{n=1} [\lambda=n]
+g_{\mathcal{D}}
+\left(
+  \mathbf{\Theta}^{(n)}_1, \ldots, \mathbf{\Theta}^{(n)}_K
+\right)
+\\
+g (\boldsymbol{\phi})
+&amp;=
+g_{\mathcal{D}} (\boldsymbol{\phi})
+\\
+f(\mathbf{x})
+&amp;=
+f_{\mathcal{D}} (\mathbf{x})
+\\
+\overline{\mathbf{u}}  (\boldsymbol{\phi})
+&amp;=
+\overline{\mathbf{u}}_{\mathcal{D}}  (\boldsymbol{\phi})\end{split}\]</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Variational message passing</a><ul>
+<li><a class="reference internal" href="#univariate-normal-distribution">Univariate normal distribution</a></li>
+<li><a class="reference internal" href="#multivariate-normal-distribution">Multivariate normal distribution</a></li>
+<li><a class="reference internal" href="#gamma-distribution">Gamma distribution</a></li>
+<li><a class="reference internal" href="#wishart-distribution">Wishart distribution</a></li>
+<li><a class="reference internal" href="#normal-gamma-distribution">Normal-Gamma distribution</a></li>
+<li><a class="reference internal" href="#gaussian-wishart-distribution">Gaussian-Wishart distribution</a></li>
+<li><a class="reference internal" href="#gaussian-gamma-distribution">Gaussian-Gamma distribution</a></li>
+<li><a class="reference internal" href="#mixture-distribution">Mixture distribution</a></li>
+</ul>
+</li>
+</ul>
+
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/vmp.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li><a href="index.html">bayespy 0.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011-2013, Jaakko Luttinen.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

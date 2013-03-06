@@ -1,0 +1,163 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Introduction &mdash; bayespy 0.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="bayespy 0.0 documentation" href="index.html" />
+    <link rel="prev" title="Welcome to BayesPy’s documentation!" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to BayesPy’s documentation!"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">bayespy 0.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="introduction">
+<h1>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h1>
+<p>BayesPy provides tools for Bayesian inference with Python.  The user
+constructs a model as a Bayesian network, observes data and runs
+posterior inference.  The goal is to provide a tool which is
+efficient, flexible and extendable enough for expert use but also
+accessible for more casual users.</p>
+<p>Currently, only variational Bayesian inference for
+conjugate-exponential family (variational message passing) has been
+implemented.  Future work includes variational approximations for
+other types of distributions and possibly other approximate inference
+methods such as expectation propagation, Laplace approximations,
+Markov chain Monte Carlo (MCMC) and other methods. Contributions are
+welcome.</p>
+<div class="section" id="project-information">
+<h2>Project information<a class="headerlink" href="#project-information" title="Permalink to this headline">¶</a></h2>
+<p>Copyright (C) 2011-2012 Jaakko Luttinen, Aalto University</p>
+<p>BayesPy including the documentation is licensed under Version 3.0 of
+the GNU General Public License. See LICENSE file for a text of the
+license or visit <a class="reference external" href="http://www.gnu.org/copyleft/gpl.html">http://www.gnu.org/copyleft/gpl.html</a>.</p>
+<ul class="simple">
+<li>Home page: <a class="reference external" href="https://github.com/bayespy/bayespy">https://github.com/bayespy/bayespy</a></li>
+<li>Documentation: <a class="reference external" href="http://bayespy.readthedocs.org">http://bayespy.readthedocs.org</a> or at docs/ directory</li>
+<li>Repository: <a class="reference external" href="https://github.com/bayespy/bayespy.git">https://github.com/bayespy/bayespy.git</a></li>
+<li>Mailing list: <a class="reference external" href="mailto:bayespy&#37;&#52;&#48;googlegroups&#46;com">bayespy<span>&#64;</span>googlegroups<span>&#46;</span>com</a></li>
+<li>IRC: #bayespy &#64; <a class="reference external" href="http://freenode.net/">freenode</a></li>
+<li>Author: Jaakko Luttinen <a class="reference external" href="mailto:jaakko&#46;luttinen&#37;&#52;&#48;iki&#46;fi">jaakko<span>&#46;</span>luttinen<span>&#64;</span>iki<span>&#46;</span>fi</a></li>
+</ul>
+</div>
+<div class="section" id="similar-projects">
+<h2>Similar projects<a class="headerlink" href="#similar-projects" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="http://vibes.sourceforge.net/">VIBES</a>
+(<a class="reference external" href="http://vibes.sourceforge.net/">http://vibes.sourceforge.net/</a>) allows variational inference to be
+performed automatically on a Bayesian network.  It is implemented in
+Java and released under revised BSD license.</p>
+<p><a class="reference external" href="http://research.ics.aalto.fi/bayes/software/">Bayes Blocks</a>
+(<a class="reference external" href="http://research.ics.aalto.fi/bayes/software/">http://research.ics.aalto.fi/bayes/software/</a>) is a C++/Python
+implementation of the variational building block framework.  The
+framework allows easy learning of a wide variety of models using
+variational Bayesian learning.  It is available as free software under
+the GNU General Public License.</p>
+<p><a class="reference external" href="http://research.microsoft.com/infernet/">Infer.NET</a>
+(<a class="reference external" href="http://research.microsoft.com/infernet/">http://research.microsoft.com/infernet/</a>) is a .NET framework for
+machine learning.  It provides message-passing algorithms and
+statistical routines for performing Bayesian inference.  It is partly
+closed source and licensed for non-commercial use only.</p>
+<p><a class="reference external" href="https://github.com/pymc-devs/pymc">PyMC</a>
+(<a class="reference external" href="https://github.com/pymc-devs/pymc">https://github.com/pymc-devs/pymc</a>) provides MCMC methods in Python.
+It is released under the Academic Free License.</p>
+<p><a class="reference external" href="http://www.openbugs.info">OpenBUGS</a> (<a class="reference external" href="http://www.openbugs.info">http://www.openbugs.info</a>) is a
+software package for performing Bayesian inference using Gibbs
+sampling.  It is released under the GNU General Public License.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Introduction</a><ul>
+<li><a class="reference internal" href="#project-information">Project information</a></li>
+<li><a class="reference internal" href="#similar-projects">Similar projects</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">Welcome to BayesPy&#8217;s documentation!</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/intro.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to BayesPy’s documentation!"
+             >previous</a> |</li>
+        <li><a href="index.html">bayespy 0.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011-2013, Jaakko Luttinen.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>
