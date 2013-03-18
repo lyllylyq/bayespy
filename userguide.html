@@ -1,0 +1,655 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>User guide &mdash; bayespy 0.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="bayespy 0.0 documentation" href="index.html" />
+    <link rel="next" title="Developer guide" href="devguide.html" />
+    <link rel="prev" title="Installation" href="install.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="devguide.html" title="Developer guide"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="install.html" title="Installation"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">bayespy 0.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="user-guide">
+<h1>User guide<a class="headerlink" href="#user-guide" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li>Construct the model (Bayesian network)</li>
+<li>Put the data in</li>
+<li>Run inference</li>
+<li>Examine posterior results</li>
+</ul>
+<div class="section" id="simple-example">
+<h2>Simple example<a class="headerlink" href="#simple-example" title="Permalink to this headline">¶</a></h2>
+<p>Let&#8217;s begin with a simple example which shows the basic steps.  In
+this case, we do not use any real data but generate some toy data.
+The dataset consists of ten samples from the Gaussian distribution
+with mean 5 and standard deviation 10:</p>
+<div class="highlight-python3"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,))</span>
+</pre></div>
+</div>
+<p>Now, given this data we would like to estimate the mean and the
+standard deviation. We can construct a simple model shown below as a
+directed factor graph.</p>
+<div class="figure">
+<p><img src="_images/tikz-899e60c2099be1800352b858508ce9a731e784cb.png" alt="% tikzlibrary.code.tex
+%
+% Copyright 2010-2011 by Laura Dietz
+% Copyright 2012 by Jaakko Luttinen
+%
+% This file may be distributed and/or modified
+%
+% 1. under the LaTeX Project Public License and/or
+% 2. under the GNU General Public License.
+%
+% See the files LICENSE_LPPL and LICENSE_GPL for more details.
+
+% Load other libraries
+\usetikzlibrary{shapes}
+\usetikzlibrary{fit}
+\usetikzlibrary{chains}
+\usetikzlibrary{arrows}
+
+% Latent node
+\tikzstyle{latent} = [circle,fill=white,draw=black,inner sep=1pt,
+minimum size=20pt, font=\fontsize{10}{10}\selectfont, node distance=1]
+% Observed node
+\tikzstyle{obs} = [latent,fill=gray!25]
+% Constant node
+\tikzstyle{const} = [rectangle, inner sep=0pt, node distance=1]
+% Factor node
+\tikzstyle{factor} = [rectangle, fill=black,minimum size=5pt, inner
+sep=0pt, node distance=0.4]
+% Deterministic node
+\tikzstyle{det} = [latent, diamond]
+
+% Plate node
+\tikzstyle{plate} = [draw, rectangle, rounded corners, fit=#1]
+% Invisible wrapper node
+\tikzstyle{wrap} = [inner sep=0pt, fit=#1]
+% Gate
+\tikzstyle{gate} = [draw, rectangle, dashed, fit=#1]
+
+% Caption node
+\tikzstyle{caption} = [font=\footnotesize, node distance=0] %
+\tikzstyle{plate caption} = [caption, node distance=0, inner sep=0pt,
+below left=5pt and 0pt of #1.south east] %
+\tikzstyle{factor caption} = [caption] %
+\tikzstyle{every label} += [caption] %
+
+\tikzset{&gt;={triangle 45}}
+
+%\pgfdeclarelayer{b}
+%\pgfdeclarelayer{f}
+%\pgfsetlayers{b,main,f}
+
+% \factoredge [options] {inputs} {factors} {outputs}
+\newcommand{\factoredge}[4][]{ %
+  % Connect all nodes #2 to all nodes #4 via all factors #3.
+  \foreach \f in {#3} { %
+    \foreach \x in {#2} { %
+      \draw[-,#1] (\x) edge[-] (\f) ; %
+    } ;
+    \foreach \y in {#4} { %
+      \draw[-&gt;,#1] (\f) -- (\y) ; %
+    } ;
+  } ;
+}
+
+% \edge [options] {inputs} {outputs}
+\newcommand{\edge}[3][]{ %
+  % Connect all nodes #2 to all nodes #3.
+  \foreach \x in {#2} { %
+    \foreach \y in {#3} { %
+      \draw[-&gt;,#1] (\x) -- (\y) ;%
+    } ;
+  } ;
+}
+
+% \factor [options] {name} {caption} {inputs} {outputs}
+\newcommand{\factor}[5][]{ %
+  % Draw the factor node. Use alias to allow empty names.
+  \node[factor, label={[name=#2-caption]#3}, name=#2, #1,
+  alias=#2-alias] {} ; %
+  % Connect all inputs to outputs via this factor
+  \factoredge {#4} {#2-alias} {#5} ; %
+}
+
+% \plate [options] {name} {fitlist} {caption}
+\newcommand{\plate}[4][]{ %
+  \node[wrap=#3] (#2-wrap) {}; %
+  \node[plate caption=#2-wrap] (#2-caption) {#4}; %
+  \node[plate=(#2-wrap)(#2-caption), #1] (#2) {}; %
+}
+
+% \gate [options] {name} {fitlist} {inputs}
+\newcommand{\gate}[4][]{ %
+  \node[gate=#3, name=#2, #1, alias=#2-alias] {}; %
+  \foreach \x in {#4} { %
+    \draw [-*,thick] (\x) -- (#2-alias); %
+  } ;%
+}
+
+% \vgate {name} {fitlist-left} {caption-left} {fitlist-right}
+% {caption-right} {inputs}
+\newcommand{\vgate}[6]{ %
+  % Wrap the left and right parts
+  \node[wrap=#2] (#1-left) {}; %
+  \node[wrap=#4] (#1-right) {}; %
+  % Draw the gate
+  \node[gate=(#1-left)(#1-right)] (#1) {}; %
+  % Add captions
+  \node[caption, below left=of #1.north ] (#1-left-caption)
+  {#3}; %
+  \node[caption, below right=of #1.north ] (#1-right-caption)
+  {#5}; %
+  % Draw middle separation
+  \draw [-, dashed] (#1.north) -- (#1.south); %
+  % Draw inputs
+  \foreach \x in {#6} { %
+    \draw [-*,thick] (\x) -- (#1); %
+  } ;%
+}
+
+% \hgate {name} {fitlist-top} {caption-top} {fitlist-bottom}
+% {caption-bottom} {inputs}
+\newcommand{\hgate}[6]{ %
+  % Wrap the left and right parts
+  \node[wrap=#2] (#1-top) {}; %
+  \node[wrap=#4] (#1-bottom) {}; %
+  % Draw the gate
+  \node[gate=(#1-top)(#1-bottom)] (#1) {}; %
+  % Add captions
+  \node[caption, above right=of #1.west ] (#1-top-caption)
+  {#3}; %
+  \node[caption, below right=of #1.west ] (#1-bottom-caption)
+  {#5}; %
+  % Draw middle separation
+  \draw [-, dashed] (#1.west) -- (#1.east); %
+  % Draw inputs
+  \foreach \x in {#6} { %
+    \draw [-*,thick] (\x) -- (#1); %
+  } ;%
+}
+
+\node[obs]                                  (y)     {$y$} ;
+\node[latent, above left=1.5 and 0.5 of y]  (mu)    {$\mu$} ;
+\node[latent, above right=1.5 and 0.5 of y] (tau)   {$\tau$} ;
+\node[const, above=of mu, xshift=-0.5cm]    (mumu)  {$0$} ;
+\node[const, above=of mu, xshift=0.5cm]     (taumu) {$10^{-3}$} ;
+\node[const, above=of tau, xshift=-0.5cm]   (atau)  {$10^{-3}$} ;
+\node[const, above=of tau, xshift=0.5cm]    (btau)  {$10^{-3}$} ;
+
+\factor[above=of y] {y-f} {left:$\mathcal{N}$} {mu,tau}     {y};
+\factor[above=of mu] {} {left:$\mathcal{N}$}   {mumu,taumu} {mu};
+\factor[above=of tau] {} {left:$\mathcal{G}$}  {atau,btau}  {tau};
+
+\plate {} {(y)(y-f)(y-f-caption)} {10} ;" /></p>
+<p class="caption">Directed factor graph of the example model.</p></div><p>Alternatively, the model can also be defined using explicit
+mathematical notation:</p>
+<div class="math">
+\[\begin{split}p(\mathbf{y}|\mu,\tau) &amp;= \prod^{10}_{n=1} \mathcal{N}(y_n|\mu,\tau) \\
+p(\mu) &amp;= \mathcal{N}(\mu|0,10^{-3}) \\
+p(\tau) &amp;= \mathcal{G}(\tau|10^{-3},10^{-3})\end{split}\]</div>
+<p>Note that we parameterize the normal distribution using the mean and
+the precision (i.e., the inverse of the variance).  The model can be
+constructed in BayesPy as follows:</p>
+<div class="highlight-python3"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">bayespy</span> <span class="k">as</span> <span class="nn">bp</span>
+<span class="n">mu</span> <span class="o">=</span> <span class="n">bp</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">Normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="n">e</span><span class="o">-</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">tau</span> <span class="o">=</span> <span class="n">bp</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">Gamma</span><span class="p">(</span><span class="mi">1</span><span class="n">e</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="n">e</span><span class="o">-</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">bp</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">Normal</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span> <span class="n">tau</span><span class="p">,</span> <span class="n">plates</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,))</span>
+</pre></div>
+</div>
+<p>This is quite self-explanatory given the model definitions above.
+Now, we use the generated data:</p>
+<div class="highlight-python3"><div class="highlight"><pre><span class="n">y</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Next we want to estimate the posterior distribution.  In principle, we
+could use different inference engines (e.g., MCMC or EP) but currently
+only variational Bayesian (VB) engine is implemented.  The engine is
+initialized by giving the nodes and the inference algorithm can be run
+as long as wanted (20 iterations in this case):</p>
+<div class="highlight-python3"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">bayespy.inference</span> <span class="k">import</span> <span class="n">VB</span>
+<span class="n">Q</span> <span class="o">=</span> <span class="n">VB</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span> <span class="n">tau</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+<span class="n">Q</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">repeat</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>In VB, the true posterior <span class="math">\(p(\mu,\tau|\mathbf{y})\)</span> is
+approximated with a factorized distribution <span class="math">\(q(\mu)q(\tau)\)</span>.
+The resulting approximate posterior distributions <span class="math">\(q(\mu)\)</span> and
+<span class="math">\(q(\tau)\)</span> can be examined as:</p>
+<div class="highlight-python3"><div class="highlight"><pre><span class="n">mu</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<span class="n">tau</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="kn">import</span> <span class="nn">bayespy.plotting</span> <span class="k">as</span> <span class="nn">plt</span>
+</pre></div>
+</div>
+<div class="admonition-todo admonition" id="index-0">
+<p class="first admonition-title">Todo</p>
+<p class="last">Add an example of visualizing the results.</p>
+</div>
+<p>This example was a very simple introduction to using BayesPy.  The
+model can be much more complex and each phase contains more options to
+give the user more control over the inference.  The following sections
+give more details.</p>
+</div>
+<div class="section" id="constructing-the-model">
+<h2>Constructing the model<a class="headerlink" href="#constructing-the-model" title="Permalink to this headline">¶</a></h2>
+<p>In BayesPy, the model is constructed by creating nodes which form a
+network.  Roughly speaking, a node corresponds to a random variable
+from a specific probability distribution.  In the example, <tt class="docutils literal"><span class="pre">mu</span></tt> was
+<tt class="docutils literal"><span class="pre">Normal</span></tt> node corresponding to <span class="math">\(\mu\)</span> from the normal
+distribution.  However, a node can also correspond to a set of random
+variables or nodes can be deterministic not corresponding to any
+random variable.</p>
+<p>When you create a node, you give its parents as parameters.  The role
+and the number of the parents depend on the node.  For instance,
+<tt class="docutils literal"><span class="pre">Normal</span></tt> node takes two parents (mean and precision) and <tt class="docutils literal"><span class="pre">Gamma</span></tt>
+node takes two parents (scale and rate).</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Currently, it is important that the parent has the correct node
+type, because the model construction and VB inference engine are
+not yet separated.  For instance, the parents mean and precision of
+<tt class="docutils literal"><span class="pre">Normal</span></tt> node must be <tt class="docutils literal"><span class="pre">Normal</span></tt> and <tt class="docutils literal"><span class="pre">Gamma</span></tt> nodes (or other
+nodes that have similar output), respectively.  Thus, currently one
+can build only conjugate-exponential family models.</p>
+</div>
+<div class="section" id="name-and-plates">
+<h3>Name and plates<a class="headerlink" href="#name-and-plates" title="Permalink to this headline">¶</a></h3>
+<p>In general, the nodes take some optional parameters: <tt class="docutils literal"><span class="pre">name</span></tt> and
+<tt class="docutils literal"><span class="pre">plates</span></tt>.  The parameter <tt class="docutils literal"><span class="pre">name</span></tt> is used to give a name for the
+variable.  The parameter <tt class="docutils literal"><span class="pre">plates</span></tt> is used to define plates, that is,
+a repetitive collection of nodes that are independent given the
+parents. For instance, the following set of i.i.d. random variables</p>
+<div class="math">
+\[y_{mn} \sim \mathcal{N}(\mu, \tau),\qquad m=1,\ldots,10,
+\quad n=1,\ldots,30\]</div>
+<p>would be created as</p>
+<div class="highlight-python3"><div class="highlight"><pre><span class="n">y</span> <span class="o">=</span> <span class="n">bp</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">Normal</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span> <span class="n">tau</span><span class="p">,</span> <span class="n">plates</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">30</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>It is also possible that the parents have plates.  The validity of the
+plates between a child and a parent is checked by comparing the plates
+plate-wise from the trailing plates and working the way forward.  A
+plate of the child is compatible with a plate of the parent if either
+of the following conditions is met:</p>
+<ol class="arabic simple">
+<li>The two plates have equal size</li>
+<li>The parent has size 1 (or no plate)</li>
+</ol>
+<p>Table below shows an example of compatible plates for a child and two
+parent nodes.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="31%" />
+<col width="10%" />
+<col width="10%" />
+<col width="14%" />
+<col width="10%" />
+<col width="10%" />
+<col width="14%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">node</th>
+<th class="head" colspan="6">plates</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>parent1</td>
+<td>&nbsp;</td>
+<td>9</td>
+<td>1</td>
+<td>5</td>
+<td>1</td>
+<td>10</td>
+</tr>
+<tr class="row-odd"><td>parent2</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>15</td>
+<td>5</td>
+<td>1</td>
+<td>1</td>
+</tr>
+<tr class="row-even"><td>child</td>
+<td>5</td>
+<td>9</td>
+<td>15</td>
+<td>5</td>
+<td>1</td>
+<td>10</td>
+</tr>
+</tbody>
+</table>
+<p>For instance, a model</p>
+<div class="math">
+\[\begin{split}\mu_m &amp;\sim  \mathcal{N}(0, 10^{-3}), \\
+\tau_n &amp;\sim \mathcal{G}(10^{-3}, 10^{-3}), \\
+y_{mn} &amp;\sim \mathcal{N}(\mu_m, \tau_n),\qquad m=1,\ldots,10,
+\quad n=1,\ldots,30\end{split}\]</div>
+<p>could be created as</p>
+<div class="highlight-python3"><div class="highlight"><pre><span class="n">mu</span> <span class="o">=</span> <span class="n">bp</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">Normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="n">e</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="n">plates</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
+<span class="n">tau</span> <span class="o">=</span> <span class="n">bp</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">Gamma</span><span class="p">(</span><span class="mi">1</span><span class="n">e</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="n">e</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="n">plates</span><span class="o">=</span><span class="p">(</span><span class="mi">30</span><span class="p">,))</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">bp</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">Normal</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span> <span class="n">tau</span><span class="p">,</span> <span class="n">plates</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">30</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="multi-dimensional-nodes">
+<h3>Multi-dimensional nodes<a class="headerlink" href="#multi-dimensional-nodes" title="Permalink to this headline">¶</a></h3>
+<p>Sometimes a random variable is multi-dimensional.  For instance, a
+multivariate normal distribution is a probability distribution for
+vectors.  Quite often, the dimensionality can be deduced implicitly
+from the parents, thus the user may not need to provide it explicitly.
+However, it is important to know that the values are stored in a NumPy
+array where the plates are the leading axes and the dimensions are the
+trailing axes.  This becomes relevant, for instance, when providing
+the data for an observed multi-dimensional node.  To make a clear
+distinction between scalar and multi-dimensional distributions, there
+is often a multi-dimensional counterpart of a scalar node.  For
+instance, the normal distribution for scalars is provided by the node
+<tt class="docutils literal"><span class="pre">Normal</span></tt>, but the node for the multivariate normal distribution is
+<tt class="docutils literal"><span class="pre">Gaussian</span></tt>.  Below is a more complete table of correspondence.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="44%" />
+<col width="56%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Scalar</th>
+<th class="head">Multi-dimensional</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><tt class="docutils literal"><span class="pre">Normal</span></tt></td>
+<td><tt class="docutils literal"><span class="pre">Gaussian</span></tt></td>
+</tr>
+<tr class="row-odd"><td><tt class="docutils literal"><span class="pre">Gamma</span></tt></td>
+<td><tt class="docutils literal"><span class="pre">Wishart</span></tt></td>
+</tr>
+<tr class="row-even"><td><tt class="docutils literal"><span class="pre">Bernoulli</span></tt></td>
+<td><tt class="docutils literal"><span class="pre">Categorical</span></tt></td>
+</tr>
+<tr class="row-odd"><td><tt class="docutils literal"><span class="pre">Binomial</span></tt></td>
+<td><tt class="docutils literal"><span class="pre">Multinomial</span></tt></td>
+</tr>
+<tr class="row-even"><td><tt class="docutils literal"><span class="pre">Beta</span></tt></td>
+<td><tt class="docutils literal"><span class="pre">Dirichlet</span></tt></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="deterministic-and-constant-nodes">
+<h3>Deterministic and constant nodes<a class="headerlink" href="#deterministic-and-constant-nodes" title="Permalink to this headline">¶</a></h3>
+<p>In addition to the random variable nodes, there are two special types
+of nodes: constant and deterministic.  Neither one has any probability
+distribution associated with them.  A constant node has no parents and
+the value of the node is fixed.  Constant nodes are created implicitly
+as parent nodes when you give numeric values as parents when creating
+a node, thus, the user is not required to create any constant nodes
+explicitly.  A deterministic, on the other hand, defines some
+function.  It transforms the parents to produce a new variable which
+is a non-random function of the parents.  For instance, <tt class="docutils literal"><span class="pre">Dot</span></tt> node
+computes the dot product of its parents.</p>
+</div>
+</div>
+<div class="section" id="providing-the-data">
+<h2>Providing the data<a class="headerlink" href="#providing-the-data" title="Permalink to this headline">¶</a></h2>
+<p>The data is provided by simply calling <tt class="docutils literal"><span class="pre">observe</span></tt> method of the node:</p>
+<div class="highlight-python3"><div class="highlight"><pre><span class="n">y</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>It is important that the shape of the <tt class="docutils literal"><span class="pre">data</span></tt> array matches the shape
+of the node <tt class="docutils literal"><span class="pre">y</span></tt>, which is the combination of the plates and the
+dimensionality.  For instance, if <tt class="docutils literal"><span class="pre">y</span></tt> is <tt class="docutils literal"><span class="pre">Wishart</span></tt> node for
+<span class="math">\(3\times 3\)</span> matrices with plates <tt class="docutils literal"><span class="pre">(5,1,10)</span></tt>, the actual shape
+of <tt class="docutils literal"><span class="pre">y</span></tt> would be <tt class="docutils literal"><span class="pre">(5,1,10,3,3)</span></tt>.  The data array must have this
+shape exactly, that is, no broadcasting rules are applied.</p>
+<div class="section" id="missing-values">
+<h3>Missing values<a class="headerlink" href="#missing-values" title="Permalink to this headline">¶</a></h3>
+<p>It is possible to mark missing values by providing a mask:</p>
+<div class="highlight-python3"><div class="highlight"><pre><span class="n">y</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="p">[</span><span class="k">True</span><span class="p">,</span> <span class="k">False</span><span class="p">,</span> <span class="k">False</span><span class="p">,</span> <span class="k">True</span><span class="p">,</span> <span class="k">True</span><span class="p">,</span>
+                      <span class="k">False</span><span class="p">,</span> <span class="k">True</span><span class="p">,</span> <span class="k">True</span><span class="p">,</span> <span class="k">True</span><span class="p">,</span> <span class="k">False</span><span class="p">])</span>
+</pre></div>
+</div>
+<p><tt class="docutils literal"><span class="pre">True</span></tt> means that the value is observed and <tt class="docutils literal"><span class="pre">False</span></tt> means that the
+value is missing.  To be more precise, the mask is applied to the
+plates, <em>not</em> to the data array directly.  Unlike for the data itself,
+standard NumPy broadcasting rules are applied for the mask with
+respect to the plates.  So, if the variable has plates <tt class="docutils literal"><span class="pre">(5,1,10)</span></tt>,
+the mask could have a shape <tt class="docutils literal"><span class="pre">(1,)</span></tt>, <tt class="docutils literal"><span class="pre">(10,)</span></tt>, <tt class="docutils literal"><span class="pre">(5,1,1)</span></tt> or
+<tt class="docutils literal"><span class="pre">(5,1,10)</span></tt>.</p>
+<p>From implementational point of view, the inference algorithms ignore
+the missing plates automatically if they are not needed.  Thus, the
+missing values are integrated out giving more accurate approximations
+and the computations may also be faster.</p>
+</div>
+</div>
+<div class="section" id="performing-inference">
+<h2>Performing inference<a class="headerlink" href="#performing-inference" title="Permalink to this headline">¶</a></h2>
+<p>Approximation of the posterior distribution can be divided into
+several steps:</p>
+<ul class="simple">
+<li>Choosing and constructing the inference engine</li>
+<li>Initializing the engine</li>
+<li>Running the inference algorithm</li>
+</ul>
+<div class="section" id="choosing-the-inference-method">
+<h3>Choosing the inference method<a class="headerlink" href="#choosing-the-inference-method" title="Permalink to this headline">¶</a></h3>
+<p>Inference methods can be found in <tt class="docutils literal"><span class="pre">bayespy.inference</span></tt> package.
+Currently, only variational Bayesian approximation is implemented
+(<tt class="docutils literal"><span class="pre">bayespy.inference.VB</span></tt>).  The inference engine is constructed by
+giving the nodes of the model.</p>
+<div class="highlight-python3"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">bayespy.inference</span> <span class="k">import</span> <span class="n">VB</span>
+<span class="n">Q</span> <span class="o">=</span> <span class="n">VB</span><span class="p">(</span><span class="n">node1</span><span class="p">,</span> <span class="n">node2</span><span class="p">,</span> <span class="n">node3</span><span class="p">,</span> <span class="n">node4</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="initializing-the-inference">
+<h3>Initializing the inference<a class="headerlink" href="#initializing-the-inference" title="Permalink to this headline">¶</a></h3>
+<p>The inference engines give some initialization to the nodes by
+default.  However, the inference algorithms can be sensitive to the
+initialization, thus it is sometimes necessary to have full control
+over the initialization.  There may be different initialization
+methods, but for VB you can, for instance, initialize in one of the
+following ways:</p>
+<ul class="simple">
+<li><tt class="docutils literal"><span class="pre">initialize_from_prior</span></tt>: Use only parent nodes to update the node.</li>
+<li><tt class="docutils literal"><span class="pre">initialize_from_parameters</span></tt>: Use the given parameter values for
+the distribution.</li>
+</ul>
+<p>A random initialization for VB has to be performed manually, because
+it is not obvious what is actually wanted.  For instance, one way to
+achieve it is to first update from the parents, then to draw a random
+sample from that distribution and to set the values of the parameters
+based on that.  For <tt class="docutils literal"><span class="pre">Normal</span></tt> node, one could draw the mean parameter
+randomly and choose the precision parameter arbitrarily:</p>
+<div class="highlight-python3"><div class="highlight"><pre><span class="n">x</span> <span class="o">=</span> <span class="n">bp</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">Normal</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span> <span class="n">tau</span><span class="p">,</span> <span class="n">plates</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,))</span>
+<span class="n">x</span><span class="o">.</span><span class="n">initialize_from_prior</span><span class="p">()</span>
+<span class="n">x</span><span class="o">.</span><span class="n">initialize_from_parameters</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">random</span><span class="p">(),</span> <span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>In this case, the precision was set to one.  The default
+initialization method is <tt class="docutils literal"><span class="pre">initialization_from_prior</span></tt>, which is
+performed when the node is created.  If the initialization uses the
+values of the parents, they should be initialized before the children.</p>
+</div>
+<div class="section" id="running-the-inference-algorithm">
+<h3>Running the inference algorithm<a class="headerlink" href="#running-the-inference-algorithm" title="Permalink to this headline">¶</a></h3>
+<p>The approximation methods are based on iterative algorithms, which can
+be run using <tt class="docutils literal"><span class="pre">update</span></tt> method.  By default, it takes one iteration
+step updating all nodes once.  However, you can give as arguments the
+nodes you want to update and they are updated in the given order. It
+is possible to give same nodes several times, for instance:</p>
+<div class="highlight-python3"><div class="highlight"><pre><span class="n">Q</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">node1</span><span class="p">,</span> <span class="n">node3</span><span class="p">,</span> <span class="n">node1</span><span class="p">,</span> <span class="n">node4</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This would update <tt class="docutils literal"><span class="pre">node3</span></tt> and <tt class="docutils literal"><span class="pre">node4</span></tt> once, and <tt class="docutils literal"><span class="pre">node1</span></tt> twice.
+In order to update several times, one can use the optional argument
+<tt class="docutils literal"><span class="pre">repeat</span></tt>.</p>
+<div class="highlight-python3"><div class="highlight"><pre><span class="n">Q</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">node3</span><span class="p">,</span> <span class="n">node4</span><span class="p">,</span> <span class="n">repeat</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">Q</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">node1</span><span class="p">,</span> <span class="n">node2</span><span class="p">,</span> <span class="n">node3</span><span class="p">,</span> <span class="n">node4</span><span class="p">,</span> <span class="n">repeat</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This first updates <tt class="docutils literal"><span class="pre">node3</span></tt> and <tt class="docutils literal"><span class="pre">node4</span></tt> five times and then all the
+nodes ten times.  This might be useful, for instance, if updating some
+nodes is expensive and should be done rarely or if updating some nodes
+in the beginning would cause the algorithm to converge to a bad
+solution.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Ideally, one constructs the model and then chooses the inference
+method to be used - possibly trying several different methods.
+However, the model construction is not yet separated from the model
+construction, that is, the constructed model network is also the
+variational message passing network for VB inference.</p>
+</div>
+</div>
+</div>
+<div class="section" id="examining-the-results">
+<h2>Examining the results<a class="headerlink" href="#examining-the-results" title="Permalink to this headline">¶</a></h2>
+<p>After the results have been obtained, it is important to be able to
+examine the results easily.  <tt class="docutils literal"><span class="pre">show</span></tt> method prints the approximate
+posterior distribution of the node.  Also, <tt class="docutils literal"><span class="pre">get_moments</span></tt> can be used
+to obtain the sufficient statistics of the node.</p>
+<div class="admonition-todo admonition" id="index-1">
+<p class="first admonition-title">Todo</p>
+<p class="last">In order to examine the results more carefully, <tt class="docutils literal"><span class="pre">get_parameters</span></tt>
+method should return the parameter values of the approximate
+posterior distribution.  The user may use these values for
+arbitrarily complex further analysis.</p>
+</div>
+</div>
+<div class="section" id="example-principal-component-analysis">
+<h2>Example: Principal component analysis<a class="headerlink" href="#example-principal-component-analysis" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="example-gaussian-mixture-model">
+<h2>Example: Gaussian mixture model<a class="headerlink" href="#example-gaussian-mixture-model" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">User guide</a><ul>
+<li><a class="reference internal" href="#simple-example">Simple example</a></li>
+<li><a class="reference internal" href="#constructing-the-model">Constructing the model</a><ul>
+<li><a class="reference internal" href="#name-and-plates">Name and plates</a></li>
+<li><a class="reference internal" href="#multi-dimensional-nodes">Multi-dimensional nodes</a></li>
+<li><a class="reference internal" href="#deterministic-and-constant-nodes">Deterministic and constant nodes</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#providing-the-data">Providing the data</a><ul>
+<li><a class="reference internal" href="#missing-values">Missing values</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#performing-inference">Performing inference</a><ul>
+<li><a class="reference internal" href="#choosing-the-inference-method">Choosing the inference method</a></li>
+<li><a class="reference internal" href="#initializing-the-inference">Initializing the inference</a></li>
+<li><a class="reference internal" href="#running-the-inference-algorithm">Running the inference algorithm</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#examining-the-results">Examining the results</a></li>
+<li><a class="reference internal" href="#example-principal-component-analysis">Example: Principal component analysis</a></li>
+<li><a class="reference internal" href="#example-gaussian-mixture-model">Example: Gaussian mixture model</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="install.html"
+                        title="previous chapter">Installation</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="devguide.html"
+                        title="next chapter">Developer guide</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/userguide.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="devguide.html" title="Developer guide"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="install.html" title="Installation"
+             >previous</a> |</li>
+        <li><a href="index.html">bayespy 0.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011-2013, Jaakko Luttinen.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>
