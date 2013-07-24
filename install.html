@@ -62,10 +62,11 @@ errors or some relevant details are missing, please file a bug report at
 <a class="reference external" href="https://github.com/bayespy/bayespy/issues">https://github.com/bayespy/bayespy/issues</a>.</p>
 <div class="section" id="installing-requirements">
 <h2>Installing requirements<a class="headerlink" href="#installing-requirements" title="Permalink to this headline">¶</a></h2>
-<p>BayesPy requires NumPy (&gt;=1.7.1), SciPy (&gt;=0.11) and matplotlib (&gt;=1.2).  A
-proper installation of these packages can be a bit tricky and you may refer to
-<a class="reference external" href="http://www.scipy.org/install.html">http://www.scipy.org/install.html</a> for more detailed instructions.  If your
-system has an older version of any of the packages (NumPy, SciPy or matplotlib),
+<p>BayesPy requires Python 3.2 and packages NumPy (&gt;=1.7.1), SciPy (&gt;=0.11) and
+matplotlib (&gt;=1.2).  A proper installation of these packages can be a bit tricky
+and you may refer to <a class="reference external" href="http://www.scipy.org/install.html">http://www.scipy.org/install.html</a> for more detailed
+instructions.  If your system has an older version of any of the packages
+(NumPy, SciPy or matplotlib) or it does not provide the packages for Python 3.2,
 you may set up a virtual environment and install the latest versions there.  To
 create and activate a new virtual environment, run</p>
 <div class="highlight-console"><div class="highlight"><pre><span class="go">virtualenv -p python3.2 --system-site-packages ENV</span>
@@ -74,12 +75,14 @@ create and activate a new virtual environment, run</p>
 </div>
 <p>If your system is properly set up, you may be able to install them from PyPI (a
 C compiler, Python development files and BLAS/LAPACK may be required).  For
-instance, on Ubuntu (&gt;= 12.10), you may install the dependencies as:</p>
+instance, on Ubuntu (&gt;= 12.10), you may install the dependencies for each
+package as:</p>
 <div class="highlight-console"><div class="highlight"><pre><span class="go">sudo apt-get build-dep python3-numpy</span>
 <span class="go">sudo apt-get build-dep python3-scipy</span>
 <span class="go">sudo apt-get build-dep python3-matplotlib</span>
-<span class="gp">#</span> sudo apt-get build-dep python3-cython
-<span class="gp">#</span> sudo aptitude install python3-tk tk-dev
+<span class="go">sudo apt-get build-dep cython</span>
+<span class="go">sudo apt-get build-dep python-h5py</span>
+<span class="gp">#</span> sudo aptitude install python3-tk tk-dev ?
 </pre></div>
 </div>
 <p>This guarantees that the required system libraries are installed.  Then
@@ -88,16 +91,18 @@ installation/upgrade from PyPI should work:</p>
 <span class="go">pip install scipy matplotlib --upgrade</span>
 </pre></div>
 </div>
-<p>Note that this may take several minutes. You also need to install Cython, for
-instance, from PyPI:</p>
-<div class="highlight-console"><div class="highlight"><pre><span class="go">pip install cython</span>
+<p>Note that this may take several minutes. You also need to install Cython and
+h5py, for instance, from PyPI:</p>
+<div class="highlight-console"><div class="highlight"><pre><span class="go">pip install cython h5py</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="installing-bayespy">
 <h2>Installing BayesPy<a class="headerlink" href="#installing-bayespy" title="Permalink to this headline">¶</a></h2>
-<p>After the system has been properly set up and the virtual environment is
-activated (if wanted), BayesPy can be installed from PyPI simply as</p>
+<p>Before proceeding, make sure you have installed Cython, h5py and the latest
+versions of NumPy, Scipy and matplotlib for Python 3.2.  After the system has
+been properly set up and the virtual environment is activated (if wanted),
+BayesPy can be installed from PyPI simply as</p>
 <div class="highlight-console"><div class="highlight"><pre><span class="go">pip install bayespy</span>
 </pre></div>
 </div>
@@ -109,64 +114,19 @@ instead:</p>
 </div>
 <div class="section" id="compiling-documentation">
 <h2>Compiling documentation<a class="headerlink" href="#compiling-documentation" title="Permalink to this headline">¶</a></h2>
-<p>This documentation can be found in <tt class="docutils literal"><span class="pre">doc</span></tt> folder.  The documentation source
-files are readable as such in reStructuredText format in <tt class="docutils literal"><span class="pre">doc/source/</span></tt>
-directory.  If you have <a class="reference external" href="http://sphinx.pocoo.org/">Sphinx</a> installed, the
-documentation can be compiled to, for instance, HTML and PDF by running the
-following commands in the <tt class="docutils literal"><span class="pre">doc</span></tt> folder:</p>
+<p>This documentation can be found at <a class="reference external" href="http://bayespy.org/">http://bayespy.org/</a>.  The documentation
+source files are readable as such in reStructuredText format in <tt class="docutils literal"><span class="pre">doc/source/</span></tt>
+directory.  It is possible to compile the documentation into HTML or PDF
+yourself.  However, this is not currently recommended as it may turn out to be
+quite tricky because you need to have a Python 3.2 compatible modification of
+numpydoc and a few other packages (e.g., sphinxcontrib-tikz and
+sphinxcontrib-bayesnet).  But if you have <a class="reference external" href="http://sphinx.pocoo.org/">Sphinx</a>
+and all the requirements installed, the documentation can be compiled to HTML
+and PDF by running the following commands in the <tt class="docutils literal"><span class="pre">doc</span></tt> folder:</p>
 <div class="highlight-console"><div class="highlight"><pre><span class="go">make html</span>
 <span class="go">make latexpdf</span>
 </pre></div>
 </div>
-<p>Sphinx needs to be installed for Python 3.  The documentation can be found also
-at <a class="reference external" href="http://bayespy.org/">http://bayespy.org/</a>.</p>
-<p>It is recommended that you install BayesPy
-using <a class="reference external" href="http://www.virtualenv.org/&quot;">virtualenv</a>.  BayesPy requires Python 3.2
-(other 3.x versions untested), so to create and activate a new virtual
-environment, run</p>
-<div class="highlight-console"><div class="highlight"><pre><span class="go">virtualenv -p python3.2 --system-site-packages ENV</span>
-<span class="go">source ENV/bin/activate</span>
-</pre></div>
-</div>
-<p><a class="reference external" href="http://www.scipy.org/install.html">http://www.scipy.org/install.html</a></p>
-<p>Before installing BayesPy, the latest version of <a class="reference external" href="http://numpy.org">NumPy</a>
-needs to be pre-installed.</p>
-<p><a class="reference external" href="http://cython.org">Cython</a> and the latest version of <a class="reference external" href="http://numpy.org">NumPy</a> needs to be pre-installed, so run:</p>
-<div class="highlight-console"><div class="highlight"><pre><span class="go">pip install cython</span>
-<span class="go">pip install numpy --upgrade</span>
-</pre></div>
-</div>
-<p>Now, BayesPy can be installed simply as</p>
-<div class="highlight-console"><div class="highlight"><pre><span class="go">pip install bayespy</span>
-</pre></div>
-</div>
-<p>and all dependencies (e.g., <a class="reference external" href="http://scipy.org">SciPy</a>) are installed
-automatically <a class="footnote-reference" href="#id4" id="id2">[1]</a>. Note that this may take several minutes.  If you want to
-install the latest development version of BayesPy, use GitHub instead of PyPI:</p>
-<div class="highlight-console"><div class="highlight"><pre><span class="go">pip install https://github.com/bayespy/bayespy/archive/master.zip</span>
-</pre></div>
-</div>
-<p>This documentation can be found in <tt class="docutils literal"><span class="pre">doc</span></tt> folder.  The documentation source
-files are readable as such in reStructuredText format in <tt class="docutils literal"><span class="pre">doc/source/</span></tt>
-directory.  If you have <a class="reference external" href="http://sphinx.pocoo.org/">Sphinx</a> installed, the
-documentation can be compiled to, for instance, HTML and PDF by running the
-following commands in the <tt class="docutils literal"><span class="pre">doc</span></tt> folder:</p>
-<div class="highlight-console"><div class="highlight"><pre><span class="go">make html</span>
-<span class="go">make latexpdf</span>
-</pre></div>
-</div>
-<p>Sphinx needs to be installed for Python 3.  The documentation can be found also
-at <a class="reference external" href="http://bayespy.org/">http://bayespy.org/</a>.</p>
-<table class="docutils footnote" frame="void" id="id4" rules="none">
-<colgroup><col class="label" /><col /></colgroup>
-<tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id2">[1]</a></td><td>If you are having problems installing NumPy/SciPy/matplotlib, some
-instructions can be found at <a class="reference external" href="http://www.scipy.org/Installing_SciPy">http://www.scipy.org/Installing_SciPy</a> and
-<a class="reference external" href="http://matplotlib.sourceforge.net/users/installing.html">http://matplotlib.sourceforge.net/users/installing.html</a>.  For matplotlib,
-tkinter backend works on Python 3 so you may want to install package
-python3-tk.</td></tr>
-</tbody>
-</table>
 </div>
 </div>
 
