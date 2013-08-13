@@ -1,0 +1,323 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>bayespy.inference.vmp.nodes.deterministic &mdash; bayespy 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="../../../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../../../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="bayespy 0.1 documentation" href="../../../../../index.html" />
+    <link rel="up" title="Module code" href="../../../../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li><a href="../../../../../index.html">bayespy 0.1 documentation</a> &raquo;</li>
+          <li><a href="../../../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for bayespy.inference.vmp.nodes.deterministic</h1><div class="highlight"><pre>
+<span class="c">######################################################################</span>
+<span class="c"># Copyright (C) 2013 Jaakko Luttinen</span>
+<span class="c">#</span>
+<span class="c"># This file is licensed under Version 3.0 of the GNU General Public</span>
+<span class="c"># License. See LICENSE for a text of the license.</span>
+<span class="c">######################################################################</span>
+
+<span class="c">######################################################################</span>
+<span class="c"># This file is part of BayesPy.</span>
+<span class="c">#</span>
+<span class="c"># BayesPy is free software: you can redistribute it and/or modify it</span>
+<span class="c"># under the terms of the GNU General Public License version 3 as</span>
+<span class="c"># published by the Free Software Foundation.</span>
+<span class="c">#</span>
+<span class="c"># BayesPy is distributed in the hope that it will be useful, but</span>
+<span class="c"># WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="c"># MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU</span>
+<span class="c"># General Public License for more details.</span>
+<span class="c">#</span>
+<span class="c"># You should have received a copy of the GNU General Public License</span>
+<span class="c"># along with BayesPy.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
+<span class="c">######################################################################</span>
+
+<span class="kn">import</span> <span class="nn">functools</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">bayespy.utils</span> <span class="kn">import</span> <span class="n">utils</span>
+
+<span class="kn">from</span> <span class="nn">.node</span> <span class="kn">import</span> <span class="n">Node</span>
+
+<div class="viewcode-block" id="Deterministic"><a class="viewcode-back" href="../../../../../generated/bayespy.inference.vmp.nodes.deterministic.Deterministic.html#bayespy.inference.vmp.nodes.deterministic.Deterministic">[docs]</a><span class="k">class</span> <span class="nc">Deterministic</span><span class="p">(</span><span class="n">Node</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Base class for nodes that are deterministic.</span>
+
+<span class="sd">    Sub-classes must implement:</span>
+<span class="sd">    1. For implementing the deterministic function:</span>
+<span class="sd">       _compute_moments(self, *u)</span>
+<span class="sd">    2. One of the following options:</span>
+<span class="sd">       a) Simple methods:</span>
+<span class="sd">          _compute_message_to_parent(self, index, m, *u)</span>
+<span class="sd">          _compute_mask_to_parent(self, index, mask)</span>
+<span class="sd">       b) More control with:</span>
+<span class="sd">          _compute_message_and_mask_to_parent(self, index, m, *u)</span>
+
+<span class="sd">    Sub-classes may need to re-implement:</span>
+<span class="sd">    1. If they manipulate plates:</span>
+<span class="sd">       _compute_mask_to_parent(index, mask)</span>
+<span class="sd">       _plates_to_parent(self, index)</span>
+<span class="sd">       _plates_from_parent(self, index)</span>
+<span class="sd">    </span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">plates</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Deterministic.get_moments"><a class="viewcode-back" href="../../../../../generated/bayespy.inference.vmp.nodes.deterministic.Deterministic.get_moments.html#bayespy.inference.vmp.nodes.deterministic.Deterministic.get_moments">[docs]</a>    <span class="k">def</span> <span class="nf">get_moments</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">u_parents</span> <span class="o">=</span> <span class="p">[</span><span class="n">parent</span><span class="o">.</span><span class="n">_message_to_child</span><span class="p">()</span> <span class="k">for</span> <span class="n">parent</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">parents</span><span class="p">]</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compute_moments</span><span class="p">(</span><span class="o">*</span><span class="n">u_parents</span><span class="p">)</span>
+</div>
+    <span class="k">def</span> <span class="nf">_compute_message_and_mask_to_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">m_children</span><span class="p">,</span> <span class="o">*</span><span class="n">u_parents</span><span class="p">):</span>
+        <span class="c"># The following methods should be implemented by sub-classes.</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compute_message_to_parent</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">m_children</span><span class="p">,</span> <span class="o">*</span><span class="n">u_parents</span><span class="p">)</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compute_mask_to_parent</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mask</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">mask</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_get_message_and_mask_to_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+        <span class="n">u_parents</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_message_from_parents</span><span class="p">(</span><span class="n">exclude</span><span class="o">=</span><span class="n">index</span><span class="p">)</span>
+        <span class="n">m_children</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_message_from_children</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compute_message_and_mask_to_parent</span><span class="p">(</span><span class="n">index</span><span class="p">,</span>
+                                                        <span class="n">m_children</span><span class="p">,</span>
+                                                        <span class="o">*</span><span class="n">u_parents</span><span class="p">)</span>
+        
+    
+    <span class="k">def</span> <span class="nf">_compute_moments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">u_parents</span><span class="p">):</span>
+        <span class="c"># Sub-classes should implement this</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
+</div>
+<span class="k">def</span> <span class="nf">tile</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">tiles</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Tile the plates of the input node.</span>
+
+<span class="sd">    x = [a,b,c]</span>
+<span class="sd">    y = tile(x, 2) = [a,b,c,a,b,c]</span>
+
+<span class="sd">    There should be no need to tile plates that have unit length because they</span>
+<span class="sd">    are handled properly by the broadcasting rules already.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">    -----------</span>
+<span class="sd">    X : Node</span>
+<span class="sd">        Input node to be tiled.</span>
+<span class="sd">    tiles : int, tuple</span>
+<span class="sd">        Tiling of the plates (broadcasting rules for plates apply).</span>
+
+<span class="sd">    See also:</span>
+<span class="sd">    ---------</span>
+<span class="sd">    numpy.tile</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="c"># Make sure `tiles` is tuple (even if an integer is given)</span>
+    <span class="n">tiles</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ravel</span><span class="p">(</span><span class="n">tiles</span><span class="p">))</span>
+
+    <span class="k">class</span> <span class="nc">_Tile</span><span class="p">(</span><span class="n">Deterministic</span><span class="p">):</span>
+
+        <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+            <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">dims</span><span class="o">=</span><span class="n">X</span><span class="o">.</span><span class="n">dims</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    
+        <span class="k">def</span> <span class="nf">_plates_to_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+            <span class="n">plates</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">plates</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="n">tiles</span><span class="p">),</span> <span class="mi">0</span><span class="p">):</span>
+                <span class="n">plates</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">plates</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">//</span> <span class="n">tiles</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">plates</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">_plates_from_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+            <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">multiply_shapes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parents</span><span class="p">[</span><span class="n">index</span><span class="p">]</span><span class="o">.</span><span class="n">plates</span><span class="p">,</span>
+                                               <span class="n">tiles</span><span class="p">))</span>
+
+        <span class="k">def</span> <span class="nf">_compute_mask_to_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">mask</span><span class="p">):</span>
+            <span class="c"># Idea: Reshape the message array such that every other axis</span>
+            <span class="c"># will be summed and every other kept.</span>
+
+            <span class="c"># Make plates equal length</span>
+            <span class="n">plates</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_plates_to_parent</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+            <span class="n">shape_m</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">mask</span><span class="p">)</span>
+            <span class="p">(</span><span class="n">plates</span><span class="p">,</span> <span class="n">tiles_m</span><span class="p">,</span> <span class="n">shape_m</span><span class="p">)</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">make_equal_length</span><span class="p">(</span><span class="n">plates</span><span class="p">,</span> 
+                                                                 <span class="n">tiles</span><span class="p">,</span>
+                                                                 <span class="n">shape_m</span><span class="p">)</span>
+            
+            <span class="c"># Handle broadcasting rules for axes that have unit length in</span>
+            <span class="c"># the message (although the plate may be non-unit length). Also,</span>
+            <span class="c"># compute the corresponding plate_multiplier.</span>
+            <span class="n">plates</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">plates</span><span class="p">)</span>
+            <span class="n">tiles_m</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">tiles_m</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">plates</span><span class="p">)):</span>
+                <span class="k">if</span> <span class="n">shape_m</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">plates</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+                    <span class="n">tiles_m</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+                    
+            <span class="c"># Combine the tuples by picking every other from tiles_ind and</span>
+            <span class="c"># every other from shape</span>
+            <span class="n">shape</span> <span class="o">=</span> <span class="n">functools</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">:</span> <span class="n">x</span><span class="o">+</span><span class="n">y</span><span class="p">,</span>
+                                     <span class="nb">zip</span><span class="p">(</span><span class="n">tiles_m</span><span class="p">,</span> <span class="n">plates</span><span class="p">))</span>
+            <span class="c"># ..and reshape the array, that is, every other axis corresponds</span>
+            <span class="c"># to tiles and every other to plates/dimensions in parents</span>
+            <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">shape</span><span class="p">)</span>
+
+            <span class="c"># Sum over every other axis</span>
+            <span class="n">axes</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">shape</span><span class="p">),</span><span class="mi">2</span><span class="p">))</span>
+            <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axes</span><span class="p">)</span>
+
+            <span class="c"># Remove extra leading axes</span>
+            <span class="n">ndim_parent</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parents</span><span class="p">[</span><span class="n">index</span><span class="p">]</span><span class="o">.</span><span class="n">plates</span><span class="p">)</span>
+            <span class="n">mask</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">squeeze_to_dim</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">ndim_parent</span><span class="p">)</span>
+
+            <span class="k">return</span> <span class="n">mask</span>
+
+
+        <span class="k">def</span> <span class="nf">_compute_message_to_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">u_X</span><span class="p">):</span>
+            <span class="n">m</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">ind</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">m</span><span class="p">)):</span>
+
+                <span class="c"># Idea: Reshape the message array such that every other axis</span>
+                <span class="c"># will be summed and every other kept.</span>
+                
+                <span class="n">shape_ind</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_plates_to_parent</span><span class="p">(</span><span class="n">index</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">dims</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span>
+                <span class="c"># Add variable dimensions to tiles</span>
+                <span class="n">tiles_ind</span> <span class="o">=</span> <span class="n">tiles</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span><span class="p">,)</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dims</span><span class="p">[</span><span class="n">ind</span><span class="p">])</span>
+
+                <span class="c"># Make shape tuples equal length</span>
+                <span class="n">shape_m</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">m</span><span class="p">[</span><span class="n">ind</span><span class="p">])</span>
+                <span class="p">(</span><span class="n">tiles_ind</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">shape_m</span><span class="p">)</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">make_equal_length</span><span class="p">(</span><span class="n">tiles_ind</span><span class="p">,</span>
+                                                                      <span class="n">shape_ind</span><span class="p">,</span>
+                                                                      <span class="n">shape_m</span><span class="p">)</span>
+
+                <span class="c"># Handle broadcasting rules for axes that have unit length in</span>
+                <span class="c"># the message (although the plate may be non-unit length). Also,</span>
+                <span class="c"># compute the corresponding plate_multiplier.</span>
+                <span class="n">r</span> <span class="o">=</span> <span class="mi">1</span>
+                <span class="n">shape</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
+                <span class="n">tiles_ind</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">tiles_ind</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">shape</span><span class="p">)):</span>
+                    <span class="k">if</span> <span class="n">shape_m</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                        <span class="n">r</span> <span class="o">*=</span> <span class="n">tiles_ind</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+                        <span class="n">shape</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+                        <span class="n">tiles_ind</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+
+                <span class="c"># Combine the tuples by picking every other from tiles_ind and</span>
+                <span class="c"># every other from shape</span>
+                <span class="n">shape</span> <span class="o">=</span> <span class="n">functools</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">:</span> <span class="n">x</span><span class="o">+</span><span class="n">y</span><span class="p">,</span>
+                                         <span class="nb">zip</span><span class="p">(</span><span class="n">tiles_ind</span><span class="p">,</span> <span class="n">shape</span><span class="p">))</span>
+                <span class="c"># ..and reshape the array, that is, every other axis corresponds</span>
+                <span class="c"># to tiles and every other to plates/dimensions in parents</span>
+                <span class="n">m</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">m</span><span class="p">[</span><span class="n">ind</span><span class="p">],</span> <span class="n">shape</span><span class="p">)</span>
+
+                <span class="c"># Sum over every other axis</span>
+                <span class="n">axes</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">shape</span><span class="p">),</span><span class="mi">2</span><span class="p">))</span>
+                <span class="n">m</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span> <span class="o">=</span> <span class="n">r</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">m</span><span class="p">[</span><span class="n">ind</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="n">axes</span><span class="p">)</span>
+
+                <span class="c"># Remove extra leading axes</span>
+                <span class="n">ndim_parent</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parents</span><span class="p">[</span><span class="n">index</span><span class="p">]</span><span class="o">.</span><span class="n">get_shape</span><span class="p">(</span><span class="n">ind</span><span class="p">))</span>
+                <span class="n">m</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">squeeze_to_dim</span><span class="p">(</span><span class="n">m</span><span class="p">[</span><span class="n">ind</span><span class="p">],</span> <span class="n">ndim_parent</span><span class="p">)</span>
+            
+            <span class="k">return</span> <span class="n">m</span>
+
+        <span class="k">def</span> <span class="nf">_compute_moments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u_X</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Tile the plates of the parent&#39;s moments.</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="c"># Utilize broadcasting: If a tiled axis is unit length in u_X, there</span>
+            <span class="c"># is no need to tile it.</span>
+            <span class="n">u</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">ind</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">u_X</span><span class="p">)):</span>
+                <span class="n">ui</span> <span class="o">=</span> <span class="n">u_X</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span>
+                <span class="n">shape_u</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">ui</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">ndim</span><span class="p">(</span><span class="n">ui</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="c"># Add variable dimensions</span>
+                    <span class="n">tiles_ind</span> <span class="o">=</span> <span class="n">tiles</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span><span class="p">,)</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dims</span><span class="p">[</span><span class="n">ind</span><span class="p">])</span>
+                    <span class="c"># Utilize broadcasting: Do not tile leading empty axes</span>
+                    <span class="n">nd</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">tiles_ind</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">ndim</span><span class="p">(</span><span class="n">ui</span><span class="p">))</span>
+                    <span class="n">tiles_ind</span> <span class="o">=</span> <span class="n">tiles_ind</span><span class="p">[(</span><span class="o">-</span><span class="n">nd</span><span class="p">):]</span>
+                    <span class="c"># For simplicity, make tiles and shape equal length</span>
+                    <span class="p">(</span><span class="n">tiles_ind</span><span class="p">,</span> <span class="n">shape_u</span><span class="p">)</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">make_equal_length</span><span class="p">(</span><span class="n">tiles_ind</span><span class="p">,</span>
+                                                                   <span class="n">shape_u</span><span class="p">)</span>
+                    <span class="c"># Utilize broadcasting: Use tiling only if the parent&#39;s</span>
+                    <span class="c"># moment has non-unit axis length.</span>
+                    <span class="n">tiles_ind</span> <span class="o">=</span> <span class="p">[</span><span class="n">tile</span> <span class="k">if</span> <span class="n">sh</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="mi">1</span>
+                                 <span class="k">for</span> <span class="p">(</span><span class="n">tile</span><span class="p">,</span> <span class="n">sh</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">tiles_ind</span><span class="p">,</span> <span class="n">shape_u</span><span class="p">)]</span>
+                        
+                    <span class="c"># Tile</span>
+                    <span class="n">ui</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">ui</span><span class="p">,</span> <span class="n">tiles_ind</span><span class="p">)</span>
+                <span class="n">u</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ui</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">u</span>
+            
+    <span class="k">return</span> <span class="n">_Tile</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s">&quot;tile(</span><span class="si">%s</span><span class="s">, </span><span class="si">%s</span><span class="s">)&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">tiles</span><span class="p">))</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li><a href="../../../../../index.html">bayespy 0.1 documentation</a> &raquo;</li>
+          <li><a href="../../../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011-2013, Jaakko Luttinen.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+    </div>
+  </body>
+</html>

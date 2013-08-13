@@ -1,0 +1,305 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>bayespy.inference.vmp.nodes.stochastic &mdash; bayespy 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="../../../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../../../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="bayespy 0.1 documentation" href="../../../../../index.html" />
+    <link rel="up" title="Module code" href="../../../../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li><a href="../../../../../index.html">bayespy 0.1 documentation</a> &raquo;</li>
+          <li><a href="../../../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for bayespy.inference.vmp.nodes.stochastic</h1><div class="highlight"><pre>
+<span class="c">######################################################################</span>
+<span class="c"># Copyright (C) 2013 Jaakko Luttinen</span>
+<span class="c">#</span>
+<span class="c"># This file is licensed under Version 3.0 of the GNU General Public</span>
+<span class="c"># License. See LICENSE for a text of the license.</span>
+<span class="c">######################################################################</span>
+
+<span class="c">######################################################################</span>
+<span class="c"># This file is part of BayesPy.</span>
+<span class="c">#</span>
+<span class="c"># BayesPy is free software: you can redistribute it and/or modify it</span>
+<span class="c"># under the terms of the GNU General Public License version 3 as</span>
+<span class="c"># published by the Free Software Foundation.</span>
+<span class="c">#</span>
+<span class="c"># BayesPy is distributed in the hope that it will be useful, but</span>
+<span class="c"># WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="c"># MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU</span>
+<span class="c"># General Public License for more details.</span>
+<span class="c">#</span>
+<span class="c"># You should have received a copy of the GNU General Public License</span>
+<span class="c"># along with BayesPy.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
+<span class="c">######################################################################</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">bayespy.utils</span> <span class="kn">import</span> <span class="n">utils</span>
+
+<span class="kn">from</span> <span class="nn">.node</span> <span class="kn">import</span> <span class="n">Node</span>
+
+<div class="viewcode-block" id="Stochastic"><a class="viewcode-back" href="../../../../../generated/bayespy.inference.vmp.nodes.stochastic.Stochastic.html#bayespy.inference.vmp.nodes.stochastic.Stochastic">[docs]</a><span class="k">class</span> <span class="nc">Stochastic</span><span class="p">(</span><span class="n">Node</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Base class for nodes that are stochastic.</span>
+
+<span class="sd">    u</span>
+<span class="sd">    observed</span>
+
+<span class="sd">    Sub-classes must implement:</span>
+<span class="sd">       _compute_message_to_parent(parent, index, u_self, *u_parents)</span>
+<span class="sd">       _update_distribution_and_lowerbound(self, m, *u)</span>
+<span class="sd">       lowerbound(self)</span>
+<span class="sd">       _compute_dims</span>
+
+<span class="sd">    If you want to be able to observe the variable:</span>
+<span class="sd">       _compute_fixed_moments_and_f</span>
+
+<span class="sd">    Sub-classes may need to re-implement:</span>
+<span class="sd">    1. If they manipulate plates:</span>
+<span class="sd">       _compute_mask_to_parent(index, mask)</span>
+<span class="sd">       _plates_to_parent(self, index)</span>
+<span class="sd">       _plates_from_parent(self, index)</span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">initialize</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span>
+                         <span class="n">dims</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">compute_dims</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">),</span>
+                         <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="c"># Initialize moment array</span>
+        <span class="n">axes</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">plates</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="p">,)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">u</span> <span class="o">=</span> <span class="p">[</span><span class="n">utils</span><span class="o">.</span><span class="n">nans</span><span class="p">(</span><span class="n">axes</span><span class="o">+</span><span class="n">dim</span><span class="p">)</span> <span class="k">for</span> <span class="n">dim</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dims</span><span class="p">]</span>
+
+        <span class="c"># Not observed</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">observed</span> <span class="o">=</span> <span class="bp">False</span>
+
+        <span class="k">if</span> <span class="n">initialize</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">initialize_from_prior</span><span class="p">()</span>
+
+    <span class="c"># TODO: Write the initialization method.</span>
+
+<div class="viewcode-block" id="Stochastic.get_moments"><a class="viewcode-back" href="../../../../../generated/bayespy.inference.vmp.nodes.stochastic.Stochastic.get_moments.html#bayespy.inference.vmp.nodes.stochastic.Stochastic.get_moments">[docs]</a>    <span class="k">def</span> <span class="nf">get_moments</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span>
+
+    <span class="c">## @staticmethod</span>
+    <span class="c">## def _compute_message_to_parent(index, u_self, *u_parents):</span>
+    <span class="c">##     # Sub-classes should implement this</span>
+    <span class="c">##     raise NotImplementedError()</span>
+</div>
+    <span class="k">def</span> <span class="nf">_get_message_and_mask_to_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+        <span class="n">u_parents</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_message_from_parents</span><span class="p">(</span><span class="n">exclude</span><span class="o">=</span><span class="n">index</span><span class="p">)</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compute_message_to_parent</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parents</span><span class="p">[</span><span class="n">index</span><span class="p">],</span> <span class="n">index</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="p">,</span> <span class="o">*</span><span class="n">u_parents</span><span class="p">)</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compute_mask_to_parent</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mask</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">mask</span><span class="p">)</span>
+
+    <span class="c">## def get_mask(self):</span>
+    <span class="c">##     return self.mask</span>
+    
+    <span class="c">## def _get_message_mask(self):</span>
+    <span class="c">##     return self.mask</span>
+    
+    <span class="k">def</span> <span class="nf">_set_mask</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mask</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_or</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">observed</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">_set_moments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+        <span class="c"># Store the computed moments u but do not change moments for</span>
+        <span class="c"># observations, i.e., utilize the mask.</span>
+        <span class="k">for</span> <span class="n">ind</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">u</span><span class="p">)):</span>
+            <span class="c"># Add axes to the mask for the variable dimensions (mask</span>
+            <span class="c"># contains only axes for the plates).</span>
+            <span class="n">u_mask</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">add_trailing_axes</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ndims</span><span class="p">[</span><span class="n">ind</span><span class="p">])</span>
+
+            <span class="c"># Enlarge self.u[ind] as necessary so that it can store the</span>
+            <span class="c"># broadcasted result.</span>
+            <span class="n">sh</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">broadcasted_shape_from_arrays</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="p">[</span><span class="n">ind</span><span class="p">],</span> <span class="n">u</span><span class="p">[</span><span class="n">ind</span><span class="p">],</span> <span class="n">u_mask</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">repeat_to_shape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="p">[</span><span class="n">ind</span><span class="p">],</span> <span class="n">sh</span><span class="p">)</span>
+
+            <span class="c"># TODO/FIXME/BUG: The mask of observations is not used, observations</span>
+            <span class="c"># may be overwritten!!! ???</span>
+            
+            <span class="c"># Hah, this function is used to set the observations! The caller</span>
+            <span class="c"># should be careful what mask he uses! If you want to set only</span>
+            <span class="c"># latent variables, then use such a mask.</span>
+            
+            <span class="c"># Use mask to update only unobserved plates and keep the</span>
+            <span class="c"># observed as before</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">copyto</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="p">[</span><span class="n">ind</span><span class="p">],</span>
+                      <span class="n">u</span><span class="p">[</span><span class="n">ind</span><span class="p">],</span>
+                      <span class="n">where</span><span class="o">=</span><span class="n">u_mask</span><span class="p">)</span>
+
+            <span class="c"># Make sure u has the correct number of dimensions:</span>
+            <span class="c"># TODO/FIXME: Maybe it would be good to also check that u has a</span>
+            <span class="c"># shape that is a sub-shape of get_shape.</span>
+            <span class="n">shape</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_shape</span><span class="p">(</span><span class="n">ind</span><span class="p">)</span>
+            <span class="n">ndim</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
+            <span class="n">ndim_u</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ndim</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="p">[</span><span class="n">ind</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">ndim</span> <span class="o">&gt;</span> <span class="n">ndim_u</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">add_leading_axes</span><span class="p">(</span><span class="n">u</span><span class="p">[</span><span class="n">ind</span><span class="p">],</span> <span class="n">ndim</span> <span class="o">-</span> <span class="n">ndim_u</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">ndim</span> <span class="o">&lt;</span> <span class="n">ndim_u</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;The size of the variable&#39;s moments array &quot;</span>
+                                <span class="s">&quot;is larger than it should be based on the &quot;</span>
+                                <span class="s">&quot;plates and dimension information. Check &quot;</span>
+                                <span class="s">&quot;that you have provided plates properly.&quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Stochastic.update"><a class="viewcode-back" href="../../../../../generated/bayespy.inference.vmp.nodes.stochastic.Stochastic.update.html#bayespy.inference.vmp.nodes.stochastic.Stochastic.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">observed</span><span class="p">):</span>
+            <span class="n">u_parents</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_message_from_parents</span><span class="p">()</span>
+            <span class="n">m_children</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_message_from_children</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_update_distribution_and_lowerbound</span><span class="p">(</span><span class="n">m_children</span><span class="p">,</span> <span class="o">*</span><span class="n">u_parents</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="Stochastic.observe"><a class="viewcode-back" href="../../../../../generated/bayespy.inference.vmp.nodes.stochastic.Stochastic.observe.html#bayespy.inference.vmp.nodes.stochastic.Stochastic.observe">[docs]</a>    <span class="k">def</span> <span class="nf">observe</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Fix moments, compute f and propagate mask.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c"># Compute fixed moments</span>
+        <span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compute_fixed_moments_and_f</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">mask</span><span class="p">)</span>
+
+        <span class="c"># Check the dimensionality of the observations</span>
+        <span class="k">for</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">v</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">u</span><span class="p">):</span>
+            <span class="c"># This is what the dimensionality &quot;should&quot; be</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">plates</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">dims</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">s</span> <span class="o">!=</span> <span class="n">t</span><span class="p">:</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="s">&quot;Dimensionality of the observations incorrect.&quot;</span>
+                <span class="n">msg</span> <span class="o">+=</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">Shape of input: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+                <span class="n">msg</span> <span class="o">+=</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">Expected shape: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+                <span class="n">msg</span> <span class="o">+=</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">Check plates.&quot;</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+        <span class="c"># Set the moments</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_moments</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">mask</span><span class="p">)</span>
+        
+        <span class="c"># TODO/FIXME: Use the mask?</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">f</span> <span class="o">=</span> <span class="n">f</span>
+
+        <span class="c"># Observed nodes should not be ignored</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">observed</span> <span class="o">=</span> <span class="n">mask</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_update_mask</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="Stochastic.unobserve"><a class="viewcode-back" href="../../../../../generated/bayespy.inference.vmp.nodes.stochastic.Stochastic.unobserve.html#bayespy.inference.vmp.nodes.stochastic.Stochastic.unobserve">[docs]</a>    <span class="k">def</span> <span class="nf">unobserve</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c"># Update mask</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">observed</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_update_mask</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="Stochastic.lowerbound"><a class="viewcode-back" href="../../../../../generated/bayespy.inference.vmp.nodes.stochastic.Stochastic.lowerbound.html#bayespy.inference.vmp.nodes.stochastic.Stochastic.lowerbound">[docs]</a>    <span class="k">def</span> <span class="nf">lowerbound</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c"># Sub-class should implement this</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
+
+    <span class="c">## @staticmethod</span>
+    <span class="c">## def _compute_fixed_moments_and_f(x, mask=True):</span>
+    <span class="c">##     # Sub-classes should implement this</span>
+    <span class="c">##     raise NotImplementedError()</span>
+</div>
+    <span class="k">def</span> <span class="nf">_update_distribution_and_lowerbound</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">m_children</span><span class="p">,</span> <span class="o">*</span><span class="n">u_parents</span><span class="p">):</span>
+        <span class="c"># Sub-classes should implement this</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
+
+
+
+<div class="viewcode-block" id="Stochastic.save"><a class="viewcode-back" href="../../../../../generated/bayespy.inference.vmp.nodes.stochastic.Stochastic.save.html#bayespy.inference.vmp.nodes.stochastic.Stochastic.save">[docs]</a>    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Save the state of the node into a HDF5 file.</span>
+
+<span class="sd">        group can be the root</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c">## if name is None:</span>
+        <span class="c">##     name = self.name</span>
+        <span class="c">## subgroup = group.create_group(name)</span>
+        
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="p">)):</span>
+            <span class="n">utils</span><span class="o">.</span><span class="n">write_to_hdf5</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="s">&#39;u</span><span class="si">%d</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">i</span><span class="p">)</span>
+        <span class="n">utils</span><span class="o">.</span><span class="n">write_to_hdf5</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">observed</span><span class="p">,</span> <span class="s">&#39;observed&#39;</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="Stochastic.load"><a class="viewcode-back" href="../../../../../generated/bayespy.inference.vmp.nodes.stochastic.Stochastic.load.html#bayespy.inference.vmp.nodes.stochastic.Stochastic.load">[docs]</a>    <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Load the state of the node from a HDF5 file.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c"># TODO/FIXME: Check that the shapes are correct!</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="p">)):</span>
+            <span class="n">ui</span> <span class="o">=</span> <span class="n">group</span><span class="p">[</span><span class="s">&#39;u</span><span class="si">%d</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">i</span><span class="p">][</span><span class="o">...</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">ui</span>
+
+        <span class="n">old_observed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">observed</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">observed</span> <span class="o">=</span> <span class="n">group</span><span class="p">[</span><span class="s">&#39;observed&#39;</span><span class="p">][</span><span class="o">...</span><span class="p">]</span>
+        <span class="c"># Update masks if necessary</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">old_observed</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">observed</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_update_mask</span><span class="p">()</span>
+</pre></div></div></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li><a href="../../../../../index.html">bayespy 0.1 documentation</a> &raquo;</li>
+          <li><a href="../../../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011-2013, Jaakko Luttinen.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+    </div>
+  </body>
+</html>

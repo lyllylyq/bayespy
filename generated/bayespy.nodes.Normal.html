@@ -1,0 +1,212 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>bayespy.nodes.Normal &mdash; bayespy 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="bayespy 0.1 documentation" href="../index.html" />
+    <link rel="up" title="API" href="../api.html" />
+    <link rel="next" title="bayespy.nodes.Normal.add_plate_axis" href="bayespy.nodes.Normal.add_plate_axis.html" />
+    <link rel="prev" title="bayespy.inference.vmp.nodes.constant.Constant" href="bayespy.inference.vmp.nodes.constant.Constant.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="bayespy.nodes.Normal.add_plate_axis.html" title="bayespy.nodes.Normal.add_plate_axis"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="bayespy.inference.vmp.nodes.constant.Constant.html" title="bayespy.inference.vmp.nodes.constant.Constant"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">bayespy 0.1 documentation</a> &raquo;</li>
+          <li><a href="../api.html" accesskey="U">API</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="bayespy-nodes-normal">
+<h1>bayespy.nodes.Normal<a class="headerlink" href="#bayespy-nodes-normal" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="bayespy.nodes.Normal">
+<em class="property">class </em><tt class="descclassname">bayespy.nodes.</tt><tt class="descname">Normal</tt><big>(</big><em>mu</em>, <em>tau</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#bayespy.nodes.Normal" title="Permalink to this definition">¶</a></dt>
+<dd><p class="rubric">Methods</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="bayespy.nodes.Normal.add_plate_axis.html#bayespy.nodes.Normal.add_plate_axis" title="bayespy.nodes.Normal.add_plate_axis"><tt class="xref py py-obj docutils literal"><span class="pre">add_plate_axis</span></tt></a>(to_plate)</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="bayespy.nodes.Normal.compute_dims.html#bayespy.nodes.Normal.compute_dims" title="bayespy.nodes.Normal.compute_dims"><tt class="xref py py-obj docutils literal"><span class="pre">compute_dims</span></tt></a>(*parents)</td>
+<td>Compute the dimensions of phi/u.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="bayespy.nodes.Normal.compute_dims_from_values.html#bayespy.nodes.Normal.compute_dims_from_values" title="bayespy.nodes.Normal.compute_dims_from_values"><tt class="xref py py-obj docutils literal"><span class="pre">compute_dims_from_values</span></tt></a>(x)</td>
+<td>Compute the dimensions of phi and u.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="bayespy.nodes.Normal.compute_fixed_moments.html#bayespy.nodes.Normal.compute_fixed_moments" title="bayespy.nodes.Normal.compute_fixed_moments"><tt class="xref py py-obj docutils literal"><span class="pre">compute_fixed_moments</span></tt></a>(x)</td>
+<td>Compute moments u(x) for given x.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="bayespy.nodes.Normal.get_mask.html#bayespy.nodes.Normal.get_mask" title="bayespy.nodes.Normal.get_mask"><tt class="xref py py-obj docutils literal"><span class="pre">get_mask</span></tt></a>()</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="bayespy.nodes.Normal.get_moments.html#bayespy.nodes.Normal.get_moments" title="bayespy.nodes.Normal.get_moments"><tt class="xref py py-obj docutils literal"><span class="pre">get_moments</span></tt></a>()</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="bayespy.nodes.Normal.get_shape.html#bayespy.nodes.Normal.get_shape" title="bayespy.nodes.Normal.get_shape"><tt class="xref py py-obj docutils literal"><span class="pre">get_shape</span></tt></a>(ind)</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="bayespy.nodes.Normal.initialize_from_parameters.html#bayespy.nodes.Normal.initialize_from_parameters" title="bayespy.nodes.Normal.initialize_from_parameters"><tt class="xref py py-obj docutils literal"><span class="pre">initialize_from_parameters</span></tt></a>(*args)</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="bayespy.nodes.Normal.initialize_from_prior.html#bayespy.nodes.Normal.initialize_from_prior" title="bayespy.nodes.Normal.initialize_from_prior"><tt class="xref py py-obj docutils literal"><span class="pre">initialize_from_prior</span></tt></a>()</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="bayespy.nodes.Normal.initialize_from_random.html#bayespy.nodes.Normal.initialize_from_random" title="bayespy.nodes.Normal.initialize_from_random"><tt class="xref py py-obj docutils literal"><span class="pre">initialize_from_random</span></tt></a>()</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="bayespy.nodes.Normal.initialize_from_value.html#bayespy.nodes.Normal.initialize_from_value" title="bayespy.nodes.Normal.initialize_from_value"><tt class="xref py py-obj docutils literal"><span class="pre">initialize_from_value</span></tt></a>(x)</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="bayespy.nodes.Normal.load.html#bayespy.nodes.Normal.load" title="bayespy.nodes.Normal.load"><tt class="xref py py-obj docutils literal"><span class="pre">load</span></tt></a>(group)</td>
+<td>Load the state of the node from a HDF5 file.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="bayespy.nodes.Normal.lower_bound_contribution.html#bayespy.nodes.Normal.lower_bound_contribution" title="bayespy.nodes.Normal.lower_bound_contribution"><tt class="xref py py-obj docutils literal"><span class="pre">lower_bound_contribution</span></tt></a>([gradient])</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="bayespy.nodes.Normal.lowerbound.html#bayespy.nodes.Normal.lowerbound" title="bayespy.nodes.Normal.lowerbound"><tt class="xref py py-obj docutils literal"><span class="pre">lowerbound</span></tt></a>()</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="bayespy.nodes.Normal.move_plates.html#bayespy.nodes.Normal.move_plates" title="bayespy.nodes.Normal.move_plates"><tt class="xref py py-obj docutils literal"><span class="pre">move_plates</span></tt></a>(from_plate,&nbsp;to_plate)</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="bayespy.nodes.Normal.observe.html#bayespy.nodes.Normal.observe" title="bayespy.nodes.Normal.observe"><tt class="xref py py-obj docutils literal"><span class="pre">observe</span></tt></a>(x[,&nbsp;mask])</td>
+<td>Fix moments, compute f and propagate mask.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="bayespy.nodes.Normal.plot.html#bayespy.nodes.Normal.plot" title="bayespy.nodes.Normal.plot"><tt class="xref py py-obj docutils literal"><span class="pre">plot</span></tt></a>()</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="bayespy.nodes.Normal.predict.html#bayespy.nodes.Normal.predict" title="bayespy.nodes.Normal.predict"><tt class="xref py py-obj docutils literal"><span class="pre">predict</span></tt></a>()</td>
+<td>Compute posterior predictive distribution.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="bayespy.nodes.Normal.save.html#bayespy.nodes.Normal.save" title="bayespy.nodes.Normal.save"><tt class="xref py py-obj docutils literal"><span class="pre">save</span></tt></a>(group)</td>
+<td>Save the state of the node into a HDF5 file.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="bayespy.nodes.Normal.show.html#bayespy.nodes.Normal.show" title="bayespy.nodes.Normal.show"><tt class="xref py py-obj docutils literal"><span class="pre">show</span></tt></a>([parameters,&nbsp;mean,&nbsp;mode,&nbsp;median])</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="bayespy.nodes.Normal.unobserve.html#bayespy.nodes.Normal.unobserve" title="bayespy.nodes.Normal.unobserve"><tt class="xref py py-obj docutils literal"><span class="pre">unobserve</span></tt></a>()</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="bayespy.nodes.Normal.update.html#bayespy.nodes.Normal.update" title="bayespy.nodes.Normal.update"><tt class="xref py py-obj docutils literal"><span class="pre">update</span></tt></a>()</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Attributes</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="bayespy.nodes.Normal.ndim_observations.html#bayespy.nodes.Normal.ndim_observations" title="bayespy.nodes.Normal.ndim_observations"><tt class="xref py py-obj docutils literal"><span class="pre">ndim_observations</span></tt></a></td>
+<td>int(x=0) -&gt; integer</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="bayespy.nodes.Normal.ndims.html#bayespy.nodes.Normal.ndims" title="bayespy.nodes.Normal.ndims"><tt class="xref py py-obj docutils literal"><span class="pre">ndims</span></tt></a></td>
+<td>tuple() -&gt; empty tuple</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="bayespy.nodes.Normal.ndims_parents.html#bayespy.nodes.Normal.ndims_parents" title="bayespy.nodes.Normal.ndims_parents"><tt class="xref py py-obj docutils literal"><span class="pre">ndims_parents</span></tt></a></td>
+<td>list() -&gt; new empty list</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="bayespy.inference.vmp.nodes.constant.Constant.html"
+                        title="previous chapter">bayespy.inference.vmp.nodes.constant.Constant</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="bayespy.nodes.Normal.add_plate_axis.html"
+                        title="next chapter">bayespy.nodes.Normal.add_plate_axis</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/generated/bayespy.nodes.Normal.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="bayespy.nodes.Normal.add_plate_axis.html" title="bayespy.nodes.Normal.add_plate_axis"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="bayespy.inference.vmp.nodes.constant.Constant.html" title="bayespy.inference.vmp.nodes.constant.Constant"
+             >previous</a> |</li>
+        <li><a href="../index.html">bayespy 0.1 documentation</a> &raquo;</li>
+          <li><a href="../api.html" >API</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011-2013, Jaakko Luttinen.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+    </div>
+  </body>
+</html>

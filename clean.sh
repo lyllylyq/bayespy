@@ -5,3 +5,5 @@ rm -r _*
 rm *.inv
 rm -r vmp
 rm *.js
+rm -r generated
+

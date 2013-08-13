@@ -1,0 +1,133 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>bayespy.nodes.GaussianMarkovChain.compute_dims &mdash; bayespy 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="bayespy 0.1 documentation" href="../index.html" />
+    <link rel="up" title="bayespy.nodes.GaussianMarkovChain" href="bayespy.nodes.GaussianMarkovChain.html" />
+    <link rel="next" title="bayespy.nodes.GaussianMarkovChain.compute_dims_from_values" href="bayespy.nodes.GaussianMarkovChain.compute_dims_from_values.html" />
+    <link rel="prev" title="bayespy.nodes.GaussianMarkovChain.as_gaussian" href="bayespy.nodes.GaussianMarkovChain.as_gaussian.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="bayespy.nodes.GaussianMarkovChain.compute_dims_from_values.html" title="bayespy.nodes.GaussianMarkovChain.compute_dims_from_values"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="bayespy.nodes.GaussianMarkovChain.as_gaussian.html" title="bayespy.nodes.GaussianMarkovChain.as_gaussian"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">bayespy 0.1 documentation</a> &raquo;</li>
+          <li><a href="../api.html" >API</a> &raquo;</li>
+          <li><a href="bayespy.nodes.GaussianMarkovChain.html" accesskey="U">bayespy.nodes.GaussianMarkovChain</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="bayespy-nodes-gaussianmarkovchain-compute-dims">
+<h1>bayespy.nodes.GaussianMarkovChain.compute_dims<a class="headerlink" href="#bayespy-nodes-gaussianmarkovchain-compute-dims" title="Permalink to this headline">¶</a></h1>
+<dl class="staticmethod">
+<dt id="bayespy.nodes.GaussianMarkovChain.compute_dims">
+<em class="property">static </em><tt class="descclassname">GaussianMarkovChain.</tt><tt class="descname">compute_dims</tt><big>(</big><em>mu</em>, <em>Lambda</em>, <em>A</em>, <em>v</em>, <em>N</em><big>)</big><a class="headerlink" href="#bayespy.nodes.GaussianMarkovChain.compute_dims" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the dimensions of phi and u.</p>
+<p>The plates and dimensions of the parents should be:
+mu:     (...)                    and D-dimensional
+Lambda: (...)                    and D-dimensional
+A:      (...,1,D) or (...,N-1,D) and D-dimensional
+v:      (...,1,D) or (...,N-1,D) and 0-dimensional
+N:      ()                       and 0-dimensional (dummy parent)</p>
+<p>Check that the dimensionalities of the parents are proper.
+For instance, A should be a collection of DxD matrices, thus
+the dimensionality and the last plate should both equal D.
+Similarly, <cite>v</cite> should be a collection of diagonal innovation
+matrix elements, thus the last plate should equal D.</p>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="bayespy.nodes.GaussianMarkovChain.as_gaussian.html"
+                        title="previous chapter">bayespy.nodes.GaussianMarkovChain.as_gaussian</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="bayespy.nodes.GaussianMarkovChain.compute_dims_from_values.html"
+                        title="next chapter">bayespy.nodes.GaussianMarkovChain.compute_dims_from_values</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/generated/bayespy.nodes.GaussianMarkovChain.compute_dims.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="bayespy.nodes.GaussianMarkovChain.compute_dims_from_values.html" title="bayespy.nodes.GaussianMarkovChain.compute_dims_from_values"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="bayespy.nodes.GaussianMarkovChain.as_gaussian.html" title="bayespy.nodes.GaussianMarkovChain.as_gaussian"
+             >previous</a> |</li>
+        <li><a href="../index.html">bayespy 0.1 documentation</a> &raquo;</li>
+          <li><a href="../api.html" >API</a> &raquo;</li>
+          <li><a href="bayespy.nodes.GaussianMarkovChain.html" >bayespy.nodes.GaussianMarkovChain</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011-2013, Jaakko Luttinen.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+    </div>
+  </body>
+</html>

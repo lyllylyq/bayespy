@@ -1,0 +1,503 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>bayespy.inference.vmp.nodes.gaussian &mdash; bayespy 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="../../../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../../../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="bayespy 0.1 documentation" href="../../../../../index.html" />
+    <link rel="up" title="Module code" href="../../../../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li><a href="../../../../../index.html">bayespy 0.1 documentation</a> &raquo;</li>
+          <li><a href="../../../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for bayespy.inference.vmp.nodes.gaussian</h1><div class="highlight"><pre>
+<span class="c">######################################################################</span>
+<span class="c"># Copyright (C) 2011,2012 Jaakko Luttinen</span>
+<span class="c">#</span>
+<span class="c"># This file is licensed under Version 3.0 of the GNU General Public</span>
+<span class="c"># License. See LICENSE for a text of the license.</span>
+<span class="c">######################################################################</span>
+
+<span class="c">######################################################################</span>
+<span class="c"># This file is part of BayesPy.</span>
+<span class="c">#</span>
+<span class="c"># BayesPy is free software: you can redistribute it and/or modify it</span>
+<span class="c"># under the terms of the GNU General Public License version 3 as</span>
+<span class="c"># published by the Free Software Foundation.</span>
+<span class="c">#</span>
+<span class="c"># Bayespy is distributed in the hope that it will be useful, but</span>
+<span class="c"># WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="c"># MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU</span>
+<span class="c"># General Public License for more details.</span>
+<span class="c">#</span>
+<span class="c"># You should have received a copy of the GNU General Public License</span>
+<span class="c"># along with BayesPy.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
+<span class="c">######################################################################</span>
+
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">bayespy</span> <span class="kn">import</span> <span class="n">utils</span>
+<span class="kn">from</span> <span class="nn">bayespy.utils.linalg</span> <span class="kn">import</span> <span class="n">dot</span><span class="p">,</span> <span class="n">mvdot</span>
+
+<span class="kn">from</span> <span class="nn">.expfamily</span> <span class="kn">import</span> <span class="n">ExponentialFamily</span>
+<span class="kn">from</span> <span class="nn">.constant</span> <span class="kn">import</span> <span class="n">Constant</span>
+<span class="kn">from</span> <span class="nn">.wishart</span> <span class="kn">import</span> <span class="n">Wishart</span>
+
+<div class="viewcode-block" id="Gaussian"><a class="viewcode-back" href="../../../../../generated/bayespy.inference.vmp.nodes.gaussian.Gaussian.html#bayespy.inference.vmp.nodes.gaussian.Gaussian">[docs]</a><span class="k">class</span> <span class="nc">Gaussian</span><span class="p">(</span><span class="n">ExponentialFamily</span><span class="p">):</span>
+    <span class="sd">r&quot;&quot;&quot;</span>
+<span class="sd">    VMP node for Gaussian variable.</span>
+
+<span class="sd">    The node represents a :math:`D`-dimensional vector from the</span>
+<span class="sd">    Gaussian distribution:</span>
+<span class="sd">    </span>
+<span class="sd">    .. math::</span>
+
+<span class="sd">       \mathbf{x} &amp;\sim \mathcal{N}(\boldsymbol{\mu},</span>
+<span class="sd">       \mathbf{\Lambda}),</span>
+
+<span class="sd">    where :math:`\boldsymbol{\mu}` is the mean vector and</span>
+<span class="sd">    :math:`\mathbf{\Lambda}` is the precision matrix (i.e., inverse of</span>
+<span class="sd">    the covariance matrix).</span>
+<span class="sd">    </span>
+<span class="sd">    .. math::</span>
+
+<span class="sd">       \mathbf{x},\boldsymbol{\mu} \in \mathbb{R}^{D}, </span>
+<span class="sd">       \quad \mathbf{\Lambda} \in \mathbb{R}^{D \times D},</span>
+<span class="sd">       \quad \mathbf{\Lambda} \text{ symmetric positive definite}</span>
+
+<span class="sd">    Plates!</span>
+
+<span class="sd">    Parent nodes? Child nodes?</span>
+
+<span class="sd">    See also</span>
+<span class="sd">    --------</span>
+<span class="sd">    bayespy.inference.vmp.nodes.wishart.Wishart</span>
+<span class="sd">    inference.vmp.nodes.wishart.Wishart</span>
+<span class="sd">    vmp.nodes.wishart.Wishart</span>
+<span class="sd">    nodes.wishart.Wishart</span>
+<span class="sd">    wishart.Wishart</span>
+<span class="sd">    Wishart</span>
+<span class="sd">    </span>
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+
+<span class="sd">    Message passing equations:</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">       \mathbf{x} &amp;\sim \mathcal{N}(\boldsymbol{\mu}, \mathbf{\Lambda}),</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">       \mathbf{x},\boldsymbol{\mu} \in \mathbb{R}^{D}, </span>
+<span class="sd">       \quad \mathbf{\Lambda} \in \mathbb{R}^{D \times D},</span>
+<span class="sd">       \quad \mathbf{\Lambda} \text{ symmetric positive definite}</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">       \log\mathcal{N}( \mathbf{x} | \boldsymbol{\mu}, \mathbf{\Lambda} )</span>
+<span class="sd">       &amp;= </span>
+<span class="sd">       - \frac{1}{2} \mathbf{x}^{\mathrm{T}} \mathbf{\Lambda} \mathbf{x}</span>
+<span class="sd">       + \mathbf{x}^{\mathrm{T}} \mathbf{\Lambda} \boldsymbol{\mu}</span>
+<span class="sd">       - \frac{1}{2} \boldsymbol{\mu}^{\mathrm{T}} \mathbf{\Lambda}</span>
+<span class="sd">         \boldsymbol{\mu}</span>
+<span class="sd">       + \frac{1}{2} \log |\mathbf{\Lambda}|</span>
+<span class="sd">       - \frac{D}{2} \log (2\pi)</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">       \mathbf{u} (\mathbf{x})</span>
+<span class="sd">       &amp;=</span>
+<span class="sd">       \left[ \begin{matrix}</span>
+<span class="sd">         \mathbf{x}</span>
+<span class="sd">         \\</span>
+<span class="sd">         \mathbf{xx}^{\mathrm{T}}</span>
+<span class="sd">       \end{matrix} \right]</span>
+<span class="sd">       \\</span>
+<span class="sd">       \boldsymbol{\phi} (\boldsymbol{\mu}, \mathbf{\Lambda})</span>
+<span class="sd">       &amp;=</span>
+<span class="sd">       \left[ \begin{matrix}</span>
+<span class="sd">         \mathbf{\Lambda} \boldsymbol{\mu} </span>
+<span class="sd">         \\</span>
+<span class="sd">         - \frac{1}{2} \mathbf{\Lambda}</span>
+<span class="sd">       \end{matrix} \right]</span>
+<span class="sd">       \\</span>
+<span class="sd">       \boldsymbol{\phi}_{\boldsymbol{\mu}} (\mathbf{x}, \mathbf{\Lambda})</span>
+<span class="sd">       &amp;=</span>
+<span class="sd">       \left[ \begin{matrix}</span>
+<span class="sd">         \mathbf{\Lambda} \mathbf{x} </span>
+<span class="sd">         \\</span>
+<span class="sd">         - \frac{1}{2} \mathbf{\Lambda}</span>
+<span class="sd">       \end{matrix} \right]</span>
+<span class="sd">       \\</span>
+<span class="sd">       \boldsymbol{\phi}_{\mathbf{\Lambda}} (\mathbf{x}, \boldsymbol{\mu})</span>
+<span class="sd">       &amp;=</span>
+<span class="sd">       \left[ \begin{matrix}</span>
+<span class="sd">         - \frac{1}{2} \mathbf{xx}^{\mathrm{T}}</span>
+<span class="sd">         + \frac{1}{2} \mathbf{x}\boldsymbol{\mu}^{\mathrm{T}}</span>
+<span class="sd">         + \frac{1}{2} \boldsymbol{\mu}\mathbf{x}^{\mathrm{T}}</span>
+<span class="sd">         - \frac{1}{2} \boldsymbol{\mu\mu}^{\mathrm{T}}</span>
+<span class="sd">         \\</span>
+<span class="sd">         \frac{1}{2}</span>
+<span class="sd">       \end{matrix} \right]</span>
+<span class="sd">       \\</span>
+<span class="sd">       g (\boldsymbol{\mu}, \mathbf{\Lambda})</span>
+<span class="sd">       &amp;=</span>
+<span class="sd">       - \frac{1}{2} \operatorname{tr}(\boldsymbol{\mu\mu}^{\mathrm{T}}</span>
+<span class="sd">                                       \mathbf{\Lambda} )</span>
+<span class="sd">       + \frac{1}{2} \log |\mathbf{\Lambda}|</span>
+<span class="sd">       \\</span>
+<span class="sd">       g_{\boldsymbol{\phi}} (\boldsymbol{\phi})</span>
+<span class="sd">       &amp;=</span>
+<span class="sd">       \frac{1}{4} \boldsymbol{\phi}^{\mathrm{T}}_1 \boldsymbol{\phi}^{-1}_2 </span>
+<span class="sd">       \boldsymbol{\phi}_1</span>
+<span class="sd">       + \frac{1}{2} \log | -2 \boldsymbol{\phi}_2 |</span>
+<span class="sd">       \\</span>
+<span class="sd">       f(\mathbf{x})</span>
+<span class="sd">       &amp;= - \frac{D}{2} \log(2\pi)</span>
+<span class="sd">       \\</span>
+<span class="sd">       \overline{\mathbf{u}}  (\boldsymbol{\phi})</span>
+<span class="sd">       &amp;=</span>
+<span class="sd">       \left[ \begin{matrix}</span>
+<span class="sd">         - \frac{1}{2} \boldsymbol{\phi}^{-1}_2 \boldsymbol{\phi}_1</span>
+<span class="sd">         \\</span>
+<span class="sd">         \frac{1}{4} \boldsymbol{\phi}^{-1}_2 \boldsymbol{\phi}_1</span>
+<span class="sd">         \boldsymbol{\phi}^{\mathrm{T}}_1 \boldsymbol{\phi}^{-1}_2 </span>
+<span class="sd">         - \frac{1}{2} \boldsymbol{\phi}^{-1}_2</span>
+<span class="sd">       \end{matrix} \right]</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">ndims</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="n">ndims_parents</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">)]</span>
+    <span class="c"># Observations are vectors (1-D):</span>
+    <span class="n">ndim_observations</span> <span class="o">=</span> <span class="mi">1</span>
+
+    
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">Lambda</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">parameter_distributions</span> <span class="o">=</span> <span class="p">(</span><span class="n">Gaussian</span><span class="p">,</span> <span class="n">Wishart</span><span class="p">)</span>
+        
+        <span class="c"># Check for constant mu</span>
+        <span class="k">if</span> <span class="n">utils</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">is_numeric</span><span class="p">(</span><span class="n">mu</span><span class="p">):</span>
+            <span class="n">mu</span> <span class="o">=</span> <span class="n">Constant</span><span class="p">(</span><span class="n">Gaussian</span><span class="p">)(</span><span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">mu</span><span class="p">))</span>
+
+        <span class="c"># Check for constant Lambda</span>
+        <span class="k">if</span> <span class="n">utils</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">is_numeric</span><span class="p">(</span><span class="n">Lambda</span><span class="p">):</span>
+            <span class="n">Lambda</span> <span class="o">=</span> <span class="n">Constant</span><span class="p">(</span><span class="n">Wishart</span><span class="p">)(</span><span class="n">np</span><span class="o">.</span><span class="n">atleast_2d</span><span class="p">(</span><span class="n">Lambda</span><span class="p">))</span>
+
+        <span class="c">## # You could check whether the dimensions of mu and Lambda</span>
+        <span class="c">## # match (and Lambda is square)</span>
+        <span class="c">## if Lambda.dims[0][-1] != mu.dims[0][-1]:</span>
+        <span class="c">##     raise Exception(&quot;Dimensionalities of mu and Lambda do not match.&quot;)</span>
+
+        <span class="c"># Construct</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span> <span class="n">Lambda</span><span class="p">,</span>
+                         <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="Gaussian.compute_fixed_moments"><a class="viewcode-back" href="../../../../../generated/bayespy.inference.vmp.nodes.gaussian.Gaussian.compute_fixed_moments.html#bayespy.inference.vmp.nodes.gaussian.Gaussian.compute_fixed_moments">[docs]</a>    <span class="k">def</span> <span class="nf">compute_fixed_moments</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Compute moments for fixed x. &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="n">utils</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">m_outer</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">x</span><span class="p">)]</span>
+</div>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_compute_phi_from_parents</span><span class="p">(</span><span class="o">*</span><span class="n">u_parents</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">utils</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">m_dot</span><span class="p">(</span><span class="n">u_parents</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">u_parents</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]),</span>
+                <span class="o">-</span><span class="mf">0.5</span> <span class="o">*</span> <span class="n">u_parents</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]]</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_compute_cgf_from_parents</span><span class="p">(</span><span class="n">u_mu</span><span class="p">,</span> <span class="n">u_Lambda</span><span class="p">):</span>
+        <span class="n">mu</span> <span class="o">=</span> <span class="n">u_mu</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">mumu</span> <span class="o">=</span> <span class="n">u_mu</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">Lambda</span> <span class="o">=</span> <span class="n">u_Lambda</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">logdet_Lambda</span> <span class="o">=</span> <span class="n">u_Lambda</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">g</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mf">0.5</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s">&#39;...ij,...ij&#39;</span><span class="p">,</span><span class="n">mumu</span><span class="p">,</span><span class="n">Lambda</span><span class="p">)</span>
+             <span class="o">+</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">logdet_Lambda</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">g</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_compute_moments_and_cgf</span><span class="p">(</span><span class="n">phi</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+        <span class="c"># TODO: Compute -2*phi[1] and simplify the formulas</span>
+        <span class="n">L</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">m_chol</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="o">*</span><span class="n">phi</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">k</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">phi</span><span class="p">[</span><span class="mi">0</span><span class="p">])[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="c"># Moments</span>
+        <span class="n">u0</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">m_chol_solve</span><span class="p">(</span><span class="n">L</span><span class="p">,</span> <span class="n">phi</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">u1</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">m_outer</span><span class="p">(</span><span class="n">u0</span><span class="p">,</span> <span class="n">u0</span><span class="p">)</span> <span class="o">+</span> <span class="n">utils</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">m_chol_inv</span><span class="p">(</span><span class="n">L</span><span class="p">)</span>
+        <span class="n">u</span> <span class="o">=</span> <span class="p">[</span><span class="n">u0</span><span class="p">,</span> <span class="n">u1</span><span class="p">]</span>
+        <span class="c"># G</span>
+        <span class="n">g</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mf">0.5</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s">&#39;...i,...i&#39;</span><span class="p">,</span> <span class="n">u</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">phi</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+             <span class="o">+</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">utils</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">m_chol_logdet</span><span class="p">(</span><span class="n">L</span><span class="p">))</span>
+             <span class="c">#+ 0.5 * np.log(2) * self.dims[0][0])</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">g</span><span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_compute_fixed_moments_and_f</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Compute u(x) and f(x) for given x. &quot;&quot;&quot;</span>
+        <span class="n">k</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">x</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">u</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="n">utils</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">m_outer</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">x</span><span class="p">)]</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="o">-</span><span class="n">k</span><span class="o">/</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_compute_message_to_parent</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="o">*</span><span class="n">u_parents</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; . &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">index</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[</span><span class="n">utils</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">m_dot</span><span class="p">(</span><span class="n">u_parents</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">u</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
+                    <span class="o">-</span><span class="mf">0.5</span> <span class="o">*</span> <span class="n">u_parents</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]]</span>
+        <span class="k">elif</span> <span class="n">index</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">xmu</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">m_outer</span><span class="p">(</span><span class="n">u</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">u_parents</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+            <span class="k">return</span> <span class="p">[</span><span class="o">-</span><span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">u</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">xmu</span> <span class="o">-</span> <span class="n">xmu</span><span class="o">.</span><span class="n">swapaxes</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="n">u_parents</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]),</span>
+                    <span class="mf">0.5</span><span class="p">]</span>
+
+    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="Gaussian.compute_dims"><a class="viewcode-back" href="../../../../../generated/bayespy.inference.vmp.nodes.gaussian.Gaussian.compute_dims.html#bayespy.inference.vmp.nodes.gaussian.Gaussian.compute_dims">[docs]</a>    <span class="k">def</span> <span class="nf">compute_dims</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span> <span class="n">Lambda</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute the dimensions of phi and u using the parent nodes.</span>
+
+<span class="sd">        Also, check that the dimensionalities of the parents are</span>
+<span class="sd">        consistent with each other.</span>
+
+<span class="sd">        Parameters:</span>
+<span class="sd">        -----------</span>
+<span class="sd">        mu : Node</span>
+<span class="sd">            A VB node with ( (D,), (D,D) ) dimensional Gaussian</span>
+<span class="sd">            output.</span>
+<span class="sd">        Lambda: Node</span>
+<span class="sd">            A VB node with ( (D,D), () ) dimensional Wishart output.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">D</span> <span class="o">=</span> <span class="n">mu</span><span class="o">.</span><span class="n">dims</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">mu</span><span class="o">.</span><span class="n">dims</span> <span class="o">!=</span> <span class="p">(</span> <span class="p">(</span><span class="n">D</span><span class="p">,),</span> <span class="p">(</span><span class="n">D</span><span class="p">,</span><span class="n">D</span><span class="p">)</span> <span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;First parent has wrong dimensionality&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">Lambda</span><span class="o">.</span><span class="n">dims</span> <span class="o">!=</span> <span class="p">(</span> <span class="p">(</span><span class="n">D</span><span class="p">,</span><span class="n">D</span><span class="p">),</span> <span class="p">()</span> <span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;Second parent has wrong dimensionality&quot;</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="p">(</span> <span class="p">(</span><span class="n">D</span><span class="p">,),</span> <span class="p">(</span><span class="n">D</span><span class="p">,</span><span class="n">D</span><span class="p">)</span> <span class="p">)</span>
+</div>
+    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="Gaussian.compute_dims_from_values"><a class="viewcode-back" href="../../../../../generated/bayespy.inference.vmp.nodes.gaussian.Gaussian.compute_dims_from_values.html#bayespy.inference.vmp.nodes.gaussian.Gaussian.compute_dims_from_values">[docs]</a>    <span class="k">def</span> <span class="nf">compute_dims_from_values</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute the dimensions of phi and u from a value.</span>
+
+<span class="sd">        The last axis tells the dimensionality, the other axes are</span>
+<span class="sd">        plates.</span>
+
+<span class="sd">        Parameters:</span>
+<span class="sd">        -----------</span>
+<span class="sd">        x : ndarray</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">ndim</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;The value must be at least 1-D array.&quot;</span><span class="p">)</span>
+        <span class="n">D</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">x</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">return</span> <span class="p">(</span> <span class="p">(</span><span class="n">D</span><span class="p">,),</span> <span class="p">(</span><span class="n">D</span><span class="p">,</span><span class="n">D</span><span class="p">)</span> <span class="p">)</span>
+</div>
+<div class="viewcode-block" id="Gaussian.get_shape_of_value"><a class="viewcode-back" href="../../../../../generated/bayespy.inference.vmp.nodes.gaussian.Gaussian.get_shape_of_value.html#bayespy.inference.vmp.nodes.gaussian.Gaussian.get_shape_of_value">[docs]</a>    <span class="k">def</span> <span class="nf">get_shape_of_value</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c"># Dimensionality of a realization</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dims</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    </div>
+<div class="viewcode-block" id="Gaussian.random"><a class="viewcode-back" href="../../../../../generated/bayespy.inference.vmp.nodes.gaussian.Gaussian.random.html#bayespy.inference.vmp.nodes.gaussian.Gaussian.random">[docs]</a>    <span class="k">def</span> <span class="nf">random</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c"># TODO/FIXME: You shouldn&#39;t draw random values for</span>
+        <span class="c"># observed/fixed elements!</span>
+
+        <span class="c"># Note that phi[1] is -0.5*inv(Cov)</span>
+        <span class="n">U</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">m_chol</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">phi</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">mu</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_shape</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+        <span class="c"># Compute mu + U&#39;*z</span>
+        <span class="n">z</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">m_solve_triangular</span><span class="p">(</span><span class="n">U</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">trans</span><span class="o">=</span><span class="s">&#39;T&#39;</span><span class="p">,</span> <span class="n">lower</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">mu</span> <span class="o">+</span> <span class="n">z</span>
+            
+</div>
+<div class="viewcode-block" id="Gaussian.show"><a class="viewcode-back" href="../../../../../generated/bayespy.inference.vmp.nodes.gaussian.Gaussian.show.html#bayespy.inference.vmp.nodes.gaussian.Gaussian.show">[docs]</a>    <span class="k">def</span> <span class="nf">show</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">mu</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">Cov</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">utils</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">m_outer</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span> <span class="n">mu</span><span class="p">)</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">&quot;</span><span class="si">%s</span><span class="s"> ~ Gaussian(mu, Cov)&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">&quot;  mu = &quot;</span><span class="p">)</span>
+        <span class="k">print</span><span class="p">(</span><span class="n">mu</span><span class="p">)</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">&quot;  Cov = &quot;</span><span class="p">)</span>
+        <span class="k">print</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">Cov</span><span class="p">))</span>
+</div>
+<div class="viewcode-block" id="Gaussian.rotate"><a class="viewcode-back" href="../../../../../generated/bayespy.inference.vmp.nodes.gaussian.Gaussian.rotate.html#bayespy.inference.vmp.nodes.gaussian.Gaussian.rotate">[docs]</a>    <span class="k">def</span> <span class="nf">rotate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">inv</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">logdet</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">Q</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="n">inv</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">invR</span> <span class="o">=</span> <span class="n">inv</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">invR</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">R</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">logdet</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">logdetR</span> <span class="o">=</span> <span class="n">logdet</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">logdetR</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">slogdet</span><span class="p">(</span><span class="n">R</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+
+        <span class="c"># It would be more efficient and simpler, if you just rotated the</span>
+        <span class="c"># moments and didn&#39;t touch phi. However, then you would need to call</span>
+        <span class="c"># update() before lower_bound_contribution. This is more error-safe.</span>
+
+        <span class="c"># Rotate plates, if plate rotation matrix is given. Assume that there&#39;s</span>
+        <span class="c"># only one plate-axis</span>
+
+        <span class="c">#logdet_old = np.sum(utils.linalg.logdet_cov(-2*self.phi[1]))</span>
+        <span class="k">if</span> <span class="n">Q</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="c"># Rotate moments using Q</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s">&#39;ik,kj-&gt;ij&#39;</span><span class="p">,</span> <span class="n">Q</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="n">sumQ</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">Q</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="c"># Rotate natural parameters using Q</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">phi</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s">&#39;d,dij-&gt;dij&#39;</span><span class="p">,</span> <span class="n">sumQ</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">phi</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> 
+            <span class="bp">self</span><span class="o">.</span><span class="n">phi</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s">&#39;dij,dj-&gt;di&#39;</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">phi</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+        <span class="c"># Transform parameters using R</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">phi</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">mvdot</span><span class="p">(</span><span class="n">invR</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">phi</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">phi</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">dot</span><span class="p">(</span><span class="n">invR</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">phi</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">invR</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">Q</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_update_moments_and_cgf</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c"># Transform moments and g using R</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">mvdot</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">dot</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">R</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">g</span> <span class="o">-=</span> <span class="n">logdetR</span>
+</div>
+<div class="viewcode-block" id="Gaussian.rotate_matrix"><a class="viewcode-back" href="../../../../../generated/bayespy.inference.vmp.nodes.gaussian.Gaussian.rotate_matrix.html#bayespy.inference.vmp.nodes.gaussian.Gaussian.rotate_matrix">[docs]</a>    <span class="k">def</span> <span class="nf">rotate_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">R1</span><span class="p">,</span> <span class="n">R2</span><span class="p">,</span> <span class="n">inv1</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">logdet1</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">inv2</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">logdet2</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">Q</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The vector is reshaped into a matrix by stacking the row vectors.</span>
+
+<span class="sd">        Computes R1*X*R2&#39;, which is identical to kron(R1,R2)*x (??)</span>
+
+<span class="sd">        Note that this is slightly different from the standard Kronecker product</span>
+<span class="sd">        definition because Numpy stacks row vectors instead of column vectors.</span>
+
+<span class="sd">        Parameters:</span>
+<span class="sd">        -----------</span>
+<span class="sd">        R1 : ndarray</span>
+<span class="sd">            A matrix from the left</span>
+<span class="sd">        R2 : ndarray</span>
+<span class="sd">            A matrix from the right        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">Q</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="c"># Rotate moments using Q</span>
+            <span class="c">#print(&quot;Debug in rotate matrix&quot;, np.shape(self.u[0]), self.get_shape(0))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s">&#39;ik,kj-&gt;ij&#39;</span><span class="p">,</span> <span class="n">Q</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="n">sumQ</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">Q</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="c"># Rotate natural parameters using Q</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">phi</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s">&#39;d,dij-&gt;dij&#39;</span><span class="p">,</span> <span class="n">sumQ</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">phi</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> 
+            <span class="bp">self</span><span class="o">.</span><span class="n">phi</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s">&#39;dij,dj-&gt;di&#39;</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">phi</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="n">inv1</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">inv1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">R1</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">logdet1</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">logdet1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">slogdet</span><span class="p">(</span><span class="n">R1</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">inv2</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">inv2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">R2</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">logdet2</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">logdet2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">slogdet</span><span class="p">(</span><span class="n">R2</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+
+        <span class="n">D1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">R1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">D2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">R2</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="c"># Reshape into matrices</span>
+        <span class="n">sh0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">phi</span><span class="p">[</span><span class="mi">0</span><span class="p">])[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="n">D1</span><span class="p">,</span><span class="n">D2</span><span class="p">)</span>
+        <span class="n">sh1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">phi</span><span class="p">[</span><span class="mi">1</span><span class="p">])[:</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="n">D1</span><span class="p">,</span><span class="n">D2</span><span class="p">,</span><span class="n">D1</span><span class="p">,</span><span class="n">D2</span><span class="p">)</span>
+        <span class="n">phi0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">phi</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">sh0</span><span class="p">)</span>
+        <span class="n">phi1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">phi</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">sh1</span><span class="p">)</span>
+
+        <span class="c"># Apply rotations to phi</span>
+        <span class="c">#phi0 = dot(inv1, phi0, inv2.T)</span>
+        <span class="n">phi0</span> <span class="o">=</span> <span class="n">dot</span><span class="p">(</span><span class="n">inv1</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">phi0</span><span class="p">,</span> <span class="n">inv2</span><span class="p">)</span>
+        <span class="n">phi1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s">&#39;...ia,...abcd-&gt;...ibcd&#39;</span><span class="p">,</span> <span class="n">inv1</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">phi1</span><span class="p">)</span>
+        <span class="n">phi1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s">&#39;...ic,...abcd-&gt;...abid&#39;</span><span class="p">,</span> <span class="n">inv1</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">phi1</span><span class="p">)</span>
+        <span class="n">phi1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s">&#39;...ib,...abcd-&gt;...aicd&#39;</span><span class="p">,</span> <span class="n">inv2</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">phi1</span><span class="p">)</span>
+        <span class="n">phi1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s">&#39;...id,...abcd-&gt;...abci&#39;</span><span class="p">,</span> <span class="n">inv2</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">phi1</span><span class="p">)</span>
+
+        <span class="c"># Reshape back into vectors</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">phi</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">phi0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">phi</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">phi</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">phi1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">phi</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+
+        <span class="c"># It&#39;d be better to rotate the moments too..</span>
+
+        <span class="c">#g0 = np.sum(np.ones(self.plates)*self.g)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_update_moments_and_cgf</span><span class="p">()</span>
+        <span class="c">#g1 = np.sum(np.ones(self.plates)*self.g)</span>
+
+        <span class="c">#dg = g1 - g0</span>
+
+        <span class="c">#print(&quot;debug rotate&quot;, np.sum(self.u[1],axis=0), self.name)</span>
+
+        <span class="c">## XX = np.sum(np.reshape(self.u[1], (-1,D1,D2,D1,D2)),</span>
+        <span class="c">##             axis=(0,1,3))</span>
+        <span class="c">## print(&quot;DEBUG&quot;, XX)</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li><a href="../../../../../index.html">bayespy 0.1 documentation</a> &raquo;</li>
+          <li><a href="../../../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011-2013, Jaakko Luttinen.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+    </div>
+  </body>
+</html>
