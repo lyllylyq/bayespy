@@ -34,6 +34,9 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../../../../genindex.html" title="General Index"
              accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
         <li><a href="../../../../../index.html">bayespy 0.1 documentation</a> &raquo;</li>
           <li><a href="../../../../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
@@ -46,7 +49,7 @@
             
   <h1>Source code for bayespy.inference.vmp.nodes.node</h1><div class="highlight"><pre>
 <span class="c">######################################################################</span>
-<span class="c"># Copyright (C) 2013 Jaakko Luttinen</span>
+<span class="c"># Copyright (C) 2013-2014 Jaakko Luttinen</span>
 <span class="c">#</span>
 <span class="c"># This file is licensed under Version 3.0 of the GNU General Public</span>
 <span class="c"># License. See LICENSE for a text of the license.</span>
@@ -69,9 +72,9 @@
 <span class="c">######################################################################</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
 
 <span class="kn">from</span> <span class="nn">bayespy.utils</span> <span class="kn">import</span> <span class="n">utils</span>
-
 
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">This module contains a sketch of a new implementation of the framework.</span>
@@ -109,6 +112,74 @@
     <span class="n">m</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">squeeze_to_dim</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">shape_parent</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">m</span>
 
+<span class="k">class</span> <span class="nc">Statistics</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Base class for defining sufficient statistic for nodes.</span>
+
+<span class="sd">    The benefits:</span>
+
+<span class="sd">      * Write statistic-specific features in one place only. For instance,</span>
+<span class="sd">        covariance from Gaussian message.</span>
+<span class="sd">    </span>
+<span class="sd">      * Different nodes may have identically defined statistic so you need to</span>
+<span class="sd">        implement related features only once. For instance, Gaussian and</span>
+<span class="sd">        GaussianARD differ on the prior but the moments are the same.</span>
+
+<span class="sd">      * General processing nodes which do not change the type of the moments may</span>
+<span class="sd">        &quot;inherit&quot; the features from the parent node. For instance, slicing</span>
+<span class="sd">        operator.</span>
+
+<span class="sd">      * Conversions can be done easily in both of the above cases if the message</span>
+<span class="sd">        conversion is defined in the moments class. For instance,</span>
+<span class="sd">        GaussianMarkovChain to Gaussian and GaussianDriftingMarkovChain to</span>
+<span class="sd">        Gaussian.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c"># Overwrite this</span>
+    <span class="n">ndim_observations</span> <span class="o">=</span> <span class="bp">None</span>
+    
+    <span class="k">def</span> <span class="nf">converter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">statistics_class</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a node class which converts the node&#39;s statistics to another</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c"># This method must take statistics object instead of class because, for</span>
+        <span class="c"># instance, one could want to convert gamma to wishart with specific</span>
+        <span class="c"># ndim? Or maybe that is in any case too complex so it would have to be</span>
+        <span class="c"># handled manually.</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">statistics_class</span><span class="p">):</span>
+            <span class="k">return</span> <span class="k">lambda</span> <span class="n">X</span><span class="p">:</span> <span class="n">X</span>
+
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;No conversion defined from </span><span class="si">%s</span><span class="s"> to </span><span class="si">%s</span><span class="s">&quot;</span>
+                        <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span>
+                           <span class="n">statistics_class</span><span class="o">.</span><span class="n">__name__</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">compute_fixed_moments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="c"># This method can&#39;t be static because the computation of the moments may</span>
+        <span class="c"># depend on, for instance, ndim in Gaussian arrays.</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s">&quot;compute_fixed_moments not implemented for &quot;</span>
+                                  <span class="s">&quot;</span><span class="si">%s</span><span class="s">&quot;</span> 
+                                  <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">))</span>
+    
+    <span class="k">def</span> <span class="nf">compute_dims_from_values</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="c"># This method can&#39;t be static because the computation of the moments may</span>
+        <span class="c"># depend on, for instance, ndim in Gaussian arrays.</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s">&quot;compute_dims_from_values not implemented &quot;</span>
+                                  <span class="s">&quot;for </span><span class="si">%s</span><span class="s">&quot;</span>
+                                  <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">))</span>
+
+<span class="k">def</span> <span class="nf">ensureparents</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">new_func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">parents</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="c"># Convert parents to proper nodes</span>
+        <span class="n">parents</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">parents</span><span class="p">)</span>
+        <span class="k">for</span> <span class="p">(</span><span class="n">ind</span><span class="p">,</span> <span class="n">parent</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">parents</span><span class="p">):</span>
+            <span class="n">parents</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ensure_statistics</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> 
+                                                   <span class="bp">self</span><span class="o">.</span><span class="n">_parent_statistics</span><span class="p">[</span><span class="n">ind</span><span class="p">])</span>
+        <span class="c"># Run the function</span>
+        <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">parents</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">new_func</span>
+
+    
 <div class="viewcode-block" id="Node"><a class="viewcode-back" href="../../../../../generated/bayespy.inference.vmp.nodes.node.Node.html#bayespy.inference.vmp.nodes.node.Node">[docs]</a><span class="k">class</span> <span class="nc">Node</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Base class for all nodes.</span>
@@ -132,59 +203,71 @@
 <span class="sd">       _plates_to_parent(self, index)</span>
 <span class="sd">       _plates_from_parent(self, index)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">parents</span><span class="p">,</span> <span class="n">dims</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">plates</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">):</span>
 
-        <span class="k">if</span> <span class="n">dims</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;You need to specify the dimensionality of the &quot;</span>
-                            <span class="s">&quot;distribution for class </span><span class="si">%s</span><span class="s">&quot;</span>
-                            <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="p">))</span>
+    <span class="c"># These are objects of the _parent_statistics_class. If the default way of</span>
+    <span class="c"># creating them is not correct, write your own creation code.</span>
+    <span class="n">_statistics</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="n">_parent_statistics</span> <span class="o">=</span> <span class="bp">None</span>
 
+    <span class="nd">@ensureparents</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">parents</span><span class="p">,</span> <span class="n">dims</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">plates</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">,</span> 
+                 <span class="n">notify_parents</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">plotter</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">parents</span> <span class="o">=</span> <span class="n">parents</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">dims</span> <span class="o">=</span> <span class="n">dims</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_plotter</span> <span class="o">=</span> <span class="n">plotter</span>
 
-        <span class="c"># Parents</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">parents</span> <span class="o">=</span> <span class="n">parents</span>
         <span class="c"># Inform parent nodes</span>
-        <span class="k">for</span> <span class="p">(</span><span class="n">index</span><span class="p">,</span><span class="n">parent</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parents</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">parent</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">notify_parents</span><span class="p">:</span>
+            <span class="k">for</span> <span class="p">(</span><span class="n">index</span><span class="p">,</span><span class="n">parent</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parents</span><span class="p">):</span>
                 <span class="n">parent</span><span class="o">.</span><span class="n">_add_child</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span>
 
         <span class="c"># Check plates</span>
         <span class="n">parent_plates</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_plates_from_parent</span><span class="p">(</span><span class="n">index</span><span class="p">)</span> 
                          <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parents</span><span class="p">))]</span>
-        <span class="k">if</span> <span class="n">plates</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="c"># By default, use the minimum number of plates determined</span>
-            <span class="c"># from the parent nodes</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">plates</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">broadcasted_shape</span><span class="p">(</span><span class="o">*</span><span class="n">parent_plates</span><span class="p">)</span>
-            <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;The plates of the parents do not broadcast.&quot;</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="c"># Use custom plates</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">plates</span> <span class="o">=</span> <span class="n">plates</span>
-            <span class="c"># Check that the parent_plates are a subset of plates.</span>
-            <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">parent_plates</span><span class="p">:</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="n">utils</span><span class="o">.</span><span class="n">is_shape_subset</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">plates</span><span class="p">):</span>
-                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;The plates of the parents are not &quot;</span>
-                                     <span class="s">&quot;subsets of the given plates.&quot;</span><span class="p">)</span>
-                                                 
+        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">p</span> <span class="ow">is</span> <span class="bp">None</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">parent_plates</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Method _plates_from_parent returned None&quot;</span><span class="p">)</span>
+
+        <span class="c"># Get and validate the plates for this node</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plates</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_total_plates</span><span class="p">(</span><span class="n">plates</span><span class="p">,</span> <span class="o">*</span><span class="n">parent_plates</span><span class="p">)</span>
 
         <span class="c"># By default, ignore all plates</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">False</span><span class="p">)</span>
 
         <span class="c"># Children</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
 
-    <span class="c">## @staticmethod</span>
-    <span class="c">## def _compute_dims_from_parents(*parents):</span>
-    <span class="c">##     &quot;&quot;&quot; Compute the dimensions of phi and u. &quot;&quot;&quot;</span>
-    <span class="c">##     raise NotImplementedError(&quot;Not implemented for %s&quot; % self.__class__)</span>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">_total_plates</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">plates</span><span class="p">,</span> <span class="o">*</span><span class="n">parent_plates</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">plates</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="c"># By default, use the minimum number of plates determined</span>
+            <span class="c"># from the parent nodes</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">utils</span><span class="o">.</span><span class="n">broadcasted_shape</span><span class="p">(</span><span class="o">*</span><span class="n">parent_plates</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;The plates of the parents do not broadcast.&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c"># Check that the parent_plates are a subset of plates.</span>
+            <span class="k">for</span> <span class="p">(</span><span class="n">ind</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">parent_plates</span><span class="p">):</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">utils</span><span class="o">.</span><span class="n">is_shape_subset</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">plates</span><span class="p">):</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;The plates </span><span class="si">%s</span><span class="s"> of the parents &quot;</span>
+                                     <span class="s">&quot;are not broadcastable to the given &quot;</span>
+                                     <span class="s">&quot;plates </span><span class="si">%s</span><span class="s">.&quot;</span>
+                                     <span class="o">%</span> <span class="p">(</span><span class="n">p</span><span class="p">,</span>
+                                        <span class="n">plates</span><span class="p">))</span>
+            <span class="k">return</span> <span class="n">plates</span>
+        
 
-    <span class="c">## @staticmethod</span>
-    <span class="c">## def _compute_dims_from_values(x):</span>
-    <span class="c">##     &quot;&quot;&quot; Compute the dimensions of phi and u. &quot;&quot;&quot;</span>
-    <span class="c">##     raise NotImplementedError()</span>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_ensure_statistics</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">statistics</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">Node</span><span class="p">):</span>
+            <span class="c"># Convert to correct type</span>
+            <span class="k">return</span> <span class="n">node</span><span class="o">.</span><span class="n">_convert</span><span class="p">(</span><span class="n">statistics</span><span class="o">.</span><span class="n">__class__</span><span class="p">)</span>
+
+        <span class="c"># Convert to constant node</span>
+        <span class="kn">from</span> <span class="nn">.constant</span> <span class="kn">import</span> <span class="n">Constant</span>
+        <span class="k">return</span> <span class="n">Constant</span><span class="p">(</span><span class="n">statistics</span><span class="p">,</span> <span class="n">node</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_plates_to_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
         <span class="c"># Sub-classes may want to overwrite this if they manipulate plates</span>
@@ -209,7 +292,13 @@
 <span class="sd">           The child node recognizes its parents by their index </span>
 <span class="sd">           number.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">child</span><span class="p">,</span> <span class="n">index</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="o">.</span><span class="n">add</span><span class="p">((</span><span class="n">child</span><span class="p">,</span> <span class="n">index</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">_remove_child</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">child</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Remove a child node.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="o">.</span><span class="n">remove</span><span class="p">((</span><span class="n">child</span><span class="p">,</span> <span class="n">index</span><span class="p">))</span>
 
 <div class="viewcode-block" id="Node.get_mask"><a class="viewcode-back" href="../../../../../generated/bayespy.inference.vmp.nodes.node.Node.get_mask.html#bayespy.inference.vmp.nodes.node.Node.get_mask">[docs]</a>    <span class="k">def</span> <span class="nf">get_mask</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mask</span>
@@ -248,8 +337,7 @@
     <span class="c">##     return mask</span>
 
     <span class="c"># TODO: Rename to _compute_message_mask_to_parent(index, mask)</span>
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_compute_mask_to_parent</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">mask</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_compute_mask_to_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">mask</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Compute the mask used for messages sent to parent[index].</span>
 
@@ -276,7 +364,6 @@
         <span class="c"># Check the shape of the mask</span>
         <span class="n">plates_to_parent</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_plates_to_parent</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">utils</span><span class="o">.</span><span class="n">is_shape_subset</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">mask</span><span class="p">),</span> <span class="n">plates_to_parent</span><span class="p">):</span>
-            <span class="k">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_plates_to_parent</span><span class="p">(</span><span class="n">index</span><span class="p">))</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;In node </span><span class="si">%s</span><span class="s">, the mask being sent to &quot;</span>
                              <span class="s">&quot;parent[</span><span class="si">%d</span><span class="s">] (</span><span class="si">%s</span><span class="s">) has invalid shape: The shape of &quot;</span>
                              <span class="s">&quot;the mask </span><span class="si">%s</span><span class="s"> is not a sub-shape of the plates of &quot;</span>
@@ -301,11 +388,47 @@
     <span class="c">#return self._compute_mask_to_parent(index, self.get_mask())</span>
 
     <span class="k">def</span> <span class="nf">_message_to_child</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_moments</span><span class="p">()</span>
-    
-    <span class="c">#def _get_message_and_mask_to_parent(self, index):</span>
-    <span class="c">#    raise NotImplementedError()</span>
 
+        <span class="n">u</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_moments</span><span class="p">()</span>
+        
+        <span class="c"># Debug: Check that the message has appropriate shape</span>
+        <span class="k">for</span> <span class="p">(</span><span class="n">ui</span><span class="p">,</span> <span class="n">dim</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dims</span><span class="p">):</span>
+            <span class="n">ndim</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">dim</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">ndim</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">ui</span><span class="p">)[</span><span class="o">-</span><span class="n">ndim</span><span class="p">:]</span> <span class="o">!=</span> <span class="n">dim</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                        <span class="s">&quot;A bug found by _message_to_child for </span><span class="si">%s</span><span class="s">: &quot;</span>
+                        <span class="s">&quot;The variable axes of the moments </span><span class="si">%s</span><span class="s"> are not equal to &quot;</span>
+                        <span class="s">&quot;the axes </span><span class="si">%s</span><span class="s"> defined by the node </span><span class="si">%s</span><span class="s">. A possible reason &quot;</span>
+                        <span class="s">&quot;is that the plates of the node are inferred &quot;</span>
+                        <span class="s">&quot;incorrectly from the parents, and the method &quot;</span>
+                        <span class="s">&quot;_plates_from_parents should be implemented.&quot;</span>
+                        <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span>
+                           <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">ui</span><span class="p">)[</span><span class="o">-</span><span class="n">ndim</span><span class="p">:],</span>
+                           <span class="n">dim</span><span class="p">,</span>
+                           <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">utils</span><span class="o">.</span><span class="n">is_shape_subset</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">ui</span><span class="p">)[:</span><span class="o">-</span><span class="n">ndim</span><span class="p">],</span>
+                                             <span class="bp">self</span><span class="o">.</span><span class="n">plates</span><span class="p">):</span>
+                    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                        <span class="s">&quot;A bug found by _message_to_child for </span><span class="si">%s</span><span class="s">: &quot;</span>
+                        <span class="s">&quot;The plate axes of the moments </span><span class="si">%s</span><span class="s"> are not a subset of &quot;</span>
+                        <span class="s">&quot;the plate axes </span><span class="si">%s</span><span class="s"> defined by the node </span><span class="si">%s</span><span class="s">.&quot;</span>
+                        <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span>
+                           <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">ui</span><span class="p">)[:</span><span class="o">-</span><span class="n">ndim</span><span class="p">],</span>
+                           <span class="bp">self</span><span class="o">.</span><span class="n">plates</span><span class="p">,</span>
+                           <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">utils</span><span class="o">.</span><span class="n">is_shape_subset</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">ui</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">plates</span><span class="p">):</span>
+                    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                        <span class="s">&quot;A bug found by _message_to_child for </span><span class="si">%s</span><span class="s">: &quot;</span>
+                        <span class="s">&quot;The plate axes of the moments </span><span class="si">%s</span><span class="s"> are not a subset of &quot;</span>
+                        <span class="s">&quot;the plate axes </span><span class="si">%s</span><span class="s"> defined by the node </span><span class="si">%s</span><span class="s">.&quot;</span>
+                        <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span>
+                           <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">ui</span><span class="p">),</span>
+                           <span class="bp">self</span><span class="o">.</span><span class="n">plates</span><span class="p">,</span>
+                           <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">u</span>
+                
     <span class="k">def</span> <span class="nf">_message_to_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
 
         <span class="c"># Compute the message, check plates, apply mask and sum over some plates</span>
@@ -314,6 +437,7 @@
 
         <span class="c"># Compute the message and mask</span>
         <span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">mask</span><span class="p">)</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_message_and_mask_to_parent</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="n">mask</span><span class="p">)</span>
 
         <span class="c"># Plates in the mask</span>
         <span class="n">plates_mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">mask</span><span class="p">)</span>
@@ -389,7 +513,8 @@
         <span class="k">return</span> <span class="n">m</span>
 
     <span class="k">def</span> <span class="nf">_message_from_children</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">msg</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dims</span><span class="p">))]</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span> <span class="k">for</span> <span class="n">shape</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dims</span><span class="p">]</span>
+        <span class="c">#msg = [np.array(0.0) for i in range(len(self.dims))]</span>
         <span class="k">for</span> <span class="p">(</span><span class="n">child</span><span class="p">,</span><span class="n">index</span><span class="p">)</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">:</span>
             <span class="n">m</span> <span class="o">=</span> <span class="n">child</span><span class="o">.</span><span class="n">_message_to_parent</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dims</span><span class="p">)):</span>
@@ -405,17 +530,44 @@
         <span class="k">return</span> <span class="n">msg</span>
 
     <span class="k">def</span> <span class="nf">_message_from_parents</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exclude</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">[</span><span class="n">parent</span><span class="o">.</span><span class="n">_message_to_child</span><span class="p">()</span> 
+        <span class="k">return</span> <span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="n">parent</span><span class="o">.</span><span class="n">_message_to_child</span><span class="p">())</span>
                 <span class="k">if</span> <span class="n">ind</span> <span class="o">!=</span> <span class="n">exclude</span> <span class="k">else</span>
                 <span class="bp">None</span>
                 <span class="k">for</span> <span class="p">(</span><span class="n">ind</span><span class="p">,</span><span class="n">parent</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parents</span><span class="p">)]</span>
 
 <div class="viewcode-block" id="Node.get_moments"><a class="viewcode-back" href="../../../../../generated/bayespy.inference.vmp.nodes.node.Node.get_moments.html#bayespy.inference.vmp.nodes.node.Node.get_moments">[docs]</a>    <span class="k">def</span> <span class="nf">get_moments</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
-
+</div>
+<div class="viewcode-block" id="Node.delete"><a class="viewcode-back" href="../../../../../generated/bayespy.inference.vmp.nodes.node.Node.delete.html#bayespy.inference.vmp.nodes.node.Node.delete">[docs]</a>    <span class="k">def</span> <span class="nf">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Delete this node and the children</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">:</span>
+            <span class="n">child</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
+        <span class="k">for</span> <span class="p">(</span><span class="n">ind</span><span class="p">,</span> <span class="n">parent</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parents</span><span class="p">):</span>
+            <span class="n">parent</span><span class="o">.</span><span class="n">_remove_child</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ind</span><span class="p">)</span>
 </div>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_plate_multiplier</span><span class="p">(</span><span class="n">plates</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute the plate multiplier for given shapes.</span>
+
+<span class="sd">        The first shape is compared to all other shapes (using NumPy</span>
+<span class="sd">        broadcasting rules). All the elements which are non-unit in the first</span>
+<span class="sd">        shape but 1 in all other shapes are multiplied together.</span>
+
+<span class="sd">        This method is used, for instance, for computing a correction factor for</span>
+<span class="sd">        messages to parents: If this node has non-unit plates that are unit</span>
+<span class="sd">        plates in the parent, those plates are summed. However, if the message</span>
+<span class="sd">        has unit axis for that plate, it should be first broadcasted to the</span>
+<span class="sd">        plates of this node and then summed to the plates of the parent. In</span>
+<span class="sd">        order to avoid this broadcasting and summing, it is more efficient to</span>
+<span class="sd">        just multiply by the correct factor. This method computes that</span>
+<span class="sd">        factor. The first argument is the full plate shape of this node (with</span>
+<span class="sd">        respect to the parent). The other arguments are the shape of the message</span>
+<span class="sd">        array and the plates of the parent (with respect to this node).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
         <span class="c"># Check broadcasting of the shapes</span>
         <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">args</span><span class="p">:</span>
             <span class="n">utils</span><span class="o">.</span><span class="n">broadcasted_shape</span><span class="p">(</span><span class="n">plates</span><span class="p">,</span> <span class="n">arg</span><span class="p">)</span>
@@ -430,6 +582,7 @@
         <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="n">plates</span><span class="p">),</span><span class="mi">0</span><span class="p">):</span>
             <span class="n">mult</span> <span class="o">=</span> <span class="bp">True</span>
             <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">args</span><span class="p">:</span>
+                <span class="c"># if -j &lt;= len(arg) and arg[j] != 1:</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="o">-</span><span class="n">j</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span> <span class="ow">or</span> <span class="n">arg</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">):</span>
                     <span class="n">mult</span> <span class="o">=</span> <span class="bp">False</span>
             <span class="k">if</span> <span class="n">mult</span><span class="p">:</span>
@@ -445,9 +598,359 @@
 <div class="viewcode-block" id="Node.add_plate_axis"><a class="viewcode-back" href="../../../../../generated/bayespy.inference.vmp.nodes.node.Node.add_plate_axis.html#bayespy.inference.vmp.nodes.node.Node.add_plate_axis">[docs]</a>    <span class="k">def</span> <span class="nf">add_plate_axis</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">to_plate</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">AddPlateAxis</span><span class="p">(</span><span class="n">to_plate</span><span class="p">)(</span><span class="bp">self</span><span class="p">,</span>
                                       <span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="o">+</span><span class="s">&quot;.add_plate_axis&quot;</span><span class="p">)</span>
+</div>
+    <span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Slice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span>
+                     <span class="n">name</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="o">+</span><span class="s">&quot;.__getitem__&quot;</span><span class="p">))</span>
 
-</div></div>
+<div class="viewcode-block" id="Node.has_plotter"><a class="viewcode-back" href="../../../../../generated/bayespy.inference.vmp.nodes.node.Node.has_plotter.html#bayespy.inference.vmp.nodes.node.Node.has_plotter">[docs]</a>    <span class="k">def</span> <span class="nf">has_plotter</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return True if the node has a plotter</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">callable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_plotter</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="Node.set_plotter"><a class="viewcode-back" href="../../../../../generated/bayespy.inference.vmp.nodes.node.Node.set_plotter.html#bayespy.inference.vmp.nodes.node.Node.set_plotter">[docs]</a>    <span class="k">def</span> <span class="nf">set_plotter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">plotter</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_plotter</span> <span class="o">=</span> <span class="n">plotter</span>
+    </div>
+<div class="viewcode-block" id="Node.plot"><a class="viewcode-back" href="../../../../../generated/bayespy.inference.vmp.nodes.node.Node.plot.html#bayespy.inference.vmp.nodes.node.Node.plot">[docs]</a>    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Plot the node distribution using the plotter of the node</span>
+
+<span class="sd">        Because the distributions are in general very difficult to plot, the</span>
+<span class="sd">        user must specify some functions which performs the plotting as</span>
+<span class="sd">        wanted. See, for instance, bayespy.plot.plotting for available plotters,</span>
+<span class="sd">        that is, functions that perform plotting for a node.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_plotter</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_plotter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="s">&#39;q(</span><span class="si">%s</span><span class="s">)&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;No plotter defined, can not plot&quot;</span><span class="p">)</span>
+        <span class="k">return</span>
+
+    <span class="c">#def _convert(self, node_class):</span>
+    <span class="c">#    return self._statistics._convert_node(node_class)</span></div>
+    <span class="k">def</span> <span class="nf">_convert</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">statistics_class</span><span class="p">):</span>
+        <span class="n">converter</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_statistics</span><span class="o">.</span><span class="n">converter</span><span class="p">(</span><span class="n">statistics_class</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">converter</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+    <span class="c">## def convert(self, node_class):</span>
+    <span class="c">##     return self._convert(node_class._statistics_class)</span>
+    
+
+</div>
 <span class="kn">from</span> <span class="nn">.deterministic</span> <span class="kn">import</span> <span class="n">Deterministic</span>
+
+
+<span class="k">def</span> <span class="nf">slicelen</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">length</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="nb">slice</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">indices</span><span class="p">(</span><span class="n">length</span><span class="p">)))</span>
+    <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">utils</span><span class="o">.</span><span class="n">ceildiv</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">stop</span> <span class="o">-</span> <span class="n">s</span><span class="o">.</span><span class="n">start</span><span class="p">,</span> <span class="n">s</span><span class="o">.</span><span class="n">step</span><span class="p">))</span>
+
+<span class="k">class</span> <span class="nc">Slice</span><span class="p">(</span><span class="n">Deterministic</span><span class="p">):</span>
+
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Basic slicing for plates.</span>
+<span class="sd">    </span>
+<span class="sd">    Slicing occurs when index is a slice object (constructed by start:stop:step</span>
+<span class="sd">    notation inside of brackets), an integer, or a tuple of slice objects and</span>
+<span class="sd">    integers.</span>
+
+<span class="sd">    Currently, accept slices, newaxis, ellipsis and integers. For instance, does</span>
+<span class="sd">    not accept lists/tuples to pick multiple indices of the same axis.</span>
+
+<span class="sd">    Ellipsis expand to the number of : objects needed to make a selection tuple</span>
+<span class="sd">    of the same length as x.ndim. Only the first ellipsis is expanded, any</span>
+<span class="sd">    others are interpreted as :.</span>
+
+<span class="sd">    Similar to:</span>
+<span class="sd">    http://docs.scipy.org/doc/numpy/reference/arrays.indexing.html#basic-slicing</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">_parent_statistics</span> <span class="o">=</span> <span class="p">(</span><span class="n">Statistics</span><span class="p">(),)</span>
+    <span class="c">#_parent_statistics_class = (Statistics,)</span>
+    
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">slices</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_statistics</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">_statistics</span>
+        <span class="c">#self._statistics_class = X._statistics_class</span>
+
+        <span class="c"># Force a list</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">slices</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+            <span class="n">slices</span> <span class="o">=</span> <span class="p">[</span><span class="n">slices</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">slices</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">slices</span><span class="p">)</span>
+
+        <span class="c">#</span>
+        <span class="c"># Expand Ellipsis</span>
+        <span class="c">#</span>
+
+        <span class="c"># Compute the number of required axes and how Ellipsis is expanded</span>
+        <span class="n">num_axis</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">ellipsis_index</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">for</span> <span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">slices</span><span class="p">):</span>
+
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="nb">slice</span><span class="p">):</span>
+                <span class="n">num_axis</span> <span class="o">+=</span> <span class="mi">1</span>
+
+            <span class="k">elif</span> <span class="n">s</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="k">pass</span>
+                
+            <span class="k">elif</span> <span class="n">s</span> <span class="ow">is</span> <span class="bp">Ellipsis</span><span class="p">:</span>
+                <span class="c"># Index is an ellipsis, e.g., [...]</span>
+                
+                <span class="k">if</span> <span class="n">ellipsis_index</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+                    <span class="c"># Expand ...</span>
+                    <span class="n">ellipsis_index</span> <span class="o">=</span> <span class="n">k</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c"># Interpret ... as :</span>
+                    <span class="n">num_axis</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="n">slices</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="nb">slice</span><span class="p">(</span><span class="bp">None</span><span class="p">)</span>
+                    
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s">&quot;Invalid argument type.&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">num_axis</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">plates</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="s">&quot;Too many indices&quot;</span><span class="p">)</span>
+
+        <span class="c"># The number of plates that were not given explicit slicing (either</span>
+        <span class="c"># Ellipsis was used or the number of slices was smaller than the number</span>
+        <span class="c"># of plate axes)</span>
+        <span class="n">expand_len</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">plates</span><span class="p">)</span> <span class="o">-</span> <span class="n">num_axis</span>
+        
+        <span class="k">if</span> <span class="n">ellipsis_index</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="c"># Replace Ellipsis with correct number of :</span>
+            <span class="n">k</span> <span class="o">=</span> <span class="n">ellipsis_index</span>
+            <span class="k">del</span> <span class="n">slices</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+            <span class="n">slices</span> <span class="o">=</span> <span class="n">slices</span><span class="p">[:</span><span class="n">k</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="nb">slice</span><span class="p">(</span><span class="bp">None</span><span class="p">)]</span> <span class="o">*</span> <span class="n">expand_len</span> <span class="o">+</span> <span class="n">slices</span><span class="p">[</span><span class="n">k</span><span class="p">:]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c"># Add trailing : so that each plate has explicit slicing</span>
+            <span class="n">slices</span> <span class="o">=</span> <span class="n">slices</span> <span class="o">+</span> <span class="p">[</span><span class="nb">slice</span><span class="p">(</span><span class="bp">None</span><span class="p">)]</span> <span class="o">*</span> <span class="n">expand_len</span>
+
+        <span class="c">#</span>
+        <span class="c"># Preprocess indexing:</span>
+        <span class="c"># - integer indices to non-negative values</span>
+        <span class="c"># - slice start/stop values to non-negative</span>
+        <span class="c"># - slice start/stop values based on the size of the plate</span>
+        <span class="c">#</span>
+
+        <span class="c"># Index for parent plates</span>
+        <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span>
+        
+        <span class="k">for</span> <span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">slices</span><span class="p">):</span>
+
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+                <span class="c"># Index is an integer, e.g., [3]</span>
+                
+                <span class="k">if</span> <span class="n">s</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="c"># Handle negative index</span>
+                    <span class="n">s</span> <span class="o">+=</span> <span class="n">X</span><span class="o">.</span><span class="n">plates</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">s</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">s</span> <span class="o">&gt;=</span> <span class="n">X</span><span class="o">.</span><span class="n">plates</span><span class="p">[</span><span class="n">j</span><span class="p">]:</span>
+                    <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="s">&quot;Index out of range&quot;</span><span class="p">)</span>
+                <span class="c"># Store the preprocessed integer index</span>
+                <span class="n">slices</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">s</span>
+                <span class="n">j</span> <span class="o">+=</span> <span class="mi">1</span>
+
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="nb">slice</span><span class="p">):</span>
+                <span class="c"># Index is a slice, e.g., [2:6]</span>
+                
+                <span class="c"># Normalize the slice</span>
+                <span class="n">s</span> <span class="o">=</span> <span class="nb">slice</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">indices</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">plates</span><span class="p">[</span><span class="n">j</span><span class="p">])))</span>
+                <span class="k">if</span> <span class="n">slicelen</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="s">&quot;Slicing leads to empty plates&quot;</span><span class="p">)</span>
+                <span class="n">slices</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">s</span>
+                <span class="n">j</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">slices</span> <span class="o">=</span> <span class="n">slices</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">X</span><span class="p">,</span>
+                         <span class="n">dims</span><span class="o">=</span><span class="n">X</span><span class="o">.</span><span class="n">dims</span><span class="p">,</span>
+                         <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_plates_to_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">parents</span><span class="p">[</span><span class="n">index</span><span class="p">]</span><span class="o">.</span><span class="n">plates</span>
+
+    <span class="k">def</span> <span class="nf">_plates_from_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+
+        <span class="n">plates</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parents</span><span class="p">[</span><span class="n">index</span><span class="p">]</span><span class="o">.</span><span class="n">plates</span><span class="p">)</span>
+
+        <span class="c"># Compute the plates. Note that Ellipsis has already been preprocessed</span>
+        <span class="c"># to a proper number of :</span>
+        <span class="n">k</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">slices</span><span class="p">:</span>
+            <span class="c"># Then, each case separately: slice, newaxis, integer</span>
+            
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="nb">slice</span><span class="p">):</span>
+                <span class="c"># Slice, e.g., [2:5]</span>
+                <span class="n">N</span> <span class="o">=</span> <span class="n">slicelen</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">N</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="s">&quot;Slicing leads to empty plates&quot;</span><span class="p">)</span>
+                <span class="n">plates</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">N</span>
+                <span class="n">k</span> <span class="o">+=</span> <span class="mi">1</span>
+                
+            <span class="k">elif</span> <span class="n">s</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="c"># [np.newaxis]</span>
+                <span class="n">plates</span> <span class="o">=</span> <span class="n">plates</span><span class="p">[:</span><span class="n">k</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">plates</span><span class="p">[</span><span class="n">k</span><span class="p">:]</span>
+                <span class="n">k</span> <span class="o">+=</span> <span class="mi">1</span>
+                
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+                <span class="c"># Integer, e.g., [3]</span>
+                <span class="k">del</span> <span class="n">plates</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">plates</span><span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">__reverse_indexing</span><span class="p">(</span><span class="n">slices</span><span class="p">,</span> <span class="n">m_child</span><span class="p">,</span> <span class="n">plates</span><span class="p">,</span> <span class="n">dims</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        A helpful function for performing reverse indexing/slicing</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">j</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span> <span class="c"># plate index for parent</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span> <span class="c"># plate index for child</span>
+        <span class="n">child_slices</span> <span class="o">=</span> <span class="p">()</span>
+        <span class="n">parent_slices</span> <span class="o">=</span> <span class="p">()</span>
+        <span class="n">msg_plates</span> <span class="o">=</span> <span class="p">()</span>
+
+        <span class="c"># Compute plate axes in the message from children</span>
+        <span class="n">ndim</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">dims</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">ndim</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">m_plates</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">m_child</span><span class="p">)[:</span><span class="o">-</span><span class="n">ndim</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">m_plates</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">m_child</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="n">slices</span><span class="p">):</span>
+
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+                <span class="c"># Case: integer</span>
+                <span class="n">parent_slices</span> <span class="o">=</span> <span class="p">(</span><span class="n">s</span><span class="p">,)</span> <span class="o">+</span> <span class="n">parent_slices</span>
+                <span class="n">msg_plates</span> <span class="o">=</span> <span class="p">(</span><span class="n">plates</span><span class="p">[</span><span class="n">j</span><span class="p">],)</span> <span class="o">+</span> <span class="n">msg_plates</span>
+                <span class="n">j</span> <span class="o">-=</span> <span class="mi">1</span>
+            <span class="k">elif</span> <span class="n">s</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="c"># Case: newaxis</span>
+                <span class="k">if</span> <span class="o">-</span><span class="n">i</span> <span class="o">&lt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">m_plates</span><span class="p">):</span>
+                    <span class="n">child_slices</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,)</span> <span class="o">+</span> <span class="n">child_slices</span>
+                <span class="n">i</span> <span class="o">-=</span> <span class="mi">1</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c"># Case: slice</span>
+                <span class="k">if</span> <span class="o">-</span><span class="n">i</span> <span class="o">&lt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">m_plates</span><span class="p">):</span>
+                    <span class="n">child_slices</span> <span class="o">=</span> <span class="p">(</span><span class="nb">slice</span><span class="p">(</span><span class="bp">None</span><span class="p">),)</span> <span class="o">+</span> <span class="n">child_slices</span>
+                <span class="n">parent_slices</span> <span class="o">=</span> <span class="p">(</span><span class="n">s</span><span class="p">,)</span> <span class="o">+</span> <span class="n">parent_slices</span>
+                <span class="k">if</span> <span class="p">((</span><span class="o">-</span><span class="n">i</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">m_plates</span><span class="p">)</span> <span class="ow">or</span> <span class="n">m_plates</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span>
+                    <span class="ow">and</span> <span class="n">slicelen</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">==</span> <span class="n">plates</span><span class="p">[</span><span class="n">j</span><span class="p">]):</span>
+                    <span class="c"># Broadcasting can be applied. The message does not need</span>
+                    <span class="c"># to be explicitly shaped to the full size</span>
+                    <span class="n">msg_plates</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,)</span> <span class="o">+</span> <span class="n">msg_plates</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c"># No broadcasting. Must explicitly form the full size</span>
+                    <span class="c"># axis</span>
+                    <span class="n">msg_plates</span> <span class="o">=</span> <span class="p">(</span><span class="n">plates</span><span class="p">[</span><span class="n">j</span><span class="p">],)</span> <span class="o">+</span> <span class="n">msg_plates</span>
+                <span class="n">j</span> <span class="o">-=</span> <span class="mi">1</span>
+                <span class="n">i</span> <span class="o">-=</span> <span class="mi">1</span>
+
+        <span class="c"># Set the elements of the message</span>
+        <span class="n">m_parent</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">msg_plates</span> <span class="o">+</span> <span class="n">dims</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">ndim</span><span class="p">(</span><span class="n">m_parent</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">np</span><span class="o">.</span><span class="n">ndim</span><span class="p">(</span><span class="n">m_child</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">m_parent</span> <span class="o">=</span> <span class="n">m_child</span>
+        <span class="k">elif</span> <span class="n">np</span><span class="o">.</span><span class="n">ndim</span><span class="p">(</span><span class="n">m_parent</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">m_parent</span> <span class="o">=</span> <span class="n">m_child</span><span class="p">[</span><span class="n">child_slices</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="n">np</span><span class="o">.</span><span class="n">ndim</span><span class="p">(</span><span class="n">m_child</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">m_parent</span><span class="p">[</span><span class="n">parent_slices</span><span class="p">]</span> <span class="o">=</span> <span class="n">m_child</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">m_parent</span><span class="p">[</span><span class="n">parent_slices</span><span class="p">]</span> <span class="o">=</span> <span class="n">m_child</span><span class="p">[</span><span class="n">child_slices</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">m_parent</span>
+
+    
+    <span class="k">def</span> <span class="nf">_compute_mask_to_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">mask</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute the mask to the parent node.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">index</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Invalid index&quot;</span><span class="p">)</span>
+        <span class="n">parent</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parents</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__reverse_indexing</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">slices</span><span class="p">,</span>
+                                       <span class="bp">self</span><span class="o">.</span><span class="n">mask</span><span class="p">,</span> 
+                                       <span class="n">parent</span><span class="o">.</span><span class="n">plates</span><span class="p">,</span> 
+                                       <span class="p">())</span>
+
+    <span class="k">def</span> <span class="nf">_compute_message_and_mask_to_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">u</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute the message to a parent node.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">index</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Invalid index&quot;</span><span class="p">)</span>
+        <span class="n">parent</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parents</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="c"># Apply reverse indexing for the message arrays</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">__reverse_indexing</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">slices</span><span class="p">,</span> 
+                                       <span class="n">m_child</span><span class="p">,</span>
+                                       <span class="n">parent</span><span class="o">.</span><span class="n">plates</span><span class="p">,</span> 
+                                       <span class="n">dims</span><span class="p">)</span>
+               <span class="k">for</span> <span class="p">(</span><span class="n">m_child</span><span class="p">,</span> <span class="n">dims</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">parent</span><span class="o">.</span><span class="n">dims</span><span class="p">)]</span>
+
+        <span class="c"># Apply reverse indexing for the mask</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compute_mask_to_parent</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mask</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">mask</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_compute_moments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the moments with an added plate axis.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c"># Process each moment</span>
+        <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">u</span><span class="p">)):</span>
+
+            <span class="c"># Compute the effective plates in the message/moment</span>
+            <span class="n">ndim</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dims</span><span class="p">[</span><span class="n">n</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">ndim</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">shape</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">u</span><span class="p">[</span><span class="n">n</span><span class="p">])[:</span><span class="o">-</span><span class="n">ndim</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">shape</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">u</span><span class="p">[</span><span class="n">n</span><span class="p">])</span>
+
+            <span class="c"># Construct a list of slice objects</span>
+            <span class="n">u_slices</span> <span class="o">=</span> <span class="p">[]</span>
+
+            <span class="c"># Index for the shape</span>
+            <span class="n">j</span> <span class="o">=</span> <span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parents</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plates</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">slices</span><span class="p">):</span>
+
+                <span class="k">if</span> <span class="n">s</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+                    <span class="c"># [np.newaxis]</span>
+                    <span class="k">if</span> <span class="o">-</span><span class="n">j</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">shape</span><span class="p">):</span>
+                        <span class="c"># Only add newaxis if there are some axes before</span>
+                        <span class="c"># this. It does not make any difference if you added</span>
+                        <span class="c"># leading unit axes</span>
+                        <span class="n">u_slices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+                    
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c"># slice or integer index</span>
+
+                    <span class="k">if</span> <span class="o">-</span><span class="n">j</span> <span class="o">&lt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">shape</span><span class="p">):</span>
+                        <span class="c"># The moment has this axis, so it is not broadcasting it</span>
+                        <span class="k">if</span> <span class="n">shape</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+                            <span class="c"># Use the slice as it is</span>
+                            <span class="n">u_slices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+                        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="nb">slice</span><span class="p">):</span>
+                            <span class="c"># Slice.</span>
+                            <span class="c"># The moment is using broadcasting, just pick the</span>
+                            <span class="c"># first element but use slice in order to keep the</span>
+                            <span class="c"># axis</span>
+                            <span class="n">u_slices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">slice</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="c"># Integer.</span>
+                            <span class="c"># The moment is using broadcasting, just pick the</span>
+                            <span class="c"># first element</span>
+                            <span class="n">u_slices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+                            
+                    <span class="n">j</span> <span class="o">+=</span> <span class="mi">1</span>
+
+            <span class="c"># Slice the message/moment</span>
+            <span class="n">u</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">u</span><span class="p">[</span><span class="n">n</span><span class="p">][</span><span class="nb">tuple</span><span class="p">(</span><span class="n">u_slices</span><span class="p">)]</span>
+        
+        <span class="k">return</span> <span class="n">u</span>
 
 <span class="k">def</span> <span class="nf">AddPlateAxis</span><span class="p">(</span><span class="n">to_plate</span><span class="p">):</span>
     
@@ -488,26 +991,14 @@
             <span class="n">plates</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parents</span><span class="p">[</span><span class="n">index</span><span class="p">]</span><span class="o">.</span><span class="n">plates</span><span class="p">)</span>
             <span class="n">plates</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">plates</span><span class="p">)</span><span class="o">-</span><span class="n">to_plate</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
             <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">plates</span><span class="p">)</span>
-        <span class="c">#raise Exception(&quot;IMPLEMENT THIS&quot;)</span>
 
-        <span class="nd">@staticmethod</span>
-        <span class="k">def</span> <span class="nf">_compute_mask_to_parent</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">mask</span><span class="p">):</span>
-            <span class="c"># Ouch, how can you compute this in a static function?</span>
-
-            <span class="c"># Maybe this does not have to be a static funtion?</span>
-
-            <span class="c"># Maybe Mixture node requires this and _plates_to/from_parent to be</span>
-            <span class="c"># static as well..</span>
-
+        <span class="k">def</span> <span class="nf">_compute_mask_to_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">mask</span><span class="p">):</span>
             <span class="c"># Remove the added mask plate</span>
-            <span class="c">#diff = len(self.plates) - np.ndim(mask)</span>
-            <span class="c">#mask = utils.add_leading_axes(mask, diff)</span>
             <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">to_plate</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">np</span><span class="o">.</span><span class="n">ndim</span><span class="p">(</span><span class="n">mask</span><span class="p">):</span>
                 <span class="n">sh_mask</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">mask</span><span class="p">))</span>
                 <span class="n">sh_mask</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">to_plate</span><span class="p">)</span>
                 <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">sh_mask</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">mask</span>
-        <span class="c">#raise Exception(&quot;IMPLEMENT THIS&quot;)</span>
 
 
         <span class="k">def</span> <span class="nf">_compute_message_and_mask_to_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="o">*</span><span class="n">u_parents</span><span class="p">):</span>
@@ -563,101 +1054,18 @@
     <span class="k">return</span> <span class="n">_AddPlateAxis</span>
         
 
-<span class="c">## class _MovePlate(Node):</span>
-<span class="c">##     &quot;&quot;&quot;</span>
-<span class="c">##     Move a plate to a given position.</span>
-
-<span class="c">##     NOTE: This has NOT been tested yet..</span>
-<span class="c">##     &quot;&quot;&quot;</span>
-
-<span class="c">##     def __init__(self, X, from_plate, to_plate, plates=None, **kwargs):</span>
-
-<span class="c">##         if plates is not None:</span>
-<span class="c">##             raise ValueError(&quot;Do not specify plates.&quot;)</span>
-
-<span class="c">##         plates = X.plates</span>
-
-<span class="c">##         # Check the parameters</span>
-<span class="c">##         if from_plate &gt;= len(plates) or from_plate &lt; -len(plates):</span>
-<span class="c">##             raise ValueError(&quot;Invalid plate to move from.&quot;)</span>
-<span class="c">##         if to_plate &gt;= len(plates) or to_plate &lt; -len(plates):</span>
-<span class="c">##             raise ValueError(&quot;Invalid plate to move to.&quot;)</span>
-
-<span class="c">##         # Use positive indexing only</span>
-<span class="c">##         if from_plate &lt; 0:</span>
-<span class="c">##             from_plate = len(plates) + from_plate</span>
-<span class="c">##         if to_plate &lt; 0:</span>
-<span class="c">##             to_plate = len(plates) + to_plate + 1</span>
-
-<span class="c">##         # Move the plate</span>
-<span class="c">##         plates = list(plates)</span>
-<span class="c">##         plates.insert(to_plate, plates.pop(from_plate))</span>
-
-<span class="c">##         super().__init__(X, </span>
-<span class="c">##                          plates=tuple(plates),</span>
-<span class="c">##                          dims=X.dims,</span>
-<span class="c">##                          **kwargs)</span>
-
-<span class="c">##     def get_moments(self):</span>
-<span class="c">##         &quot;&quot;&quot;</span>
-<span class="c">##         Get the moments with moved plates.</span>
-<span class="c">##         &quot;&quot;&quot;</span>
-
-<span class="c">##         # Get parents&#39; moments</span>
-<span class="c">##         u = self.parents[0].message_to_child()</span>
-
-<span class="c">##         # Move a plate axis</span>
-<span class="c">##         u = list(u)</span>
-<span class="c">##         for i in range(len(u)):</span>
-<span class="c">##             u[i] = utils.moveaxis(u[i], self.from_plate, self.to_plate)</span>
-
-<span class="c">##         return tuple(u)</span>
-
-<span class="c">##     def get_message(self, index, u_parents):</span>
-<span class="c">##         &quot;&quot;&quot;</span>
-<span class="c">##         Compute the message to a parent node.</span>
-<span class="c">##         &quot;&quot;&quot;</span>
-
-<span class="c">##         # Get the message from children</span>
-<span class="c">##         (m, mask) = self.message_from_children()</span>
-
-<span class="c">##         # Move message plates</span>
-<span class="c">##         for i in range(len(m)):</span>
-<span class="c">##             diff = len(self.plates) + len(self.dims[i]) - self.np.ndim(m[i])</span>
-<span class="c">##             m[i] = utils.add_leading_axes(m[i], diff)</span>
-<span class="c">##             m[i] = utils.moveaxis(m[i], self.to_plate, self.from_plate)</span>
-
-<span class="c">##         # Move mask plates</span>
-<span class="c">##         mask = utils.add_leading_axes(mask, len(self.plates) - np.ndim(mask))</span>
-<span class="c">##         mask = utils.moveaxis(mask, self.to_plate, self.from_plate)</span>
-
-<span class="c">##         return (m, mask)</span>
-
-    
-<span class="k">class</span> <span class="nc">NodeConstant</span><span class="p">(</span><span class="n">Node</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">u</span> <span class="o">=</span> <span class="n">u</span>
-        <span class="n">Node</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">message_to_child</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gradient</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">gradient</span><span class="p">:</span>
-            <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="p">,</span> <span class="p">[])</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span>
-
-
-<span class="k">class</span> <span class="nc">NodeConstantScalar</span><span class="p">(</span><span class="n">NodeConstant</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">NodeConstantScalar</span><span class="p">(</span><span class="n">Node</span><span class="p">):</span>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">compute_fixed_u_and_f</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Compute u(x) and f(x) for given x. &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">([</span><span class="n">x</span><span class="p">],</span> <span class="mi">0</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="n">NodeConstant</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-                              <span class="p">[</span><span class="n">a</span><span class="p">],</span>
-                              <span class="n">plates</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">a</span><span class="p">),</span>
-                              <span class="n">dims</span><span class="o">=</span><span class="p">[()],</span>
-                              <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">u</span> <span class="o">=</span> <span class="p">[</span><span class="n">a</span><span class="p">]</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                         <span class="n">plates</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">a</span><span class="p">),</span>
+                         <span class="n">dims</span><span class="o">=</span><span class="p">[()],</span>
+                         <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">start_optimization</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c"># FIXME: Set the plate sizes appropriately!!</span>
@@ -722,13 +1130,16 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../../../../genindex.html" title="General Index"
              >index</a></li>
+        <li class="right" >
+          <a href="../../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
         <li><a href="../../../../../index.html">bayespy 0.1 documentation</a> &raquo;</li>
           <li><a href="../../../../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2011-2013, Jaakko Luttinen.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+        &copy; Copyright 2011-2014, Jaakko Luttinen.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
     </div>
   </body>
 </html>

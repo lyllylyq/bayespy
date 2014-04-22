@@ -26,8 +26,7 @@
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="top" title="bayespy 0.1 documentation" href="../index.html" />
     <link rel="up" title="API" href="../api.html" />
-    <link rel="next" title="bayespy.nodes.Gaussian.add_plate_axis" href="bayespy.nodes.Gaussian.add_plate_axis.html" />
-    <link rel="prev" title="bayespy.nodes.Normal.ndims_parents" href="bayespy.nodes.Normal.ndims_parents.html" /> 
+    <link rel="next" title="bayespy.nodes.Gamma" href="bayespy.nodes.Gamma.html" /> 
   </head>
   <body>
     <div class="related">
@@ -37,11 +36,11 @@
           <a href="../genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="bayespy.nodes.Gaussian.add_plate_axis.html" title="bayespy.nodes.Gaussian.add_plate_axis"
-             accesskey="N">next</a> |</li>
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
         <li class="right" >
-          <a href="bayespy.nodes.Normal.ndims_parents.html" title="bayespy.nodes.Normal.ndims_parents"
-             accesskey="P">previous</a> |</li>
+          <a href="bayespy.nodes.Gamma.html" title="bayespy.nodes.Gamma"
+             accesskey="N">next</a> |</li>
         <li><a href="../index.html">bayespy 0.1 documentation</a> &raquo;</li>
           <li><a href="../api.html" accesskey="U">API</a> &raquo;</li> 
       </ul>
@@ -54,9 +53,9 @@
             
   <div class="section" id="bayespy-nodes-gaussian">
 <h1>bayespy.nodes.Gaussian<a class="headerlink" href="#bayespy-nodes-gaussian" title="Permalink to this headline">¶</a></h1>
-<dl class="class">
+<dl class="data">
 <dt id="bayespy.nodes.Gaussian">
-<em class="property">class </em><tt class="descclassname">bayespy.nodes.</tt><tt class="descname">Gaussian</tt><big>(</big><em>mu</em>, <em>Lambda</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#bayespy.nodes.Gaussian" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">bayespy.nodes.</tt><tt class="descname">Gaussian</tt><em class="property"> = &lt;class 'bayespy.inference.vmp.nodes.gaussian.Gaussian'&gt;</em><a class="headerlink" href="#bayespy.nodes.Gaussian" title="Permalink to this definition">¶</a></dt>
 <dd><p>VMP node for Gaussian variable.</p>
 <p>The node represents a <span class="math">\(D\)</span>-dimensional vector from the
 Gaussian distribution:</p>
@@ -74,7 +73,7 @@ the covariance matrix).</p>
 <p>Parent nodes? Child nodes?</p>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="bayespy.nodes.Normal.html#bayespy.nodes.Normal" title="bayespy.nodes.Normal"><tt class="xref py py-obj docutils literal"><span class="pre">Normal</span></tt></a>, <a class="reference internal" href="bayespy.nodes.Wishart.html#bayespy.nodes.Wishart" title="bayespy.nodes.Wishart"><tt class="xref py py-obj docutils literal"><span class="pre">Wishart</span></tt></a></p>
+<p class="last"><a class="reference internal" href="bayespy.nodes.Wishart.html#bayespy.nodes.Wishart" title="bayespy.nodes.Wishart"><tt class="xref py py-obj docutils literal"><span class="pre">Wishart</span></tt></a></p>
 </div>
 <p class="rubric">Notes</p>
 <p>Message passing equations:</p>
@@ -153,105 +152,6 @@ f(\mathbf{x})
   \boldsymbol{\phi}^{\mathrm{T}}_1 \boldsymbol{\phi}^{-1}_2 
   - \frac{1}{2} \boldsymbol{\phi}^{-1}_2
 \end{matrix} \right]\end{split}\]</div>
-<p class="rubric">Methods</p>
-<table border="1" class="longtable docutils">
-<colgroup>
-<col width="10%" />
-<col width="90%" />
-</colgroup>
-<tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="bayespy.nodes.Gaussian.add_plate_axis.html#bayespy.nodes.Gaussian.add_plate_axis" title="bayespy.nodes.Gaussian.add_plate_axis"><tt class="xref py py-obj docutils literal"><span class="pre">add_plate_axis</span></tt></a>(to_plate)</td>
-<td></td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="bayespy.nodes.Gaussian.compute_dims.html#bayespy.nodes.Gaussian.compute_dims" title="bayespy.nodes.Gaussian.compute_dims"><tt class="xref py py-obj docutils literal"><span class="pre">compute_dims</span></tt></a>(mu,&nbsp;Lambda)</td>
-<td>Compute the dimensions of phi and u using the parent nodes.</td>
-</tr>
-<tr class="row-odd"><td><a class="reference internal" href="bayespy.nodes.Gaussian.compute_dims_from_values.html#bayespy.nodes.Gaussian.compute_dims_from_values" title="bayespy.nodes.Gaussian.compute_dims_from_values"><tt class="xref py py-obj docutils literal"><span class="pre">compute_dims_from_values</span></tt></a>(x)</td>
-<td>Compute the dimensions of phi and u from a value.</td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="bayespy.nodes.Gaussian.compute_fixed_moments.html#bayespy.nodes.Gaussian.compute_fixed_moments" title="bayespy.nodes.Gaussian.compute_fixed_moments"><tt class="xref py py-obj docutils literal"><span class="pre">compute_fixed_moments</span></tt></a>(x)</td>
-<td>Compute moments for fixed x.</td>
-</tr>
-<tr class="row-odd"><td><a class="reference internal" href="bayespy.nodes.Gaussian.get_mask.html#bayespy.nodes.Gaussian.get_mask" title="bayespy.nodes.Gaussian.get_mask"><tt class="xref py py-obj docutils literal"><span class="pre">get_mask</span></tt></a>()</td>
-<td></td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="bayespy.nodes.Gaussian.get_moments.html#bayespy.nodes.Gaussian.get_moments" title="bayespy.nodes.Gaussian.get_moments"><tt class="xref py py-obj docutils literal"><span class="pre">get_moments</span></tt></a>()</td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><a class="reference internal" href="bayespy.nodes.Gaussian.get_shape.html#bayespy.nodes.Gaussian.get_shape" title="bayespy.nodes.Gaussian.get_shape"><tt class="xref py py-obj docutils literal"><span class="pre">get_shape</span></tt></a>(ind)</td>
-<td></td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="bayespy.nodes.Gaussian.get_shape_of_value.html#bayespy.nodes.Gaussian.get_shape_of_value" title="bayespy.nodes.Gaussian.get_shape_of_value"><tt class="xref py py-obj docutils literal"><span class="pre">get_shape_of_value</span></tt></a>()</td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><a class="reference internal" href="bayespy.nodes.Gaussian.initialize_from_parameters.html#bayespy.nodes.Gaussian.initialize_from_parameters" title="bayespy.nodes.Gaussian.initialize_from_parameters"><tt class="xref py py-obj docutils literal"><span class="pre">initialize_from_parameters</span></tt></a>(*args)</td>
-<td></td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="bayespy.nodes.Gaussian.initialize_from_prior.html#bayespy.nodes.Gaussian.initialize_from_prior" title="bayespy.nodes.Gaussian.initialize_from_prior"><tt class="xref py py-obj docutils literal"><span class="pre">initialize_from_prior</span></tt></a>()</td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><a class="reference internal" href="bayespy.nodes.Gaussian.initialize_from_random.html#bayespy.nodes.Gaussian.initialize_from_random" title="bayespy.nodes.Gaussian.initialize_from_random"><tt class="xref py py-obj docutils literal"><span class="pre">initialize_from_random</span></tt></a>()</td>
-<td></td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="bayespy.nodes.Gaussian.initialize_from_value.html#bayespy.nodes.Gaussian.initialize_from_value" title="bayespy.nodes.Gaussian.initialize_from_value"><tt class="xref py py-obj docutils literal"><span class="pre">initialize_from_value</span></tt></a>(x)</td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><a class="reference internal" href="bayespy.nodes.Gaussian.load.html#bayespy.nodes.Gaussian.load" title="bayespy.nodes.Gaussian.load"><tt class="xref py py-obj docutils literal"><span class="pre">load</span></tt></a>(group)</td>
-<td>Load the state of the node from a HDF5 file.</td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="bayespy.nodes.Gaussian.lower_bound_contribution.html#bayespy.nodes.Gaussian.lower_bound_contribution" title="bayespy.nodes.Gaussian.lower_bound_contribution"><tt class="xref py py-obj docutils literal"><span class="pre">lower_bound_contribution</span></tt></a>([gradient])</td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><a class="reference internal" href="bayespy.nodes.Gaussian.lowerbound.html#bayespy.nodes.Gaussian.lowerbound" title="bayespy.nodes.Gaussian.lowerbound"><tt class="xref py py-obj docutils literal"><span class="pre">lowerbound</span></tt></a>()</td>
-<td></td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="bayespy.nodes.Gaussian.move_plates.html#bayespy.nodes.Gaussian.move_plates" title="bayespy.nodes.Gaussian.move_plates"><tt class="xref py py-obj docutils literal"><span class="pre">move_plates</span></tt></a>(from_plate,&nbsp;to_plate)</td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><a class="reference internal" href="bayespy.nodes.Gaussian.observe.html#bayespy.nodes.Gaussian.observe" title="bayespy.nodes.Gaussian.observe"><tt class="xref py py-obj docutils literal"><span class="pre">observe</span></tt></a>(x[,&nbsp;mask])</td>
-<td>Fix moments, compute f and propagate mask.</td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="bayespy.nodes.Gaussian.random.html#bayespy.nodes.Gaussian.random" title="bayespy.nodes.Gaussian.random"><tt class="xref py py-obj docutils literal"><span class="pre">random</span></tt></a>()</td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><a class="reference internal" href="bayespy.nodes.Gaussian.rotate.html#bayespy.nodes.Gaussian.rotate" title="bayespy.nodes.Gaussian.rotate"><tt class="xref py py-obj docutils literal"><span class="pre">rotate</span></tt></a>(R[,&nbsp;inv,&nbsp;logdet,&nbsp;Q])</td>
-<td></td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="bayespy.nodes.Gaussian.rotate_matrix.html#bayespy.nodes.Gaussian.rotate_matrix" title="bayespy.nodes.Gaussian.rotate_matrix"><tt class="xref py py-obj docutils literal"><span class="pre">rotate_matrix</span></tt></a>(R1,&nbsp;R2[,&nbsp;inv1,&nbsp;logdet1,&nbsp;inv2,&nbsp;...])</td>
-<td>The vector is reshaped into a matrix by stacking the row vectors.</td>
-</tr>
-<tr class="row-odd"><td><a class="reference internal" href="bayespy.nodes.Gaussian.save.html#bayespy.nodes.Gaussian.save" title="bayespy.nodes.Gaussian.save"><tt class="xref py py-obj docutils literal"><span class="pre">save</span></tt></a>(group)</td>
-<td>Save the state of the node into a HDF5 file.</td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="bayespy.nodes.Gaussian.show.html#bayespy.nodes.Gaussian.show" title="bayespy.nodes.Gaussian.show"><tt class="xref py py-obj docutils literal"><span class="pre">show</span></tt></a>()</td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><a class="reference internal" href="bayespy.nodes.Gaussian.unobserve.html#bayespy.nodes.Gaussian.unobserve" title="bayespy.nodes.Gaussian.unobserve"><tt class="xref py py-obj docutils literal"><span class="pre">unobserve</span></tt></a>()</td>
-<td></td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="bayespy.nodes.Gaussian.update.html#bayespy.nodes.Gaussian.update" title="bayespy.nodes.Gaussian.update"><tt class="xref py py-obj docutils literal"><span class="pre">update</span></tt></a>()</td>
-<td></td>
-</tr>
-</tbody>
-</table>
-<p class="rubric">Attributes</p>
-<table border="1" class="longtable docutils">
-<colgroup>
-<col width="10%" />
-<col width="90%" />
-</colgroup>
-<tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="bayespy.nodes.Gaussian.ndim_observations.html#bayespy.nodes.Gaussian.ndim_observations" title="bayespy.nodes.Gaussian.ndim_observations"><tt class="xref py py-obj docutils literal"><span class="pre">ndim_observations</span></tt></a></td>
-<td>int(x=0) -&gt; integer</td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="bayespy.nodes.Gaussian.ndims.html#bayespy.nodes.Gaussian.ndims" title="bayespy.nodes.Gaussian.ndims"><tt class="xref py py-obj docutils literal"><span class="pre">ndims</span></tt></a></td>
-<td>tuple() -&gt; empty tuple</td>
-</tr>
-<tr class="row-odd"><td><a class="reference internal" href="bayespy.nodes.Gaussian.ndims_parents.html#bayespy.nodes.Gaussian.ndims_parents" title="bayespy.nodes.Gaussian.ndims_parents"><tt class="xref py py-obj docutils literal"><span class="pre">ndims_parents</span></tt></a></td>
-<td>list() -&gt; new empty list</td>
-</tr>
-</tbody>
-</table>
 </dd></dl>
 
 </div>
@@ -262,12 +162,9 @@ f(\mathbf{x})
       </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="bayespy.nodes.Normal.ndims_parents.html"
-                        title="previous chapter">bayespy.nodes.Normal.ndims_parents</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="bayespy.nodes.Gaussian.add_plate_axis.html"
-                        title="next chapter">bayespy.nodes.Gaussian.add_plate_axis</a></p>
+  <p class="topless"><a href="bayespy.nodes.Gamma.html"
+                        title="next chapter">bayespy.nodes.Gamma</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../_sources/generated/bayespy.nodes.Gaussian.txt"
@@ -297,18 +194,18 @@ f(\mathbf{x})
           <a href="../genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
-          <a href="bayespy.nodes.Gaussian.add_plate_axis.html" title="bayespy.nodes.Gaussian.add_plate_axis"
-             >next</a> |</li>
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
         <li class="right" >
-          <a href="bayespy.nodes.Normal.ndims_parents.html" title="bayespy.nodes.Normal.ndims_parents"
-             >previous</a> |</li>
+          <a href="bayespy.nodes.Gamma.html" title="bayespy.nodes.Gamma"
+             >next</a> |</li>
         <li><a href="../index.html">bayespy 0.1 documentation</a> &raquo;</li>
           <li><a href="../api.html" >API</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2011-2013, Jaakko Luttinen.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+        &copy; Copyright 2011-2014, Jaakko Luttinen.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
     </div>
   </body>
 </html>

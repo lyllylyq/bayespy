@@ -26,8 +26,8 @@
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="top" title="bayespy 0.1 documentation" href="../index.html" />
     <link rel="up" title="API" href="../api.html" />
-    <link rel="next" title="bayespy.nodes.Gamma.add_plate_axis" href="bayespy.nodes.Gamma.add_plate_axis.html" />
-    <link rel="prev" title="bayespy.nodes.Gaussian.ndims_parents" href="bayespy.nodes.Gaussian.ndims_parents.html" /> 
+    <link rel="next" title="bayespy.nodes.Wishart" href="bayespy.nodes.Wishart.html" />
+    <link rel="prev" title="bayespy.nodes.Gaussian" href="bayespy.nodes.Gaussian.html" /> 
   </head>
   <body>
     <div class="related">
@@ -37,10 +37,13 @@
           <a href="../genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="bayespy.nodes.Gamma.add_plate_axis.html" title="bayespy.nodes.Gamma.add_plate_axis"
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="bayespy.nodes.Wishart.html" title="bayespy.nodes.Wishart"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="bayespy.nodes.Gaussian.ndims_parents.html" title="bayespy.nodes.Gaussian.ndims_parents"
+          <a href="bayespy.nodes.Gaussian.html" title="bayespy.nodes.Gaussian"
              accesskey="P">previous</a> |</li>
         <li><a href="../index.html">bayespy 0.1 documentation</a> &raquo;</li>
           <li><a href="../api.html" accesskey="U">API</a> &raquo;</li> 
@@ -54,100 +57,10 @@
             
   <div class="section" id="bayespy-nodes-gamma">
 <h1>bayespy.nodes.Gamma<a class="headerlink" href="#bayespy-nodes-gamma" title="Permalink to this headline">¶</a></h1>
-<dl class="class">
+<dl class="data">
 <dt id="bayespy.nodes.Gamma">
-<em class="property">class </em><tt class="descclassname">bayespy.nodes.</tt><tt class="descname">Gamma</tt><big>(</big><em>a</em>, <em>b</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#bayespy.nodes.Gamma" title="Permalink to this definition">¶</a></dt>
-<dd><p class="rubric">Methods</p>
-<table border="1" class="longtable docutils">
-<colgroup>
-<col width="10%" />
-<col width="90%" />
-</colgroup>
-<tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="bayespy.nodes.Gamma.add_plate_axis.html#bayespy.nodes.Gamma.add_plate_axis" title="bayespy.nodes.Gamma.add_plate_axis"><tt class="xref py py-obj docutils literal"><span class="pre">add_plate_axis</span></tt></a>(to_plate)</td>
-<td></td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="bayespy.nodes.Gamma.as_diagonal_wishart.html#bayespy.nodes.Gamma.as_diagonal_wishart" title="bayespy.nodes.Gamma.as_diagonal_wishart"><tt class="xref py py-obj docutils literal"><span class="pre">as_diagonal_wishart</span></tt></a>()</td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><a class="reference internal" href="bayespy.nodes.Gamma.compute_dims.html#bayespy.nodes.Gamma.compute_dims" title="bayespy.nodes.Gamma.compute_dims"><tt class="xref py py-obj docutils literal"><span class="pre">compute_dims</span></tt></a>(*parents)</td>
-<td>Compute the dimensions of phi/u.</td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="bayespy.nodes.Gamma.compute_dims_from_values.html#bayespy.nodes.Gamma.compute_dims_from_values" title="bayespy.nodes.Gamma.compute_dims_from_values"><tt class="xref py py-obj docutils literal"><span class="pre">compute_dims_from_values</span></tt></a>(x)</td>
-<td>Compute the dimensions of phi and u.</td>
-</tr>
-<tr class="row-odd"><td><a class="reference internal" href="bayespy.nodes.Gamma.compute_fixed_moments.html#bayespy.nodes.Gamma.compute_fixed_moments" title="bayespy.nodes.Gamma.compute_fixed_moments"><tt class="xref py py-obj docutils literal"><span class="pre">compute_fixed_moments</span></tt></a>(x)</td>
-<td>Compute moments for fixed x.</td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="bayespy.nodes.Gamma.get_mask.html#bayespy.nodes.Gamma.get_mask" title="bayespy.nodes.Gamma.get_mask"><tt class="xref py py-obj docutils literal"><span class="pre">get_mask</span></tt></a>()</td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><a class="reference internal" href="bayespy.nodes.Gamma.get_moments.html#bayespy.nodes.Gamma.get_moments" title="bayespy.nodes.Gamma.get_moments"><tt class="xref py py-obj docutils literal"><span class="pre">get_moments</span></tt></a>()</td>
-<td></td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="bayespy.nodes.Gamma.get_shape.html#bayespy.nodes.Gamma.get_shape" title="bayespy.nodes.Gamma.get_shape"><tt class="xref py py-obj docutils literal"><span class="pre">get_shape</span></tt></a>(ind)</td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><a class="reference internal" href="bayespy.nodes.Gamma.get_shape_of_value.html#bayespy.nodes.Gamma.get_shape_of_value" title="bayespy.nodes.Gamma.get_shape_of_value"><tt class="xref py py-obj docutils literal"><span class="pre">get_shape_of_value</span></tt></a>()</td>
-<td></td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="bayespy.nodes.Gamma.initialize_from_parameters.html#bayespy.nodes.Gamma.initialize_from_parameters" title="bayespy.nodes.Gamma.initialize_from_parameters"><tt class="xref py py-obj docutils literal"><span class="pre">initialize_from_parameters</span></tt></a>(*args)</td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><a class="reference internal" href="bayespy.nodes.Gamma.initialize_from_prior.html#bayespy.nodes.Gamma.initialize_from_prior" title="bayespy.nodes.Gamma.initialize_from_prior"><tt class="xref py py-obj docutils literal"><span class="pre">initialize_from_prior</span></tt></a>()</td>
-<td></td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="bayespy.nodes.Gamma.initialize_from_random.html#bayespy.nodes.Gamma.initialize_from_random" title="bayespy.nodes.Gamma.initialize_from_random"><tt class="xref py py-obj docutils literal"><span class="pre">initialize_from_random</span></tt></a>()</td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><a class="reference internal" href="bayespy.nodes.Gamma.initialize_from_value.html#bayespy.nodes.Gamma.initialize_from_value" title="bayespy.nodes.Gamma.initialize_from_value"><tt class="xref py py-obj docutils literal"><span class="pre">initialize_from_value</span></tt></a>(x)</td>
-<td></td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="bayespy.nodes.Gamma.load.html#bayespy.nodes.Gamma.load" title="bayespy.nodes.Gamma.load"><tt class="xref py py-obj docutils literal"><span class="pre">load</span></tt></a>(group)</td>
-<td>Load the state of the node from a HDF5 file.</td>
-</tr>
-<tr class="row-odd"><td><a class="reference internal" href="bayespy.nodes.Gamma.lower_bound_contribution.html#bayespy.nodes.Gamma.lower_bound_contribution" title="bayespy.nodes.Gamma.lower_bound_contribution"><tt class="xref py py-obj docutils literal"><span class="pre">lower_bound_contribution</span></tt></a>([gradient])</td>
-<td></td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="bayespy.nodes.Gamma.lowerbound.html#bayespy.nodes.Gamma.lowerbound" title="bayespy.nodes.Gamma.lowerbound"><tt class="xref py py-obj docutils literal"><span class="pre">lowerbound</span></tt></a>()</td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><a class="reference internal" href="bayespy.nodes.Gamma.move_plates.html#bayespy.nodes.Gamma.move_plates" title="bayespy.nodes.Gamma.move_plates"><tt class="xref py py-obj docutils literal"><span class="pre">move_plates</span></tt></a>(from_plate,&nbsp;to_plate)</td>
-<td></td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="bayespy.nodes.Gamma.observe.html#bayespy.nodes.Gamma.observe" title="bayespy.nodes.Gamma.observe"><tt class="xref py py-obj docutils literal"><span class="pre">observe</span></tt></a>(x[,&nbsp;mask])</td>
-<td>Fix moments, compute f and propagate mask.</td>
-</tr>
-<tr class="row-odd"><td><a class="reference internal" href="bayespy.nodes.Gamma.save.html#bayespy.nodes.Gamma.save" title="bayespy.nodes.Gamma.save"><tt class="xref py py-obj docutils literal"><span class="pre">save</span></tt></a>(group)</td>
-<td>Save the state of the node into a HDF5 file.</td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="bayespy.nodes.Gamma.show.html#bayespy.nodes.Gamma.show" title="bayespy.nodes.Gamma.show"><tt class="xref py py-obj docutils literal"><span class="pre">show</span></tt></a>()</td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><a class="reference internal" href="bayespy.nodes.Gamma.unobserve.html#bayespy.nodes.Gamma.unobserve" title="bayespy.nodes.Gamma.unobserve"><tt class="xref py py-obj docutils literal"><span class="pre">unobserve</span></tt></a>()</td>
-<td></td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="bayespy.nodes.Gamma.update.html#bayespy.nodes.Gamma.update" title="bayespy.nodes.Gamma.update"><tt class="xref py py-obj docutils literal"><span class="pre">update</span></tt></a>()</td>
-<td></td>
-</tr>
-</tbody>
-</table>
-<p class="rubric">Attributes</p>
-<table border="1" class="longtable docutils">
-<colgroup>
-<col width="10%" />
-<col width="90%" />
-</colgroup>
-<tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="bayespy.nodes.Gamma.ndim_observations.html#bayespy.nodes.Gamma.ndim_observations" title="bayespy.nodes.Gamma.ndim_observations"><tt class="xref py py-obj docutils literal"><span class="pre">ndim_observations</span></tt></a></td>
-<td>int(x=0) -&gt; integer</td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="bayespy.nodes.Gamma.ndims.html#bayespy.nodes.Gamma.ndims" title="bayespy.nodes.Gamma.ndims"><tt class="xref py py-obj docutils literal"><span class="pre">ndims</span></tt></a></td>
-<td>tuple() -&gt; empty tuple</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
+<tt class="descclassname">bayespy.nodes.</tt><tt class="descname">Gamma</tt><em class="property"> = &lt;class 'bayespy.inference.vmp.nodes.gamma.Gamma'&gt;</em><a class="headerlink" href="#bayespy.nodes.Gamma" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 </div>
 
@@ -158,11 +71,11 @@
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
   <h4>Previous topic</h4>
-  <p class="topless"><a href="bayespy.nodes.Gaussian.ndims_parents.html"
-                        title="previous chapter">bayespy.nodes.Gaussian.ndims_parents</a></p>
+  <p class="topless"><a href="bayespy.nodes.Gaussian.html"
+                        title="previous chapter">bayespy.nodes.Gaussian</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="bayespy.nodes.Gamma.add_plate_axis.html"
-                        title="next chapter">bayespy.nodes.Gamma.add_plate_axis</a></p>
+  <p class="topless"><a href="bayespy.nodes.Wishart.html"
+                        title="next chapter">bayespy.nodes.Wishart</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../_sources/generated/bayespy.nodes.Gamma.txt"
@@ -192,18 +105,21 @@
           <a href="../genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
-          <a href="bayespy.nodes.Gamma.add_plate_axis.html" title="bayespy.nodes.Gamma.add_plate_axis"
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="bayespy.nodes.Wishart.html" title="bayespy.nodes.Wishart"
              >next</a> |</li>
         <li class="right" >
-          <a href="bayespy.nodes.Gaussian.ndims_parents.html" title="bayespy.nodes.Gaussian.ndims_parents"
+          <a href="bayespy.nodes.Gaussian.html" title="bayespy.nodes.Gaussian"
              >previous</a> |</li>
         <li><a href="../index.html">bayespy 0.1 documentation</a> &raquo;</li>
           <li><a href="../api.html" >API</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2011-2013, Jaakko Luttinen.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+        &copy; Copyright 2011-2014, Jaakko Luttinen.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
     </div>
   </body>
 </html>

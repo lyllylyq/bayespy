@@ -1,0 +1,221 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>bayespy.inference.vmp.nodes.gaussian.Gaussian &mdash; bayespy 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="bayespy 0.1 documentation" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../index.html">bayespy 0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="bayespy-inference-vmp-nodes-gaussian-gaussian">
+<h1>bayespy.inference.vmp.nodes.gaussian.Gaussian<a class="headerlink" href="#bayespy-inference-vmp-nodes-gaussian-gaussian" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="bayespy.inference.vmp.nodes.gaussian.Gaussian">
+<em class="property">class </em><tt class="descclassname">bayespy.inference.vmp.nodes.gaussian.</tt><tt class="descname">Gaussian</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/bayespy/inference/vmp/nodes/gaussian.html#Gaussian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bayespy.inference.vmp.nodes.gaussian.Gaussian" title="Permalink to this definition">¶</a></dt>
+<dd><p>VMP node for Gaussian variable.</p>
+<p>The node represents a <span class="math">\(D\)</span>-dimensional vector from the
+Gaussian distribution:</p>
+<div class="math">
+\[\begin{split}\mathbf{x} &amp;\sim \mathcal{N}(\boldsymbol{\mu},
+\mathbf{\Lambda}),\end{split}\]</div>
+<p>where <span class="math">\(\boldsymbol{\mu}\)</span> is the mean vector and
+<span class="math">\(\mathbf{\Lambda}\)</span> is the precision matrix (i.e., inverse of
+the covariance matrix).</p>
+<div class="math">
+\[\mathbf{x},\boldsymbol{\mu} \in \mathbb{R}^{D}, 
+\quad \mathbf{\Lambda} \in \mathbb{R}^{D \times D},
+\quad \mathbf{\Lambda} \text{ symmetric positive definite}\]</div>
+<p>Plates!</p>
+<p>Parent nodes? Child nodes?</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><tt class="xref py py-obj docutils literal"><span class="pre">Wishart</span></tt></p>
+</div>
+<p class="rubric">Notes</p>
+<p>Message passing equations:</p>
+<div class="math">
+\[\begin{split}\mathbf{x} &amp;\sim \mathcal{N}(\boldsymbol{\mu}, \mathbf{\Lambda}),\end{split}\]</div>
+<div class="math">
+\[\mathbf{x},\boldsymbol{\mu} \in \mathbb{R}^{D}, 
+\quad \mathbf{\Lambda} \in \mathbb{R}^{D \times D},
+\quad \mathbf{\Lambda} \text{ symmetric positive definite}\]</div>
+<div class="math">
+\[\begin{split}\log\mathcal{N}( \mathbf{x} | \boldsymbol{\mu}, \mathbf{\Lambda} )
+&amp;= 
+- \frac{1}{2} \mathbf{x}^{\mathrm{T}} \mathbf{\Lambda} \mathbf{x}
++ \mathbf{x}^{\mathrm{T}} \mathbf{\Lambda} \boldsymbol{\mu}
+- \frac{1}{2} \boldsymbol{\mu}^{\mathrm{T}} \mathbf{\Lambda}
+  \boldsymbol{\mu}
++ \frac{1}{2} \log |\mathbf{\Lambda}|
+- \frac{D}{2} \log (2\pi)\end{split}\]</div>
+<div class="math">
+\[\begin{split}\mathbf{u} (\mathbf{x})
+&amp;=
+\left[ \begin{matrix}
+  \mathbf{x}
+  \\
+  \mathbf{xx}^{\mathrm{T}}
+\end{matrix} \right]
+\\
+\boldsymbol{\phi} (\boldsymbol{\mu}, \mathbf{\Lambda})
+&amp;=
+\left[ \begin{matrix}
+  \mathbf{\Lambda} \boldsymbol{\mu} 
+  \\
+  - \frac{1}{2} \mathbf{\Lambda}
+\end{matrix} \right]
+\\
+\boldsymbol{\phi}_{\boldsymbol{\mu}} (\mathbf{x}, \mathbf{\Lambda})
+&amp;=
+\left[ \begin{matrix}
+  \mathbf{\Lambda} \mathbf{x} 
+  \\
+  - \frac{1}{2} \mathbf{\Lambda}
+\end{matrix} \right]
+\\
+\boldsymbol{\phi}_{\mathbf{\Lambda}} (\mathbf{x}, \boldsymbol{\mu})
+&amp;=
+\left[ \begin{matrix}
+  - \frac{1}{2} \mathbf{xx}^{\mathrm{T}}
+  + \frac{1}{2} \mathbf{x}\boldsymbol{\mu}^{\mathrm{T}}
+  + \frac{1}{2} \boldsymbol{\mu}\mathbf{x}^{\mathrm{T}}
+  - \frac{1}{2} \boldsymbol{\mu\mu}^{\mathrm{T}}
+  \\
+  \frac{1}{2}
+\end{matrix} \right]
+\\
+g (\boldsymbol{\mu}, \mathbf{\Lambda})
+&amp;=
+- \frac{1}{2} \operatorname{tr}(\boldsymbol{\mu\mu}^{\mathrm{T}}
+                                \mathbf{\Lambda} )
++ \frac{1}{2} \log |\mathbf{\Lambda}|
+\\
+g_{\boldsymbol{\phi}} (\boldsymbol{\phi})
+&amp;=
+\frac{1}{4} \boldsymbol{\phi}^{\mathrm{T}}_1 \boldsymbol{\phi}^{-1}_2 
+\boldsymbol{\phi}_1
++ \frac{1}{2} \log | -2 \boldsymbol{\phi}_2 |
+\\
+f(\mathbf{x})
+&amp;= - \frac{D}{2} \log(2\pi)
+\\
+\overline{\mathbf{u}}  (\boldsymbol{\phi})
+&amp;=
+\left[ \begin{matrix}
+  - \frac{1}{2} \boldsymbol{\phi}^{-1}_2 \boldsymbol{\phi}_1
+  \\
+  \frac{1}{4} \boldsymbol{\phi}^{-1}_2 \boldsymbol{\phi}_1
+  \boldsymbol{\phi}^{\mathrm{T}}_1 \boldsymbol{\phi}^{-1}_2 
+  - \frac{1}{2} \boldsymbol{\phi}^{-1}_2
+\end{matrix} \right]\end{split}\]</div>
+<dl class="method">
+<dt id="bayespy.inference.vmp.nodes.gaussian.Gaussian.__init__">
+<tt class="descname">__init__</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/bayespy/inference/vmp/nodes/gaussian.html#Gaussian.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bayespy.inference.vmp.nodes.gaussian.Gaussian.__init__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p class="rubric">Attributes</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">Gaussian.ndim_observations</span></tt></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">Gaussian.ndims</span></tt></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">Gaussian.ndims_parents</span></tt></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/generated.backup/bayespy.inference.vmp.nodes.gaussian.Gaussian.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../index.html">bayespy 0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011-2014, Jaakko Luttinen.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>
