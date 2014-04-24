@@ -87,9 +87,7 @@ for each package as:</p>
 <div class="highlight-console"><div class="highlight"><pre><span class="go">sudo apt-get build-dep python3-numpy</span>
 <span class="go">sudo apt-get build-dep python3-scipy</span>
 <span class="go">sudo apt-get build-dep python3-matplotlib</span>
-<span class="go">sudo apt-get build-dep cython</span>
 <span class="go">sudo apt-get build-dep python-h5py</span>
-<span class="gp">#</span> sudo aptitude install python3-tk tk-dev <span class="o">(</span><span class="k">for </span>matplotlib?<span class="o">)</span>
 </pre></div>
 </div>
 <p>This guarantees that the required system libraries are installed.  Then
@@ -120,9 +118,10 @@ instead:</p>
 <div class="highlight-console"><div class="highlight"><pre><span class="go">pip install https://github.com/bayespy/bayespy/archive/master.zip</span>
 </pre></div>
 </div>
-<p>If you have nose installed in the virtual environment, you can check that
-BayesPy is working:</p>
-<div class="highlight-console"><div class="highlight"><pre><span class="go">nosetests bayespy</span>
+<p>It is recommended run the unit tests in order to check that BayesPy is working
+properly.  Thus, install Nose and run the unit tests:</p>
+<div class="highlight-console"><div class="highlight"><pre><span class="go">pip install nose</span>
+<span class="go">nosetests bayespy</span>
 </pre></div>
 </div>
 </div>
