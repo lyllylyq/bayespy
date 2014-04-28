@@ -70,46 +70,48 @@ errors or some relevant details are missing, please file a bug report at
 <li>matplotlib (&gt;=1.2)</li>
 <li>h5py</li>
 </ul>
-<p>A proper installation of these packages for Python 3 can be a bit tricky and you
-may refer to <a class="reference external" href="http://www.scipy.org/install.html">http://www.scipy.org/install.html</a> for more detailed instructions
-about the SciPy stack.  If your system has an older version of any of the
-packages (NumPy, SciPy or matplotlib) or it does not provide the packages for
-Python 3, you may set up a virtual environment and install the latest versions
-there.  To create and activate a new virtual environment, run</p>
+<p>Ideally, a manual installation of these dependencies is not required and you can
+skip to the next section &#8220;Installing Bayespy&#8221;.  However, there are several
+reasons why the installation of BayesPy as described in the next section won&#8217;t
+work because of your system.  Thus, this section tries to give as detailed and
+robust a method of setting up your system such that the installation of BayesPy
+should work.</p>
+<p>A proper installation of the dependencies for Python 3 can be a bit tricky and
+you may refer to <a class="reference external" href="http://www.scipy.org/install.html">http://www.scipy.org/install.html</a> for more detailed
+instructions about the SciPy stack.  If your system has an older version of any
+of the packages (NumPy, SciPy or matplotlib) or it does not provide the packages
+for Python 3, you may set up a virtual environment and install the latest
+versions there.  To create and activate a new virtual environment, run</p>
 <div class="highlight-console"><div class="highlight"><pre><span class="go">virtualenv -p python3 --system-site-packages ENV</span>
 <span class="go">source ENV/bin/activate</span>
 </pre></div>
 </div>
-<p>If your system is properly set up, you may be able to install them from PyPI (a
-C compiler, Python development files, BLAS/LAPACK and other system files may be
-required).  For instance, on Ubuntu (&gt;= 12.10), you may install the dependencies
-for each package as:</p>
+<p>If you have relevant system libraries installed (C compiler, Python development
+files, BLAS/LAPACK etc.), you may be able to install the Python packages from
+PyPI.  For instance, on Ubuntu (&gt;= 12.10), you may install the required system
+libraries for each package as:</p>
 <div class="highlight-console"><div class="highlight"><pre><span class="go">sudo apt-get build-dep python3-numpy</span>
 <span class="go">sudo apt-get build-dep python3-scipy</span>
 <span class="go">sudo apt-get build-dep python3-matplotlib</span>
 <span class="go">sudo apt-get build-dep python-h5py</span>
 </pre></div>
 </div>
-<p>This guarantees that the required system libraries are installed.  Then
-installation/upgrade from PyPI should work:</p>
-<div class="highlight-console"><div class="highlight"><pre><span class="go">pip install numpy --upgrade</span>
-<span class="go">pip install scipy matplotlib --upgrade</span>
+<p>Then installation/upgrade from PyPI should work:</p>
+<div class="highlight-console"><div class="highlight"><pre><span class="go">pip install distribute --upgrade</span>
+<span class="go">pip install numpy --upgrade</span>
+<span class="go">pip install scipy --upgrade</span>
+<span class="go">pip install matplotlib --upgrade</span>
+<span class="go">pip install h5py</span>
 </pre></div>
 </div>
-<p>Note that this may take several minutes. You also need to instal h5py, for
-instance, from PyPI:</p>
-<div class="highlight-console"><div class="highlight"><pre><span class="go">pip install h5py</span>
-</pre></div>
-</div>
-<p>If you have problems installing any of these packages, refer to the manual of
+<p>Note that Matplotlib requires a quite recent version of Distribute (&gt;=0.6.28).
+If you have problems installing any of these packages, refer to the manual of
 that package.</p>
 </div>
 <div class="section" id="installing-bayespy">
 <h2>Installing BayesPy<a class="headerlink" href="#installing-bayespy" title="Permalink to this headline">¶</a></h2>
-<p>Before proceeding, make sure you have installed h5py and the latest versions of
-NumPy, Scipy and matplotlib for Python 3.  After the system has been properly
-set up and the virtual environment is activated (if wanted), BayesPy can be
-installed from PyPI simply as</p>
+<p>If the system has been properly set up and the virtual environment is activated
+(optional), latest release of BayesPy can be installed from PyPI simply as</p>
 <div class="highlight-console"><div class="highlight"><pre><span class="go">pip install bayespy</span>
 </pre></div>
 </div>
@@ -118,8 +120,8 @@ instead:</p>
 <div class="highlight-console"><div class="highlight"><pre><span class="go">pip install https://github.com/bayespy/bayespy/archive/master.zip</span>
 </pre></div>
 </div>
-<p>It is recommended run the unit tests in order to check that BayesPy is working
-properly.  Thus, install Nose and run the unit tests:</p>
+<p>It is recommended to run the unit tests in order to check that BayesPy is
+working properly.  Thus, install Nose and run the unit tests:</p>
 <div class="highlight-console"><div class="highlight"><pre><span class="go">pip install nose</span>
 <span class="go">nosetests bayespy</span>
 </pre></div>

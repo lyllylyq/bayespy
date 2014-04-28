@@ -662,7 +662,7 @@
     
 
 </div>
-<span class="k">class</span> <span class="nc">DriftingGaussianMarkovChainDistribution</span><span class="p">(</span><span class="n">TemplateGaussianMarkovChainDistribution</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">VaryingGaussianMarkovChainDistribution</span><span class="p">(</span><span class="n">TemplateGaussianMarkovChainDistribution</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Sub-classes implement distribution specific computations.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -937,9 +937,9 @@
 
 
 
-<span class="k">class</span> <span class="nc">DriftingGaussianMarkovChain</span><span class="p">(</span><span class="n">_TemplateGaussianMarkovChain</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">VaryingGaussianMarkovChain</span><span class="p">(</span><span class="n">_TemplateGaussianMarkovChain</span><span class="p">):</span>
     <span class="sd">r&quot;&quot;&quot;</span>
-<span class="sd">    VMP node for drifting Gaussian Markov chain.</span>
+<span class="sd">    VMP node for Gaussian Markov chain with time-varying dynamics.</span>
 
 <span class="sd">    Parents are:</span>
 <span class="sd">    `mu` is the mean of x0 (Gaussian)</span>
@@ -1084,7 +1084,7 @@
 
         
         <span class="n">dims</span> <span class="o">=</span> <span class="p">(</span> <span class="p">(</span><span class="n">M</span><span class="p">,</span><span class="n">D</span><span class="p">),</span> <span class="p">(</span><span class="n">M</span><span class="p">,</span><span class="n">D</span><span class="p">,</span><span class="n">D</span><span class="p">),</span> <span class="p">(</span><span class="n">M</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="n">D</span><span class="p">,</span><span class="n">D</span><span class="p">)</span> <span class="p">)</span>
-        <span class="n">distribution</span> <span class="o">=</span> <span class="n">DriftingGaussianMarkovChainDistribution</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">D</span><span class="p">)</span>
+        <span class="n">distribution</span> <span class="o">=</span> <span class="n">VaryingGaussianMarkovChainDistribution</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">D</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="p">(</span><span class="n">dims</span><span class="p">,</span>
                 <span class="n">cls</span><span class="o">.</span><span class="n">_total_plates</span><span class="p">(</span><span class="n">plates</span><span class="p">,</span>
