@@ -8,7 +8,7 @@
     
     <title>bayespy.inference.vmp.nodes.node &mdash; bayespy 0.1 documentation</title>
     
-    <link rel="stylesheet" href="../../../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../../_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
     
     <script type="text/javascript">
@@ -34,9 +34,6 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../../../../genindex.html" title="General Index"
              accesskey="I">index</a></li>
-        <li class="right" >
-          <a href="../../../../../py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
         <li><a href="../../../../../index.html">bayespy 0.1 documentation</a> &raquo;</li>
           <li><a href="../../../../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
@@ -112,9 +109,9 @@
     <span class="n">m</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">squeeze_to_dim</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">shape_parent</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">m</span>
 
-<span class="k">class</span> <span class="nc">Statistics</span><span class="p">():</span>
+<span class="k">class</span> <span class="nc">Moments</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Base class for defining sufficient statistic for nodes.</span>
+<span class="sd">    Base class for defining the expectation of the sufficient statistics.</span>
 
 <span class="sd">    The benefits:</span>
 
@@ -135,23 +132,21 @@
 <span class="sd">        Gaussian.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="c"># Overwrite this</span>
-    <span class="n">ndim_observations</span> <span class="o">=</span> <span class="bp">None</span>
     
-    <span class="k">def</span> <span class="nf">converter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">statistics_class</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">converter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">moments_class</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Returns a node class which converts the node&#39;s statistics to another</span>
+<span class="sd">        Returns a node class which converts the node&#39;s moments to another</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c"># This method must take statistics object instead of class because, for</span>
+        <span class="c"># This method must take moments object instead of class because, for</span>
         <span class="c"># instance, one could want to convert gamma to wishart with specific</span>
         <span class="c"># ndim? Or maybe that is in any case too complex so it would have to be</span>
         <span class="c"># handled manually.</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">statistics_class</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">moments_class</span><span class="p">):</span>
             <span class="k">return</span> <span class="k">lambda</span> <span class="n">X</span><span class="p">:</span> <span class="n">X</span>
 
         <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;No conversion defined from </span><span class="si">%s</span><span class="s"> to </span><span class="si">%s</span><span class="s">&quot;</span>
                         <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span>
-                           <span class="n">statistics_class</span><span class="o">.</span><span class="n">__name__</span><span class="p">))</span>
+                           <span class="n">moments_class</span><span class="o">.</span><span class="n">__name__</span><span class="p">))</span>
 
     <span class="k">def</span> <span class="nf">compute_fixed_moments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
         <span class="c"># This method can&#39;t be static because the computation of the moments may</span>
@@ -172,8 +167,8 @@
         <span class="c"># Convert parents to proper nodes</span>
         <span class="n">parents</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">parents</span><span class="p">)</span>
         <span class="k">for</span> <span class="p">(</span><span class="n">ind</span><span class="p">,</span> <span class="n">parent</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">parents</span><span class="p">):</span>
-            <span class="n">parents</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ensure_statistics</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> 
-                                                   <span class="bp">self</span><span class="o">.</span><span class="n">_parent_statistics</span><span class="p">[</span><span class="n">ind</span><span class="p">])</span>
+            <span class="n">parents</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ensure_moments</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> 
+                                                <span class="bp">self</span><span class="o">.</span><span class="n">_parent_moments</span><span class="p">[</span><span class="n">ind</span><span class="p">])</span>
         <span class="c"># Run the function</span>
         <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">parents</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
     
@@ -204,10 +199,11 @@
 <span class="sd">       _plates_from_parent(self, index)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="c"># These are objects of the _parent_statistics_class. If the default way of</span>
+    <span class="c"># These are objects of the _parent_moments_class. If the default way of</span>
     <span class="c"># creating them is not correct, write your own creation code.</span>
-    <span class="n">_statistics</span> <span class="o">=</span> <span class="bp">None</span>
-    <span class="n">_parent_statistics</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="n">_moments</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="n">_parent_moments</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="n">plates</span> <span class="o">=</span> <span class="bp">None</span>
 
     <span class="nd">@ensureparents</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">parents</span><span class="p">,</span> <span class="n">dims</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">plates</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">,</span> 
@@ -230,7 +226,9 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Method _plates_from_parent returned None&quot;</span><span class="p">)</span>
 
         <span class="c"># Get and validate the plates for this node</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">plates</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_total_plates</span><span class="p">(</span><span class="n">plates</span><span class="p">,</span> <span class="o">*</span><span class="n">parent_plates</span><span class="p">)</span>
+        <span class="n">plates</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_total_plates</span><span class="p">(</span><span class="n">plates</span><span class="p">,</span> <span class="o">*</span><span class="n">parent_plates</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">plates</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">plates</span> <span class="o">=</span> <span class="n">plates</span>
 
         <span class="c"># By default, ignore all plates</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">False</span><span class="p">)</span>
@@ -260,14 +258,14 @@
         
 
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_ensure_statistics</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">statistics</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_ensure_moments</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">moments</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">Node</span><span class="p">):</span>
             <span class="c"># Convert to correct type</span>
-            <span class="k">return</span> <span class="n">node</span><span class="o">.</span><span class="n">_convert</span><span class="p">(</span><span class="n">statistics</span><span class="o">.</span><span class="n">__class__</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">node</span><span class="o">.</span><span class="n">_convert</span><span class="p">(</span><span class="n">moments</span><span class="o">.</span><span class="n">__class__</span><span class="p">)</span>
 
         <span class="c"># Convert to constant node</span>
         <span class="kn">from</span> <span class="nn">.constant</span> <span class="kn">import</span> <span class="n">Constant</span>
-        <span class="k">return</span> <span class="n">Constant</span><span class="p">(</span><span class="n">statistics</span><span class="p">,</span> <span class="n">node</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Constant</span><span class="p">(</span><span class="n">moments</span><span class="p">,</span> <span class="n">node</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_plates_to_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
         <span class="c"># Sub-classes may want to overwrite this if they manipulate plates</span>
@@ -627,14 +625,12 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;No plotter defined, can not plot&quot;</span><span class="p">)</span>
         <span class="k">return</span>
-
-    <span class="c">#def _convert(self, node_class):</span>
-    <span class="c">#    return self._statistics._convert_node(node_class)</span></div>
-    <span class="k">def</span> <span class="nf">_convert</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">statistics_class</span><span class="p">):</span>
-        <span class="n">converter</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_statistics</span><span class="o">.</span><span class="n">converter</span><span class="p">(</span><span class="n">statistics_class</span><span class="p">)</span>
+</div>
+    <span class="k">def</span> <span class="nf">_convert</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">moments_class</span><span class="p">):</span>
+        <span class="n">converter</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_moments</span><span class="o">.</span><span class="n">converter</span><span class="p">(</span><span class="n">moments_class</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">converter</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
     <span class="c">## def convert(self, node_class):</span>
-    <span class="c">##     return self._convert(node_class._statistics_class)</span>
+    <span class="c">##     return self._convert(node_class._moments_class)</span>
     
 
 </div>
@@ -666,13 +662,11 @@
 <span class="sd">    http://docs.scipy.org/doc/numpy/reference/arrays.indexing.html#basic-slicing</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">_parent_statistics</span> <span class="o">=</span> <span class="p">(</span><span class="n">Statistics</span><span class="p">(),)</span>
-    <span class="c">#_parent_statistics_class = (Statistics,)</span>
+    <span class="n">_parent_moments</span> <span class="o">=</span> <span class="p">(</span><span class="n">Moments</span><span class="p">(),)</span>
     
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">slices</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_statistics</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">_statistics</span>
-        <span class="c">#self._statistics_class = X._statistics_class</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_moments</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">_moments</span>
 
         <span class="c"># Force a list</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">slices</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
@@ -1017,7 +1011,6 @@
                 <span class="c"># Remove the axis</span>
                 <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">ndim</span><span class="p">(</span><span class="n">m</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">&gt;=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">to_plate</span><span class="p">)</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dims</span><span class="p">[</span><span class="n">i</span><span class="p">]):</span>
                     <span class="n">axis</span> <span class="o">=</span> <span class="n">to_plate</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dims</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
-                    <span class="c">#ndims = np.ndim(m[i]) - len(self.dims[i]) + 1</span>
                     <span class="n">sh_m</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">m</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
                     <span class="n">sh_m</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">axis</span><span class="p">)</span>
                     <span class="n">m</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">m</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">sh_m</span><span class="p">)</span>
@@ -1130,9 +1123,6 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../../../../genindex.html" title="General Index"
              >index</a></li>
-        <li class="right" >
-          <a href="../../../../../py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
         <li><a href="../../../../../index.html">bayespy 0.1 documentation</a> &raquo;</li>
           <li><a href="../../../../index.html" >Module code</a> &raquo;</li> 
       </ul>

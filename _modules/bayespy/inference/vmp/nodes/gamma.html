@@ -8,7 +8,7 @@
     
     <title>bayespy.inference.vmp.nodes.gamma &mdash; bayespy 0.1 documentation</title>
     
-    <link rel="stylesheet" href="../../../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../../_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
     
     <script type="text/javascript">
@@ -34,9 +34,6 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../../../../genindex.html" title="General Index"
              accesskey="I">index</a></li>
-        <li class="right" >
-          <a href="../../../../../py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
         <li><a href="../../../../../index.html">bayespy 0.1 documentation</a> &raquo;</li>
           <li><a href="../../../../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
@@ -71,6 +68,10 @@
 <span class="c"># along with BayesPy.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
 <span class="c">######################################################################</span>
 
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Module for the gamma distribution node.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">scipy.special</span> <span class="kn">as</span> <span class="nn">special</span>
 
@@ -78,8 +79,10 @@
 <span class="kn">from</span> <span class="nn">.deterministic</span> <span class="kn">import</span> <span class="n">Deterministic</span>
 <span class="kn">from</span> <span class="nn">.expfamily</span> <span class="kn">import</span> <span class="n">ExponentialFamily</span><span class="p">,</span> <span class="n">ExponentialFamilyDistribution</span>
 <span class="kn">from</span> <span class="nn">.constant</span> <span class="kn">import</span> <span class="n">Constant</span>
+<span class="kn">from</span> <span class="nn">.node</span> <span class="kn">import</span> <span class="n">Moments</span>
 
 <span class="kn">from</span> <span class="nn">bayespy.utils</span> <span class="kn">import</span> <span class="n">utils</span>
+
 
 <span class="k">def</span> <span class="nf">diagonal</span><span class="p">(</span><span class="n">alpha</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -89,39 +92,62 @@
                                    <span class="n">name</span><span class="o">=</span><span class="n">alpha</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s">&quot; as Wishart&quot;</span><span class="p">)</span>
 
 
-<span class="kn">from</span> <span class="nn">.node</span> <span class="kn">import</span> <span class="n">Statistics</span>
-
-<span class="k">class</span> <span class="nc">GammaPriorStatistics</span><span class="p">(</span><span class="n">Statistics</span><span class="p">):</span>
-    <span class="n">ndim_observations</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="k">class</span> <span class="nc">GammaPriorMoments</span><span class="p">(</span><span class="n">Moments</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Class for the moments of the shape parameter in gamma distributions.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    
     <span class="k">def</span> <span class="nf">compute_fixed_moments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">a</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Compute moments for fixed x. &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute the moments for a fixed value</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">u0</span> <span class="o">=</span> <span class="n">a</span>
         <span class="n">u1</span> <span class="o">=</span> <span class="n">special</span><span class="o">.</span><span class="n">gammaln</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">u0</span><span class="p">,</span> <span class="n">u1</span><span class="p">]</span>
+    
 
     <span class="k">def</span> <span class="nf">compute_dims_from_values</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">a</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Compute the dimensions of phi or u. &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the shape of the moments for a fixed value.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">[(),</span> <span class="p">()]</span>
+    
 
-<span class="k">class</span> <span class="nc">GammaStatistics</span><span class="p">(</span><span class="n">Statistics</span><span class="p">):</span>
-    <span class="n">ndim_observations</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="k">class</span> <span class="nc">GammaMoments</span><span class="p">(</span><span class="n">Moments</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Class for the moments of gamma variables.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    
     <span class="k">def</span> <span class="nf">compute_fixed_moments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Compute moments for fixed x. &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute the moments for a fixed value</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">x</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Values must be positive&quot;</span><span class="p">)</span>
         <span class="n">u0</span> <span class="o">=</span> <span class="n">x</span>
         <span class="n">u1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">u0</span><span class="p">,</span> <span class="n">u1</span><span class="p">]</span>
 
+
     <span class="k">def</span> <span class="nf">compute_dims_from_values</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Compute the dimensions of phi and u. &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the shape of the moments for a fixed value.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">(</span> <span class="p">(),</span> <span class="p">()</span> <span class="p">)</span>
+    
 
 <span class="k">class</span> <span class="nc">GammaDistribution</span><span class="p">(</span><span class="n">ExponentialFamilyDistribution</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Class for the VMP formulas of gamma variables.</span>
+<span class="sd">    &quot;&quot;&quot;</span>    
     
-    <span class="n">ndims</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-    <span class="n">ndims_parents</span> <span class="o">=</span> <span class="p">(</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span>
-                      <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span> <span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">compute_message_to_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">u_self</span><span class="p">,</span> <span class="o">*</span><span class="n">u_parents</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute the message to a parent node.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">index</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;No analytic solution exists&quot;</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">index</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
@@ -130,11 +156,19 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Index out of bounds&quot;</span><span class="p">)</span>
 
+
     <span class="k">def</span> <span class="nf">compute_phi_from_parents</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">u_parents</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute the natural parameter vector given parent moments.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">[</span><span class="o">-</span><span class="n">u_parents</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span>
                 <span class="mi">1</span><span class="o">*</span><span class="n">u_parents</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]]</span>
+    
 
     <span class="k">def</span> <span class="nf">compute_moments_and_cgf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">phi</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute the moments and :math:`g(\phi)`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">log_b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="o">-</span><span class="n">phi</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
         <span class="n">u0</span> <span class="o">=</span> <span class="n">phi</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="p">(</span><span class="o">-</span><span class="n">phi</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
         <span class="n">u1</span> <span class="o">=</span> <span class="n">special</span><span class="o">.</span><span class="n">digamma</span><span class="p">(</span><span class="n">phi</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">-</span> <span class="n">log_b</span>
@@ -142,33 +176,48 @@
         <span class="n">g</span> <span class="o">=</span> <span class="n">phi</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">log_b</span> <span class="o">-</span> <span class="n">special</span><span class="o">.</span><span class="n">gammaln</span><span class="p">(</span><span class="n">phi</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
         <span class="k">return</span> <span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">g</span><span class="p">)</span>
 
+
     <span class="k">def</span> <span class="nf">compute_cgf_from_parents</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">u_parents</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute :math:`\mathrm{E}_{q(p)}[g(p)]`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">a</span> <span class="o">=</span> <span class="n">u_parents</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">gammaln_a</span> <span class="o">=</span> <span class="n">u_parents</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="c">#special.gammaln(a)</span>
         <span class="n">b</span> <span class="o">=</span> <span class="n">u_parents</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">log_b</span> <span class="o">=</span> <span class="n">u_parents</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
         <span class="n">g</span> <span class="o">=</span> <span class="n">a</span> <span class="o">*</span> <span class="n">log_b</span> <span class="o">-</span> <span class="n">gammaln_a</span>
         <span class="k">return</span> <span class="n">g</span>
-        
+
+            
     <span class="k">def</span> <span class="nf">compute_fixed_moments_and_f</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute the moments and :math:`f(x)` for a fixed value.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">x</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Values must be positive&quot;</span><span class="p">)</span>
         <span class="n">u</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">x</span><span class="p">)]</span>
         <span class="n">f</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="k">return</span> <span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">shape_of_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dims</span><span class="p">):</span>
-        <span class="c"># Dimensionality of a realization</span>
-        <span class="k">return</span> <span class="p">()</span>
 
 <div class="viewcode-block" id="Gamma"><a class="viewcode-back" href="../../../../../generated.backup/bayespy.inference.vmp.nodes.gamma.Gamma.html#bayespy.inference.vmp.nodes.gamma.Gamma">[docs]</a><span class="k">class</span> <span class="nc">Gamma</span><span class="p">(</span><span class="n">ExponentialFamily</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Node for gamma random variables.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">dims</span> <span class="o">=</span> <span class="p">(</span> <span class="p">(),</span> <span class="p">()</span> <span class="p">)</span>
     <span class="n">_distribution</span> <span class="o">=</span> <span class="n">GammaDistribution</span><span class="p">()</span>
-    <span class="n">_statistics</span> <span class="o">=</span> <span class="n">GammaStatistics</span><span class="p">()</span>
-    <span class="n">_parent_statistics</span> <span class="o">=</span> <span class="p">(</span><span class="n">GammaPriorStatistics</span><span class="p">(),</span>
-                          <span class="n">GammaStatistics</span><span class="p">())</span>
-    
+    <span class="n">_moments</span> <span class="o">=</span> <span class="n">GammaMoments</span><span class="p">()</span>
+    <span class="n">_parent_moments</span> <span class="o">=</span> <span class="p">(</span><span class="n">GammaPriorMoments</span><span class="p">(),</span>
+                       <span class="n">GammaMoments</span><span class="p">())</span>
+
+            
 <div class="viewcode-block" id="Gamma.__init__"><a class="viewcode-back" href="../../../../../generated.backup/bayespy.inference.vmp.nodes.gamma.Gamma.html#bayespy.inference.vmp.nodes.gamma.Gamma.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create gamma random variable node</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
 </div>
     <span class="k">def</span> <span class="nf">random</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -177,8 +226,12 @@
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">gamma</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">phi</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
                                <span class="o">-</span><span class="mi">1</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">phi</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
                                <span class="n">size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">plates</span><span class="p">)</span>
+
     
     <span class="k">def</span> <span class="nf">show</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Print the distribution using standard parameterization.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">phi</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
         <span class="n">b</span> <span class="o">=</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">phi</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">print</span><span class="p">(</span><span class="s">&quot;</span><span class="si">%s</span><span class="s"> ~ Gamma(a, b)&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
@@ -188,6 +241,7 @@
     <span class="k">def</span> <span class="nf">as_diagonal_wishart</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">_GammaToDiagonalWishart</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                                        <span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s">&quot; as Wishart&quot;</span><span class="p">)</span>
+
 </div>
 <span class="k">class</span> <span class="nc">_GammaToDiagonalWishart</span><span class="p">(</span><span class="n">Deterministic</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -196,9 +250,7 @@
 <span class="sd">    The last plate is used as the diagonal dimension.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     
-    <span class="n">ndims</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-    <span class="n">ndims_parents</span> <span class="o">=</span> <span class="p">[</span><span class="bp">None</span><span class="p">,</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">)]</span>
-
+    
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 
         <span class="c"># Check for constant</span>
@@ -296,9 +348,6 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../../../../genindex.html" title="General Index"
              >index</a></li>
-        <li class="right" >
-          <a href="../../../../../py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
         <li><a href="../../../../../index.html">bayespy 0.1 documentation</a> &raquo;</li>
           <li><a href="../../../../index.html" >Module code</a> &raquo;</li> 
       </ul>

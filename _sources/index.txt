@@ -26,12 +26,9 @@ Documentation for BayesPy -- Bayesian Python
    :maxdepth: 2
    
    intro
-   install
    userguide
    examples
    devguide
-   nodes
-   vmp
    api
 
 Indices and tables

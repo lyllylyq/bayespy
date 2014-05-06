@@ -8,7 +8,7 @@
     
     <title>bayespy.inference.vmp.nodes.stochastic.Stochastic &mdash; bayespy 0.1 documentation</title>
     
-    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     
     <script type="text/javascript">
@@ -27,7 +27,7 @@
     <link rel="top" title="bayespy 0.1 documentation" href="../index.html" />
     <link rel="up" title="API" href="../api.html" />
     <link rel="next" title="bayespy.inference.vmp.nodes.stochastic.Stochastic.add_plate_axis" href="bayespy.inference.vmp.nodes.stochastic.Stochastic.add_plate_axis.html" />
-    <link rel="prev" title="bayespy.inference.vmp.nodes.node.Node.set_plotter" href="bayespy.inference.vmp.nodes.node.Node.set_plotter.html" /> 
+    <link rel="prev" title="bayespy.inference.vmp.nodes.node.Node.plates" href="bayespy.inference.vmp.nodes.node.Node.plates.html" /> 
   </head>
   <body>
     <div class="related">
@@ -37,13 +37,10 @@
           <a href="../genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="../py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="right" >
           <a href="bayespy.inference.vmp.nodes.stochastic.Stochastic.add_plate_axis.html" title="bayespy.inference.vmp.nodes.stochastic.Stochastic.add_plate_axis"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="bayespy.inference.vmp.nodes.node.Node.set_plotter.html" title="bayespy.inference.vmp.nodes.node.Node.set_plotter"
+          <a href="bayespy.inference.vmp.nodes.node.Node.plates.html" title="bayespy.inference.vmp.nodes.node.Node.plates"
              accesskey="P">previous</a> |</li>
         <li><a href="../index.html">bayespy 0.1 documentation</a> &raquo;</li>
           <li><a href="../api.html" accesskey="U">API</a> &raquo;</li> 
@@ -59,7 +56,7 @@
 <h1>bayespy.inference.vmp.nodes.stochastic.Stochastic<a class="headerlink" href="#bayespy-inference-vmp-nodes-stochastic-stochastic" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="bayespy.inference.vmp.nodes.stochastic.Stochastic">
-<em class="property">class </em><tt class="descclassname">bayespy.inference.vmp.nodes.stochastic.</tt><tt class="descname">Stochastic</tt><big>(</big><em>*args</em>, <em>initialize=True</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/bayespy/inference/vmp/nodes/stochastic.html#Stochastic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bayespy.inference.vmp.nodes.stochastic.Stochastic" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">bayespy.inference.vmp.nodes.stochastic.</tt><tt class="descname">Stochastic</tt><big>(</big><em>*args</em>, <em>initialize=True</em>, <em>dims=None</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/bayespy/inference/vmp/nodes/stochastic.html#Stochastic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bayespy.inference.vmp.nodes.stochastic.Stochastic" title="Permalink to this definition">¶</a></dt>
 <dd><p>Base class for nodes that are stochastic.</p>
 <p>u
 observed</p>
@@ -133,6 +130,18 @@ _plates_from_parent(self, index)</div></blockquote>
 </tr>
 </tbody>
 </table>
+<p class="rubric">Attributes</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="bayespy.inference.vmp.nodes.stochastic.Stochastic.plates.html#bayespy.inference.vmp.nodes.stochastic.Stochastic.plates" title="bayespy.inference.vmp.nodes.stochastic.Stochastic.plates"><tt class="xref py py-obj docutils literal"><span class="pre">plates</span></tt></a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </div>
@@ -144,8 +153,8 @@ _plates_from_parent(self, index)</div></blockquote>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
   <h4>Previous topic</h4>
-  <p class="topless"><a href="bayespy.inference.vmp.nodes.node.Node.set_plotter.html"
-                        title="previous chapter">bayespy.inference.vmp.nodes.node.Node.set_plotter</a></p>
+  <p class="topless"><a href="bayespy.inference.vmp.nodes.node.Node.plates.html"
+                        title="previous chapter">bayespy.inference.vmp.nodes.node.Node.plates</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="bayespy.inference.vmp.nodes.stochastic.Stochastic.add_plate_axis.html"
                         title="next chapter">bayespy.inference.vmp.nodes.stochastic.Stochastic.add_plate_axis</a></p>
@@ -178,13 +187,10 @@ _plates_from_parent(self, index)</div></blockquote>
           <a href="../genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
-          <a href="../py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="right" >
           <a href="bayespy.inference.vmp.nodes.stochastic.Stochastic.add_plate_axis.html" title="bayespy.inference.vmp.nodes.stochastic.Stochastic.add_plate_axis"
              >next</a> |</li>
         <li class="right" >
-          <a href="bayespy.inference.vmp.nodes.node.Node.set_plotter.html" title="bayespy.inference.vmp.nodes.node.Node.set_plotter"
+          <a href="bayespy.inference.vmp.nodes.node.Node.plates.html" title="bayespy.inference.vmp.nodes.node.Node.plates"
              >previous</a> |</li>
         <li><a href="../index.html">bayespy 0.1 documentation</a> &raquo;</li>
           <li><a href="../api.html" >API</a> &raquo;</li> 

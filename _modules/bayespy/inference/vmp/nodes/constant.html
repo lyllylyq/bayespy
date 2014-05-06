@@ -8,7 +8,7 @@
     
     <title>bayespy.inference.vmp.nodes.constant &mdash; bayespy 0.1 documentation</title>
     
-    <link rel="stylesheet" href="../../../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../../_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
     
     <script type="text/javascript">
@@ -34,9 +34,6 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../../../../genindex.html" title="General Index"
              accesskey="I">index</a></li>
-        <li class="right" >
-          <a href="../../../../../py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
         <li><a href="../../../../../index.html">bayespy 0.1 documentation</a> &raquo;</li>
           <li><a href="../../../../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
@@ -77,21 +74,24 @@
 
 <div class="viewcode-block" id="Constant"><a class="viewcode-back" href="../../../../../generated/bayespy.inference.vmp.nodes.constant.Constant.html#bayespy.inference.vmp.nodes.constant.Constant">[docs]</a><span class="k">class</span> <span class="nc">Constant</span><span class="p">(</span><span class="n">Node</span><span class="p">):</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">statistics</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_statistics</span> <span class="o">=</span> <span class="n">statistics</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">moments</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_moments</span> <span class="o">=</span> <span class="n">moments</span>
         <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asanyarray</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
         <span class="c"># Compute moments</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">u</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_statistics</span><span class="o">.</span><span class="n">compute_fixed_moments</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">u</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_moments</span><span class="o">.</span><span class="n">compute_fixed_moments</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
         <span class="c"># Dimensions of the moments</span>
-        <span class="n">dims</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_statistics</span><span class="o">.</span><span class="n">compute_dims_from_values</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-        <span class="c"># Number of plate axes</span>
-        <span class="n">plates_ndim</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ndim</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_statistics</span><span class="o">.</span><span class="n">ndim_observations</span>
-        <span class="n">plates</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">x</span><span class="p">)[:</span><span class="n">plates_ndim</span><span class="p">]</span>
+        <span class="n">dims</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_moments</span><span class="o">.</span><span class="n">compute_dims_from_values</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="c"># Resolve plates</span>
+        <span class="n">D</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">dims</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">D</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">plates</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="p">[</span><span class="mi">0</span><span class="p">])[:</span><span class="o">-</span><span class="n">D</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">plates</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
         <span class="c"># Parent constructor</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">dims</span><span class="o">=</span><span class="n">dims</span><span class="p">,</span> <span class="n">plates</span><span class="o">=</span><span class="n">plates</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">get_moments</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span></div>
+<div class="viewcode-block" id="Constant.get_moments"><a class="viewcode-back" href="../../../../../generated/bayespy.inference.vmp.nodes.constant.Constant.get_moments.html#bayespy.inference.vmp.nodes.constant.Constant.get_moments">[docs]</a>    <span class="k">def</span> <span class="nf">get_moments</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span></div></div>
 </pre></div>
 
           </div>
@@ -122,9 +122,6 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../../../../genindex.html" title="General Index"
              >index</a></li>
-        <li class="right" >
-          <a href="../../../../../py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
         <li><a href="../../../../../index.html">bayespy 0.1 documentation</a> &raquo;</li>
           <li><a href="../../../../index.html" >Module code</a> &raquo;</li> 
       </ul>

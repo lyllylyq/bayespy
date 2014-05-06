@@ -8,7 +8,7 @@
     
     <title>bayespy.inference.vmp.nodes.gaussian &mdash; bayespy 0.1 documentation</title>
     
-    <link rel="stylesheet" href="../../../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../../_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
     
     <script type="text/javascript">
@@ -34,9 +34,6 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../../../../genindex.html" title="General Index"
              accesskey="I">index</a></li>
-        <li class="right" >
-          <a href="../../../../../py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
         <li><a href="../../../../../index.html">bayespy 0.1 documentation</a> &raquo;</li>
           <li><a href="../../../../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
@@ -80,19 +77,18 @@
 <span class="kn">from</span> <span class="nn">.expfamily</span> <span class="kn">import</span> <span class="n">ExponentialFamily</span>
 <span class="kn">from</span> <span class="nn">.expfamily</span> <span class="kn">import</span> <span class="n">ExponentialFamilyDistribution</span>
 <span class="kn">from</span> <span class="nn">.expfamily</span> <span class="kn">import</span> <span class="n">useconstructor</span>
-<span class="kn">from</span> <span class="nn">.wishart</span> <span class="kn">import</span> <span class="n">Wishart</span><span class="p">,</span> <span class="n">WishartStatistics</span>
-<span class="kn">from</span> <span class="nn">.gamma</span> <span class="kn">import</span> <span class="n">Gamma</span><span class="p">,</span> <span class="n">GammaStatistics</span>
+<span class="kn">from</span> <span class="nn">.wishart</span> <span class="kn">import</span> <span class="n">Wishart</span><span class="p">,</span> <span class="n">WishartMoments</span>
+<span class="kn">from</span> <span class="nn">.gamma</span> <span class="kn">import</span> <span class="n">Gamma</span><span class="p">,</span> <span class="n">GammaMoments</span>
 <span class="kn">from</span> <span class="nn">.deterministic</span> <span class="kn">import</span> <span class="n">Deterministic</span>
 
-<span class="kn">from</span> <span class="nn">.node</span> <span class="kn">import</span> <span class="n">Statistics</span><span class="p">,</span> <span class="n">ensureparents</span>
+<span class="kn">from</span> <span class="nn">.node</span> <span class="kn">import</span> <span class="n">Moments</span><span class="p">,</span> <span class="n">ensureparents</span>
 
-<span class="k">class</span> <span class="nc">GaussianStatistics</span><span class="p">(</span><span class="n">Statistics</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">GaussianMoments</span><span class="p">(</span><span class="n">Moments</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ndim</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ndim</span> <span class="o">=</span> <span class="n">ndim</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ndim_observations</span> <span class="o">=</span> <span class="n">ndim</span>
 
     <span class="k">def</span> <span class="nf">compute_fixed_moments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Compute Gaussian statistics for fixed x. &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot; Compute Gaussian moments for fixed x. &quot;&quot;&quot;</span>
         <span class="n">x</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">atleast_nd</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ndim</span><span class="p">)</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="n">utils</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">outer</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ndim</span><span class="p">)]</span>
 
@@ -107,9 +103,7 @@
 
 <span class="k">class</span> <span class="nc">GaussianDistribution</span><span class="p">(</span><span class="n">ExponentialFamilyDistribution</span><span class="p">):</span>
 
-    <span class="n">ndims</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
-    <span class="n">ndims_parents</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">)]</span>
-
+    
     <span class="k">def</span> <span class="nf">compute_message_to_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="o">*</span><span class="n">u_parents</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">index</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">[</span><span class="n">utils</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">m_dot</span><span class="p">(</span><span class="n">u_parents</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">u</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
@@ -155,10 +149,6 @@
         <span class="n">f</span> <span class="o">=</span> <span class="o">-</span><span class="n">k</span><span class="o">/</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
         <span class="k">return</span> <span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">shape_of_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dims</span><span class="p">):</span>
-        <span class="c"># Dimensionality of a realization</span>
-        <span class="k">return</span> <span class="n">dims</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-    
 
 <div class="viewcode-block" id="Gaussian"><a class="viewcode-back" href="../../../../../generated.backup/bayespy.inference.vmp.nodes.gaussian.Gaussian.html#bayespy.inference.vmp.nodes.gaussian.Gaussian">[docs]</a><span class="k">class</span> <span class="nc">Gaussian</span><span class="p">(</span><span class="n">ExponentialFamily</span><span class="p">):</span>
     <span class="sd">r&quot;&quot;&quot;</span>
@@ -281,19 +271,16 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">_distribution</span> <span class="o">=</span> <span class="n">GaussianDistribution</span><span class="p">()</span>
-    <span class="n">_statistics</span> <span class="o">=</span> <span class="n">GaussianStatistics</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">_parent_statistics</span> <span class="o">=</span> <span class="p">(</span><span class="n">GaussianStatistics</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
-                          <span class="n">WishartStatistics</span><span class="p">())</span>
+    <span class="n">_moments</span> <span class="o">=</span> <span class="n">GaussianMoments</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">_parent_moments</span> <span class="o">=</span> <span class="p">(</span><span class="n">GaussianMoments</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
+                       <span class="n">WishartMoments</span><span class="p">())</span>
     
-    <span class="nd">@useconstructor</span>
-<div class="viewcode-block" id="Gaussian.__init__"><a class="viewcode-back" href="../../../../../generated.backup/bayespy.inference.vmp.nodes.gaussian.Gaussian.html#bayespy.inference.vmp.nodes.gaussian.Gaussian.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">Lambda</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span> <span class="n">Lambda</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-</div>
+
     <span class="nd">@classmethod</span>
     <span class="nd">@ensureparents</span>
-    <span class="k">def</span> <span class="nf">_constructor</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">Lambda</span><span class="p">,</span> <span class="n">plates</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_constructor</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">Lambda</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Constructs distribution and statistics objects.</span>
+<span class="sd">        Constructs distribution and moments objects.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">D_mu</span> <span class="o">=</span> <span class="n">mu</span><span class="o">.</span><span class="n">dims</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">D_Lambda</span> <span class="o">=</span> <span class="n">Lambda</span><span class="o">.</span><span class="n">dims</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
@@ -308,15 +295,18 @@
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;First parent has wrong dimensionality&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">Lambda</span><span class="o">.</span><span class="n">dims</span> <span class="o">!=</span> <span class="p">(</span> <span class="p">(</span><span class="n">D</span><span class="p">,</span><span class="n">D</span><span class="p">),</span> <span class="p">()</span> <span class="p">):</span>
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;Second parent has wrong dimensionality&quot;</span><span class="p">)</span>
-        
+
+        <span class="n">parents</span> <span class="o">=</span> <span class="p">[</span><span class="n">mu</span><span class="p">,</span> <span class="n">Lambda</span><span class="p">]</span>
         <span class="n">dims</span> <span class="o">=</span> <span class="p">(</span> <span class="p">(</span><span class="n">D</span><span class="p">,),</span> <span class="p">(</span><span class="n">D</span><span class="p">,</span><span class="n">D</span><span class="p">)</span> <span class="p">)</span>
-        <span class="k">return</span> <span class="p">(</span><span class="n">dims</span><span class="p">,</span> 
-                <span class="n">cls</span><span class="o">.</span><span class="n">_total_plates</span><span class="p">(</span><span class="n">plates</span><span class="p">,</span> 
+        <span class="k">return</span> <span class="p">(</span><span class="n">parents</span><span class="p">,</span>
+                <span class="n">kwargs</span><span class="p">,</span>
+                <span class="n">dims</span><span class="p">,</span> 
+                <span class="n">cls</span><span class="o">.</span><span class="n">_total_plates</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;plates&#39;</span><span class="p">),</span>
                                   <span class="n">cls</span><span class="o">.</span><span class="n">_distribution</span><span class="o">.</span><span class="n">plates_from_parent</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">mu</span><span class="o">.</span><span class="n">plates</span><span class="p">),</span>
                                   <span class="n">cls</span><span class="o">.</span><span class="n">_distribution</span><span class="o">.</span><span class="n">plates_from_parent</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">Lambda</span><span class="o">.</span><span class="n">plates</span><span class="p">)),</span>
                 <span class="n">cls</span><span class="o">.</span><span class="n">_distribution</span><span class="p">,</span> 
-                <span class="n">cls</span><span class="o">.</span><span class="n">_statistics</span><span class="p">,</span> 
-                <span class="n">cls</span><span class="o">.</span><span class="n">_parent_statistics</span><span class="p">)</span>
+                <span class="n">cls</span><span class="o">.</span><span class="n">_moments</span><span class="p">,</span> 
+                <span class="n">cls</span><span class="o">.</span><span class="n">_parent_moments</span><span class="p">)</span>
 
 
     <span class="k">def</span> <span class="nf">random</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -471,9 +461,6 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">shape</span> <span class="o">=</span> <span class="n">shape</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ndim_mu</span> <span class="o">=</span> <span class="n">ndim_mu</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ndim</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ndims</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ndim</span><span class="p">,</span> <span class="mi">2</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">ndim</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ndims_parents</span> <span class="o">=</span> <span class="p">(</span> <span class="p">(</span><span class="n">ndim_mu</span><span class="p">,</span> <span class="mi">2</span><span class="o">*</span><span class="n">ndim_mu</span><span class="p">),</span>
-                               <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="p">)</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">()</span>
     
     <span class="k">def</span> <span class="nf">compute_message_to_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">u_mu</span><span class="p">,</span> <span class="n">u_alpha</span><span class="p">):</span>
@@ -667,10 +654,6 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">plates_from_parent</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">plates</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">shape_of_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dims</span><span class="p">):</span>
-        <span class="c"># Dimensionality of a realization</span>
-        <span class="k">return</span> <span class="n">dims</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-
 
 <span class="k">class</span> <span class="nc">GaussianARD</span><span class="p">(</span><span class="n">ExponentialFamily</span><span class="p">):</span>
     <span class="sd">r&quot;&quot;&quot;</span>
@@ -793,25 +776,20 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
 
-    
-    <span class="nd">@useconstructor</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">_constructor</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">plates</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_constructor</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Constructs distribution and statistics objects.</span>
+<span class="sd">        Constructs distribution and moments objects.</span>
 
 <span class="sd">        If __init__ uses useconstructor decorator, this method is called to</span>
-<span class="sd">        construct distribution and statistics objects.</span>
+<span class="sd">        construct distribution and moments objects.</span>
 
 <span class="sd">        The method is given the same inputs as __init__. For some nodes, some of</span>
 <span class="sd">        these can&#39;t be &quot;static&quot; class attributes, then the node class must</span>
 <span class="sd">        overwrite this method to construct the objects manually.</span>
 
 <span class="sd">        The point of distribution class is to move general distribution but</span>
-<span class="sd">        not-node specific code. The point of statistics class is to define the</span>
+<span class="sd">        not-node specific code. The point of moments class is to define the</span>
 <span class="sd">        messaging protocols.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c"># Check consistency</span>
@@ -869,14 +847,14 @@
             <span class="n">shape_mu</span> <span class="o">=</span> <span class="n">shape</span>
         <span class="n">ndim_mu</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">shape_mu</span><span class="p">)</span>
     
-        <span class="n">statistics</span> <span class="o">=</span> <span class="n">GaussianStatistics</span><span class="p">(</span><span class="n">ndim</span><span class="p">)</span>
-        <span class="n">parent_statistics</span> <span class="o">=</span> <span class="p">(</span><span class="n">GaussianStatistics</span><span class="p">(</span><span class="n">ndim_mu</span><span class="p">),</span>
-                             <span class="n">GammaStatistics</span><span class="p">())</span>
+        <span class="n">moments</span> <span class="o">=</span> <span class="n">GaussianMoments</span><span class="p">(</span><span class="n">ndim</span><span class="p">)</span>
+        <span class="n">parent_moments</span> <span class="o">=</span> <span class="p">(</span><span class="n">GaussianMoments</span><span class="p">(</span><span class="n">ndim_mu</span><span class="p">),</span>
+                          <span class="n">GammaMoments</span><span class="p">())</span>
         <span class="n">distribution</span> <span class="o">=</span> <span class="n">GaussianARDDistribution</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">ndim_mu</span><span class="p">)</span>
 
         <span class="c"># Convert parents to proper nodes</span>
-        <span class="n">mu</span> <span class="o">=</span> <span class="n">cls</span><span class="o">.</span><span class="n">_ensure_statistics</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span> <span class="n">parent_statistics</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-        <span class="n">alpha</span> <span class="o">=</span> <span class="n">cls</span><span class="o">.</span><span class="n">_ensure_statistics</span><span class="p">(</span><span class="n">alpha</span><span class="p">,</span> <span class="n">parent_statistics</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">mu</span> <span class="o">=</span> <span class="n">cls</span><span class="o">.</span><span class="n">_ensure_moments</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span> <span class="n">parent_moments</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">alpha</span> <span class="o">=</span> <span class="n">cls</span><span class="o">.</span><span class="n">_ensure_moments</span><span class="p">(</span><span class="n">alpha</span><span class="p">,</span> <span class="n">parent_moments</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
 
         <span class="c"># Check consistency with respect to parent mu</span>
         <span class="n">shape_mean</span> <span class="o">=</span> <span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="n">ndim_mu</span><span class="p">:]</span>
@@ -909,11 +887,13 @@
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;Second parent has wrong dimensionality&quot;</span><span class="p">)</span>
         
         <span class="n">dims</span> <span class="o">=</span> <span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">shape</span><span class="o">+</span><span class="n">shape</span><span class="p">)</span>
-        <span class="n">plates</span> <span class="o">=</span> <span class="n">cls</span><span class="o">.</span><span class="n">_total_plates</span><span class="p">(</span><span class="n">plates</span><span class="p">,</span>
+        <span class="n">plates</span> <span class="o">=</span> <span class="n">cls</span><span class="o">.</span><span class="n">_total_plates</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;plates&#39;</span><span class="p">),</span>
                                    <span class="n">distribution</span><span class="o">.</span><span class="n">plates_from_parent</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">mu</span><span class="o">.</span><span class="n">plates</span><span class="p">),</span>
                                    <span class="n">distribution</span><span class="o">.</span><span class="n">plates_from_parent</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">alpha</span><span class="o">.</span><span class="n">plates</span><span class="p">))</span>
 
-        <span class="k">return</span> <span class="p">(</span><span class="n">dims</span><span class="p">,</span> <span class="n">plates</span><span class="p">,</span> <span class="n">distribution</span><span class="p">,</span> <span class="n">statistics</span><span class="p">,</span> <span class="n">parent_statistics</span><span class="p">)</span>
+        <span class="n">parents</span> <span class="o">=</span> <span class="p">[</span><span class="n">mu</span><span class="p">,</span> <span class="n">alpha</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="p">(</span><span class="n">parents</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">,</span> <span class="n">dims</span><span class="p">,</span> <span class="n">plates</span><span class="p">,</span> <span class="n">distribution</span><span class="p">,</span> <span class="n">moments</span><span class="p">,</span> <span class="n">parent_moments</span><span class="p">)</span>
         
     <span class="k">def</span> <span class="nf">initialize_from_mean_and_covariance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">Cov</span><span class="p">):</span>
         <span class="n">ndim</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_distribution</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
@@ -1250,9 +1230,6 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../../../../genindex.html" title="General Index"
              >index</a></li>
-        <li class="right" >
-          <a href="../../../../../py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
         <li><a href="../../../../../index.html">bayespy 0.1 documentation</a> &raquo;</li>
           <li><a href="../../../../index.html" >Module code</a> &raquo;</li> 
       </ul>
