@@ -26,8 +26,8 @@
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="top" title="BayesPy v0.1 Documentation" href="../index.html" />
     <link rel="up" title="Examples" href="../examples.html" />
-    <link rel="next" title="Developer guide" href="../devguide.html" />
-    <link rel="prev" title="Example: Principal component analysis" href="pca.html" /> 
+    <link rel="next" title="Latent Dirichlet allocation" href="lda.html" />
+    <link rel="prev" title="Hidden Markov model" href="hmm.html" /> 
   </head>
   <body>
     <div class="related">
@@ -37,10 +37,10 @@
           <a href="../genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="../devguide.html" title="Developer guide"
+          <a href="lda.html" title="Latent Dirichlet allocation"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="pca.html" title="Example: Principal component analysis"
+          <a href="hmm.html" title="Hidden Markov model"
              accesskey="P">previous</a> |</li>
         <li><a href="../index.html">BayesPy v0.1 Documentation</a> &raquo;</li>
           <li><a href="../examples.html" accesskey="U">Examples</a> &raquo;</li> 
@@ -62,9 +62,11 @@ assumed to be generated from latent <span class="math">\(D\)</span>-dimensional 
 <span class="math">\(\mathbf{X}=(\mathbf{x}_1,\ldots,\mathbf{x}_N)\)</span> which follow a
 first-order Markov process:</p>
 <div class="math">
-\[\begin{split}\mathbf{x}_{n} &amp;= \mathbf{A}\mathbf{x}_{n-1} + \text{noise} \,,
+\[\begin{split}\begin{aligned}
+\mathbf{x}_{n} &amp;= \mathbf{A}\mathbf{x}_{n-1} + \text{noise} \,,
 \\
-\mathbf{y}_{n} &amp;= \mathbf{C}\mathbf{x}_{n} + \text{noise} \,,\end{split}\]</div>
+\mathbf{y}_{n} &amp;= \mathbf{C}\mathbf{x}_{n} + \text{noise} \,,
+\end{aligned}\end{split}\]</div>
 <p>where the noise is Gaussian, <span class="math">\(\mathbf{A}\)</span> is the <span class="math">\(D\times D\)</span>
 state dynamics matrix and <span class="math">\(\mathbf{C}\)</span> is the <span class="math">\(M\times D\)</span>
 loading matrix. Usually, the latent space dimensionality <span class="math">\(D\)</span> is
@@ -193,7 +195,7 @@ reduces the coupling. In state-space models, the states
 through a dot product <span class="math">\(\mathbf{Cx}_n\)</span>, which is unaltered if the
 latent space is rotated arbitrarily:</p>
 <div class="math">
-\[\begin{split}\mathbf{y}_n &amp;= \mathbf{C}\mathbf{x}_n = \mathbf{C}\mathbf{R}^{-1}\mathbf{R}\mathbf{x}_n \,.\end{split}\]</div>
+\[\mathbf{y}_n = \mathbf{C}\mathbf{x}_n = \mathbf{C}\mathbf{R}^{-1}\mathbf{R}\mathbf{x}_n \,.\]</div>
 <p>Thus, one intuitive transformation would be
 <span class="math">\(\mathbf{C}\rightarrow\mathbf{C}\mathbf{R}^{-1}\)</span> and
 <span class="math">\(\mathbf{X}\rightarrow\mathbf{R}\mathbf{X}\)</span>. In order to keep
@@ -201,7 +203,7 @@ the dynamics of the latent states unaffected by the transformation, the
 state dynamics matrix <span class="math">\(\mathbf{A}\)</span> must be transformed
 accordingly:</p>
 <div class="math">
-\[\begin{split}\mathbf{R}\mathbf{x}_n &amp;= \mathbf{R}\mathbf{A}\mathbf{R}^{-1} \mathbf{R}\mathbf{x}_{n-1} \,,\end{split}\]</div>
+\[\mathbf{R}\mathbf{x}_n = \mathbf{R}\mathbf{A}\mathbf{R}^{-1} \mathbf{R}\mathbf{x}_{n-1} \,,\]</div>
 <p>resulting in a transformation
 <span class="math">\(\mathbf{A}\rightarrow\mathbf{R}\mathbf{A}\mathbf{R}^{-1}\)</span>. For
 more details, refer to *Fast Variational Bayesian Linear State-Space
@@ -348,11 +350,11 @@ Gradient relative error = 5.43175e-05 and absolute error = 0.521151
 </ul>
 
   <h4>Previous topic</h4>
-  <p class="topless"><a href="pca.html"
-                        title="previous chapter">Example: Principal component analysis</a></p>
+  <p class="topless"><a href="hmm.html"
+                        title="previous chapter">Hidden Markov model</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="../devguide.html"
-                        title="next chapter">Developer guide</a></p>
+  <p class="topless"><a href="lda.html"
+                        title="next chapter">Latent Dirichlet allocation</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../_sources/_notebooks/lssm.txt"
@@ -382,10 +384,10 @@ Gradient relative error = 5.43175e-05 and absolute error = 0.521151
           <a href="../genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
-          <a href="../devguide.html" title="Developer guide"
+          <a href="lda.html" title="Latent Dirichlet allocation"
              >next</a> |</li>
         <li class="right" >
-          <a href="pca.html" title="Example: Principal component analysis"
+          <a href="hmm.html" title="Hidden Markov model"
              >previous</a> |</li>
         <li><a href="../index.html">BayesPy v0.1 Documentation</a> &raquo;</li>
           <li><a href="../examples.html" >Examples</a> &raquo;</li> 

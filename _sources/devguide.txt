@@ -30,4 +30,5 @@ http://docs.scipy.org/doc/numpy/dev/gitwash/development_workflow.html
 .. toctree::
 
     vmp
+    writingnodes
 
