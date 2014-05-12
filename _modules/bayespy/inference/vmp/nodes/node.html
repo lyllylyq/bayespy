@@ -132,21 +132,67 @@
 <span class="sd">        Gaussian.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
+    <span class="n">_converters</span> <span class="o">=</span> <span class="p">{}</span>
+
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">add_converter</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">moments_to</span><span class="p">,</span> <span class="n">converter</span><span class="p">):</span>
+        <span class="n">cls</span><span class="o">.</span><span class="n">_converters</span><span class="p">[</span><span class="n">moments_to</span><span class="p">]</span> <span class="o">=</span> <span class="n">converter</span>
+        <span class="k">return</span>
     
-    <span class="k">def</span> <span class="nf">converter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">moments_class</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">get_converter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">moments_to</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Returns a node class which converts the node&#39;s moments to another</span>
+<span class="sd">        Finds conversion to another moments type if possible.</span>
+
+<span class="sd">        Note that a conversion from moments A to moments B may require</span>
+<span class="sd">        intermediate conversions.  For instance: A-&gt;C-&gt;D-&gt;B.  This method finds</span>
+<span class="sd">        the path which uses the least amount of conversions and returns that</span>
+<span class="sd">        path as a single conversion.  If no conversion path is available, an</span>
+<span class="sd">        error is raised.</span>
+
+<span class="sd">        The search algorithm starts from the original moments class and applies</span>
+<span class="sd">        all possible converters to get a new list of moments classes. Then, all</span>
+<span class="sd">        possible converters are applied to this list to get a new list of</span>
+<span class="sd">        current moments classes. This is iterated until the algorithm hits the</span>
+<span class="sd">        target moments class or its subclass.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c"># This method must take moments object instead of class because, for</span>
-        <span class="c"># instance, one could want to convert gamma to wishart with specific</span>
-        <span class="c"># ndim? Or maybe that is in any case too complex so it would have to be</span>
-        <span class="c"># handled manually.</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">moments_class</span><span class="p">):</span>
+
+        <span class="c"># Check if there is no need for a conversion</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">moments_to</span><span class="p">):</span>
             <span class="k">return</span> <span class="k">lambda</span> <span class="n">X</span><span class="p">:</span> <span class="n">X</span>
 
-        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;No conversion defined from </span><span class="si">%s</span><span class="s"> to </span><span class="si">%s</span><span class="s">&quot;</span>
-                        <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span>
-                           <span class="n">moments_class</span><span class="o">.</span><span class="n">__name__</span><span class="p">))</span>
+        <span class="c"># Initialize variables</span>
+        <span class="n">visited</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="n">visited</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="p">)</span>
+        <span class="n">converted_list</span> <span class="o">=</span> <span class="p">[(</span><span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="p">,</span> <span class="p">[])]</span>
+
+        <span class="c"># The algorithm: </span>
+        <span class="c"># Apply all avaible converters to the current list to get a new list.</span>
+        <span class="c"># Iterate this until the list contains the target moments class or its</span>
+        <span class="c"># subclass.</span>
+        
+        <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">converted_list</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">current_list</span> <span class="o">=</span> <span class="n">converted_list</span>
+            <span class="n">converted_list</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="c"># Go through the list of current moments and apply all available</span>
+            <span class="c"># converters to each of them</span>
+            <span class="k">for</span> <span class="p">(</span><span class="n">moments_class</span><span class="p">,</span> <span class="n">converter_path</span><span class="p">)</span> <span class="ow">in</span> <span class="n">current_list</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">moments_class</span><span class="p">,</span> <span class="n">moments_to</span><span class="p">):</span>
+                    <span class="c"># Shortest conversion path found, return the resulting total</span>
+                    <span class="c"># conversion function</span>
+                    <span class="k">return</span> <span class="n">utils</span><span class="o">.</span><span class="n">composite_function</span><span class="p">(</span><span class="n">converter_path</span><span class="p">)</span>
+                <span class="c"># Apply all converters to the current moment class</span>
+                <span class="k">for</span> <span class="p">(</span><span class="n">conv_mom_cls</span><span class="p">,</span> <span class="n">conv</span><span class="p">)</span> <span class="ow">in</span> <span class="n">moments_class</span><span class="o">.</span><span class="n">_converters</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="k">if</span> <span class="n">conv_mom_cls</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">visited</span><span class="p">:</span>
+                        <span class="n">visited</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">conv_mom_cls</span><span class="p">)</span>
+                        <span class="n">converted_list</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">conv_mom_cls</span><span class="p">,</span>
+                                               <span class="n">converter_path</span> <span class="o">+</span> <span class="p">[</span><span class="n">conv</span><span class="p">]))</span> 
+
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;No conversion defined from </span><span class="si">%s</span><span class="s"> to </span><span class="si">%s</span><span class="s">&quot;</span>
+                         <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span>
+                            <span class="n">moments_class</span><span class="o">.</span><span class="n">__name__</span><span class="p">))</span>
+    
 
     <span class="k">def</span> <span class="nf">compute_fixed_moments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
         <span class="c"># This method can&#39;t be static because the computation of the moments may</span>
@@ -627,7 +673,7 @@
         <span class="k">return</span>
 </div>
     <span class="k">def</span> <span class="nf">_convert</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">moments_class</span><span class="p">):</span>
-        <span class="n">converter</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_moments</span><span class="o">.</span><span class="n">converter</span><span class="p">(</span><span class="n">moments_class</span><span class="p">)</span>
+        <span class="n">converter</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_moments</span><span class="o">.</span><span class="n">get_converter</span><span class="p">(</span><span class="n">moments_class</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">converter</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
     <span class="c">## def convert(self, node_class):</span>
     <span class="c">##     return self._convert(node_class._moments_class)</span>

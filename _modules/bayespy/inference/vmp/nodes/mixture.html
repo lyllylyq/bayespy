@@ -68,6 +68,10 @@
 <span class="c"># along with BayesPy.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
 <span class="c">######################################################################</span>
 
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Module for the mixture distribution node.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
 <span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
 
@@ -81,16 +85,27 @@
                          <span class="n">CategoricalMoments</span>
 
 <span class="k">class</span> <span class="nc">MixtureDistribution</span><span class="p">(</span><span class="n">ExponentialFamilyDistribution</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Class for the VMP formulas of mixture variables.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">distribution</span><span class="p">,</span> <span class="n">cluster_plate</span><span class="p">,</span> <span class="n">n_clusters</span><span class="p">,</span> <span class="n">ndims</span><span class="p">,</span> 
                  <span class="n">ndims_parents</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create VMP formula node for a mixture variable</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">distribution</span> <span class="o">=</span> <span class="n">distribution</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cluster_plate</span> <span class="o">=</span> <span class="n">cluster_plate</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ndims</span> <span class="o">=</span> <span class="n">ndims</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ndims_parents</span> <span class="o">=</span> <span class="n">ndims_parents</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">K</span> <span class="o">=</span> <span class="n">n_clusters</span>
 
+
     <span class="k">def</span> <span class="nf">compute_message_to_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="o">*</span><span class="n">u_parents</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute the message to a parent node.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="n">index</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
 
@@ -104,7 +119,12 @@
             <span class="n">g</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">distribution</span><span class="o">.</span><span class="n">compute_cgf_from_parents</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">u_parents</span><span class="p">[</span><span class="mi">1</span><span class="p">:]))</span>
             <span class="c"># Reshape(g):</span>
             <span class="c"># Shape(g)      = [Nn,..,N0,K]</span>
-            <span class="n">g</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">moveaxis</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cluster_plate</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">ndim</span><span class="p">(</span><span class="n">g</span><span class="p">)</span> <span class="o">&lt;</span> <span class="nb">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cluster_plate</span><span class="p">):</span>
+                <span class="c"># Not enough axes, just add the cluster plate axis</span>
+                <span class="n">g</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c"># Move the cluster plate axis</span>
+                <span class="n">g</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">moveaxis</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cluster_plate</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
 
             <span class="c"># Compute phi:</span>
             <span class="c"># Shape(phi)    = [Nn,..,K,..,N0,Dd,..,D0]</span>
@@ -210,7 +230,11 @@
 
             <span class="k">return</span> <span class="n">m</span>
 
+        
     <span class="k">def</span> <span class="nf">compute_mask_to_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">mask</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Maps the mask to the plates of a parent.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">index</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">mask</span>
         <span class="k">else</span><span class="p">:</span>
@@ -220,8 +244,11 @@
                 <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">cluster_plate</span><span class="p">)</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">distribution</span><span class="o">.</span><span class="n">compute_mask_to_parent</span><span class="p">(</span><span class="n">index</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">mask</span><span class="p">)</span>
 
+        
     <span class="k">def</span> <span class="nf">compute_phi_from_parents</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">u_parents</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
-
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute the natural parameter vector given parent moments.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="c"># Compute weighted average of the parameters</span>
 
         <span class="c"># Cluster parameters</span>
@@ -284,10 +311,18 @@
             
         <span class="k">return</span> <span class="n">phi</span>
 
+    
     <span class="k">def</span> <span class="nf">compute_moments_and_cgf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">phi</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute the moments and :math:`g(\phi)`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">distribution</span><span class="o">.</span><span class="n">compute_moments_and_cgf</span><span class="p">(</span><span class="n">phi</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">mask</span><span class="p">)</span>
 
+    
     <span class="k">def</span> <span class="nf">compute_cgf_from_parents</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">u_parents</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute :math:`\mathrm{E}_{q(p)}[g(p)]`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="c"># Compute weighted average of g over the clusters.</span>
 
@@ -301,7 +336,12 @@
 
         <span class="c"># Move cluster axis to last:</span>
         <span class="c"># Shape(g)      = [Nn,..,N0,K]</span>
-        <span class="n">g</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">moveaxis</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cluster_plate</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">ndim</span><span class="p">(</span><span class="n">g</span><span class="p">)</span> <span class="o">&lt;</span> <span class="nb">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cluster_plate</span><span class="p">):</span>
+            <span class="c"># Not enough axes, just add the cluster plate axis</span>
+            <span class="n">g</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c"># Move the cluster plate axis</span>
+            <span class="n">g</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">moveaxis</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cluster_plate</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
 
         <span class="c"># Cluster assignments/contributions/probabilities/weights:</span>
         <span class="c"># Shape(p)      = [Nn,..,N0,K]</span>
@@ -311,15 +351,26 @@
         <span class="c"># properly aligned, you can just sum p*g over the last</span>
         <span class="c"># axis and utilize broadcasting:</span>
         <span class="c"># Shape(result) = [Nn,..,N0]</span>
+
         <span class="n">g</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">sum_product</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">axes_to_sum</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">g</span>
-        
+
+    
     <span class="k">def</span> <span class="nf">compute_fixed_moments_and_f</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Compute u(x) and f(x) for given x. &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute the moments and :math:`f(x)` for a fixed value.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">distribution</span><span class="o">.</span><span class="n">compute_fixed_moments_and_f</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 
+    
     <span class="k">def</span> <span class="nf">plates_to_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">plates</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Resolves the plate mapping to a parent.</span>
+
+<span class="sd">        Given the plates of the node&#39;s moments, this method returns the plates</span>
+<span class="sd">        that the message to a parent has for the parent&#39;s distribution.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">index</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">plates</span>
         <span class="k">else</span><span class="p">:</span>
@@ -335,7 +386,14 @@
 
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">distribution</span><span class="o">.</span><span class="n">plates_to_parent</span><span class="p">(</span><span class="n">index</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">plates</span><span class="p">)</span>
 
+        
     <span class="k">def</span> <span class="nf">plates_from_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">plates</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Resolve the plate mapping from a parent.</span>
+
+<span class="sd">        Given the plates of a parent&#39;s moments, this method returns the plates</span>
+<span class="sd">        that the moments has for this distribution.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">index</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">plates</span>
         <span class="k">else</span><span class="p">:</span>
@@ -346,6 +404,13 @@
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">plates</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="nb">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cluster_plate</span><span class="p">):</span>
                 <span class="n">plates</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cluster_plate</span><span class="p">)</span>
             <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">plates</span><span class="p">)</span>
+
+
+    <span class="k">def</span> <span class="nf">random</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">phi</span><span class="p">,</span> <span class="n">plates</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Draw a random sample from the distribution.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">distribution</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="o">*</span><span class="n">phi</span><span class="p">,</span> <span class="n">plates</span><span class="o">=</span><span class="n">plates</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="Mixture"><a class="viewcode-back" href="../../../../../generated.backup/bayespy.inference.vmp.nodes.mixture.Mixture.html#bayespy.inference.vmp.nodes.mixture.Mixture">[docs]</a><span class="k">class</span> <span class="nc">Mixture</span><span class="p">(</span><span class="n">ExponentialFamily</span><span class="p">):</span>

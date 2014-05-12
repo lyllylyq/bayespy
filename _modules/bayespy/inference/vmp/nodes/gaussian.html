@@ -150,6 +150,19 @@
         <span class="k">return</span> <span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
 
 
+    <span class="k">def</span> <span class="nf">random</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">phi</span><span class="p">,</span> <span class="n">plates</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="c"># TODO/FIXME: You shouldn&#39;t draw random values for</span>
+        <span class="c"># observed/fixed elements!</span>
+
+        <span class="c"># Note that phi[1] is -0.5*inv(Cov)</span>
+        <span class="n">U</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">m_chol</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="o">*</span><span class="n">phi</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">mu</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">m_chol_solve</span><span class="p">(</span><span class="n">U</span><span class="p">,</span> <span class="n">phi</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">plates</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">mu</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">:])</span>
+        <span class="c"># Compute mu + U&#39;*z</span>
+        <span class="n">z</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">m_solve_triangular</span><span class="p">(</span><span class="n">U</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">trans</span><span class="o">=</span><span class="s">&#39;T&#39;</span><span class="p">,</span> <span class="n">lower</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">mu</span> <span class="o">+</span> <span class="n">z</span>
+            
+
 <div class="viewcode-block" id="Gaussian"><a class="viewcode-back" href="../../../../../generated.backup/bayespy.inference.vmp.nodes.gaussian.Gaussian.html#bayespy.inference.vmp.nodes.gaussian.Gaussian">[docs]</a><span class="k">class</span> <span class="nc">Gaussian</span><span class="p">(</span><span class="n">ExponentialFamily</span><span class="p">):</span>
     <span class="sd">r&quot;&quot;&quot;</span>
 <span class="sd">    VMP node for Gaussian variable.</span>
@@ -308,19 +321,6 @@
                 <span class="n">cls</span><span class="o">.</span><span class="n">_moments</span><span class="p">,</span> 
                 <span class="n">cls</span><span class="o">.</span><span class="n">_parent_moments</span><span class="p">)</span>
 
-
-    <span class="k">def</span> <span class="nf">random</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="c"># TODO/FIXME: You shouldn&#39;t draw random values for</span>
-        <span class="c"># observed/fixed elements!</span>
-
-        <span class="c"># Note that phi[1] is -0.5*inv(Cov)</span>
-        <span class="n">U</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">m_chol</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">phi</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-        <span class="n">mu</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="n">z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_shape</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
-        <span class="c"># Compute mu + U&#39;*z</span>
-        <span class="n">z</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">m_solve_triangular</span><span class="p">(</span><span class="n">U</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">trans</span><span class="o">=</span><span class="s">&#39;T&#39;</span><span class="p">,</span> <span class="n">lower</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">mu</span> <span class="o">+</span> <span class="n">z</span>
-            
 
     <span class="k">def</span> <span class="nf">show</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">mu</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
@@ -655,6 +655,53 @@
             <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">plates_from_parent</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">plates</span><span class="p">)</span>
 
 
+    <span class="k">def</span> <span class="nf">random</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">phi</span><span class="p">,</span> <span class="n">plates</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Draw a random sample from the Gaussian distribution.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c"># TODO/FIXME: You shouldn&#39;t draw random values for</span>
+        <span class="c"># observed/fixed elements!</span>
+        <span class="n">D</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ndim</span>
+        <span class="k">if</span> <span class="n">D</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">dims</span> <span class="o">=</span> <span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">dims</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">phi</span><span class="p">[</span><span class="mi">0</span><span class="p">])[</span><span class="o">-</span><span class="n">D</span><span class="p">:]</span>
+            
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">dims</span><span class="p">)</span> <span class="o">==</span> <span class="mf">1.0</span><span class="p">:</span>
+            <span class="c"># Scalar Gaussian</span>
+            <span class="n">phi1</span> <span class="o">=</span> <span class="n">phi</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">D</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="c"># Because the covariance matrix has shape (1,1,...,1,1),</span>
+                <span class="c"># that is 2*D number of ones, remove the extra half of the</span>
+                <span class="c"># shape</span>
+                <span class="n">phi1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">phi1</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">phi1</span><span class="p">)[:</span><span class="o">-</span><span class="mi">2</span><span class="o">*</span><span class="n">D</span><span class="p">]</span> <span class="o">+</span> <span class="n">D</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="p">,))</span>
+
+            <span class="n">var</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.5</span> <span class="o">/</span> <span class="n">phi1</span>
+            <span class="n">std</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">var</span><span class="p">)</span>
+            <span class="n">mu</span> <span class="o">=</span> <span class="n">var</span> <span class="o">*</span> <span class="n">phi</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">plates</span> <span class="o">+</span> <span class="n">dims</span><span class="p">)</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">mu</span> <span class="o">+</span> <span class="n">std</span> <span class="o">*</span> <span class="n">z</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">N</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">dims</span><span class="p">)</span>
+            <span class="n">dims_cov</span> <span class="o">=</span> <span class="n">dims</span> <span class="o">+</span> <span class="n">dims</span>
+            <span class="c"># Reshape precision matrix</span>
+            <span class="n">plates_cov</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">phi</span><span class="p">[</span><span class="mi">1</span><span class="p">])[:</span><span class="o">-</span><span class="mi">2</span><span class="o">*</span><span class="n">D</span><span class="p">]</span>
+            <span class="n">V</span> <span class="o">=</span> <span class="o">-</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">phi</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">plates_cov</span> <span class="o">+</span> <span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="n">N</span><span class="p">))</span>
+            <span class="c"># Compute Cholesky</span>
+            <span class="n">U</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">chol</span><span class="p">(</span><span class="n">V</span><span class="p">)</span>
+            <span class="c"># Reshape mean vector</span>
+            <span class="n">plates_phi0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">phi</span><span class="p">[</span><span class="mi">0</span><span class="p">])[:</span><span class="o">-</span><span class="n">D</span><span class="p">]</span>
+            <span class="n">phi0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">phi</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">plates_phi0</span> <span class="o">+</span> <span class="p">(</span><span class="n">N</span><span class="p">,))</span>
+            <span class="n">mu</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">chol_solve</span><span class="p">(</span><span class="n">U</span><span class="p">,</span> <span class="n">phi0</span><span class="p">)</span>
+            <span class="c"># Compute mu + U&#39;*z</span>
+            <span class="n">z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">plates</span> <span class="o">+</span> <span class="p">(</span><span class="n">N</span><span class="p">,))</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">mu</span> <span class="o">+</span> <span class="n">utils</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">solve_triangular</span><span class="p">(</span><span class="n">U</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span>
+                                                   <span class="n">trans</span><span class="o">=</span><span class="s">&#39;T&#39;</span><span class="p">,</span> 
+                                                   <span class="n">lower</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">plates</span> <span class="o">+</span> <span class="n">dims</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">x</span>
+
+
 <span class="k">class</span> <span class="nc">GaussianARD</span><span class="p">(</span><span class="n">ExponentialFamily</span><span class="p">):</span>
     <span class="sd">r&quot;&quot;&quot;</span>
 <span class="sd">    VMP node for Gaussian array variable.</span>
@@ -903,45 +950,6 @@
         <span class="c"># Cov. Do it later.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_set_moments_and_cgf</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">mask</span><span class="p">)</span>
         <span class="k">return</span>
-
-    <span class="k">def</span> <span class="nf">random</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Draw a random sample from the Gaussian distribution.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c"># TODO/FIXME: You shouldn&#39;t draw random values for</span>
-        <span class="c"># observed/fixed elements!</span>
-        <span class="n">D</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dims</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dims</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">==</span> <span class="mf">1.0</span><span class="p">:</span>
-            <span class="c"># Scalar Gaussian</span>
-            <span class="n">phi1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">phi</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-            <span class="k">if</span> <span class="n">D</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="c"># Because the covariance matrix has shape (1,1,...,1,1),</span>
-                <span class="c"># that is 2*D number of ones, remove the extra half of the</span>
-                <span class="c"># shape</span>
-                <span class="n">phi1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">phi1</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">phi1</span><span class="p">)[:</span><span class="o">-</span><span class="mi">2</span><span class="o">*</span><span class="n">D</span><span class="p">]</span> <span class="o">+</span> <span class="n">D</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="p">,))</span>
-
-            <span class="n">std</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="o">-</span><span class="mf">0.5</span> <span class="o">/</span> <span class="n">phi1</span><span class="p">)</span>
-            <span class="n">mu</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-            <span class="n">z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_shape</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
-            <span class="n">x</span> <span class="o">=</span> <span class="n">mu</span> <span class="o">+</span> <span class="n">std</span> <span class="o">*</span> <span class="n">z</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">N</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dims</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-            <span class="n">dims_cov</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dims</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-            <span class="c"># Reshape precision matrix</span>
-            <span class="n">plates_cov</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">phi</span><span class="p">[</span><span class="mi">1</span><span class="p">])[:</span><span class="o">-</span><span class="mi">2</span><span class="o">*</span><span class="n">D</span><span class="p">]</span>
-            <span class="n">V</span> <span class="o">=</span> <span class="o">-</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">phi</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">plates_cov</span> <span class="o">+</span> <span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="n">N</span><span class="p">))</span>
-            <span class="c"># Reshape mean vector</span>
-            <span class="n">plates_mu</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="p">[</span><span class="mi">0</span><span class="p">])[:</span><span class="o">-</span><span class="n">D</span><span class="p">]</span>
-            <span class="n">mu</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">plates_mu</span> <span class="o">+</span> <span class="p">(</span><span class="n">N</span><span class="p">,))</span>
-            <span class="c"># Compute Cholesky</span>
-            <span class="n">U</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">chol</span><span class="p">(</span><span class="n">V</span><span class="p">)</span>
-            <span class="c"># Compute mu + U&#39;*z</span>
-            <span class="n">z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">plates</span> <span class="o">+</span> <span class="p">(</span><span class="n">N</span><span class="p">,))</span>
-            <span class="n">x</span> <span class="o">=</span> <span class="n">mu</span> <span class="o">+</span> <span class="n">utils</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">solve_triangular</span><span class="p">(</span><span class="n">U</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span>
-                                                   <span class="n">trans</span><span class="o">=</span><span class="s">&#39;T&#39;</span><span class="p">,</span> 
-                                                   <span class="n">lower</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
-            <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">plates</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">dims</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-        <span class="k">return</span> <span class="n">x</span>
 
     <span class="k">def</span> <span class="nf">show</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>

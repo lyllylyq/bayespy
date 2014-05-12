@@ -76,23 +76,60 @@
 
 <span class="k">class</span> <span class="nc">Distribution</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A base class for the VMP formulas of variables.</span>
+
 <span class="sd">    Sub-classes implement distribution specific computations.</span>
+
+<span class="sd">    If a sub-class maps the plates differently, it needs to overload the</span>
+<span class="sd">    following methods:</span>
+
+<span class="sd">        * compute_mask_to_parent</span>
+
+<span class="sd">        * plates_to_parent</span>
+
+<span class="sd">        * plates_from_parent</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
 
     <span class="k">def</span> <span class="nf">compute_message_to_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">u_self</span><span class="p">,</span> <span class="o">*</span><span class="n">u_parents</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute the message to a parent node.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">compute_mask_to_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">mask</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Maps the mask to the plates of a parent.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="c"># Sub-classes may need to overwrite this method</span>
         <span class="k">return</span> <span class="n">mask</span>
 
     <span class="k">def</span> <span class="nf">plates_to_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">plates</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Resolves the plate mapping to a parent.</span>
+
+<span class="sd">        Given the plates of the node&#39;s moments, this method returns the plates</span>
+<span class="sd">        that the message to a parent has for the parent&#39;s distribution.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">plates</span>
 
     <span class="k">def</span> <span class="nf">plates_from_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">plates</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Resolve the plate mapping from a parent.</span>
+
+<span class="sd">        Given the plates of a parent&#39;s moments, this method returns the plates</span>
+<span class="sd">        that the moments has for this distribution.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">plates</span>
 
+
+    <span class="k">def</span> <span class="nf">random</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">params</span><span class="p">,</span> <span class="n">plates</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Draw a random sample from the distribution.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
+
+        
 <div class="viewcode-block" id="Stochastic"><a class="viewcode-back" href="../../../../../generated/bayespy.inference.vmp.nodes.stochastic.Stochastic.html#bayespy.inference.vmp.nodes.stochastic.Stochastic">[docs]</a><span class="k">class</span> <span class="nc">Stochastic</span><span class="p">(</span><span class="n">Node</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Base class for nodes that are stochastic.</span>
@@ -273,7 +310,14 @@
         <span class="c"># Update masks if necessary</span>
         <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">old_observed</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">observed</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_update_mask</span><span class="p">()</span>
-</pre></div></div></div>
+            
+</div>
+    <span class="k">def</span> <span class="nf">random</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Draw a random sample from the distribution.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div>
+</pre></div>
 
           </div>
         </div>

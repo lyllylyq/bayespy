@@ -119,11 +119,21 @@
                                                         <span class="n">m_children</span><span class="p">,</span>
                                                         <span class="o">*</span><span class="n">u_parents</span><span class="p">)</span>
         
-    
+
     <span class="k">def</span> <span class="nf">_compute_moments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">u_parents</span><span class="p">):</span>
-        <span class="c"># Sub-classes should implement this</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute the moments given the moments of the parents.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
 
+
+    <span class="k">def</span> <span class="nf">_compute_message_to_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">m_children</span><span class="p">,</span> <span class="o">*</span><span class="n">u_parents</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute the message to a parent.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
+
+    
     <span class="k">def</span> <span class="nf">_add_child</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">child</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Add a child node.</span>

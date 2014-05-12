@@ -26,7 +26,7 @@
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="top" title="BayesPy v0.1 Documentation" href="../index.html" />
     <link rel="up" title="Examples" href="../examples.html" />
-    <link rel="next" title="Principal component analysis" href="pca.html" />
+    <link rel="next" title="Discrete hidden Markov model" href="hmm_discrete.html" />
     <link rel="prev" title="Gaussian mixture model" href="gmm.html" /> 
   </head>
   <body>
@@ -37,7 +37,7 @@
           <a href="../genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="pca.html" title="Principal component analysis"
+          <a href="hmm_discrete.html" title="Discrete hidden Markov model"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="gmm.html" title="Gaussian mixture model"
@@ -55,6 +55,73 @@
   <div class="section" id="bernoulli-mixture-model">
 <h1>Bernoulli mixture model<a class="headerlink" href="#bernoulli-mixture-model" title="Permalink to this headline">¶</a></h1>
 <p>blaa blaa blaa</p>
+<div class="code python highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="n">D</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="n">p0</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">]</span>
+<span class="n">p1</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]</span>
+<span class="n">p2</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">]</span>
+<span class="n">p</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">p0</span><span class="p">,</span> <span class="n">p1</span><span class="p">,</span> <span class="n">p2</span><span class="p">])</span>
+<span class="kn">from</span> <span class="nn">bayespy.utils</span> <span class="kn">import</span> <span class="n">random</span>
+<span class="n">N</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="n">z</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">categorical</span><span class="p">([</span><span class="mi">1</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="mi">3</span><span class="p">],</span> <span class="n">size</span><span class="o">=</span><span class="n">N</span><span class="p">)</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">bernoulli</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="n">z</span><span class="p">])</span>
+</pre></div>
+</div>
+<div class="code python highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">bayespy.nodes</span> <span class="kn">import</span> <span class="n">Categorical</span><span class="p">,</span> <span class="n">Dirichlet</span>
+<span class="n">K</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="n">R</span> <span class="o">=</span> <span class="n">Dirichlet</span><span class="p">(</span><span class="n">K</span><span class="o">*</span><span class="p">[</span><span class="mf">1e-3</span><span class="p">],</span>
+              <span class="n">name</span><span class="o">=</span><span class="s">&#39;R&#39;</span><span class="p">)</span>
+<span class="n">Z</span> <span class="o">=</span> <span class="n">Categorical</span><span class="p">(</span><span class="n">R</span><span class="p">,</span>
+                <span class="n">plates</span><span class="o">=</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span>
+                <span class="n">name</span><span class="o">=</span><span class="s">&#39;Z&#39;</span><span class="p">)</span>
+
+<span class="kn">from</span> <span class="nn">bayespy.nodes</span> <span class="kn">import</span> <span class="n">Mixture</span><span class="p">,</span> <span class="n">Bernoulli</span><span class="p">,</span> <span class="n">Beta</span>
+<span class="n">P</span> <span class="o">=</span> <span class="n">Beta</span><span class="p">([</span><span class="mf">1e-1</span><span class="p">,</span> <span class="mf">1e-1</span><span class="p">],</span>
+         <span class="n">plates</span><span class="o">=</span><span class="p">(</span><span class="n">D</span><span class="p">,</span><span class="n">K</span><span class="p">),</span>
+         <span class="n">name</span><span class="o">=</span><span class="s">&#39;P&#39;</span><span class="p">)</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">Mixture</span><span class="p">(</span><span class="n">Z</span><span class="p">,</span> <span class="n">Bernoulli</span><span class="p">,</span> <span class="n">P</span><span class="p">)</span>
+
+<span class="n">X</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+<span class="kn">from</span> <span class="nn">bayespy.inference</span> <span class="kn">import</span> <span class="n">VB</span>
+<span class="n">Q</span> <span class="o">=</span> <span class="n">VB</span><span class="p">(</span><span class="n">Z</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">P</span><span class="p">)</span>
+<span class="n">P</span><span class="o">.</span><span class="n">initialize_from_random</span><span class="p">()</span>
+
+<span class="n">Q</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">repeat</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre>Iteration 1: loglike=nan (0.005 seconds)
+Iteration 2: loglike=nan (0.003 seconds)
+Iteration 3: loglike=nan (0.003 seconds)
+Iteration 4: loglike=nan (0.003 seconds)
+Iteration 5: loglike=nan (0.003 seconds)
+Iteration 6: loglike=nan (0.003 seconds)
+Iteration 7: loglike=nan (0.003 seconds)
+Iteration 8: loglike=nan (0.003 seconds)
+Iteration 9: loglike=nan (0.003 seconds)
+Iteration 10: loglike=nan (0.003 seconds)
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre>/home/jluttine/workspace/bayespy/bayespy/inference/vmp/nodes/dirichlet.py:91: RuntimeWarning: divide by zero encountered in log
+  logp = np.log(p)
+/home/jluttine/workspace/bayespy/bayespy/inference/vmp/nodes/expfamily.py:71: RuntimeWarning: invalid value encountered in multiply
+  L = L + np.sum(phi_i * u_i, axis=axis_sum)
+/home/jluttine/workspace/bayespy/bayespy/inference/vmp/nodes/expfamily.py:71: RuntimeWarning: invalid value encountered in add
+  L = L + np.sum(phi_i * u_i, axis=axis_sum)
+/home/jluttine/workspace/bayespy/bayespy/inference/vmp/nodes/mixture.py:229: UserWarning: The natural parameters of mixture distribution contain nans. This may happen if you use fixed parameters in your model. Technically, one possible reason is that the cluster assignment probability for some element is zero (p=0) and the natural parameter of that cluster is -inf, thus 0*(-inf)=nan. Solution: Use parameters that assign non-zero probabilities for the whole domain.
+  warnings.warn(&quot;The natural parameters of mixture distribution &quot;
+</pre></div>
+</div>
+<div class="code python highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">bayespy.plot.plotting</span> <span class="kn">as</span> <span class="nn">bpplt</span>
+<span class="n">bpplt</span><span class="o">.</span><span class="n">beta_hinton</span><span class="p">(</span><span class="n">P</span><span class="p">)</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre>/home/jluttine/workspace/bayespy/bayespy/plot/plotting.py:204: RuntimeWarning: invalid value encountered in absolute
+  _w = np.abs(w)
+</pre></div>
+</div>
 </div>
 
 
@@ -67,8 +134,8 @@
   <p class="topless"><a href="gmm.html"
                         title="previous chapter">Gaussian mixture model</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="pca.html"
-                        title="next chapter">Principal component analysis</a></p>
+  <p class="topless"><a href="hmm_discrete.html"
+                        title="next chapter">Discrete hidden Markov model</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../_sources/_notebooks/bmm.txt"
@@ -98,7 +165,7 @@
           <a href="../genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
-          <a href="pca.html" title="Principal component analysis"
+          <a href="hmm_discrete.html" title="Discrete hidden Markov model"
              >next</a> |</li>
         <li class="right" >
           <a href="gmm.html" title="Gaussian mixture model"

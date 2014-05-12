@@ -92,7 +92,9 @@
 <span class="kn">from</span> <span class="nn">.categorical</span> <span class="kn">import</span> <span class="n">CategoricalMoments</span>
 <span class="kn">from</span> <span class="nn">.node</span> <span class="kn">import</span> <span class="n">Moments</span><span class="p">,</span> <span class="n">ensureparents</span>
 
+
 <span class="k">class</span> <span class="nc">GaussianMarkovChainMoments</span><span class="p">(</span><span class="n">Moments</span><span class="p">):</span>
+
 
     <span class="k">def</span> <span class="nf">compute_fixed_moments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
         <span class="n">u0</span> <span class="o">=</span> <span class="n">x</span>
@@ -100,10 +102,6 @@
         <span class="n">u2</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="o">...</span><span class="p">,:</span><span class="o">-</span><span class="mi">1</span><span class="p">,:,</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]</span> <span class="o">*</span> <span class="n">x</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="mi">1</span><span class="p">:,</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,:]</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">u0</span><span class="p">,</span> <span class="n">u1</span><span class="p">,</span> <span class="n">u2</span><span class="p">]</span>
         
-    <span class="k">def</span> <span class="nf">converter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">moments_class</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">moments_class</span> <span class="ow">is</span> <span class="n">GaussianMoments</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">_MarkovChainToGaussian</span>
-        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">converter</span><span class="p">(</span><span class="n">moments_class</span><span class="p">)</span>
     
 <span class="k">class</span> <span class="nc">TemplateGaussianMarkovChainDistribution</span><span class="p">(</span><span class="n">ExponentialFamilyDistribution</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -230,9 +228,6 @@
     <span class="n">_moments</span> <span class="o">=</span> <span class="n">GaussianMarkovChainMoments</span><span class="p">()</span>
                                 
     
-    <span class="k">def</span> <span class="nf">random</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
-
     <span class="k">def</span> <span class="nf">show</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
 
@@ -1503,9 +1498,6 @@
                 <span class="n">parent_moments</span><span class="p">)</span>
     
 
-
-
-
 <span class="k">class</span> <span class="nc">_MarkovChainToGaussian</span><span class="p">(</span><span class="n">Deterministic</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Transform a Gaussian Markov chain node into a Gaussian node.</span>
@@ -1617,6 +1609,11 @@
 
         <span class="c"># Add the third empty message</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">m_children</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">m_children</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="bp">None</span><span class="p">]</span>
+
+
+<span class="c"># Make use of the converter</span>
+<span class="n">GaussianMarkovChainMoments</span><span class="o">.</span><span class="n">add_converter</span><span class="p">(</span><span class="n">GaussianMoments</span><span class="p">,</span>
+                                         <span class="n">_MarkovChainToGaussian</span><span class="p">)</span>
 </pre></div>
 
           </div>
