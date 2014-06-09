@@ -1,0 +1,238 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Performing inference &mdash; BayesPy v0.1 Documentation</title>
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="BayesPy v0.1 Documentation" href="../index.html" />
+    <link rel="up" title="User guide" href="user_guide.html" />
+    <link rel="next" title="Examining the results" href="plot.html" />
+    <link rel="prev" title="Constructing the model" href="modelconstruct.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="plot.html" title="Examining the results"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="modelconstruct.html" title="Constructing the model"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">BayesPy v0.1 Documentation</a> &raquo;</li>
+          <li><a href="user_guide.html" accesskey="U">User guide</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="performing-inference">
+<h1>Performing inference<a class="headerlink" href="#performing-inference" title="Permalink to this headline">¶</a></h1>
+<p>Approximation of the posterior distribution can be divided into
+several steps:</p>
+<ul class="simple">
+<li>Choosing and constructing the inference engine</li>
+<li>Initializing the engine</li>
+<li>Running the inference algorithm</li>
+</ul>
+<div class="section" id="providing-the-data">
+<h2>Providing the data<a class="headerlink" href="#providing-the-data" title="Permalink to this headline">¶</a></h2>
+<p>The data is provided by simply calling <tt class="docutils literal"><span class="pre">observe</span></tt> method of the node:</p>
+<div class="highlight-python3"><div class="highlight"><pre><span class="n">y</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>It is important that the shape of the <tt class="docutils literal"><span class="pre">data</span></tt> array matches the shape
+of the node <tt class="docutils literal"><span class="pre">y</span></tt>, which is the combination of the plates and the
+dimensionality.  For instance, if <tt class="docutils literal"><span class="pre">y</span></tt> is <tt class="docutils literal"><span class="pre">Wishart</span></tt> node for
+<span class="math">\(3\times 3\)</span> matrices with plates <tt class="docutils literal"><span class="pre">(5,1,10)</span></tt>, the actual shape
+of <tt class="docutils literal"><span class="pre">y</span></tt> would be <tt class="docutils literal"><span class="pre">(5,1,10,3,3)</span></tt>.  The data array must have this
+shape exactly, that is, no broadcasting rules are applied.</p>
+<div class="section" id="missing-values">
+<h3>Missing values<a class="headerlink" href="#missing-values" title="Permalink to this headline">¶</a></h3>
+<p>It is possible to mark missing values by providing a mask:</p>
+<div class="highlight-python3"><div class="highlight"><pre><span class="n">y</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="p">[</span><span class="k">True</span><span class="p">,</span> <span class="k">False</span><span class="p">,</span> <span class="k">False</span><span class="p">,</span> <span class="k">True</span><span class="p">,</span> <span class="k">True</span><span class="p">,</span>
+                      <span class="k">False</span><span class="p">,</span> <span class="k">True</span><span class="p">,</span> <span class="k">True</span><span class="p">,</span> <span class="k">True</span><span class="p">,</span> <span class="k">False</span><span class="p">])</span>
+</pre></div>
+</div>
+<p><tt class="docutils literal"><span class="pre">True</span></tt> means that the value is observed and <tt class="docutils literal"><span class="pre">False</span></tt> means that the
+value is missing.  To be more precise, the mask is applied to the
+plates, <em>not</em> to the data array directly.  Unlike for the data itself,
+standard NumPy broadcasting rules are applied for the mask with
+respect to the plates.  So, if the variable has plates <tt class="docutils literal"><span class="pre">(5,1,10)</span></tt>,
+the mask could have a shape <tt class="docutils literal"><span class="pre">(1,)</span></tt>, <tt class="docutils literal"><span class="pre">(10,)</span></tt>, <tt class="docutils literal"><span class="pre">(5,1,1)</span></tt> or
+<tt class="docutils literal"><span class="pre">(5,1,10)</span></tt>.</p>
+<p>From implementational point of view, the inference algorithms ignore
+the missing plates automatically if they are not needed.  Thus, the
+missing values are integrated out giving more accurate approximations
+and the computations may also be faster.</p>
+</div>
+<div class="section" id="choosing-the-inference-method">
+<h3>Choosing the inference method<a class="headerlink" href="#choosing-the-inference-method" title="Permalink to this headline">¶</a></h3>
+<p>Inference methods can be found in <tt class="docutils literal"><span class="pre">bayespy.inference</span></tt> package.
+Currently, only variational Bayesian approximation is implemented
+(<tt class="docutils literal"><span class="pre">bayespy.inference.VB</span></tt>).  The inference engine is constructed by
+giving the nodes of the model.</p>
+<div class="highlight-python3"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">bayespy.inference</span> <span class="k">import</span> <span class="n">VB</span>
+<span class="n">Q</span> <span class="o">=</span> <span class="n">VB</span><span class="p">(</span><span class="n">node1</span><span class="p">,</span> <span class="n">node2</span><span class="p">,</span> <span class="n">node3</span><span class="p">,</span> <span class="n">node4</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="initializing-the-inference">
+<h3>Initializing the inference<a class="headerlink" href="#initializing-the-inference" title="Permalink to this headline">¶</a></h3>
+<p>The inference engines give some initialization to the nodes by
+default.  However, the inference algorithms can be sensitive to the
+initialization, thus it is sometimes necessary to have full control
+over the initialization.  There may be different initialization
+methods, but for VB you can, for instance, initialize in one of the
+following ways:</p>
+<ul class="simple">
+<li><tt class="docutils literal"><span class="pre">initialize_from_prior</span></tt>: Use only parent nodes to update the node.</li>
+<li><tt class="docutils literal"><span class="pre">initialize_from_parameters</span></tt>: Use the given parameter values for
+the distribution.</li>
+</ul>
+<p>A random initialization for VB has to be performed manually, because
+it is not obvious what is actually wanted.  For instance, one way to
+achieve it is to first update from the parents, then to draw a random
+sample from that distribution and to set the values of the parameters
+based on that.  For <tt class="docutils literal"><span class="pre">Normal</span></tt> node, one could draw the mean parameter
+randomly and choose the precision parameter arbitrarily:</p>
+<div class="highlight-python3"><div class="highlight"><pre><span class="n">x</span> <span class="o">=</span> <span class="n">bp</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">Normal</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span> <span class="n">tau</span><span class="p">,</span> <span class="n">plates</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,))</span>
+<span class="n">x</span><span class="o">.</span><span class="n">initialize_from_prior</span><span class="p">()</span>
+<span class="n">x</span><span class="o">.</span><span class="n">initialize_from_parameters</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">random</span><span class="p">(),</span> <span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>In this case, the precision was set to one.  The default
+initialization method is <tt class="docutils literal"><span class="pre">initialization_from_prior</span></tt>, which is
+performed when the node is created.  If the initialization uses the
+values of the parents, they should be initialized before the children.</p>
+</div>
+<div class="section" id="running-the-inference-algorithm">
+<h3>Running the inference algorithm<a class="headerlink" href="#running-the-inference-algorithm" title="Permalink to this headline">¶</a></h3>
+<p>The approximation methods are based on iterative algorithms, which can
+be run using <tt class="docutils literal"><span class="pre">update</span></tt> method.  By default, it takes one iteration
+step updating all nodes once.  However, you can give as arguments the
+nodes you want to update and they are updated in the given order. It
+is possible to give same nodes several times, for instance:</p>
+<div class="highlight-python3"><div class="highlight"><pre><span class="n">Q</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">node1</span><span class="p">,</span> <span class="n">node3</span><span class="p">,</span> <span class="n">node1</span><span class="p">,</span> <span class="n">node4</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This would update <tt class="docutils literal"><span class="pre">node3</span></tt> and <tt class="docutils literal"><span class="pre">node4</span></tt> once, and <tt class="docutils literal"><span class="pre">node1</span></tt> twice.
+In order to update several times, one can use the optional argument
+<tt class="docutils literal"><span class="pre">repeat</span></tt>.</p>
+<div class="highlight-python3"><div class="highlight"><pre><span class="n">Q</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">node3</span><span class="p">,</span> <span class="n">node4</span><span class="p">,</span> <span class="n">repeat</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">Q</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">node1</span><span class="p">,</span> <span class="n">node2</span><span class="p">,</span> <span class="n">node3</span><span class="p">,</span> <span class="n">node4</span><span class="p">,</span> <span class="n">repeat</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This first updates <tt class="docutils literal"><span class="pre">node3</span></tt> and <tt class="docutils literal"><span class="pre">node4</span></tt> five times and then all the
+nodes ten times.  This might be useful, for instance, if updating some
+nodes is expensive and should be done rarely or if updating some nodes
+in the beginning would cause the algorithm to converge to a bad
+solution.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Ideally, one constructs the model and then chooses the inference
+method to be used - possibly trying several different methods.
+However, the model construction is not yet separated from the model
+construction, that is, the constructed model network is also the
+variational message passing network for VB inference.</p>
+</div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Performing inference</a><ul>
+<li><a class="reference internal" href="#providing-the-data">Providing the data</a><ul>
+<li><a class="reference internal" href="#missing-values">Missing values</a></li>
+<li><a class="reference internal" href="#choosing-the-inference-method">Choosing the inference method</a></li>
+<li><a class="reference internal" href="#initializing-the-inference">Initializing the inference</a></li>
+<li><a class="reference internal" href="#running-the-inference-algorithm">Running the inference algorithm</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="modelconstruct.html"
+                        title="previous chapter">Constructing the model</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="plot.html"
+                        title="next chapter">Examining the results</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/user_guide/inference.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="plot.html" title="Examining the results"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="modelconstruct.html" title="Constructing the model"
+             >previous</a> |</li>
+        <li><a href="../index.html">BayesPy v0.1 Documentation</a> &raquo;</li>
+          <li><a href="user_guide.html" >User guide</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011-2014, Jaakko Luttinen, GPLv3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

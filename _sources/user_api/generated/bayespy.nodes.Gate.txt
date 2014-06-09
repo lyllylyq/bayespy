@@ -1,0 +1,36 @@
+bayespy.nodes.Gate
+==================
+
+.. currentmodule:: bayespy.nodes
+
+.. autoclass:: Gate
+
+   
+
+      .. rubric:: Methods
+
+      .. autosummary::
+         :toctree:
+      
+         ~Gate.add_plate_axis
+         ~Gate.delete
+         ~Gate.get_mask
+         ~Gate.get_moments
+         ~Gate.get_shape
+         ~Gate.has_plotter
+         ~Gate.lower_bound_contribution
+         ~Gate.move_plates
+         ~Gate.plot
+         ~Gate.set_plotter
+
+
+
+   
+
+      .. rubric:: Attributes
+
+      .. autosummary::
+         :toctree:
+      
+         ~Gate.plates
+

@@ -1,0 +1,354 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Quick start guide &mdash; BayesPy v0.1 Documentation</title>
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="BayesPy v0.1 Documentation" href="../index.html" />
+    <link rel="up" title="User guide" href="user_guide.html" />
+    <link rel="next" title="Constructing the model" href="modelconstruct.html" />
+    <link rel="prev" title="Installation" href="install.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="modelconstruct.html" title="Constructing the model"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="install.html" title="Installation"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">BayesPy v0.1 Documentation</a> &raquo;</li>
+          <li><a href="user_guide.html" accesskey="U">User guide</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="quick-start-guide">
+<h1>Quick start guide<a class="headerlink" href="#quick-start-guide" title="Permalink to this headline">¶</a></h1>
+<p>This short guide shows the key steps in using BayesPy for variational
+Bayesian inference by applying BayesPy to a simple problem. The key
+steps in using BayesPy are the following:</p>
+<ul class="simple">
+<li>Construct the model</li>
+<li>Observe some of the variables by providing the data in a proper
+format</li>
+<li>Run variational Bayesian inference</li>
+<li>Examine the resulting posterior approximation</li>
+</ul>
+<p>To demonstrate BayesPy, we&#8217;ll consider a very simple problem: we have a
+set of observations from a Gaussian distribution with unknown mean and
+variance, and we want to learn these parameters. In this case, we do not
+use any real-world data but generate some artificial data. The dataset
+consists of ten samples from a Gaussian distribution with mean 5 and
+standard deviation 10. This dataset can be generated with NumPy as
+follows:</p>
+<div class="code python highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,))</span>
+</pre></div>
+</div>
+<p>Now, given this data we would like to estimate the mean and the standard
+deviation as if we didn&#8217;t know their values. The model can be defined as
+follows:</p>
+<div class="math">
+\[\begin{split}\begin{split}
+p(\mathbf{y}|\mu,\tau) &amp;= \prod^{9}_{n=0} \mathcal{N}(y_n|\mu,\tau) \\
+p(\mu) &amp;= \mathcal{N}(\mu|0,10^{-6}) \\
+p(\tau) &amp;= \mathcal{G}(\tau|10^{-6},10^{-6})
+\end{split}\end{split}\]</div>
+<p>where <span class="math">\(\mathcal{N}\)</span> is the Gaussian distribution parameterized by
+its mean and precision (i.e., inverse variance), and <span class="math">\(\mathcal{G}\)</span>
+is the gamma distribution parameterized by its shape and rate
+parameters. Note that we have given quite uninformative priors for the
+variables <span class="math">\(\mu\)</span> and <span class="math">\(\tau\)</span>. This simple model can also be
+shown as a directed factor graph:</p>
+<div class="figure">
+<p><img src="../_images/tikz-976630d8564f73d125711423689bca4d0f92c53b.png" alt="% tikzlibrary.code.tex
+%
+% Copyright 2010-2011 by Laura Dietz
+% Copyright 2012 by Jaakko Luttinen
+%
+% This file may be distributed and/or modified
+%
+% 1. under the LaTeX Project Public License and/or
+% 2. under the GNU General Public License.
+%
+% See the files LICENSE_LPPL and LICENSE_GPL for more details.
+
+% Load other libraries
+\usetikzlibrary{shapes}
+\usetikzlibrary{fit}
+\usetikzlibrary{chains}
+\usetikzlibrary{arrows}
+
+% Latent node
+\tikzstyle{latent} = [circle,fill=white,draw=black,inner sep=1pt,
+minimum size=20pt, font=\fontsize{10}{10}\selectfont, node distance=1]
+% Observed node
+\tikzstyle{obs} = [latent,fill=gray!25]
+% Constant node
+\tikzstyle{const} = [rectangle, inner sep=0pt, node distance=1]
+% Factor node
+\tikzstyle{factor} = [rectangle, fill=black,minimum size=5pt, inner
+sep=0pt, node distance=0.4]
+% Deterministic node
+\tikzstyle{det} = [latent, diamond]
+
+% Plate node
+\tikzstyle{plate} = [draw, rectangle, rounded corners, fit=#1]
+% Invisible wrapper node
+\tikzstyle{wrap} = [inner sep=0pt, fit=#1]
+% Gate
+\tikzstyle{gate} = [draw, rectangle, dashed, fit=#1]
+
+% Caption node
+\tikzstyle{caption} = [font=\footnotesize, node distance=0] %
+\tikzstyle{plate caption} = [caption, node distance=0, inner sep=0pt,
+below left=5pt and 0pt of #1.south east] %
+\tikzstyle{factor caption} = [caption] %
+\tikzstyle{every label} += [caption] %
+
+\tikzset{&gt;={triangle 45}}
+
+%\pgfdeclarelayer{b}
+%\pgfdeclarelayer{f}
+%\pgfsetlayers{b,main,f}
+
+% \factoredge [options] {inputs} {factors} {outputs}
+\newcommand{\factoredge}[4][]{ %
+  % Connect all nodes #2 to all nodes #4 via all factors #3.
+  \foreach \f in {#3} { %
+    \foreach \x in {#2} { %
+      \draw[-,#1] (\x) edge[-] (\f) ; %
+    } ;
+    \foreach \y in {#4} { %
+      \draw[-&gt;,#1] (\f) -- (\y) ; %
+    } ;
+  } ;
+}
+
+% \edge [options] {inputs} {outputs}
+\newcommand{\edge}[3][]{ %
+  % Connect all nodes #2 to all nodes #3.
+  \foreach \x in {#2} { %
+    \foreach \y in {#3} { %
+      \draw[-&gt;,#1] (\x) -- (\y) ;%
+    } ;
+  } ;
+}
+
+% \factor [options] {name} {caption} {inputs} {outputs}
+\newcommand{\factor}[5][]{ %
+  % Draw the factor node. Use alias to allow empty names.
+  \node[factor, label={[name=#2-caption]#3}, name=#2, #1,
+  alias=#2-alias] {} ; %
+  % Connect all inputs to outputs via this factor
+  \factoredge {#4} {#2-alias} {#5} ; %
+}
+
+% \plate [options] {name} {fitlist} {caption}
+\newcommand{\plate}[4][]{ %
+  \node[wrap=#3] (#2-wrap) {}; %
+  \node[plate caption=#2-wrap] (#2-caption) {#4}; %
+  \node[plate=(#2-wrap)(#2-caption), #1] (#2) {}; %
+}
+
+% \gate [options] {name} {fitlist} {inputs}
+\newcommand{\gate}[4][]{ %
+  \node[gate=#3, name=#2, #1, alias=#2-alias] {}; %
+  \foreach \x in {#4} { %
+    \draw [-*,thick] (\x) -- (#2-alias); %
+  } ;%
+}
+
+% \vgate {name} {fitlist-left} {caption-left} {fitlist-right}
+% {caption-right} {inputs}
+\newcommand{\vgate}[6]{ %
+  % Wrap the left and right parts
+  \node[wrap=#2] (#1-left) {}; %
+  \node[wrap=#4] (#1-right) {}; %
+  % Draw the gate
+  \node[gate=(#1-left)(#1-right)] (#1) {}; %
+  % Add captions
+  \node[caption, below left=of #1.north ] (#1-left-caption)
+  {#3}; %
+  \node[caption, below right=of #1.north ] (#1-right-caption)
+  {#5}; %
+  % Draw middle separation
+  \draw [-, dashed] (#1.north) -- (#1.south); %
+  % Draw inputs
+  \foreach \x in {#6} { %
+    \draw [-*,thick] (\x) -- (#1); %
+  } ;%
+}
+
+% \hgate {name} {fitlist-top} {caption-top} {fitlist-bottom}
+% {caption-bottom} {inputs}
+\newcommand{\hgate}[6]{ %
+  % Wrap the left and right parts
+  \node[wrap=#2] (#1-top) {}; %
+  \node[wrap=#4] (#1-bottom) {}; %
+  % Draw the gate
+  \node[gate=(#1-top)(#1-bottom)] (#1) {}; %
+  % Add captions
+  \node[caption, above right=of #1.west ] (#1-top-caption)
+  {#3}; %
+  \node[caption, below right=of #1.west ] (#1-bottom-caption)
+  {#5}; %
+  % Draw middle separation
+  \draw [-, dashed] (#1.west) -- (#1.east); %
+  % Draw inputs
+  \foreach \x in {#6} { %
+    \draw [-*,thick] (\x) -- (#1); %
+  } ;%
+}
+
+\node[obs]                                  (y)     {$y_n$} ;
+\node[latent, above left=1.5 and 0.5 of y]  (mu)    {$\mu$} ;
+\node[latent, above right=1.5 and 0.5 of y] (tau)   {$\tau$} ;
+\factor[above=of mu] {mu-f} {left:$\mathcal{N}$} {} {mu} ;
+\factor[above=of tau] {tau-f} {left:$\mathcal{G}$} {} {tau} ;
+
+\factor[above=of y] {y-f} {left:$\mathcal{N}$} {mu,tau}     {y};
+
+\plate {} {(y)(y-f)(y-f-caption)} {$n=0,\ldots,9$} ;" /></p>
+<p class="caption">Directed factor graph of the example model.</p></div><p>This model can be constructed in BayesPy as follows:</p>
+<div class="code python highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">bayespy.nodes</span> <span class="kn">import</span> <span class="n">GaussianARD</span><span class="p">,</span> <span class="n">Gamma</span>
+<span class="n">mu</span> <span class="o">=</span> <span class="n">GaussianARD</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">1e-6</span><span class="p">)</span>
+<span class="n">tau</span> <span class="o">=</span> <span class="n">Gamma</span><span class="p">(</span><span class="mf">1e-6</span><span class="p">,</span> <span class="mf">1e-6</span><span class="p">)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">GaussianARD</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span> <span class="n">tau</span><span class="p">,</span> <span class="n">plates</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,))</span>
+</pre></div>
+</div>
+<p>This is quite self-explanatory given the model definitions above. We have used two types of nodes <a class="reference internal" href="../user_api/generated/bayespy.nodes.GaussianARD.html#bayespy.nodes.GaussianARD" title="bayespy.nodes.GaussianARD"><tt class="xref py py-class docutils literal"><span class="pre">GaussianARD</span></tt></a> and <a class="reference internal" href="../user_api/generated/bayespy.nodes.Gamma.html#bayespy.nodes.Gamma" title="bayespy.nodes.Gamma"><tt class="xref py py-class docutils literal"><span class="pre">Gamma</span></tt></a> to represent Gaussian and gamma distributions, respectively. There are much more distributions in <tt class="xref py py-mod docutils literal"><span class="pre">bayespy.nodes</span></tt> so you can construct quite complex conjugate exponential family models. The node <tt class="code docutils literal"><span class="pre">y</span></tt> uses keyword argument <tt class="code docutils literal"><span class="pre">plates</span></tt> to define the plates <span class="math">\(n=0,\ldots,9\)</span>.</p>
+<p>Now that we have created the model, we can provide our data by setting <tt class="code docutils literal"><span class="pre">y</span></tt> as observed:</p>
+<div class="code python highlight-python"><div class="highlight"><pre><span class="n">y</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Next we want to estimate the posterior distribution. In principle, we
+could use different inference engines (e.g., MCMC or EP) but currently
+only variational Bayesian (VB) engine is implemented. The engine is
+initialized by giving all the nodes of the model:</p>
+<div class="code python highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">bayespy.inference</span> <span class="kn">import</span> <span class="n">VB</span>
+<span class="n">Q</span> <span class="o">=</span> <span class="n">VB</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span> <span class="n">tau</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The inference algorithm can be run as long as wanted (max. 20 iterations
+in this case):</p>
+<div class="code python highlight-python"><div class="highlight"><pre><span class="n">Q</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">repeat</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre>Iteration 1: loglike=-5.910731e+01 (0.010 seconds)
+Iteration 2: loglike=-5.721245e+01 (0.000 seconds)
+Iteration 3: loglike=-5.721009e+01 (0.000 seconds)
+Iteration 4: loglike=-5.721007e+01 (0.010 seconds)
+Converged.
+</pre></div>
+</div>
+<p>Now the algorithm converged after four iterations, before the requested
+20 iterations.</p>
+<p>VB approximates the true posterior <span class="math">\(p(\mu,\tau|\mathbf{y})\)</span> with a
+distribution which factorizes with respect to the nodes:
+<span class="math">\(q(\mu)q(\tau)\)</span>. The resulting approximate posterior
+distributions <span class="math">\(q(\mu)\)</span> and <span class="math">\(q(\tau)\)</span> can be examined, for
+instance, by plotting the marginal probability density functions:</p>
+<div class="code python highlight-python"><div class="highlight"><pre>import bayespy.plot as bpplt
+# The following two two lines are just for enabling matplotlib plotting in notebooks
+%matplotlib inline
+bpplt.pyplot.plot([])
+bpplt.pyplot.subplot(2, 1, 1)
+bpplt.pdf(mu, np.linspace(-10, 20, num=100), color=&#39;k&#39;, name=r&#39;\mu&#39;)
+bpplt.pyplot.subplot(2, 1, 2)
+bpplt.pdf(tau, np.linspace(1e-6, 0.08, num=100), color=&#39;k&#39;, name=r&#39;\tau&#39;);
+</pre></div>
+</div>
+<img alt="../_images/quickstart_14_0.png" src="../_images/quickstart_14_0.png" />
+<p>This example was a very simple introduction to using BayesPy. The model
+can be much more complex and each phase contains more options to give
+the user more control over the inference. The following sections give
+more details about the phases.</p>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="install.html"
+                        title="previous chapter">Installation</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="modelconstruct.html"
+                        title="next chapter">Constructing the model</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/user_guide/quickstart.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="modelconstruct.html" title="Constructing the model"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="install.html" title="Installation"
+             >previous</a> |</li>
+        <li><a href="../index.html">BayesPy v0.1 Documentation</a> &raquo;</li>
+          <li><a href="user_guide.html" >User guide</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011-2014, Jaakko Luttinen, GPLv3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

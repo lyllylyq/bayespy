@@ -1,0 +1,187 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Additive factorial hidden Markov model &mdash; BayesPy v0.1 Documentation</title>
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="BayesPy v0.1 Documentation" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li><a href="../index.html">BayesPy v0.1 Documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="additive-factorial-hidden-markov-model">
+<h1>Additive factorial hidden Markov model<a class="headerlink" href="#additive-factorial-hidden-markov-model" title="Permalink to this headline">¶</a></h1>
+<div class="code python highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">bayespy.nodes</span> <span class="kn">import</span> <span class="p">(</span><span class="n">Dirichlet</span><span class="p">,</span>
+                            <span class="n">CategoricalMarkovChain</span><span class="p">,</span>
+                            <span class="n">GaussianARD</span><span class="p">,</span>
+                            <span class="n">Gate</span><span class="p">,</span>
+                            <span class="n">SumMultiply</span><span class="p">,</span>
+                            <span class="n">Gamma</span><span class="p">)</span>
+
+<span class="n">D</span> <span class="o">=</span> <span class="mi">4</span>   <span class="c"># dimensionality of the data vectors (and mu vectors)</span>
+<span class="n">N</span> <span class="o">=</span> <span class="mi">5</span>   <span class="c"># number of chains</span>
+<span class="n">K</span> <span class="o">=</span> <span class="mi">3</span>   <span class="c"># number of states in each chain</span>
+<span class="n">T</span> <span class="o">=</span> <span class="mi">100</span> <span class="c"># length of each chain</span>
+
+<span class="c"># Markov chain parameters.</span>
+<span class="c"># Use known values</span>
+<span class="n">p0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">K</span><span class="p">)</span> <span class="o">/</span> <span class="n">K</span>
+<span class="n">P</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">K</span><span class="p">,</span><span class="n">K</span><span class="p">))</span> <span class="o">/</span> <span class="n">K</span>
+<span class="c"># Or set Dirichlet prior.</span>
+<span class="n">p0</span> <span class="o">=</span> <span class="n">Dirichlet</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">K</span><span class="p">),</span> <span class="n">plates</span><span class="o">=</span><span class="p">(</span><span class="n">N</span><span class="p">,))</span>
+<span class="n">P</span> <span class="o">=</span> <span class="n">Dirichlet</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">K</span><span class="p">),</span> <span class="n">plates</span><span class="o">=</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="n">K</span><span class="p">))</span>
+
+<span class="c"># N Markov chains with K possible states, and length T</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">CategoricalMarkovChain</span><span class="p">(</span><span class="n">p0</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">states</span><span class="o">=</span><span class="n">T</span><span class="p">,</span> <span class="n">plates</span><span class="o">=</span><span class="p">(</span><span class="n">N</span><span class="p">,))</span>
+
+<span class="c"># For each of the N chains, have K different D-dimensional mu&#39;s</span>
+<span class="c"># Unknown mu&#39;s</span>
+<span class="n">mu</span> <span class="o">=</span> <span class="n">GaussianARD</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">1e-3</span><span class="p">,</span> <span class="n">plates</span><span class="o">=</span><span class="p">(</span><span class="n">D</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="n">K</span><span class="p">),</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">N</span><span class="p">,))</span>
+
+<span class="c"># Gate/select mu&#39;s</span>
+<span class="k">print</span><span class="p">(</span><span class="n">mu</span><span class="o">.</span><span class="n">plates</span><span class="p">,</span> <span class="n">mu</span><span class="o">.</span><span class="n">dims</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">X</span><span class="o">.</span><span class="n">plates</span><span class="p">,</span> <span class="n">X</span><span class="o">.</span><span class="n">dims</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+<span class="n">Z</span> <span class="o">=</span> <span class="n">Gate</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">mu</span><span class="p">)</span>
+
+<span class="c"># Sum the mu&#39;s of different chains</span>
+<span class="n">F</span> <span class="o">=</span> <span class="n">SumMultiply</span><span class="p">(</span><span class="s">&#39;i-&gt;&#39;</span><span class="p">,</span> <span class="n">Z</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">mu</span><span class="o">.</span><span class="n">plates</span><span class="p">,</span> <span class="n">mu</span><span class="o">.</span><span class="n">dims</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">X</span><span class="o">.</span><span class="n">plates</span><span class="p">,</span> <span class="n">X</span><span class="o">.</span><span class="n">dims</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">Z</span><span class="o">.</span><span class="n">plates</span><span class="p">,</span> <span class="n">Z</span><span class="o">.</span><span class="n">dims</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">F</span><span class="o">.</span><span class="n">plates</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">dims</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+<span class="c"># Known observation noise inverse covariance</span>
+<span class="n">tau</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">D</span><span class="p">)</span>
+<span class="c"># or unknown observation noise inverse covariance</span>
+<span class="n">tau</span> <span class="o">=</span> <span class="n">Gamma</span><span class="p">(</span><span class="mf">1e-3</span><span class="p">,</span> <span class="mf">1e-3</span><span class="p">,</span> <span class="n">plates</span><span class="o">=</span><span class="p">(</span><span class="n">D</span><span class="p">,))</span>
+
+<span class="c"># Observed process</span>
+<span class="n">Y</span> <span class="o">=</span> <span class="n">GaussianARD</span><span class="p">(</span><span class="n">F</span><span class="p">,</span> <span class="n">tau</span><span class="p">)</span>
+
+<span class="c"># Data</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">D</span><span class="p">)</span>
+<span class="n">Y</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+<span class="kn">from</span> <span class="nn">bayespy.inference</span> <span class="kn">import</span> <span class="n">VB</span>
+<span class="n">Q</span> <span class="o">=</span> <span class="n">VB</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">p0</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">tau</span><span class="p">)</span>
+
+<span class="n">Q</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">repeat</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span> <span class="p">(</span><span class="mi">5</span><span class="p">,)</span> <span class="p">(</span><span class="mi">5</span><span class="p">,)</span> <span class="p">(</span><span class="mi">99</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span> <span class="p">(</span><span class="mi">5</span><span class="p">,)</span> <span class="p">(</span><span class="mi">5</span><span class="p">,)</span> <span class="p">(</span><span class="mi">3</span><span class="p">,)</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span> <span class="p">(</span><span class="mi">5</span><span class="p">,)</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span> <span class="p">()</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre>---------------------------------------------------------------------------
+ValueError                                Traceback (most recent call last)
+
+&lt;ipython-input-5-1bb7a2c9abcf&gt; in &lt;module&gt;()
+     41
+     42 # Observed process
+---&gt; 43 Y = GaussianARD(F, tau)
+     44
+     45 # Data
+
+
+/home/jluttine/workspace/bayespy/bayespy/inference/vmp/nodes/expfamily.py in constructor_decorator(self, *args, **kwargs)
+     81
+     82             (args, kwargs, dims, plates, dist, stats, pstats) = \
+---&gt; 83               self._constructor(*args, **kwargs)
+     84
+     85             self.dims = dims
+
+
+/home/jluttine/workspace/bayespy/bayespy/inference/vmp/nodes/gaussian.py in _constructor(cls, mu, alpha, ndim, shape, **kwargs)
+    890         plates = cls._total_plates(kwargs.get(&#39;plates&#39;),
+    891                                    distribution.plates_from_parent(0, mu.plates),
+--&gt; 892                                    distribution.plates_from_parent(1, alpha.plates))
+    893
+    894         parents = [mu, alpha]
+
+
+/home/jluttine/workspace/bayespy/bayespy/inference/vmp/nodes/node.py in _total_plates(cls, plates, *parent_plates)
+    244                 return utils.broadcasted_shape(*parent_plates)
+    245             except ValueError:
+--&gt; 246                 raise ValueError(&quot;The plates of the parents do not broadcast.&quot;)
+    247         else:
+    248             # Check that the parent_plates are a subset of plates.
+
+
+ValueError: The plates of the parents do not broadcast.
+</pre></div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/examples/additive_fhmm.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li><a href="../index.html">BayesPy v0.1 Documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011-2014, Jaakko Luttinen, GPLv3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

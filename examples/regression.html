@@ -1,0 +1,283 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Regression &mdash; BayesPy v0.1 Documentation</title>
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="BayesPy v0.1 Documentation" href="../index.html" />
+    <link rel="up" title="Examples" href="examples.html" />
+    <link rel="next" title="Gaussian mixture model" href="gmm.html" />
+    <link rel="prev" title="Examples" href="examples.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="gmm.html" title="Gaussian mixture model"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="examples.html" title="Examples"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">BayesPy v0.1 Documentation</a> &raquo;</li>
+          <li><a href="examples.html" accesskey="U">Examples</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="regression">
+<h1>Regression<a class="headerlink" href="#regression" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="linear-regression">
+<h2>Linear regression<a class="headerlink" href="#linear-regression" title="Permalink to this headline">¶</a></h2>
+<div class="code python highlight-python"><div class="highlight"><pre>import numpy as np
+k = 2
+c = 5
+s = 2
+
+x = np.arange(10)
+y = k*x + c + s*np.random.randn(10)
+
+from bayespy.nodes import GaussianARD
+B = GaussianARD(0, 1e-6, shape=(2,))
+
+X = np.vstack([x, np.ones(len(x))]).T
+
+from bayespy.nodes import SumMultiply
+F = SumMultiply(&#39;i,i&#39;, B, X)
+
+from bayespy.nodes import Gamma
+tau = Gamma(1e-3, 1e-3)
+
+Y = GaussianARD(F, tau)
+Y.observe(y)
+
+from bayespy.inference import VB
+Q = VB(Y, B, tau)
+
+Q.update(repeat=100)
+
+import bayespy.plot as bpplt
+# These two lines are needed to enable inline plotting IPython Notebooks
+%matplotlib inline
+bpplt.pyplot.plot([])
+
+xh = np.linspace(-5, 15, 100)
+Xh = np.vstack([xh, np.ones(len(xh))]).T
+Fh = SumMultiply(&#39;i,i&#39;, B, Xh)
+bpplt.plot(Fh, x=xh, scale=2)
+bpplt.plot(y, x=x, color=&#39;r&#39;, marker=&#39;x&#39;, linestyle=&#39;None&#39;)
+bpplt.plot(k*xh+c, x=xh, color=&#39;r&#39;);
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre>Iteration 1: loglike=-4.515537e+01 (0.000 seconds)
+Iteration 2: loglike=-4.429472e+01 (0.010 seconds)
+Iteration 3: loglike=-4.428241e+01 (0.000 seconds)
+Iteration 4: loglike=-4.428197e+01 (0.000 seconds)
+Iteration 5: loglike=-4.428195e+01 (0.010 seconds)
+Converged.
+</pre></div>
+</div>
+<img alt="../_images/regression_2_1.png" src="../_images/regression_2_1.png" />
+<div class="code python highlight-python"><div class="highlight"><pre><span class="n">bpplt</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">tau</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">1e-6</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">100</span><span class="p">),</span> <span class="n">color</span><span class="o">=</span><span class="s">&#39;k&#39;</span><span class="p">)</span>
+<span class="n">bpplt</span><span class="o">.</span><span class="n">pyplot</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">s</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">),</span> <span class="n">color</span><span class="o">=</span><span class="s">&#39;r&#39;</span><span class="p">)</span>
+<span class="c"># Add labels</span>
+<span class="n">bpplt</span><span class="o">.</span><span class="n">pyplot</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s">r&#39;$q(\tau)$&#39;</span><span class="p">)</span>
+<span class="n">bpplt</span><span class="o">.</span><span class="n">pyplot</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s">r&#39;$\tau$&#39;</span><span class="p">);</span>
+</pre></div>
+</div>
+<img alt="../_images/regression_3_0.png" src="../_images/regression_3_0.png" />
+<div class="code python highlight-python"><div class="highlight"><pre><span class="n">bpplt</span><span class="o">.</span><span class="n">contour</span><span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">1000</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">9</span><span class="p">,</span><span class="mi">1000</span><span class="p">),</span> <span class="n">n</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="s">&#39;k&#39;</span><span class="p">)</span>
+<span class="n">bpplt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">k</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s">&#39;r&#39;</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s">&#39;x&#39;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s">&#39;None&#39;</span><span class="p">,</span> <span class="n">markersize</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">markeredgewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="c"># Add labels</span>
+<span class="n">bpplt</span><span class="o">.</span><span class="n">pyplot</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s">r&#39;$q(k,c)$&#39;</span><span class="p">)</span>
+<span class="n">bpplt</span><span class="o">.</span><span class="n">pyplot</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s">r&#39;$k$&#39;</span><span class="p">)</span>
+<span class="n">bpplt</span><span class="o">.</span><span class="n">pyplot</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s">r&#39;$c$&#39;</span><span class="p">);</span>
+</pre></div>
+</div>
+<img alt="../_images/regression_4_0.png" src="../_images/regression_4_0.png" />
+</div>
+<div class="section" id="improving-accuracy">
+<h2>Improving accuracy<a class="headerlink" href="#improving-accuracy" title="Permalink to this headline">¶</a></h2>
+<div class="code python highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">bayespy.nodes</span> <span class="kn">import</span> <span class="n">GaussianGammaISO</span>
+<span class="n">B_tau</span> <span class="o">=</span> <span class="n">GaussianGammaISO</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="mf">1e-6</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="mf">1e-3</span><span class="p">,</span> <span class="mf">1e-3</span><span class="p">)</span>
+
+<span class="n">F_tau</span> <span class="o">=</span> <span class="n">SumMultiply</span><span class="p">(</span><span class="s">&#39;i,i&#39;</span><span class="p">,</span> <span class="n">B_tau</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span>
+
+<span class="n">Y</span> <span class="o">=</span> <span class="n">GaussianARD</span><span class="p">(</span><span class="n">F_tau</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">Y</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+
+<span class="kn">from</span> <span class="nn">bayespy.inference</span> <span class="kn">import</span> <span class="n">VB</span>
+<span class="n">Q</span> <span class="o">=</span> <span class="n">VB</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span> <span class="n">B_tau</span><span class="p">)</span>
+
+<span class="n">Q</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">repeat</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre>Iteration 1: loglike=-4.594957e+01 (0.000 seconds)
+Iteration 2: loglike=-4.594957e+01 (0.000 seconds)
+Converged.
+</pre></div>
+</div>
+<div class="code python highlight-python"><div class="highlight"><pre><span class="n">bpplt</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">B_tau</span><span class="o">.</span><span class="n">get_marginal_logpdf</span><span class="p">(</span><span class="n">gaussian</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="bp">True</span><span class="p">),</span>
+          <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">1e-6</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">100</span><span class="p">),</span> <span class="n">color</span><span class="o">=</span><span class="s">&#39;k&#39;</span><span class="p">)</span>
+<span class="n">bpplt</span><span class="o">.</span><span class="n">pyplot</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">s</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">),</span> <span class="n">color</span><span class="o">=</span><span class="s">&#39;r&#39;</span><span class="p">)</span>
+<span class="c"># Add labels</span>
+<span class="n">bpplt</span><span class="o">.</span><span class="n">pyplot</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s">r&#39;$q(\tau)$&#39;</span><span class="p">)</span>
+<span class="n">bpplt</span><span class="o">.</span><span class="n">pyplot</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s">r&#39;$\tau$&#39;</span><span class="p">);</span>
+</pre></div>
+</div>
+<img alt="../_images/regression_7_0.png" src="../_images/regression_7_0.png" />
+<div class="code python highlight-python"><div class="highlight"><pre><span class="n">bpplt</span><span class="o">.</span><span class="n">contour</span><span class="p">(</span><span class="n">B_tau</span><span class="o">.</span><span class="n">get_marginal_logpdf</span><span class="p">(</span><span class="n">gaussian</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span> <span class="n">gamma</span><span class="o">=</span><span class="bp">False</span><span class="p">),</span>
+              <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">100</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">9</span><span class="p">,</span><span class="mi">100</span><span class="p">),</span>
+              <span class="n">n</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="s">&#39;k&#39;</span><span class="p">)</span>
+<span class="c"># Plot the true value</span>
+<span class="n">bpplt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">k</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s">&#39;r&#39;</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s">&#39;x&#39;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s">&#39;None&#39;</span><span class="p">,</span> <span class="n">markersize</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">markeredgewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="c"># Add labels</span>
+<span class="n">bpplt</span><span class="o">.</span><span class="n">pyplot</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s">r&#39;$q(k,c)$&#39;</span><span class="p">)</span>
+<span class="n">bpplt</span><span class="o">.</span><span class="n">pyplot</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s">r&#39;$k$&#39;</span><span class="p">)</span>
+<span class="n">bpplt</span><span class="o">.</span><span class="n">pyplot</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s">r&#39;$c$&#39;</span><span class="p">);</span>
+</pre></div>
+</div>
+<img alt="../_images/regression_8_0.png" src="../_images/regression_8_0.png" />
+<div class="code python highlight-python"><div class="highlight"><pre><span class="n">bpplt</span><span class="o">.</span><span class="n">contour</span><span class="p">(</span><span class="n">B_tau</span><span class="o">.</span><span class="n">get_marginal_logpdf</span><span class="p">(</span><span class="n">gaussian</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">gamma</span><span class="o">=</span><span class="bp">True</span><span class="p">),</span>
+              <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">100</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">1e-6</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">100</span><span class="p">),</span>
+              <span class="n">n</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="s">&#39;k&#39;</span><span class="p">)</span>
+<span class="n">bpplt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">s</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">),</span> <span class="n">x</span><span class="o">=</span><span class="n">k</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s">&#39;r&#39;</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s">&#39;x&#39;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s">&#39;None&#39;</span><span class="p">,</span> <span class="n">markersize</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">markeredgewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">bpplt</span><span class="o">.</span><span class="n">pyplot</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s">r&#39;$q(k,\tau)$&#39;</span><span class="p">)</span>
+<span class="n">bpplt</span><span class="o">.</span><span class="n">pyplot</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s">r&#39;$k$&#39;</span><span class="p">)</span>
+<span class="n">bpplt</span><span class="o">.</span><span class="n">pyplot</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s">r&#39;$\tau$&#39;</span><span class="p">);</span>
+</pre></div>
+</div>
+<img alt="../_images/regression_9_0.png" src="../_images/regression_9_0.png" />
+<div class="code python highlight-python"><div class="highlight"><pre><span class="n">xh</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+<span class="n">Xh</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">xh</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">xh</span><span class="p">))])</span><span class="o">.</span><span class="n">T</span>
+<span class="n">Fh_tau</span> <span class="o">=</span> <span class="n">SumMultiply</span><span class="p">(</span><span class="s">&#39;i,i&#39;</span><span class="p">,</span> <span class="n">B_tau</span><span class="p">,</span> <span class="n">Xh</span><span class="p">)</span>
+<span class="n">bpplt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">Fh_tau</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">xh</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">bpplt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s">&#39;r&#39;</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s">&#39;x&#39;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s">&#39;None&#39;</span><span class="p">)</span>
+<span class="n">bpplt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">k</span><span class="o">*</span><span class="n">xh</span><span class="o">+</span><span class="n">c</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">xh</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s">&#39;r&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre>---------------------------------------------------------------------------
+AttributeError                            Traceback (most recent call last)
+
+&lt;ipython-input-8-bad1c68bbf3d&gt; in &lt;module&gt;()
+      2 Xh = np.vstack([xh, np.ones(len(xh))]).T
+      3 Fh_tau = SumMultiply(&#39;i,i&#39;, B_tau, Xh)
+----&gt; 4 bpplt.plot(Fh_tau, x=xh, scale=2)
+      5 bpplt.plot(y, x=x, color=&#39;r&#39;, marker=&#39;x&#39;, linestyle=&#39;None&#39;)
+      6 bpplt.plot(k*xh+c, x=xh, color=&#39;r&#39;)
+
+
+/home/jluttine/workspace/bayespy/bayespy/plot.py in plot(Y, axis, scale, center, **kwargs)
+    125             return plot_gaussian(Y, axis=axis, scale=scale, center=center, **kwargs)
+    126
+--&gt; 127     (mu, var) = Y.get_mean_and_variance()
+    128     std = np.sqrt(var)
+    129
+
+
+AttributeError: &#39;SumMultiply&#39; object has no attribute &#39;get_mean_and_variance&#39;
+</pre></div>
+</div>
+</div>
+<div class="section" id="multivariate-regression">
+<h2>Multivariate regression<a class="headerlink" href="#multivariate-regression" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="non-linear-regression">
+<h2>Non-linear regression<a class="headerlink" href="#non-linear-regression" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Regression</a><ul>
+<li><a class="reference internal" href="#linear-regression">Linear regression</a></li>
+<li><a class="reference internal" href="#improving-accuracy">Improving accuracy</a></li>
+<li><a class="reference internal" href="#multivariate-regression">Multivariate regression</a></li>
+<li><a class="reference internal" href="#non-linear-regression">Non-linear regression</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="examples.html"
+                        title="previous chapter">Examples</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="gmm.html"
+                        title="next chapter">Gaussian mixture model</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/examples/regression.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="gmm.html" title="Gaussian mixture model"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="examples.html" title="Examples"
+             >previous</a> |</li>
+        <li><a href="../index.html">BayesPy v0.1 Documentation</a> &raquo;</li>
+          <li><a href="examples.html" >Examples</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011-2014, Jaakko Luttinen, GPLv3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,276 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Principal component analysis &mdash; BayesPy v0.1 Documentation</title>
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="BayesPy v0.1 Documentation" href="../index.html" />
+    <link rel="up" title="Examples" href="examples.html" />
+    <link rel="next" title="Linear state-space model" href="lssm.html" />
+    <link rel="prev" title="Hidden Markov model" href="hmm.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="lssm.html" title="Linear state-space model"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="hmm.html" title="Hidden Markov model"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">BayesPy v0.1 Documentation</a> &raquo;</li>
+          <li><a href="examples.html" accesskey="U">Examples</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="principal-component-analysis">
+<h1>Principal component analysis<a class="headerlink" href="#principal-component-analysis" title="Permalink to this headline">¶</a></h1>
+<p>Yeah.</p>
+<div class="figure">
+<p><img src="../_images/tikz-899e60c2099be1800352b858508ce9a731e784cb.png" alt="% tikzlibrary.code.tex
+%
+% Copyright 2010-2011 by Laura Dietz
+% Copyright 2012 by Jaakko Luttinen
+%
+% This file may be distributed and/or modified
+%
+% 1. under the LaTeX Project Public License and/or
+% 2. under the GNU General Public License.
+%
+% See the files LICENSE_LPPL and LICENSE_GPL for more details.
+
+% Load other libraries
+\usetikzlibrary{shapes}
+\usetikzlibrary{fit}
+\usetikzlibrary{chains}
+\usetikzlibrary{arrows}
+
+% Latent node
+\tikzstyle{latent} = [circle,fill=white,draw=black,inner sep=1pt,
+minimum size=20pt, font=\fontsize{10}{10}\selectfont, node distance=1]
+% Observed node
+\tikzstyle{obs} = [latent,fill=gray!25]
+% Constant node
+\tikzstyle{const} = [rectangle, inner sep=0pt, node distance=1]
+% Factor node
+\tikzstyle{factor} = [rectangle, fill=black,minimum size=5pt, inner
+sep=0pt, node distance=0.4]
+% Deterministic node
+\tikzstyle{det} = [latent, diamond]
+
+% Plate node
+\tikzstyle{plate} = [draw, rectangle, rounded corners, fit=#1]
+% Invisible wrapper node
+\tikzstyle{wrap} = [inner sep=0pt, fit=#1]
+% Gate
+\tikzstyle{gate} = [draw, rectangle, dashed, fit=#1]
+
+% Caption node
+\tikzstyle{caption} = [font=\footnotesize, node distance=0] %
+\tikzstyle{plate caption} = [caption, node distance=0, inner sep=0pt,
+below left=5pt and 0pt of #1.south east] %
+\tikzstyle{factor caption} = [caption] %
+\tikzstyle{every label} += [caption] %
+
+\tikzset{&gt;={triangle 45}}
+
+%\pgfdeclarelayer{b}
+%\pgfdeclarelayer{f}
+%\pgfsetlayers{b,main,f}
+
+% \factoredge [options] {inputs} {factors} {outputs}
+\newcommand{\factoredge}[4][]{ %
+  % Connect all nodes #2 to all nodes #4 via all factors #3.
+  \foreach \f in {#3} { %
+    \foreach \x in {#2} { %
+      \draw[-,#1] (\x) edge[-] (\f) ; %
+    } ;
+    \foreach \y in {#4} { %
+      \draw[-&gt;,#1] (\f) -- (\y) ; %
+    } ;
+  } ;
+}
+
+% \edge [options] {inputs} {outputs}
+\newcommand{\edge}[3][]{ %
+  % Connect all nodes #2 to all nodes #3.
+  \foreach \x in {#2} { %
+    \foreach \y in {#3} { %
+      \draw[-&gt;,#1] (\x) -- (\y) ;%
+    } ;
+  } ;
+}
+
+% \factor [options] {name} {caption} {inputs} {outputs}
+\newcommand{\factor}[5][]{ %
+  % Draw the factor node. Use alias to allow empty names.
+  \node[factor, label={[name=#2-caption]#3}, name=#2, #1,
+  alias=#2-alias] {} ; %
+  % Connect all inputs to outputs via this factor
+  \factoredge {#4} {#2-alias} {#5} ; %
+}
+
+% \plate [options] {name} {fitlist} {caption}
+\newcommand{\plate}[4][]{ %
+  \node[wrap=#3] (#2-wrap) {}; %
+  \node[plate caption=#2-wrap] (#2-caption) {#4}; %
+  \node[plate=(#2-wrap)(#2-caption), #1] (#2) {}; %
+}
+
+% \gate [options] {name} {fitlist} {inputs}
+\newcommand{\gate}[4][]{ %
+  \node[gate=#3, name=#2, #1, alias=#2-alias] {}; %
+  \foreach \x in {#4} { %
+    \draw [-*,thick] (\x) -- (#2-alias); %
+  } ;%
+}
+
+% \vgate {name} {fitlist-left} {caption-left} {fitlist-right}
+% {caption-right} {inputs}
+\newcommand{\vgate}[6]{ %
+  % Wrap the left and right parts
+  \node[wrap=#2] (#1-left) {}; %
+  \node[wrap=#4] (#1-right) {}; %
+  % Draw the gate
+  \node[gate=(#1-left)(#1-right)] (#1) {}; %
+  % Add captions
+  \node[caption, below left=of #1.north ] (#1-left-caption)
+  {#3}; %
+  \node[caption, below right=of #1.north ] (#1-right-caption)
+  {#5}; %
+  % Draw middle separation
+  \draw [-, dashed] (#1.north) -- (#1.south); %
+  % Draw inputs
+  \foreach \x in {#6} { %
+    \draw [-*,thick] (\x) -- (#1); %
+  } ;%
+}
+
+% \hgate {name} {fitlist-top} {caption-top} {fitlist-bottom}
+% {caption-bottom} {inputs}
+\newcommand{\hgate}[6]{ %
+  % Wrap the left and right parts
+  \node[wrap=#2] (#1-top) {}; %
+  \node[wrap=#4] (#1-bottom) {}; %
+  % Draw the gate
+  \node[gate=(#1-top)(#1-bottom)] (#1) {}; %
+  % Add captions
+  \node[caption, above right=of #1.west ] (#1-top-caption)
+  {#3}; %
+  \node[caption, below right=of #1.west ] (#1-bottom-caption)
+  {#5}; %
+  % Draw middle separation
+  \draw [-, dashed] (#1.west) -- (#1.east); %
+  % Draw inputs
+  \foreach \x in {#6} { %
+    \draw [-*,thick] (\x) -- (#1); %
+  } ;%
+}
+
+\node[obs]                                  (y)     {$y$} ;
+\node[latent, above left=1.5 and 0.5 of y]  (mu)    {$\mu$} ;
+\node[latent, above right=1.5 and 0.5 of y] (tau)   {$\tau$} ;
+\node[const, above=of mu, xshift=-0.5cm]    (mumu)  {$0$} ;
+\node[const, above=of mu, xshift=0.5cm]     (taumu) {$10^{-3}$} ;
+\node[const, above=of tau, xshift=-0.5cm]   (atau)  {$10^{-3}$} ;
+\node[const, above=of tau, xshift=0.5cm]    (btau)  {$10^{-3}$} ;
+
+\factor[above=of y] {y-f} {left:$\mathcal{N}$} {mu,tau}     {y};
+\factor[above=of mu] {} {left:$\mathcal{N}$}   {mumu,taumu} {mu};
+\factor[above=of tau] {} {left:$\mathcal{G}$}  {atau,btau}  {tau};
+
+\plate {} {(y)(y-f)(y-f-caption)} {10} ;" /></p>
+<p class="caption">Directed factor graph of the example model.</p></div><div class="code python highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">bayespy.nodes</span> <span class="kn">import</span> <span class="n">GaussianARD</span>
+<span class="n">GaussianARD</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre>&lt;bayespy.inference.vmp.nodes.gaussian.GaussianARD at 0x7fa3343bce90&gt;
+</pre></div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="hmm.html"
+                        title="previous chapter">Hidden Markov model</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="lssm.html"
+                        title="next chapter">Linear state-space model</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/examples/pca.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="lssm.html" title="Linear state-space model"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="hmm.html" title="Hidden Markov model"
+             >previous</a> |</li>
+        <li><a href="../index.html">BayesPy v0.1 Documentation</a> &raquo;</li>
+          <li><a href="examples.html" >Examples</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011-2014, Jaakko Luttinen, GPLv3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

@@ -70,7 +70,7 @@
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
 
-<span class="kn">from</span> <span class="nn">bayespy.utils</span> <span class="kn">import</span> <span class="n">utils</span>
+<span class="kn">from</span> <span class="nn">bayespy.utils</span> <span class="kn">import</span> <span class="n">misc</span>
 
 <span class="kn">from</span> <span class="nn">.node</span> <span class="kn">import</span> <span class="n">Node</span>
 
@@ -130,7 +130,7 @@
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
 
         
-<div class="viewcode-block" id="Stochastic"><a class="viewcode-back" href="../../../../../generated/bayespy.inference.vmp.nodes.stochastic.Stochastic.html#bayespy.inference.vmp.nodes.stochastic.Stochastic">[docs]</a><span class="k">class</span> <span class="nc">Stochastic</span><span class="p">(</span><span class="n">Node</span><span class="p">):</span>
+<div class="viewcode-block" id="Stochastic"><a class="viewcode-back" href="../../../../../user_api/generated/bayespy.inference.vmp.nodes.stochastic.Stochastic.html#bayespy.inference.vmp.nodes.stochastic.Stochastic">[docs]</a><span class="k">class</span> <span class="nc">Stochastic</span><span class="p">(</span><span class="n">Node</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Base class for nodes that are stochastic.</span>
 
@@ -161,13 +161,16 @@
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">initialize</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">dims</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 
+        <span class="bp">self</span><span class="o">.</span><span class="n">_id</span> <span class="o">=</span> <span class="n">Node</span><span class="o">.</span><span class="n">_id_counter</span>
+        <span class="n">Node</span><span class="o">.</span><span class="n">_id_counter</span> <span class="o">+=</span> <span class="mi">1</span>
+
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span>
                          <span class="n">dims</span><span class="o">=</span><span class="n">dims</span><span class="p">,</span>
                          <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="c"># Initialize moment array</span>
         <span class="n">axes</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">plates</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="p">,)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">u</span> <span class="o">=</span> <span class="p">[</span><span class="n">utils</span><span class="o">.</span><span class="n">nans</span><span class="p">(</span><span class="n">axes</span><span class="o">+</span><span class="n">dim</span><span class="p">)</span> <span class="k">for</span> <span class="n">dim</span> <span class="ow">in</span> <span class="n">dims</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">u</span> <span class="o">=</span> <span class="p">[</span><span class="n">misc</span><span class="o">.</span><span class="n">nans</span><span class="p">(</span><span class="n">axes</span><span class="o">+</span><span class="n">dim</span><span class="p">)</span> <span class="k">for</span> <span class="n">dim</span> <span class="ow">in</span> <span class="n">dims</span><span class="p">]</span>
 
         <span class="c"># Not observed</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">observed</span> <span class="o">=</span> <span class="bp">False</span>
@@ -177,6 +180,26 @@
         <span class="k">if</span> <span class="n">initialize</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">initialize_from_prior</span><span class="p">()</span>
 
+
+    <span class="k">def</span> <span class="nf">_get_id_list</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the stochastic ID list.</span>
+
+<span class="sd">        This method is used to check that same stochastic nodes are not direct</span>
+<span class="sd">        parents of a node several times. It is only valid if there are</span>
+<span class="sd">        intermediate stochastic nodes.</span>
+
+<span class="sd">        To put it another way: each ID corresponds to one factor q(..) in the</span>
+<span class="sd">        posterior approximation. Different IDs mean different factors, thus they</span>
+<span class="sd">        mean independence. The parents must have independent factors.</span>
+
+<span class="sd">        Stochastic nodes should return their unique ID. Deterministic nodes</span>
+<span class="sd">        should return the IDs of their parents. Constant nodes should return</span>
+<span class="sd">        empty list of IDs.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_id</span><span class="p">]</span>
+
+    
     <span class="k">def</span> <span class="nf">_plates_to_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_distribution</span><span class="o">.</span><span class="n">plates_to_parent</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">plates</span><span class="p">)</span>
 
@@ -187,7 +210,7 @@
     <span class="k">def</span> <span class="nf">_compute_mask_to_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">mask</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_distribution</span><span class="o">.</span><span class="n">compute_mask_to_parent</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">mask</span><span class="p">)</span>
 
-<div class="viewcode-block" id="Stochastic.get_moments"><a class="viewcode-back" href="../../../../../generated/bayespy.inference.vmp.nodes.stochastic.Stochastic.get_moments.html#bayespy.inference.vmp.nodes.stochastic.Stochastic.get_moments">[docs]</a>    <span class="k">def</span> <span class="nf">get_moments</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Stochastic.get_moments"><a class="viewcode-back" href="../../../../../user_api/generated/bayespy.inference.vmp.nodes.stochastic.Stochastic.get_moments.html#bayespy.inference.vmp.nodes.stochastic.Stochastic.get_moments">[docs]</a>    <span class="k">def</span> <span class="nf">get_moments</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c"># Just for safety, do not return a reference to the moment list of this</span>
         <span class="c"># node but instead create a copy of the list. </span>
         <span class="k">return</span> <span class="p">[</span><span class="n">ui</span> <span class="k">for</span> <span class="n">ui</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="p">]</span>
@@ -212,12 +235,12 @@
         <span class="k">for</span> <span class="n">ind</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">u</span><span class="p">)):</span>
             <span class="c"># Add axes to the mask for the variable dimensions (mask</span>
             <span class="c"># contains only axes for the plates).</span>
-            <span class="n">u_mask</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">add_trailing_axes</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ndims</span><span class="p">[</span><span class="n">ind</span><span class="p">])</span>
+            <span class="n">u_mask</span> <span class="o">=</span> <span class="n">misc</span><span class="o">.</span><span class="n">add_trailing_axes</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ndims</span><span class="p">[</span><span class="n">ind</span><span class="p">])</span>
 
             <span class="c"># Enlarge self.u[ind] as necessary so that it can store the</span>
             <span class="c"># broadcasted result.</span>
-            <span class="n">sh</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">broadcasted_shape_from_arrays</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="p">[</span><span class="n">ind</span><span class="p">],</span> <span class="n">u</span><span class="p">[</span><span class="n">ind</span><span class="p">],</span> <span class="n">u_mask</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">repeat_to_shape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="p">[</span><span class="n">ind</span><span class="p">],</span> <span class="n">sh</span><span class="p">)</span>
+            <span class="n">sh</span> <span class="o">=</span> <span class="n">misc</span><span class="o">.</span><span class="n">broadcasted_shape_from_arrays</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="p">[</span><span class="n">ind</span><span class="p">],</span> <span class="n">u</span><span class="p">[</span><span class="n">ind</span><span class="p">],</span> <span class="n">u_mask</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span> <span class="o">=</span> <span class="n">misc</span><span class="o">.</span><span class="n">repeat_to_shape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="p">[</span><span class="n">ind</span><span class="p">],</span> <span class="n">sh</span><span class="p">)</span>
 
             <span class="c"># TODO/FIXME/BUG: The mask of observations is not used, observations</span>
             <span class="c"># may be overwritten!!! ???</span>
@@ -239,7 +262,7 @@
             <span class="n">ndim</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
             <span class="n">ndim_u</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ndim</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="p">[</span><span class="n">ind</span><span class="p">])</span>
             <span class="k">if</span> <span class="n">ndim</span> <span class="o">&gt;</span> <span class="n">ndim_u</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">add_leading_axes</span><span class="p">(</span><span class="n">u</span><span class="p">[</span><span class="n">ind</span><span class="p">],</span> <span class="n">ndim</span> <span class="o">-</span> <span class="n">ndim_u</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span> <span class="o">=</span> <span class="n">misc</span><span class="o">.</span><span class="n">add_leading_axes</span><span class="p">(</span><span class="n">u</span><span class="p">[</span><span class="n">ind</span><span class="p">],</span> <span class="n">ndim</span> <span class="o">-</span> <span class="n">ndim_u</span><span class="p">)</span>
             <span class="k">elif</span> <span class="n">ndim</span> <span class="o">&lt;</span> <span class="n">ndim_u</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
                     <span class="s">&quot;The size of the variable </span><span class="si">%s</span><span class="s">&#39;s </span><span class="si">%s</span><span class="s">-th moment &quot;</span>
@@ -255,24 +278,24 @@
                        <span class="bp">self</span><span class="o">.</span><span class="n">dims</span><span class="p">[</span><span class="n">ind</span><span class="p">]))</span>
 
                 
-<div class="viewcode-block" id="Stochastic.update"><a class="viewcode-back" href="../../../../../generated/bayespy.inference.vmp.nodes.stochastic.Stochastic.update.html#bayespy.inference.vmp.nodes.stochastic.Stochastic.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Stochastic.update"><a class="viewcode-back" href="../../../../../user_api/generated/bayespy.inference.vmp.nodes.stochastic.Stochastic.update.html#bayespy.inference.vmp.nodes.stochastic.Stochastic.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">observed</span><span class="p">):</span>
             <span class="n">u_parents</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_message_from_parents</span><span class="p">()</span>
             <span class="n">m_children</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_message_from_children</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_update_distribution_and_lowerbound</span><span class="p">(</span><span class="n">m_children</span><span class="p">,</span> <span class="o">*</span><span class="n">u_parents</span><span class="p">)</span>
 </div>
-<div class="viewcode-block" id="Stochastic.observe"><a class="viewcode-back" href="../../../../../generated/bayespy.inference.vmp.nodes.stochastic.Stochastic.observe.html#bayespy.inference.vmp.nodes.stochastic.Stochastic.observe">[docs]</a>    <span class="k">def</span> <span class="nf">observe</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+<div class="viewcode-block" id="Stochastic.observe"><a class="viewcode-back" href="../../../../../user_api/generated/bayespy.inference.vmp.nodes.stochastic.Stochastic.observe.html#bayespy.inference.vmp.nodes.stochastic.Stochastic.observe">[docs]</a>    <span class="k">def</span> <span class="nf">observe</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Fix moments, compute f and propagate mask.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
 </div>
-<div class="viewcode-block" id="Stochastic.unobserve"><a class="viewcode-back" href="../../../../../generated/bayespy.inference.vmp.nodes.stochastic.Stochastic.unobserve.html#bayespy.inference.vmp.nodes.stochastic.Stochastic.unobserve">[docs]</a>    <span class="k">def</span> <span class="nf">unobserve</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Stochastic.unobserve"><a class="viewcode-back" href="../../../../../user_api/generated/bayespy.inference.vmp.nodes.stochastic.Stochastic.unobserve.html#bayespy.inference.vmp.nodes.stochastic.Stochastic.unobserve">[docs]</a>    <span class="k">def</span> <span class="nf">unobserve</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c"># Update mask</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">observed</span> <span class="o">=</span> <span class="bp">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_update_mask</span><span class="p">()</span>
 </div>
-<div class="viewcode-block" id="Stochastic.lowerbound"><a class="viewcode-back" href="../../../../../generated/bayespy.inference.vmp.nodes.stochastic.Stochastic.lowerbound.html#bayespy.inference.vmp.nodes.stochastic.Stochastic.lowerbound">[docs]</a>    <span class="k">def</span> <span class="nf">lowerbound</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Stochastic.lowerbound"><a class="viewcode-back" href="../../../../../user_api/generated/bayespy.inference.vmp.nodes.stochastic.Stochastic.lowerbound.html#bayespy.inference.vmp.nodes.stochastic.Stochastic.lowerbound">[docs]</a>    <span class="k">def</span> <span class="nf">lowerbound</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c"># Sub-class should implement this</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
 </div>
@@ -282,7 +305,7 @@
 
 
 
-<div class="viewcode-block" id="Stochastic.save"><a class="viewcode-back" href="../../../../../generated/bayespy.inference.vmp.nodes.stochastic.Stochastic.save.html#bayespy.inference.vmp.nodes.stochastic.Stochastic.save">[docs]</a>    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
+<div class="viewcode-block" id="Stochastic.save"><a class="viewcode-back" href="../../../../../user_api/generated/bayespy.inference.vmp.nodes.stochastic.Stochastic.save.html#bayespy.inference.vmp.nodes.stochastic.Stochastic.save">[docs]</a>    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Save the state of the node into a HDF5 file.</span>
 
@@ -293,10 +316,10 @@
         <span class="c">## subgroup = group.create_group(name)</span>
         
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="p">)):</span>
-            <span class="n">utils</span><span class="o">.</span><span class="n">write_to_hdf5</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="s">&#39;u</span><span class="si">%d</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">i</span><span class="p">)</span>
-        <span class="n">utils</span><span class="o">.</span><span class="n">write_to_hdf5</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">observed</span><span class="p">,</span> <span class="s">&#39;observed&#39;</span><span class="p">)</span>
+            <span class="n">misc</span><span class="o">.</span><span class="n">write_to_hdf5</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="s">&#39;u</span><span class="si">%d</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">i</span><span class="p">)</span>
+        <span class="n">misc</span><span class="o">.</span><span class="n">write_to_hdf5</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">observed</span><span class="p">,</span> <span class="s">&#39;observed&#39;</span><span class="p">)</span>
 </div>
-<div class="viewcode-block" id="Stochastic.load"><a class="viewcode-back" href="../../../../../generated/bayespy.inference.vmp.nodes.stochastic.Stochastic.load.html#bayespy.inference.vmp.nodes.stochastic.Stochastic.load">[docs]</a>    <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
+<div class="viewcode-block" id="Stochastic.load"><a class="viewcode-back" href="../../../../../user_api/generated/bayespy.inference.vmp.nodes.stochastic.Stochastic.load.html#bayespy.inference.vmp.nodes.stochastic.Stochastic.load">[docs]</a>    <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Load the state of the node from a HDF5 file.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -312,11 +335,11 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_update_mask</span><span class="p">()</span>
             
 </div>
-    <span class="k">def</span> <span class="nf">random</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Stochastic.random"><a class="viewcode-back" href="../../../../../user_api/generated/bayespy.inference.vmp.nodes.stochastic.Stochastic.random.html#bayespy.inference.vmp.nodes.stochastic.Stochastic.random">[docs]</a>    <span class="k">def</span> <span class="nf">random</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Draw a random sample from the distribution.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div></div>
 </pre></div>
 
           </div>

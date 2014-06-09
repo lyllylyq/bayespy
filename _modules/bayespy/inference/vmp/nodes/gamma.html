@@ -81,7 +81,7 @@
 <span class="kn">from</span> <span class="nn">.constant</span> <span class="kn">import</span> <span class="n">Constant</span>
 <span class="kn">from</span> <span class="nn">.node</span> <span class="kn">import</span> <span class="n">Moments</span>
 
-<span class="kn">from</span> <span class="nn">bayespy.utils</span> <span class="kn">import</span> <span class="n">utils</span>
+<span class="kn">from</span> <span class="nn">bayespy.utils</span> <span class="kn">import</span> <span class="n">misc</span>
 
 
 <span class="k">def</span> <span class="nf">diagonal</span><span class="p">(</span><span class="n">alpha</span><span class="p">):</span>
@@ -111,7 +111,7 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return the shape of the moments for a fixed value.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="p">[(),</span> <span class="p">()]</span>
+        <span class="k">return</span> <span class="p">(</span> <span class="p">(),</span> <span class="p">()</span> <span class="p">)</span>
     
 
 <span class="k">class</span> <span class="nc">GammaMoments</span><span class="p">(</span><span class="n">Moments</span><span class="p">):</span>
@@ -195,8 +195,9 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">x</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Values must be positive&quot;</span><span class="p">)</span>
-        <span class="n">u</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">x</span><span class="p">)]</span>
-        <span class="n">f</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">logx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">u</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="n">logx</span><span class="p">]</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="o">-</span><span class="n">logx</span>
         <span class="k">return</span> <span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
 
 
@@ -212,6 +213,17 @@
 <div class="viewcode-block" id="Gamma"><a class="viewcode-back" href="../../../../../generated.backup/bayespy.inference.vmp.nodes.gamma.Gamma.html#bayespy.inference.vmp.nodes.gamma.Gamma">[docs]</a><span class="k">class</span> <span class="nc">Gamma</span><span class="p">(</span><span class="n">ExponentialFamily</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Node for gamma random variables.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    a : scalar or array</span>
+<span class="sd">    </span>
+<span class="sd">        Shape parameter</span>
+<span class="sd">        </span>
+<span class="sd">    b : gamma-like node or scalar or array</span>
+<span class="sd">    </span>
+<span class="sd">        Rate parameter</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">dims</span> <span class="o">=</span> <span class="p">(</span> <span class="p">(),</span> <span class="p">()</span> <span class="p">)</span>
@@ -254,7 +266,7 @@
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 
         <span class="c"># Check for constant</span>
-        <span class="k">if</span> <span class="n">utils</span><span class="o">.</span><span class="n">is_numeric</span><span class="p">(</span><span class="n">alpha</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">misc</span><span class="o">.</span><span class="n">is_numeric</span><span class="p">(</span><span class="n">alpha</span><span class="p">):</span>
             <span class="n">alpha</span> <span class="o">=</span> <span class="n">Constant</span><span class="p">(</span><span class="n">Gamma</span><span class="p">)(</span><span class="n">alpha</span><span class="p">)</span>
 
         <span class="c"># Remove the last plate...</span>

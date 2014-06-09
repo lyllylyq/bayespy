@@ -1,0 +1,157 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>User guide &mdash; BayesPy v0.1 Documentation</title>
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="BayesPy v0.1 Documentation" href="../index.html" />
+    <link rel="next" title="Installation" href="install.html" />
+    <link rel="prev" title="Introduction" href="../intro.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="install.html" title="Installation"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="../intro.html" title="Introduction"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">BayesPy v0.1 Documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="user-guide">
+<h1>User guide<a class="headerlink" href="#user-guide" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="install.html#installing-requirements">Installing requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#installing-bayespy">Installing BayesPy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#compiling-documentation">Compiling documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#converting-notebooks">Converting notebooks</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quick start guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modelconstruct.html">Constructing the model</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="modelconstruct.html#creating-nodes">Creating nodes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="modelconstruct.html#conjugacy-of-the-parents">Conjugacy of the parents</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modelconstruct.html#independence-of-the-parents">Independence of the parents</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="modelconstruct.html#effects-of-the-nodes-on-inference">Effects of the nodes on inference</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="modelconstruct.html#prior-probability-distribution">Prior probability distribution</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modelconstruct.html#posterior-factorization">Posterior factorization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modelconstruct.html#functional-form-of-the-posterior">Functional form of the posterior</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="modelconstruct.html#using-plate-notation">Using plate notation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="modelconstruct.html#defining-plates">Defining plates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modelconstruct.html#sharing-and-broadcasting-plates">Sharing and broadcasting plates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modelconstruct.html#plates-in-deterministic-nodes">Plates in deterministic nodes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modelconstruct.html#plates-and-shape">Plates and shape</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modelconstruct.html#factorization-of-plates">Factorization of plates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modelconstruct.html#irregular-plates">Irregular plates</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="inference.html">Performing inference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="inference.html#providing-the-data">Providing the data</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="inference.html#missing-values">Missing values</a></li>
+<li class="toctree-l3"><a class="reference internal" href="inference.html#choosing-the-inference-method">Choosing the inference method</a></li>
+<li class="toctree-l3"><a class="reference internal" href="inference.html#initializing-the-inference">Initializing the inference</a></li>
+<li class="toctree-l3"><a class="reference internal" href="inference.html#running-the-inference-algorithm">Running the inference algorithm</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="plot.html">Examining the results</a></li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="../intro.html"
+                        title="previous chapter">Introduction</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="install.html"
+                        title="next chapter">Installation</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/user_guide/user_guide.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="install.html" title="Installation"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="../intro.html" title="Introduction"
+             >previous</a> |</li>
+        <li><a href="../index.html">BayesPy v0.1 Documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011-2014, Jaakko Luttinen, GPLv3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

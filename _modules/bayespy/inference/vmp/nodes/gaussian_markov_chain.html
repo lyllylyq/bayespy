@@ -75,10 +75,7 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">scipy</span>
 
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
-<span class="kn">import</span> <span class="nn">bayespy.plot.plotting</span> <span class="kn">as</span> <span class="nn">bpplt</span>
-
-<span class="kn">from</span> <span class="nn">bayespy.utils</span> <span class="kn">import</span> <span class="n">utils</span>
+<span class="kn">from</span> <span class="nn">bayespy.utils</span> <span class="kn">import</span> <span class="n">misc</span>
 <span class="kn">from</span> <span class="nn">bayespy.utils</span> <span class="kn">import</span> <span class="n">linalg</span>
 
 <span class="kn">from</span> <span class="nn">.node</span> <span class="kn">import</span> <span class="n">Node</span><span class="p">,</span> <span class="n">message_sum_multiply</span>
@@ -389,13 +386,13 @@
         <span class="n">v</span> <span class="o">=</span> <span class="n">u_v</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>           <span class="c"># (..., N-1, D)</span>
 
         <span class="c"># Allocate memory (take into account effective plates)</span>
-        <span class="n">plates_phi0</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">broadcasted_shape</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">mu</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
-                                              <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">Lambda</span><span class="p">)[:</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span>
-        <span class="n">plates_phi1</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">broadcasted_shape</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">Lambda</span><span class="p">)[:</span><span class="o">-</span><span class="mi">2</span><span class="p">],</span>
-                                              <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">v</span><span class="p">)[:</span><span class="o">-</span><span class="mi">2</span><span class="p">],</span>
-                                              <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">AA</span><span class="p">)[:</span><span class="o">-</span><span class="mi">4</span><span class="p">])</span>
-        <span class="n">plates_phi2</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">broadcasted_shape</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">v</span><span class="p">)[:</span><span class="o">-</span><span class="mi">2</span><span class="p">],</span>
-                                              <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">A</span><span class="p">)[:</span><span class="o">-</span><span class="mi">3</span><span class="p">])</span>
+        <span class="n">plates_phi0</span> <span class="o">=</span> <span class="n">misc</span><span class="o">.</span><span class="n">broadcasted_shape</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">mu</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
+                                             <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">Lambda</span><span class="p">)[:</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span>
+        <span class="n">plates_phi1</span> <span class="o">=</span> <span class="n">misc</span><span class="o">.</span><span class="n">broadcasted_shape</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">Lambda</span><span class="p">)[:</span><span class="o">-</span><span class="mi">2</span><span class="p">],</span>
+                                             <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">v</span><span class="p">)[:</span><span class="o">-</span><span class="mi">2</span><span class="p">],</span>
+                                             <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">AA</span><span class="p">)[:</span><span class="o">-</span><span class="mi">4</span><span class="p">])</span>
+        <span class="n">plates_phi2</span> <span class="o">=</span> <span class="n">misc</span><span class="o">.</span><span class="n">broadcasted_shape</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">v</span><span class="p">)[:</span><span class="o">-</span><span class="mi">2</span><span class="p">],</span>
+                                             <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">A</span><span class="p">)[:</span><span class="o">-</span><span class="mi">3</span><span class="p">])</span>
         
         <span class="n">phi0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">plates_phi0</span><span class="o">+</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="n">D</span><span class="p">))</span>
         <span class="n">phi1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">plates_phi1</span><span class="o">+</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="n">D</span><span class="p">,</span><span class="n">D</span><span class="p">))</span>
@@ -487,39 +484,80 @@
 
 <div class="viewcode-block" id="GaussianMarkovChain"><a class="viewcode-back" href="../../../../../generated.backup/bayespy.inference.vmp.nodes.gaussian_markov_chain.GaussianMarkovChain.html#bayespy.inference.vmp.nodes.gaussian_markov_chain.GaussianMarkovChain">[docs]</a><span class="k">class</span> <span class="nc">GaussianMarkovChain</span><span class="p">(</span><span class="n">_TemplateGaussianMarkovChain</span><span class="p">):</span>
     <span class="sd">r&quot;&quot;&quot;</span>
-<span class="sd">    VMP node for Gaussian Markov chain.</span>
+<span class="sd">    Node for Gaussian Markov chain random variables.</span>
 
-<span class="sd">    Parents are:</span>
-<span class="sd">    `mu` is the mean of x0 (Gaussian)</span>
-<span class="sd">    `Lambda` is the precision of x0 (Wishart)</span>
-<span class="sd">    `A` is the dynamic matrix (Gaussian)</span>
-<span class="sd">    `v` is the diagonal precision of the innovation (Gamma)</span>
-<span class="sd">    An additional dummy parent is created:</span>
-<span class="sd">    &#39;N&#39; is the number of time instances</span>
-
-<span class="sd">    Output is Gaussian variables.</span>
-
-<span class="sd">    Time dimension is over the last plate.</span>
-
-<span class="sd">    Hmm.. The number of time instances is one more than the plates in</span>
-<span class="sd">    A and V. Input N -&gt; Output N+1.</span>
+<span class="sd">    In a simple case, the graphical model can be presented as:</span>
 
 <span class="sd">    .. bayesnet::</span>
 
-<span class="sd">       \node[latent] (x1) {$\mathbf{x}_1$};</span>
-<span class="sd">       \node[latent, right=of x1] (x2) {$\mathbf{x}_2$};</span>
-<span class="sd">       \node[right=of x2] (dots) {$\cdots$};</span>
-<span class="sd">       \node[latent, right=of dots] (xn) {$\mathbf{x}_n$};</span>
-<span class="sd">       \edge {x1}{x2};</span>
-<span class="sd">       \edge {x2}{dots};</span>
+<span class="sd">       \tikzstyle{latent} += [minimum size=30pt];</span>
+<span class="sd">       </span>
+<span class="sd">       \node[latent] (x0) {$\mathbf{x}_0$};</span>
+<span class="sd">       \node[latent, right=of x0] (x1) {$\mathbf{x}_1$};</span>
+<span class="sd">       \node[right=of x1] (dots) {$\cdots$};</span>
+<span class="sd">       \node[latent, right=of dots] (xn) {$\mathbf{x}_{N-1}$};</span>
+<span class="sd">       \edge {x0}{x1};</span>
+<span class="sd">       \edge {x1}{dots};</span>
 <span class="sd">       \edge {dots}{xn};</span>
 
+<span class="sd">       \node[latent, above left=1 and 0.1 of x0] (mu) {$\boldsymbol{\mu}$};</span>
+<span class="sd">       \node[latent, above right=1 and 0.1 of x0] (Lambda) {$\mathbf{\Lambda}$};</span>
+<span class="sd">       \node[latent, above left=1 and 0.1 of dots] (A) {$\mathbf{A}$};</span>
+<span class="sd">       \node[latent, above right=1 and 0.1 of dots] (nu) {$\boldsymbol{\nu}$};</span>
+<span class="sd">       \edge {mu,Lambda} {x0};</span>
+<span class="sd">       \edge {A,nu} {x1,dots,xn};</span>
+
+<span class="sd">    where :math:`\boldsymbol{\mu}` and :math:`\mathbf{\Lambda}` are the mean and</span>
+<span class="sd">    the precision matrix of the initial state, :math:`\mathbf{A}` is the state</span>
+<span class="sd">    dynamics matrix and :math:`\boldsymbol{\nu}` is the precision of the</span>
+<span class="sd">    innovation noise.  It is possible that :math:`\mathbf{A}` and/or</span>
+<span class="sd">    :math:`\boldsymbol{\nu}` are different for each transition instead of being</span>
+<span class="sd">    constant.</span>
+
+<span class="sd">    The probability distribution is</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">       p(\mathbf{x}_0, \ldots, \mathbf{x}_{N-1}) = p(\mathbf{x}_0)</span>
+<span class="sd">       \prod^{N-1}_{n=1} p(\mathbf{x}_n | \mathbf{x}_{n-1})</span>
+
+<span class="sd">    where</span>
+<span class="sd">    </span>
+<span class="sd">    .. math::</span>
+
+<span class="sd">       p(\mathbf{x}_0) &amp;= \mathcal{N}(\mathbf{x}_0 | \boldsymbol{\mu}, \mathbf{\Lambda})</span>
+<span class="sd">       \\</span>
+<span class="sd">       p(\mathbf{x}_n|\mathbf{x}_{n-1}) &amp;= \mathcal{N}(\mathbf{x}_n |</span>
+<span class="sd">       \mathbf{A}_{n-1}\mathbf{x}_{n-1}, \mathrm{diag}(\boldsymbol{\nu}_{n-1})).</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    mu : Gaussian-like node or (...,D)-array</span>
+<span class="sd">        :math:`\boldsymbol{\mu}`, mean of :math:`x_0`, :math:`D`-dimensional</span>
+<span class="sd">        with plates (...)</span>
+<span class="sd">        </span>
+<span class="sd">    Lambda : Wishart-like node or (...,D,D)-array</span>
+<span class="sd">        :math:`\mathbf{\Lambda}`, precision matrix of :math:`x_0`,</span>
+<span class="sd">        :math:`D\times D` -dimensional with plates (...)</span>
+<span class="sd">        </span>
+<span class="sd">    A : Gaussian-like node or (D,D)-array or (...,1,D,D)-array or (...,N-1,D,D)-array</span>
+<span class="sd">        :math:`\mathbf{A}`, state dynamics matrix, :math:`D`-dimensional with</span>
+<span class="sd">        plates (D,) or (...,1,D) or (...,N-1,D)</span>
+<span class="sd">        </span>
+<span class="sd">    nu : gamma-like node or (D,)-array or (...,1,D)-array or (...,N-1,D)-array</span>
+<span class="sd">        :math:`\boldsymbol{\nu}`, diagonal elements of the precision of the</span>
+<span class="sd">        innovation process, plates (D,) or (...,1,D) or (...,N-1,D)</span>
+
+<span class="sd">    n : int, optional</span>
+<span class="sd">        :math:`N`, the length of the chain. Must be given if :math:`\mathbf{A}`</span>
+<span class="sd">        and :math:`\boldsymbol{\nu}` are constant over time.</span>
 
 <span class="sd">    See also</span>
 <span class="sd">    --------</span>
-<span class="sd">    bayespy.inference.vmp.nodes.gaussian.Gaussian</span>
-<span class="sd">    bayespy.inference.vmp.nodes.wishart.Wishart</span>
-
+<span class="sd">    </span>
+<span class="sd">    Gaussian, GaussianARD, Wishart, Gamma, SwitchingGaussianMarkovChain,</span>
+<span class="sd">    VaryingGaussianMarkovChain, CategoricalMarkovChain</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">_parent_moments</span> <span class="o">=</span> <span class="p">(</span><span class="n">GaussianMoments</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
@@ -528,6 +566,13 @@
                        <span class="n">GammaMoments</span><span class="p">())</span>
 
 
+<div class="viewcode-block" id="GaussianMarkovChain.__init__"><a class="viewcode-back" href="../../../../../generated.backup/bayespy.inference.vmp.nodes.gaussian_markov_chain.GaussianMarkovChain.html#bayespy.inference.vmp.nodes.gaussian_markov_chain.GaussianMarkovChain.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">Lambda</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">nu</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create GaussianMarkovChain node.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span> <span class="n">Lambda</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">nu</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="n">n</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+</div>
     <span class="nd">@classmethod</span>
     <span class="nd">@ensureparents</span>
     <span class="k">def</span> <span class="nf">_constructor</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">Lambda</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -666,9 +711,9 @@
         <span class="k">elif</span> <span class="n">index</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span> <span class="c"># B, (...,D)x(D,K)</span>
             <span class="n">XnXn</span> <span class="o">=</span> <span class="n">u</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="c"># (...,N,D,D)</span>
             <span class="n">XpXn</span> <span class="o">=</span> <span class="n">u</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="c"># (...,N,D,D)</span>
-            <span class="n">S</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">atleast_nd</span><span class="p">(</span><span class="n">u_S</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span>  <span class="c"># (...,N,K)</span>
-            <span class="n">SS</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">atleast_nd</span><span class="p">(</span><span class="n">u_S</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">3</span><span class="p">)</span> <span class="c"># (...,N,K,K)</span>
-            <span class="n">v</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">atleast_nd</span><span class="p">(</span><span class="n">u_v</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span>  <span class="c"># (...,N,D)</span>
+            <span class="n">S</span> <span class="o">=</span> <span class="n">misc</span><span class="o">.</span><span class="n">atleast_nd</span><span class="p">(</span><span class="n">u_S</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span>  <span class="c"># (...,N,K)</span>
+            <span class="n">SS</span> <span class="o">=</span> <span class="n">misc</span><span class="o">.</span><span class="n">atleast_nd</span><span class="p">(</span><span class="n">u_S</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">3</span><span class="p">)</span> <span class="c"># (...,N,K,K)</span>
+            <span class="n">v</span> <span class="o">=</span> <span class="n">misc</span><span class="o">.</span><span class="n">atleast_nd</span><span class="p">(</span><span class="n">u_v</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span>  <span class="c"># (...,N,D)</span>
 
             <span class="c"># m0: (...,D,D,K)</span>
             <span class="n">m0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s">&#39;...nji,...nk,...ni-&gt;...ijk&#39;</span><span class="p">,</span>
@@ -773,15 +818,15 @@
         <span class="n">v</span> <span class="o">=</span> <span class="n">u_v</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>           <span class="c"># (..., N-1, D) or (..., 1, D)</span>
 
         <span class="c"># TODO/FIXME: Take into account plates!</span>
-        <span class="n">plates_phi0</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">broadcasted_shape</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">mu</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
-                                              <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">Lambda</span><span class="p">)[:</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span>
-        <span class="n">plates_phi1</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">broadcasted_shape</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">Lambda</span><span class="p">)[:</span><span class="o">-</span><span class="mi">2</span><span class="p">],</span>
-                                              <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">v</span><span class="p">)[:</span><span class="o">-</span><span class="mi">2</span><span class="p">],</span>
-                                              <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">BB</span><span class="p">)[:</span><span class="o">-</span><span class="mi">5</span><span class="p">],</span>
-                                              <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">SS</span><span class="p">)[:</span><span class="o">-</span><span class="mi">3</span><span class="p">])</span>
-        <span class="n">plates_phi2</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">broadcasted_shape</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">B</span><span class="p">)[:</span><span class="o">-</span><span class="mi">3</span><span class="p">],</span>
-                                              <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">S</span><span class="p">)[:</span><span class="o">-</span><span class="mi">2</span><span class="p">],</span>
-                                              <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">v</span><span class="p">)[:</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span>
+        <span class="n">plates_phi0</span> <span class="o">=</span> <span class="n">misc</span><span class="o">.</span><span class="n">broadcasted_shape</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">mu</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
+                                             <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">Lambda</span><span class="p">)[:</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span>
+        <span class="n">plates_phi1</span> <span class="o">=</span> <span class="n">misc</span><span class="o">.</span><span class="n">broadcasted_shape</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">Lambda</span><span class="p">)[:</span><span class="o">-</span><span class="mi">2</span><span class="p">],</span>
+                                             <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">v</span><span class="p">)[:</span><span class="o">-</span><span class="mi">2</span><span class="p">],</span>
+                                             <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">BB</span><span class="p">)[:</span><span class="o">-</span><span class="mi">5</span><span class="p">],</span>
+                                             <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">SS</span><span class="p">)[:</span><span class="o">-</span><span class="mi">3</span><span class="p">])</span>
+        <span class="n">plates_phi2</span> <span class="o">=</span> <span class="n">misc</span><span class="o">.</span><span class="n">broadcasted_shape</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">B</span><span class="p">)[:</span><span class="o">-</span><span class="mi">3</span><span class="p">],</span>
+                                             <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">S</span><span class="p">)[:</span><span class="o">-</span><span class="mi">2</span><span class="p">],</span>
+                                             <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">v</span><span class="p">)[:</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span>
         <span class="n">phi0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">plates_phi0</span> <span class="o">+</span> <span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="n">D</span><span class="p">))</span>
         <span class="n">phi1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">plates_phi1</span> <span class="o">+</span> <span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="n">D</span><span class="p">,</span><span class="n">D</span><span class="p">))</span>
         <span class="n">phi2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">plates_phi2</span> <span class="o">+</span> <span class="p">(</span><span class="n">N</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="n">D</span><span class="p">,</span><span class="n">D</span><span class="p">))</span>
@@ -902,40 +947,125 @@
 
 <span class="k">class</span> <span class="nc">VaryingGaussianMarkovChain</span><span class="p">(</span><span class="n">_TemplateGaussianMarkovChain</span><span class="p">):</span>
     <span class="sd">r&quot;&quot;&quot;</span>
-<span class="sd">    VMP node for Gaussian Markov chain with time-varying dynamics.</span>
+<span class="sd">    Node for Gaussian Markov chain random variables with time-varying dynamics.</span>
 
-<span class="sd">    Parents are:</span>
-<span class="sd">    `mu` is the mean of x0 (Gaussian)</span>
-<span class="sd">    `Lambda` is the precision of x0 (Wishart)</span>
-<span class="sd">    `B` is the template dynamic matrices</span>
-<span class="sd">    `S` is the temporal weights for the template dynamic matrices</span>
-<span class="sd">    `v` is the diagonal precision of the innovation (Gamma)</span>
-<span class="sd">    An additional dummy parent is created:</span>
-<span class="sd">    &#39;N&#39; is the number of time instances</span>
-
-<span class="sd">    Not efficient if `v` is time dependent.</span>
-
-<span class="sd">    Output is Gaussian Markov chain variables.</span>
+<span class="sd">    The node models a sequence of Gaussian variables</span>
+<span class="sd">    :math:`\mathbf{x}_0,\ldots,\mathbf{x}_{N-1}$ with linear Markovian dynamics.</span>
+<span class="sd">    The time variability of the dynamics is obtained by modelling the state</span>
+<span class="sd">    dynamics matrix as a linear combination of a set of matrices with</span>
+<span class="sd">    time-varying linear combination weights [1]_.  The graphical model can be</span>
+<span class="sd">    presented as:</span>
 
 <span class="sd">    .. bayesnet::</span>
 
-<span class="sd">       TODO: FIX THIS</span>
-
-<span class="sd">       \node[latent] (x1) {$\mathbf{x}_1$};</span>
-<span class="sd">       \node[latent, right=of x1] (x2) {$\mathbf{x}_2$};</span>
-<span class="sd">       \node[right=of x2] (dots) {$\cdots$};</span>
-<span class="sd">       \node[latent, right=of dots] (xn) {$\mathbf{x}_n$};</span>
-<span class="sd">       \edge {x1}{x2};</span>
-<span class="sd">       \edge {x2}{dots};</span>
+<span class="sd">       \tikzstyle{latent} += [minimum size=40pt];</span>
+<span class="sd">       </span>
+<span class="sd">       \node[latent] (x0) {$\mathbf{x}_0$};</span>
+<span class="sd">       \node[latent, right=of x0] (x1) {$\mathbf{x}_1$};</span>
+<span class="sd">       \node[right=of x1] (dots) {$\cdots$};</span>
+<span class="sd">       \node[latent, right=of dots] (xn) {$\mathbf{x}_{N-1}$};</span>
+<span class="sd">       \edge {x0}{x1};</span>
+<span class="sd">       \edge {x1}{dots};</span>
 <span class="sd">       \edge {dots}{xn};</span>
 
+<span class="sd">       \node[latent, above left=1 and 0.1 of x0] (mu) {$\boldsymbol{\mu}$};</span>
+<span class="sd">       \node[latent, above right=1 and 0.1 of x0] (Lambda) {$\mathbf{\Lambda}$};</span>
+<span class="sd">       \node[det, below=of x1] (A0) {$\mathbf{A}_0$};</span>
+<span class="sd">       \node[right=of A0] (Adots) {$\cdots$};</span>
+<span class="sd">       \node[det, right=of Adots] (An) {$\mathbf{A}_{N-2}$};</span>
+<span class="sd">       \node[latent, above=of dots] (nu) {$\boldsymbol{\nu}$};</span>
+<span class="sd">       \edge {mu,Lambda} {x0};</span>
+<span class="sd">       \edge {nu} {x1,dots,xn};</span>
+<span class="sd">       \edge {A0} {x1};</span>
+<span class="sd">       \edge {Adots} {dots};</span>
+<span class="sd">       \edge {An} {xn};</span>
+
+<span class="sd">       \node[latent, below=of A0] (s0) {$s_{0,k}$};</span>
+<span class="sd">       \node[right=of s0] (sdots) {$\cdots$};</span>
+<span class="sd">       \node[latent, right=of sdots] (sn) {$\mathbf{s}_{N-2,k}$};</span>
+<span class="sd">       \node[latent, left=of s0] (B) {$\mathbf{B}_k$};</span>
+<span class="sd">       \edge {B} {A0, Adots, An};</span>
+<span class="sd">       \edge {s0} {A0};</span>
+<span class="sd">       \edge {sdots} {Adots};</span>
+<span class="sd">       \edge {sn} {An};</span>
+
+<span class="sd">       \plate {K} {(B)(s0)(sdots)(sn)} {$k=0,\ldots,K-1$};</span>
+
+<span class="sd">    where :math:`\boldsymbol{\mu}` and :math:`\mathbf{\Lambda}` are the mean and</span>
+<span class="sd">    the precision matrix of the initial state, :math:`\boldsymbol{\nu}` is the</span>
+<span class="sd">    precision of the innovation noise, and :math:`\mathbf{A}_n` are the state</span>
+<span class="sd">    dynamics matrix obtained by mixing matrices :math:`\mathbf{B}_k` with</span>
+<span class="sd">    weights :math:`s_{n,k}`.</span>
+
+<span class="sd">    The probability distribution is</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">       p(\mathbf{x}_0, \ldots, \mathbf{x}_{N-1}) = p(\mathbf{x}_0)</span>
+<span class="sd">       \prod^{N-1}_{n=1} p(\mathbf{x}_n | \mathbf{x}_{n-1})</span>
+
+<span class="sd">    where</span>
+<span class="sd">    </span>
+<span class="sd">    .. math::</span>
+
+<span class="sd">       p(\mathbf{x}_0) &amp;= \mathcal{N}(\mathbf{x}_0 | \boldsymbol{\mu}, \mathbf{\Lambda})</span>
+<span class="sd">       \\</span>
+<span class="sd">       p(\mathbf{x}_n|\mathbf{x}_{n-1}) &amp;= \mathcal{N}(\mathbf{x}_n |</span>
+<span class="sd">       \mathbf{A}_{n-1}\mathbf{x}_{n-1}, \mathrm{diag}(\boldsymbol{\nu})),</span>
+<span class="sd">       \quad \text{for } n=1,\ldots,N-1,</span>
+<span class="sd">       \\</span>
+<span class="sd">       \mathbf{A}_n &amp; = \sum^{K-1}_{k=0} s_{n,k} \mathbf{B}_k, \quad \text{for }</span>
+<span class="sd">       n=0,\ldots,N-2.</span>
+<span class="sd">       </span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    mu : Gaussian-like node or (...,D)-array</span>
+<span class="sd">        :math:`\boldsymbol{\mu}`, mean of :math:`x_0`, :math:`D`-dimensional</span>
+<span class="sd">        with plates (...)</span>
+<span class="sd">        </span>
+<span class="sd">    Lambda : Wishart-like node or (...,D,D)-array</span>
+<span class="sd">        :math:`\mathbf{\Lambda}`, precision matrix of :math:`x_0`,</span>
+<span class="sd">        :math:`D\times D` -dimensional with plates (...)</span>
+<span class="sd">        </span>
+<span class="sd">    B : Gaussian-like node or (...,D,D,K)-array</span>
+<span class="sd">        :math:`\{\mathbf{B}_k\}_{k=0}^{K-1}`, a set of state dynamics matrix,</span>
+<span class="sd">        :math:`D \times K`-dimensional with plates (...,D)</span>
+
+<span class="sd">    S : Gaussian-like node or (...,N-1,K)-array</span>
+
+<span class="sd">        :math:`\{\mathbf{s}_0,\ldots,\mathbf{s}_{N-2}\}`, time-varying weights</span>
+<span class="sd">        of the linear combination, :math:`K`-dimensional with plates (...,N-1)</span>
+<span class="sd">        </span>
+<span class="sd">    nu : gamma-like node or (...,D)-array</span>
+<span class="sd">        :math:`\boldsymbol{\nu}`, diagonal elements of the precision of the</span>
+<span class="sd">        innovation process, plates (...,D)</span>
+
+<span class="sd">    n : int, optional</span>
+<span class="sd">        :math:`N`, the length of the chain. Must be given if :math:`\mathbf{S}`</span>
+<span class="sd">        does not have plates over the time domain (which would not make sense).</span>
 
 <span class="sd">    See also</span>
 <span class="sd">    --------</span>
-<span class="sd">    bayespy.inference.vmp.nodes.gaussian_markov_chain.GaussianMarkovChain</span>
-<span class="sd">    bayespy.inference.vmp.nodes.gaussian.Gaussian</span>
-<span class="sd">    bayespy.inference.vmp.nodes.wishart.Wishart</span>
+<span class="sd">    </span>
+<span class="sd">    Gaussian, GaussianARD, Wishart, Gamma, GaussianMarkovChain,</span>
+<span class="sd">    SwitchingGaussianMarkovChain</span>
 
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+
+<span class="sd">    Equivalent model block can be constructed with :class:`GaussianMarkovChain`</span>
+<span class="sd">    by explicitly using :class:`SumMultiply` to compute the linear combination.</span>
+<span class="sd">    However, that approach is not very efficient for large datasets because it</span>
+<span class="sd">    does not utilize the structure of :math:`\mathbf{A}_n`, thus it explicitly</span>
+<span class="sd">    computes huge moment arrays.</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+
+<span class="sd">    .. [1] J. Luttinen, T. Raiko, A. Ilin, &quot;Linear State-Space Model with</span>
+<span class="sd">       Time-Varying Dynamics,&quot; submitted to ECML 2014.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">_parent_moments</span> <span class="o">=</span> <span class="p">(</span><span class="n">GaussianMoments</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
@@ -943,6 +1073,13 @@
                        <span class="n">GaussianMoments</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span>
                        <span class="n">GaussianMoments</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
                        <span class="n">GammaMoments</span><span class="p">())</span>
+
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">Lambda</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">S</span><span class="p">,</span> <span class="n">nu</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create VaryingGaussianMarkovChain node.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span> <span class="n">Lambda</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">S</span><span class="p">,</span> <span class="n">nu</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="n">n</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
 
     <span class="nd">@classmethod</span>
@@ -1096,7 +1233,7 @@
             <span class="n">XnXn</span> <span class="o">=</span> <span class="n">u</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>                   <span class="c"># (...,N,D,D)</span>
             <span class="n">XpXn</span> <span class="o">=</span> <span class="n">u</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>                   <span class="c"># (...,N-1,D,D)</span>
             <span class="n">Z</span> <span class="o">=</span> <span class="n">u_Z</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>                    <span class="c"># (...,N-1,K)</span>
-            <span class="n">v</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">atleast_nd</span><span class="p">(</span><span class="n">u_v</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span>  <span class="c"># (...,N-1,D)</span>
+            <span class="n">v</span> <span class="o">=</span> <span class="n">misc</span><span class="o">.</span><span class="n">atleast_nd</span><span class="p">(</span><span class="n">u_v</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span>  <span class="c"># (...,N-1,D)</span>
 
             <span class="c"># Check that there is no time-dependency in v and remove the axis</span>
             <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">ndim</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">2</span> <span class="ow">and</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">v</span><span class="p">)[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
@@ -1126,8 +1263,8 @@
             <span class="n">XpXn</span> <span class="o">=</span> <span class="n">u</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>                     <span class="c"># (...,N-1,D,D)</span>
             <span class="n">B</span> <span class="o">=</span> <span class="n">u_B</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>                      <span class="c"># (...,K,D,D)</span>
             <span class="n">BB</span> <span class="o">=</span> <span class="n">u_B</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>                     <span class="c"># (...,K,D,D,D)</span>
-            <span class="n">v</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">atleast_nd</span><span class="p">(</span><span class="n">u_v</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span>    <span class="c"># (...,N-1,D)</span>
-            <span class="n">logv</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">atleast_nd</span><span class="p">(</span><span class="n">u_v</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span> <span class="c"># (...,N-1,D)</span>
+            <span class="n">v</span> <span class="o">=</span> <span class="n">misc</span><span class="o">.</span><span class="n">atleast_nd</span><span class="p">(</span><span class="n">u_v</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span>    <span class="c"># (...,N-1,D)</span>
+            <span class="n">logv</span> <span class="o">=</span> <span class="n">misc</span><span class="o">.</span><span class="n">atleast_nd</span><span class="p">(</span><span class="n">u_v</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span> <span class="c"># (...,N-1,D)</span>
 
             <span class="c"># Check that there is no time-dependency in v and remove the axis</span>
             <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">ndim</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">2</span> <span class="ow">and</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">v</span><span class="p">)[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
@@ -1213,18 +1350,18 @@
         <span class="n">B</span> <span class="o">=</span> <span class="n">u_B</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>                      <span class="c"># (..., K, D, D)</span>
         <span class="n">BB</span> <span class="o">=</span> <span class="n">u_B</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>                     <span class="c"># (..., K, D, D, D)</span>
         <span class="n">Z</span> <span class="o">=</span> <span class="n">u_Z</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>                      <span class="c"># (..., N-1, K)</span>
-        <span class="n">v</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">atleast_nd</span><span class="p">(</span><span class="n">u_v</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span> <span class="c"># (..., N-1, D) or (..., 1, D)</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="n">misc</span><span class="o">.</span><span class="n">atleast_nd</span><span class="p">(</span><span class="n">u_v</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span> <span class="c"># (..., N-1, D) or (..., 1, D)</span>
 
         <span class="c"># TODO/FIXME: Take into account plates!</span>
-        <span class="n">plates_phi0</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">broadcasted_shape</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">mu</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
-                                              <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">Lambda</span><span class="p">)[:</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span>
-        <span class="n">plates_phi1</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">broadcasted_shape</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">Lambda</span><span class="p">)[:</span><span class="o">-</span><span class="mi">2</span><span class="p">],</span>
-                                              <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">v</span><span class="p">)[:</span><span class="o">-</span><span class="mi">2</span><span class="p">],</span>
-                                              <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">BB</span><span class="p">)[:</span><span class="o">-</span><span class="mi">4</span><span class="p">],</span>
-                                              <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">Z</span><span class="p">)[:</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span>
-        <span class="n">plates_phi2</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">broadcasted_shape</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">B</span><span class="p">)[:</span><span class="o">-</span><span class="mi">3</span><span class="p">],</span>
-                                              <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">Z</span><span class="p">)[:</span><span class="o">-</span><span class="mi">2</span><span class="p">],</span>
-                                              <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">v</span><span class="p">)[:</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span>
+        <span class="n">plates_phi0</span> <span class="o">=</span> <span class="n">misc</span><span class="o">.</span><span class="n">broadcasted_shape</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">mu</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
+                                             <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">Lambda</span><span class="p">)[:</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span>
+        <span class="n">plates_phi1</span> <span class="o">=</span> <span class="n">misc</span><span class="o">.</span><span class="n">broadcasted_shape</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">Lambda</span><span class="p">)[:</span><span class="o">-</span><span class="mi">2</span><span class="p">],</span>
+                                             <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">v</span><span class="p">)[:</span><span class="o">-</span><span class="mi">2</span><span class="p">],</span>
+                                             <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">BB</span><span class="p">)[:</span><span class="o">-</span><span class="mi">4</span><span class="p">],</span>
+                                             <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">Z</span><span class="p">)[:</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span>
+        <span class="n">plates_phi2</span> <span class="o">=</span> <span class="n">misc</span><span class="o">.</span><span class="n">broadcasted_shape</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">B</span><span class="p">)[:</span><span class="o">-</span><span class="mi">3</span><span class="p">],</span>
+                                             <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">Z</span><span class="p">)[:</span><span class="o">-</span><span class="mi">2</span><span class="p">],</span>
+                                             <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">v</span><span class="p">)[:</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span>
         <span class="n">phi0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">plates_phi0</span> <span class="o">+</span> <span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="n">D</span><span class="p">))</span>
         <span class="n">phi1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">plates_phi1</span> <span class="o">+</span> <span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="n">D</span><span class="p">,</span><span class="n">D</span><span class="p">))</span>
         <span class="n">phi2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">plates_phi2</span> <span class="o">+</span> <span class="p">(</span><span class="n">N</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="n">D</span><span class="p">,</span><span class="n">D</span><span class="p">))</span>
@@ -1344,39 +1481,124 @@
 
 <span class="k">class</span> <span class="nc">SwitchingGaussianMarkovChain</span><span class="p">(</span><span class="n">_TemplateGaussianMarkovChain</span><span class="p">):</span>
     <span class="sd">r&quot;&quot;&quot;</span>
-<span class="sd">    VB node for switching Gaussian Markov chain.</span>
+<span class="sd">    Node for Gaussian Markov chain random variables with switching dynamics.</span>
 
-<span class="sd">    Parents are:</span>
-<span class="sd">    `mu` is the mean of x0 (Gaussian)</span>
-<span class="sd">    `Lambda` is the precision of x0 (Wishart)</span>
-<span class="sd">    `B` contains the template dynamic matrices</span>
-<span class="sd">    `z` is the temporal selection of dynamic matrix</span>
-<span class="sd">    `v` is the diagonal precision of the innovation (Gamma)</span>
-
-<span class="sd">    Not efficient if `v` is time dependent.</span>
-
-<span class="sd">    Output is Gaussian Markov chain variables.</span>
+<span class="sd">    The node models a sequence of Gaussian variables</span>
+<span class="sd">    :math:`\mathbf{x}_0,\ldots,\mathbf{x}_{N-1}$ with linear Markovian dynamics.</span>
+<span class="sd">    The dynamics may change in time, which is obtained by having a set of</span>
+<span class="sd">    matrices and at each time selecting one of them as the state dynamics</span>
+<span class="sd">    matrix.  The graphical model can be presented as:</span>
 
 <span class="sd">    .. bayesnet::</span>
 
-<span class="sd">       TODO: FIX THIS</span>
-
-<span class="sd">       \node[latent] (x1) {$\mathbf{x}_1$};</span>
-<span class="sd">       \node[latent, right=of x1] (x2) {$\mathbf{x}_2$};</span>
-<span class="sd">       \node[right=of x2] (dots) {$\cdots$};</span>
-<span class="sd">       \node[latent, right=of dots] (xn) {$\mathbf{x}_n$};</span>
-<span class="sd">       \edge {x1}{x2};</span>
-<span class="sd">       \edge {x2}{dots};</span>
+<span class="sd">       \tikzstyle{latent} += [minimum size=40pt];</span>
+<span class="sd">       </span>
+<span class="sd">       \node[latent] (x0) {$\mathbf{x}_0$};</span>
+<span class="sd">       \node[latent, right=of x0] (x1) {$\mathbf{x}_1$};</span>
+<span class="sd">       \node[right=of x1] (dots) {$\cdots$};</span>
+<span class="sd">       \node[latent, right=of dots] (xn) {$\mathbf{x}_{N-1}$};</span>
+<span class="sd">       \edge {x0}{x1};</span>
+<span class="sd">       \edge {x1}{dots};</span>
 <span class="sd">       \edge {dots}{xn};</span>
 
+<span class="sd">       \node[latent, above left=1 and 0.1 of x0] (mu) {$\boldsymbol{\mu}$};</span>
+<span class="sd">       \node[latent, above right=1 and 0.1 of x0] (Lambda) {$\mathbf{\Lambda}$};</span>
+<span class="sd">       \node[det, below=of x1] (A0) {$\mathbf{A}_0$};</span>
+<span class="sd">       \node[right=of A0] (Adots) {$\cdots$};</span>
+<span class="sd">       \node[det, right=of Adots] (An) {$\mathbf{A}_{N-2}$};</span>
+<span class="sd">       \node[latent, above=of dots] (nu) {$\boldsymbol{\nu}$};</span>
+<span class="sd">       \edge {mu,Lambda} {x0};</span>
+<span class="sd">       \edge {nu} {x1,dots,xn};</span>
+<span class="sd">       \edge {A0} {x1};</span>
+<span class="sd">       \edge {Adots} {dots};</span>
+<span class="sd">       \edge {An} {xn};</span>
+
+<span class="sd">       \node[latent, below=of A0] (z0) {$z_0$};</span>
+<span class="sd">       \node[right=of z0] (zdots) {$\cdots$};</span>
+<span class="sd">       \node[latent, right=of zdots] (zn) {$z_{N-2}$};</span>
+<span class="sd">       \node[latent, left=of z0] (B) {$\mathbf{B}_k$};</span>
+<span class="sd">       \edge {B} {A0, Adots, An};</span>
+<span class="sd">       \edge {z0} {A0};</span>
+<span class="sd">       \edge {zdots} {Adots};</span>
+<span class="sd">       \edge {zn} {An};</span>
+
+<span class="sd">       \plate {K} {(B)} {$k=0,\ldots,K-1$};</span>
+
+<span class="sd">    where :math:`\boldsymbol{\mu}` and :math:`\mathbf{\Lambda}` are the mean and</span>
+<span class="sd">    the precision matrix of the initial state, :math:`\boldsymbol{\nu}` is the</span>
+<span class="sd">    precision of the innovation noise, and :math:`\mathbf{A}_n` are the state</span>
+<span class="sd">    dynamics matrix obtained by selecting one of the matrices</span>
+<span class="sd">    :math:`\{\mathbf{B}_k\}^{K-1}_{k=0}` at each time.  The selections are</span>
+<span class="sd">    provided by :math:`z_n\in\{0,\ldots,K-1\}`.  The probability distribution is</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">       p(\mathbf{x}_0, \ldots, \mathbf{x}_{N-1}) = p(\mathbf{x}_0)</span>
+<span class="sd">       \prod^{N-1}_{n=1} p(\mathbf{x}_n | \mathbf{x}_{n-1})</span>
+
+<span class="sd">    where</span>
+<span class="sd">    </span>
+<span class="sd">    .. math::</span>
+
+<span class="sd">       p(\mathbf{x}_0) &amp;= \mathcal{N}(\mathbf{x}_0 | \boldsymbol{\mu}, \mathbf{\Lambda})</span>
+<span class="sd">       \\</span>
+<span class="sd">       p(\mathbf{x}_n|\mathbf{x}_{n-1}) &amp;= \mathcal{N}(\mathbf{x}_n |</span>
+<span class="sd">       \mathbf{A}_{n-1}\mathbf{x}_{n-1}, \mathrm{diag}(\boldsymbol{\nu})),</span>
+<span class="sd">       \quad \text{for } n=1,\ldots,N-1,</span>
+<span class="sd">       \\</span>
+<span class="sd">       \mathbf{A}_n &amp;= \mathbf{B}_{z_n}, \quad \text{for }</span>
+<span class="sd">       n=0,\ldots,N-2.</span>
+<span class="sd">       </span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    mu : Gaussian-like node or (...,D)-array</span>
+<span class="sd">        :math:`\boldsymbol{\mu}`, mean of :math:`x_0`, :math:`D`-dimensional</span>
+<span class="sd">        with plates (...)</span>
+<span class="sd">        </span>
+<span class="sd">    Lambda : Wishart-like node or (...,D,D)-array</span>
+<span class="sd">        :math:`\mathbf{\Lambda}`, precision matrix of :math:`x_0`,</span>
+<span class="sd">        :math:`D\times D` -dimensional with plates (...)</span>
+<span class="sd">        </span>
+<span class="sd">    B : Gaussian-like node or (...,D,D,K)-array</span>
+<span class="sd">        :math:`\{\mathbf{B}_k\}_{k=0}^{K-1}`, a set of state dynamics matrix,</span>
+<span class="sd">        :math:`D \times K`-dimensional with plates (...,D)</span>
+
+<span class="sd">    Z : categorical-like node or (...,N-1)-array</span>
+<span class="sd">        :math:`\{z_0,\ldots,z_{N-2}\}`, time-dependent selection,</span>
+<span class="sd">        :math:`K`-categorical with plates (...,N-1)</span>
+<span class="sd">        </span>
+<span class="sd">    nu : gamma-like node or (...,D)-array</span>
+<span class="sd">        :math:`\boldsymbol{\nu}`, diagonal elements of the precision of the</span>
+<span class="sd">        innovation process, plates (...,D)</span>
+
+<span class="sd">    n : int, optional</span>
+<span class="sd">        :math:`N`, the length of the chain. Must be given if :math:`\mathbf{Z}`</span>
+<span class="sd">        does not have plates over the time domain (which would not make sense).</span>
 
 <span class="sd">    See also</span>
 <span class="sd">    --------</span>
-<span class="sd">    bayespy.inference.vmp.nodes.gaussian_markov_chain.GaussianMarkovChain</span>
-<span class="sd">    bayespy.inference.vmp.nodes.gaussian.Gaussian</span>
-<span class="sd">    bayespy.inference.vmp.nodes.wishart.Wishart</span>
+<span class="sd">    </span>
+<span class="sd">    Gaussian, GaussianARD, Wishart, Gamma, GaussianMarkovChain,</span>
+<span class="sd">    VaryingGaussianMarkovChain, Categorical, CategoricalMarkovChain</span>
 
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+
+<span class="sd">    Equivalent model block can be constructed with :class:`GaussianMarkovChain`</span>
+<span class="sd">    by explicitly using :class:`Gate` to select the state dynamics matrix.</span>
+<span class="sd">    However, that approach is not very efficient for large datasets because it</span>
+<span class="sd">    does not utilize the structure of :math:`\mathbf{A}_n`, thus it explicitly</span>
+<span class="sd">    computes huge moment arrays.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">Lambda</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">Z</span><span class="p">,</span> <span class="n">nu</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create SwitchingGaussianMarkovChain node.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span> <span class="n">Lambda</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">Z</span><span class="p">,</span> <span class="n">nu</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="n">n</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
 
     <span class="nd">@classmethod</span>
@@ -1511,7 +1733,7 @@
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 
         <span class="c"># Check for constant n</span>
-        <span class="k">if</span> <span class="n">utils</span><span class="o">.</span><span class="n">is_numeric</span><span class="p">(</span><span class="n">X</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">misc</span><span class="o">.</span><span class="n">is_numeric</span><span class="p">(</span><span class="n">X</span><span class="p">):</span>
             <span class="n">X</span> <span class="o">=</span> <span class="n">Constant</span><span class="p">(</span><span class="n">GaussianMarkovChain</span><span class="p">)(</span><span class="n">X</span><span class="p">)</span>
 
         <span class="c"># Make the time dimension a plate dimension...</span>

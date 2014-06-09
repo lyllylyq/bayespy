@@ -75,7 +75,7 @@
 <span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
 
-<span class="kn">from</span> <span class="nn">bayespy.utils</span> <span class="kn">import</span> <span class="n">utils</span>
+<span class="kn">from</span> <span class="nn">bayespy.utils</span> <span class="kn">import</span> <span class="n">misc</span>
 
 <span class="kn">from</span> <span class="nn">.expfamily</span> <span class="kn">import</span> <span class="n">ExponentialFamily</span><span class="p">,</span> \
                        <span class="n">ExponentialFamilyDistribution</span><span class="p">,</span> \
@@ -124,7 +124,7 @@
                 <span class="n">g</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="c"># Move the cluster plate axis</span>
-                <span class="n">g</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">moveaxis</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cluster_plate</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+                <span class="n">g</span> <span class="o">=</span> <span class="n">misc</span><span class="o">.</span><span class="n">moveaxis</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cluster_plate</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
 
             <span class="c"># Compute phi:</span>
             <span class="c"># Shape(phi)    = [Nn,..,K,..,N0,Dd,..,D0]</span>
@@ -139,7 +139,7 @@
                 <span class="n">axis_to</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">ndims</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span>
                 <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">ndim</span><span class="p">(</span><span class="n">phi</span><span class="p">[</span><span class="n">ind</span><span class="p">])</span> <span class="o">&gt;=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">axis_from</span><span class="p">):</span>
                     <span class="c"># Cluster plate axis exists, move it to the correct position</span>
-                    <span class="n">phi</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">moveaxis</span><span class="p">(</span><span class="n">phi</span><span class="p">[</span><span class="n">ind</span><span class="p">],</span> <span class="n">axis_from</span><span class="p">,</span> <span class="n">axis_to</span><span class="p">)</span>
+                    <span class="n">phi</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span> <span class="o">=</span> <span class="n">misc</span><span class="o">.</span><span class="n">moveaxis</span><span class="p">(</span><span class="n">phi</span><span class="p">[</span><span class="n">ind</span><span class="p">],</span> <span class="n">axis_from</span><span class="p">,</span> <span class="n">axis_to</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="c"># No cluster plate axis, just add a new axis to the correct</span>
                     <span class="c"># position, if phi has something on that axis</span>
@@ -204,11 +204,11 @@
                 <span class="n">p</span> <span class="o">=</span> <span class="n">u_parents</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
                 <span class="c"># Move the cluster axis to the proper place:</span>
                 <span class="c"># Shape(p)      = [Nn,..,K,..,N0]</span>
-                <span class="n">p</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">atleast_nd</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="nb">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cluster_plate</span><span class="p">))</span>
-                <span class="n">p</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">moveaxis</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cluster_plate</span><span class="p">)</span>
+                <span class="n">p</span> <span class="o">=</span> <span class="n">misc</span><span class="o">.</span><span class="n">atleast_nd</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="nb">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cluster_plate</span><span class="p">))</span>
+                <span class="n">p</span> <span class="o">=</span> <span class="n">misc</span><span class="o">.</span><span class="n">moveaxis</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cluster_plate</span><span class="p">)</span>
                 <span class="c"># Add axes for variable dimensions to the contributions</span>
                 <span class="c"># Shape(p)      = [Nn,..,K,..,N0,1,..,1]</span>
-                <span class="n">p</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">add_trailing_axes</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">D</span><span class="p">)</span>
+                <span class="n">p</span> <span class="o">=</span> <span class="n">misc</span><span class="o">.</span><span class="n">add_trailing_axes</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">D</span><span class="p">)</span>
 
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cluster_plate</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
                     <span class="c"># Add the variable dimensions</span>
@@ -281,21 +281,21 @@
             <span class="c"># Move cluster axis to the last:</span>
             <span class="c"># Shape(phi)    = [Nn,..,N0,Dd,..,D0,K]</span>
             <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">ndim</span><span class="p">(</span><span class="n">Phi</span><span class="p">[</span><span class="n">ind</span><span class="p">])</span> <span class="o">&gt;=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">cluster_axis</span><span class="p">):</span>
-                <span class="n">phi</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">moveaxis</span><span class="p">(</span><span class="n">Phi</span><span class="p">[</span><span class="n">ind</span><span class="p">],</span> <span class="n">cluster_axis</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+                <span class="n">phi</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">misc</span><span class="o">.</span><span class="n">moveaxis</span><span class="p">(</span><span class="n">Phi</span><span class="p">[</span><span class="n">ind</span><span class="p">],</span> <span class="n">cluster_axis</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">phi</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Phi</span><span class="p">[</span><span class="n">ind</span><span class="p">][</span><span class="o">...</span><span class="p">,</span><span class="bp">None</span><span class="p">])</span>
 
             <span class="c"># Add axes to p:</span>
             <span class="c"># Shape(p)      = [Nn,..,N0,K,1,..,1]</span>
-            <span class="n">p</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">add_trailing_axes</span><span class="p">(</span><span class="n">P</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ndims</span><span class="p">[</span><span class="n">ind</span><span class="p">])</span>
+            <span class="n">p</span> <span class="o">=</span> <span class="n">misc</span><span class="o">.</span><span class="n">add_trailing_axes</span><span class="p">(</span><span class="n">P</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ndims</span><span class="p">[</span><span class="n">ind</span><span class="p">])</span>
             <span class="c"># Move cluster axis to the last:</span>
             <span class="c"># Shape(p)      = [Nn,..,N0,1,..,1,K]</span>
-            <span class="n">p</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">moveaxis</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="o">-</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ndims</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">),</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">p</span> <span class="o">=</span> <span class="n">misc</span><span class="o">.</span><span class="n">moveaxis</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="o">-</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ndims</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">),</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
 
             <span class="c"># Now the shapes broadcast perfectly and we can sum</span>
             <span class="c"># p*phi over the last axis:</span>
             <span class="c"># Shape(result) = [Nn,..,N0,Dd,..,D0]</span>
-            <span class="n">phi</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">sum_product</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">phi</span><span class="p">[</span><span class="n">ind</span><span class="p">],</span> <span class="n">axes_to_sum</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">phi</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span> <span class="o">=</span> <span class="n">misc</span><span class="o">.</span><span class="n">sum_product</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">phi</span><span class="p">[</span><span class="n">ind</span><span class="p">],</span> <span class="n">axes_to_sum</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">phi</span><span class="p">[</span><span class="n">ind</span><span class="p">])):</span>
                 <span class="n">nans</span> <span class="o">=</span> <span class="bp">True</span>
 
@@ -341,7 +341,7 @@
             <span class="n">g</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="c"># Move the cluster plate axis</span>
-            <span class="n">g</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">moveaxis</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cluster_plate</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">g</span> <span class="o">=</span> <span class="n">misc</span><span class="o">.</span><span class="n">moveaxis</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cluster_plate</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
 
         <span class="c"># Cluster assignments/contributions/probabilities/weights:</span>
         <span class="c"># Shape(p)      = [Nn,..,N0,K]</span>
@@ -352,7 +352,7 @@
         <span class="c"># axis and utilize broadcasting:</span>
         <span class="c"># Shape(result) = [Nn,..,N0]</span>
 
-        <span class="n">g</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">sum_product</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">axes_to_sum</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">g</span> <span class="o">=</span> <span class="n">misc</span><span class="o">.</span><span class="n">sum_product</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">axes_to_sum</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">g</span>
 
@@ -414,12 +414,80 @@
 
 
 <div class="viewcode-block" id="Mixture"><a class="viewcode-back" href="../../../../../generated.backup/bayespy.inference.vmp.nodes.mixture.Mixture.html#bayespy.inference.vmp.nodes.mixture.Mixture">[docs]</a><span class="k">class</span> <span class="nc">Mixture</span><span class="p">(</span><span class="n">ExponentialFamily</span><span class="p">):</span>
+    <span class="sd">r&quot;&quot;&quot;</span>
+<span class="sd">    Node for exponential family mixture variables.</span>
+
+<span class="sd">    The node represents a random variable which is sampled from a</span>
+<span class="sd">    mixture distribution. It is possible to mix any exponential family</span>
+<span class="sd">    distribution. The probability density function is</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">        p(x|z=k,\boldsymbol{\theta}_0,\ldots,\boldsymbol{\theta}_{K-1})</span>
+<span class="sd">        = \phi(x|\boldsymbol{\theta}_k),</span>
+
+<span class="sd">    where :math:`\phi` is the probability density function of the mixed</span>
+<span class="sd">    exponential family distribution and :math:`\boldsymbol{\theta}_0,</span>
+<span class="sd">    \ldots, \boldsymbol{\theta}_{K-1}` are the parameters of each</span>
+<span class="sd">    cluster.  For instance, :math:`\phi` could be the Gaussian</span>
+<span class="sd">    probability density function :math:`\mathcal{N}` and</span>
+<span class="sd">    :math:`\boldsymbol{\theta}_k = \{\boldsymbol{\mu}_k,</span>
+<span class="sd">    \mathbf{\Lambda}_k\}` where :math:`\boldsymbol{\mu}_k` and</span>
+<span class="sd">    :math:`\mathbf{\Lambda}_k` are the mean vector and precision matrix</span>
+<span class="sd">    for cluster :math:`k`.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+
+<span class="sd">    z : categorical-like node or array</span>
+<span class="sd">        :math:`z`, cluster assignment</span>
+
+<span class="sd">    node_class : stochastic exponential family node class</span>
+<span class="sd">        Mixed distribution</span>
+
+<span class="sd">    params : types specified by the mixed distribution</span>
+<span class="sd">    </span>
+<span class="sd">        Parameters of the mixed distribution.  If some parameters should</span>
+<span class="sd">        vary between clusters, those parameters&#39; plate axis</span>
+<span class="sd">        `cluster_plate` should have a size which equals the number of</span>
+<span class="sd">        clusters. For parameters with shared values, that plate axis</span>
+<span class="sd">        should have length 1. At least one parameter should vary between</span>
+<span class="sd">        clusters.</span>
+
+<span class="sd">    cluster_plate : int, optional</span>
+<span class="sd">    </span>
+<span class="sd">        Negative integer defining which plate axis is used for the</span>
+<span class="sd">        clusters in the parameters. That plate axis is ignored from the</span>
+<span class="sd">        parameters when considering the plates for this node. By</span>
+<span class="sd">        default, mix over the last plate axis.</span>
+
+<span class="sd">    See also</span>
+<span class="sd">    --------</span>
+
+<span class="sd">    Categorical, CategoricalMarkovChain</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+
+<span class="sd">    A simple 2-dimensional Gaussian mixture model with three clusters</span>
+<span class="sd">    for 100 samples can be constructed, for instance, as:</span>
+
+<span class="sd">    .. code-block:: python</span>
+
+<span class="sd">        from bayespy.nodes import (Dirichlet, Categorical, Mixture,</span>
+<span class="sd">                                   Gaussian, Wishart)</span>
+<span class="sd">        alpha = Dirichlet([1e-3, 1e-3, 1e-3])</span>
+<span class="sd">        Z = Categorical(alpha, plates=(100,))</span>
+<span class="sd">        mu = Gaussian(np.zeros(2), 1e-6*np.identity(2), plates=(3,))</span>
+<span class="sd">        Lambda = Wishart(2, 1e-6*np.identity(2), plates=(3,))</span>
+<span class="sd">        X = Mixture(Z, Gaussian, mu, Lambda)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
 
-    <span class="nd">@useconstructor</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">cluster_plate</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">node_class</span><span class="p">,</span> <span class="o">*</span><span class="n">params</span><span class="p">,</span> <span class="n">cluster_plate</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cluster_plate</span> <span class="o">=</span> <span class="n">cluster_plate</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">node_class</span><span class="p">,</span> <span class="o">*</span><span class="n">params</span><span class="p">,</span> <span class="n">cluster_plate</span><span class="o">=</span><span class="n">cluster_plate</span><span class="p">,</span>
+                         <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         
 
     <span class="nd">@classmethod</span>
@@ -465,7 +533,7 @@
                                            <span class="n">ndims_parents</span><span class="p">)</span>
 
         <span class="c"># Add cluster assignments to parents</span>
-        <span class="n">parent_moments</span> <span class="o">=</span> <span class="p">(</span><span class="n">CategoricalMoments</span><span class="p">(</span><span class="n">K</span><span class="p">),)</span> <span class="o">+</span> <span class="n">parent_moments</span>
+        <span class="n">parent_moments</span> <span class="o">=</span> <span class="p">[</span><span class="n">CategoricalMoments</span><span class="p">(</span><span class="n">K</span><span class="p">)]</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">parent_moments</span><span class="p">)</span>
 
         <span class="n">parents</span> <span class="o">=</span> <span class="p">[</span><span class="n">z</span><span class="p">]</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">parents</span><span class="p">)</span>
 
@@ -516,7 +584,7 @@
 
             <span class="c"># Move cluster axis to be the last:</span>
             <span class="c"># Shape(pdf) = [M1,..,Mm,N1,..,Nn,K]</span>
-            <span class="n">pdf</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">moveaxis</span><span class="p">(</span><span class="n">pdf</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cluster_plate</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">pdf</span> <span class="o">=</span> <span class="n">misc</span><span class="o">.</span><span class="n">moveaxis</span><span class="p">(</span><span class="n">pdf</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cluster_plate</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
 
             <span class="c"># Cluster assignments/probabilities/weights</span>
             <span class="c"># Shape(p) = [N1,..,Nn,K]</span>

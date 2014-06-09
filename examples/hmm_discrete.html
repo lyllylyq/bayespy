@@ -1,0 +1,284 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Discrete hidden Markov model &mdash; BayesPy v0.1 Documentation</title>
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="BayesPy v0.1 Documentation" href="../index.html" />
+    <link rel="up" title="Examples" href="examples.html" />
+    <link rel="next" title="Hidden Markov model" href="hmm.html" />
+    <link rel="prev" title="Bernoulli mixture model" href="bmm.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="hmm.html" title="Hidden Markov model"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="bmm.html" title="Bernoulli mixture model"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">BayesPy v0.1 Documentation</a> &raquo;</li>
+          <li><a href="examples.html" accesskey="U">Examples</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="discrete-hidden-markov-model">
+<h1>Discrete hidden Markov model<a class="headerlink" href="#discrete-hidden-markov-model" title="Permalink to this headline">¶</a></h1>
+<p>This example is also available as <a class="reference external" href="hmm_discrete.ipynb">an IPython
+notebook</a> or <a class="reference external" href="hmm_discrete.py">a Python script</a>.</p>
+<div class="section" id="known-parameters">
+<h2>Known parameters<a class="headerlink" href="#known-parameters" title="Permalink to this headline">¶</a></h2>
+<p>This example follows the one presented in
+<a class="reference external" href="http://en.wikipedia.org/wiki/Hidden_Markov_model#A_concrete_example">Wikipedia</a>.
+Each day, the state of the weather is either &#8216;rainy&#8217; or &#8216;sunny&#8217;. The
+weather follows a first-order discrete Markov process with the following
+initial state probability and state transition probabilities:</p>
+<div class="code python highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">bayespy.nodes</span> <span class="kn">import</span> <span class="n">CategoricalMarkovChain</span>
+<span class="c"># Initial state probabilities</span>
+<span class="n">a0</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">]</span> <span class="c"># p(rainy)=0.6, p(sunny)=0.4</span>
+<span class="c"># State transition probabilities</span>
+<span class="n">A</span> <span class="o">=</span> <span class="p">[[</span><span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">],</span> <span class="c"># p(rainy-&gt;rainy)=0.7, p(rainy-&gt;sunny)=0.3</span>
+     <span class="p">[</span><span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">]]</span> <span class="c"># p(sunny-&gt;rainy)=0.4, p(sunny-&gt;sunny)=0.6</span>
+<span class="c"># The length of the process</span>
+<span class="n">N</span> <span class="o">=</span> <span class="mi">1000</span>
+<span class="c"># Markov chain</span>
+<span class="n">Z</span> <span class="o">=</span> <span class="n">CategoricalMarkovChain</span><span class="p">(</span><span class="n">a0</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">states</span><span class="o">=</span><span class="n">N</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>However, instead of observing this process directly, we observe whether
+Bob is &#8216;walking&#8217;, &#8216;shopping&#8217; or &#8216;cleaning&#8217;. The probability of each
+activity depends on the current weather as follows:</p>
+<div class="code python highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">bayespy.nodes</span> <span class="kn">import</span> <span class="n">Categorical</span><span class="p">,</span> <span class="n">Mixture</span>
+<span class="c"># Emission probabilities</span>
+<span class="n">P</span> <span class="o">=</span> <span class="p">[[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">],</span>
+     <span class="p">[</span><span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">]]</span>
+<span class="c"># Observed process</span>
+<span class="n">Y</span> <span class="o">=</span> <span class="n">Mixture</span><span class="p">(</span><span class="n">Z</span><span class="p">,</span> <span class="n">Categorical</span><span class="p">,</span> <span class="n">P</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>In order to test our method, we&#8217;ll generate artificial data using this
+model:</p>
+<div class="code python highlight-python"><div class="highlight"><pre><span class="c"># Draw realization of the weather process</span>
+<span class="n">weather</span> <span class="o">=</span> <span class="n">Z</span><span class="o">.</span><span class="n">random</span><span class="p">()</span>
+<span class="c"># Using this weather, draw realizations of the activities</span>
+<span class="n">activity</span> <span class="o">=</span> <span class="n">Mixture</span><span class="p">(</span><span class="n">weather</span><span class="p">,</span> <span class="n">Categorical</span><span class="p">,</span> <span class="n">P</span><span class="p">)</span><span class="o">.</span><span class="n">random</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Now, using this data, we set our variable <span class="math">\(Y\)</span> to be observed:</p>
+<div class="code python highlight-python"><div class="highlight"><pre><span class="n">Y</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">activity</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>In order to run inference, we construct variational Bayesian inference
+engine:</p>
+<div class="code python highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">bayespy.inference</span> <span class="kn">import</span> <span class="n">VB</span>
+<span class="n">Q</span> <span class="o">=</span> <span class="n">VB</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span> <span class="n">Z</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Note that we need to give all random variables to <tt class="docutils literal"><span class="pre">VB</span></tt>. In this case,
+the only random variables were <tt class="docutils literal"><span class="pre">Y</span></tt> and <tt class="docutils literal"><span class="pre">Z</span></tt>. Next we run the
+inference, that is, compute our posterior distribution:</p>
+<div class="code python highlight-python"><div class="highlight"><pre><span class="n">Q</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre>Iteration 1: loglike=-1.091583e+03 (0.090 seconds)
+</pre></div>
+</div>
+<p>In this case, because there is only one unobserved random variable, we
+recover the exact posterior distribution and there is no need to iterate
+more than one step.</p>
+</div>
+<div class="section" id="unknown-parameters">
+<h2>Unknown parameters<a class="headerlink" href="#unknown-parameters" title="Permalink to this headline">¶</a></h2>
+<p>Next, we consider the case when we do not know the parameters of the
+weather process (initial state probability and state transition
+probabilities). We give these parameters quite non-informative priors,
+but it is possible to provide more informative priors if such
+information is available. First, the weather process:</p>
+<div class="code python highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">bayespy.nodes</span> <span class="kn">import</span> <span class="n">Dirichlet</span>
+<span class="c"># Initial state probabilities</span>
+<span class="n">a0</span> <span class="o">=</span> <span class="n">Dirichlet</span><span class="p">([</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">])</span>
+<span class="c"># State transition probabilities</span>
+<span class="n">A</span> <span class="o">=</span> <span class="n">Dirichlet</span><span class="p">([[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">],</span>
+               <span class="p">[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">]])</span>
+<span class="c"># Markov chain</span>
+<span class="n">Z</span> <span class="o">=</span> <span class="n">CategoricalMarkovChain</span><span class="p">(</span><span class="n">a0</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">states</span><span class="o">=</span><span class="n">N</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Second, the emission probabilities are also given quite non-informative
+priors:</p>
+<div class="code python highlight-python"><div class="highlight"><pre><span class="c"># Emission probabilities</span>
+<span class="n">P</span> <span class="o">=</span> <span class="n">Dirichlet</span><span class="p">([[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">],</span>
+               <span class="p">[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">]])</span>
+<span class="c"># Observed process</span>
+<span class="n">Y</span> <span class="o">=</span> <span class="n">Mixture</span><span class="p">(</span><span class="n">Z</span><span class="p">,</span> <span class="n">Categorical</span><span class="p">,</span> <span class="n">P</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>We use the same data as before:</p>
+<div class="code python highlight-python"><div class="highlight"><pre><span class="n">Y</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">activity</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Because <tt class="docutils literal"><span class="pre">VB</span></tt> takes all the unknown variables, we need to provide
+<tt class="docutils literal"><span class="pre">A</span></tt>, <tt class="docutils literal"><span class="pre">a0</span></tt> and <tt class="docutils literal"><span class="pre">P</span></tt> also:</p>
+<div class="code python highlight-python"><div class="highlight"><pre><span class="n">Q</span> <span class="o">=</span> <span class="n">VB</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span> <span class="n">Z</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">a0</span><span class="p">,</span> <span class="n">P</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>If we ran the VB algorithm now, we would get a result where all both
+states would have identical emission probability distribution. This
+happens because of a non-random default initialization. <tt class="docutils literal"><span class="pre">P</span></tt> is
+initialized in such a way that both states have the same distribution,
+and <tt class="docutils literal"><span class="pre">Z</span></tt> is initialized in such a way that each state has equal
+probability. Thus, the VB algorithm won&#8217;t separate them. In such cases,
+it is necessary to use a random initialization. In principle, it is
+possible to use random initialization for either variable and then
+update the other variable first. In the case of mixture distributions,
+it might be better to initialize the parameters (<tt class="docutils literal"><span class="pre">P</span></tt>) randomly and
+update the state assignments (<tt class="docutils literal"><span class="pre">Z</span></tt>) first.</p>
+<div class="code python highlight-python"><div class="highlight"><pre><span class="n">P</span><span class="o">.</span><span class="n">initialize_from_random</span><span class="p">()</span>
+<span class="n">Q</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">Z</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">a0</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">repeat</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre>Iteration 1: loglike=-1.115941e+03 (0.090 seconds)
+Iteration 2: loglike=-1.115671e+03 (0.090 seconds)
+Iteration 3: loglike=-1.115603e+03 (0.100 seconds)
+Iteration 4: loglike=-1.115574e+03 (0.090 seconds)
+Iteration 5: loglike=-1.115555e+03 (0.090 seconds)
+Iteration 6: loglike=-1.115538e+03 (0.100 seconds)
+Iteration 7: loglike=-1.115521e+03 (0.090 seconds)
+Iteration 8: loglike=-1.115504e+03 (0.090 seconds)
+Iteration 9: loglike=-1.115487e+03 (0.090 seconds)
+Iteration 10: loglike=-1.115469e+03 (0.090 seconds)
+Iteration 11: loglike=-1.115451e+03 (0.100 seconds)
+Iteration 12: loglike=-1.115433e+03 (0.090 seconds)
+Iteration 13: loglike=-1.115413e+03 (0.090 seconds)
+Iteration 14: loglike=-1.115394e+03 (0.090 seconds)
+Iteration 15: loglike=-1.115374e+03 (0.090 seconds)
+Iteration 16: loglike=-1.115354e+03 (0.100 seconds)
+Iteration 17: loglike=-1.115333e+03 (0.090 seconds)
+Iteration 18: loglike=-1.115312e+03 (0.090 seconds)
+Iteration 19: loglike=-1.115290e+03 (0.090 seconds)
+Iteration 20: loglike=-1.115268e+03 (0.090 seconds)
+</pre></div>
+</div>
+<p>In order to update the variables in that order, one may explicitly give
+the nodes in that order to the <tt class="docutils literal"><span class="pre">update</span></tt> method. However, the default
+update order is the one used when constructing <tt class="docutils literal"><span class="pre">Q</span></tt>, which is the same
+in this case, thus we could have ignored listing the nodes to the
+<tt class="docutils literal"><span class="pre">update</span></tt> method.</p>
+<p>Plot the estimated state transition probabilities:</p>
+<div class="code python highlight-python"><div class="highlight"><pre># NOTE: These three lines are just to enable inline plotting in IPython Notebooks.
+import matplotlib.pyplot as plt
+%matplotlib inline
+plt.plot([])
+# Plot the state transition matrix
+import bayespy.plot.plotting as bpplt
+bpplt.dirichlet_hinton(A)
+</pre></div>
+</div>
+<img alt="../_images/hmm_discrete_29_0.png" src="../_images/hmm_discrete_29_0.png" />
+<p>Plot the estimated emission probabilities:</p>
+<div class="code python highlight-python"><div class="highlight"><pre><span class="n">bpplt</span><span class="o">.</span><span class="n">dirichlet_hinton</span><span class="p">(</span><span class="n">P</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="../_images/hmm_discrete_31_0.png" src="../_images/hmm_discrete_31_0.png" />
+<p>It is interesting that these estimated parameters are very different
+from the true parameters. This happens because of un-identifiability:
+different parameters lead to similar marginal distributions over the
+observed process.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Discrete hidden Markov model</a><ul>
+<li><a class="reference internal" href="#known-parameters">Known parameters</a></li>
+<li><a class="reference internal" href="#unknown-parameters">Unknown parameters</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="bmm.html"
+                        title="previous chapter">Bernoulli mixture model</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="hmm.html"
+                        title="next chapter">Hidden Markov model</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/examples/hmm_discrete.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="hmm.html" title="Hidden Markov model"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="bmm.html" title="Bernoulli mixture model"
+             >previous</a> |</li>
+        <li><a href="../index.html">BayesPy v0.1 Documentation</a> &raquo;</li>
+          <li><a href="examples.html" >Examples</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011-2014, Jaakko Luttinen, GPLv3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

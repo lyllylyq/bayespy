@@ -71,7 +71,7 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
 
-<span class="kn">from</span> <span class="nn">bayespy.utils</span> <span class="kn">import</span> <span class="n">utils</span>
+<span class="kn">from</span> <span class="nn">bayespy.utils</span> <span class="kn">import</span> <span class="n">misc</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">This module contains a sketch of a new implementation of the framework.</span>
@@ -85,10 +85,10 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c"># The shape of the full message</span>
     <span class="n">shapes</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">array</span><span class="p">)</span> <span class="k">for</span> <span class="n">array</span> <span class="ow">in</span> <span class="n">arrays</span><span class="p">]</span>
-    <span class="n">shape_full</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">broadcasted_shape</span><span class="p">(</span><span class="o">*</span><span class="n">shapes</span><span class="p">)</span>
+    <span class="n">shape_full</span> <span class="o">=</span> <span class="n">misc</span><span class="o">.</span><span class="n">broadcasted_shape</span><span class="p">(</span><span class="o">*</span><span class="n">shapes</span><span class="p">)</span>
     <span class="c"># Find axes that should be summed</span>
     <span class="n">shape_parent</span> <span class="o">=</span> <span class="n">plates_parent</span> <span class="o">+</span> <span class="n">dims_parent</span>
-    <span class="n">sum_axes</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">axes_to_collapse</span><span class="p">(</span><span class="n">shape_full</span><span class="p">,</span> <span class="n">shape_parent</span><span class="p">)</span>
+    <span class="n">sum_axes</span> <span class="o">=</span> <span class="n">misc</span><span class="o">.</span><span class="n">axes_to_collapse</span><span class="p">(</span><span class="n">shape_full</span><span class="p">,</span> <span class="n">shape_parent</span><span class="p">)</span>
     <span class="c"># Compute the multiplier for cancelling the</span>
     <span class="c"># plate-multiplier.  Because we are summing over the</span>
     <span class="c"># dimensions already in this function (for efficiency), we</span>
@@ -101,12 +101,12 @@
         <span class="k">elif</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="n">dims_parent</span><span class="p">):</span>
             <span class="n">r</span> <span class="o">*=</span> <span class="n">shape_full</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
     <span class="c"># Compute the sum-product</span>
-    <span class="n">m</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">sum_multiply</span><span class="p">(</span><span class="o">*</span><span class="n">arrays</span><span class="p">,</span>
-                           <span class="n">axis</span><span class="o">=</span><span class="n">sum_axes</span><span class="p">,</span>
-                           <span class="n">sumaxis</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
-                           <span class="n">keepdims</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span> <span class="o">/</span> <span class="n">r</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="n">misc</span><span class="o">.</span><span class="n">sum_multiply</span><span class="p">(</span><span class="o">*</span><span class="n">arrays</span><span class="p">,</span>
+                          <span class="n">axis</span><span class="o">=</span><span class="n">sum_axes</span><span class="p">,</span>
+                          <span class="n">sumaxis</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+                          <span class="n">keepdims</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span> <span class="o">/</span> <span class="n">r</span>
     <span class="c"># Remove extra axes</span>
-    <span class="n">m</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">squeeze_to_dim</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">shape_parent</span><span class="p">))</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="n">misc</span><span class="o">.</span><span class="n">squeeze_to_dim</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">shape_parent</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">m</span>
 
 <span class="k">class</span> <span class="nc">Moments</span><span class="p">():</span>
@@ -135,8 +135,13 @@
     <span class="n">_converters</span> <span class="o">=</span> <span class="p">{}</span>
 
 
+    <span class="k">class</span> <span class="nc">NoConverterError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">add_converter</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">moments_to</span><span class="p">,</span> <span class="n">converter</span><span class="p">):</span>
+        <span class="n">cls</span><span class="o">.</span><span class="n">_converters</span> <span class="o">=</span> <span class="n">cls</span><span class="o">.</span><span class="n">_converters</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="n">cls</span><span class="o">.</span><span class="n">_converters</span><span class="p">[</span><span class="n">moments_to</span><span class="p">]</span> <span class="o">=</span> <span class="n">converter</span>
         <span class="k">return</span>
     
@@ -152,10 +157,11 @@
 <span class="sd">        error is raised.</span>
 
 <span class="sd">        The search algorithm starts from the original moments class and applies</span>
-<span class="sd">        all possible converters to get a new list of moments classes. Then, all</span>
-<span class="sd">        possible converters are applied to this list to get a new list of</span>
-<span class="sd">        current moments classes. This is iterated until the algorithm hits the</span>
-<span class="sd">        target moments class or its subclass.</span>
+<span class="sd">        all possible converters to get a new list of moments classes. This list</span>
+<span class="sd">        is extended by adding recursively all parent classes because their</span>
+<span class="sd">        converters are applicable. Then, all possible converters are applied to</span>
+<span class="sd">        this list to get a new list of current moments classes. This is iterated</span>
+<span class="sd">        until the algorithm hits the target moments class or its subclass.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="c"># Check if there is no need for a conversion</span>
@@ -167,31 +173,46 @@
         <span class="n">visited</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="p">)</span>
         <span class="n">converted_list</span> <span class="o">=</span> <span class="p">[(</span><span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="p">,</span> <span class="p">[])]</span>
 
-        <span class="c"># The algorithm: </span>
-        <span class="c"># Apply all avaible converters to the current list to get a new list.</span>
-        <span class="c"># Iterate this until the list contains the target moments class or its</span>
-        <span class="c"># subclass.</span>
+        <span class="c"># Each iteration step consists of two parts:</span>
+        <span class="c"># 1) form a set of the current classes and all their parent classes </span>
+        <span class="c">#    recursively</span>
+        <span class="c"># 2) from the current set, apply possible conversions to get a new set </span>
+        <span class="c">#    of classes</span>
+        <span class="c"># Repeat these two steps until in step (1) you hit the target class.</span>
         
         <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">converted_list</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">current_list</span> <span class="o">=</span> <span class="n">converted_list</span>
-            <span class="n">converted_list</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="c"># Go through the list of current moments and apply all available</span>
-            <span class="c"># converters to each of them</span>
-            <span class="k">for</span> <span class="p">(</span><span class="n">moments_class</span><span class="p">,</span> <span class="n">converter_path</span><span class="p">)</span> <span class="ow">in</span> <span class="n">current_list</span><span class="p">:</span>
+            <span class="c"># Go through all parents recursively so we can then use all</span>
+            <span class="c"># converters that are available</span>
+            <span class="n">current_list</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="p">(</span><span class="n">moments_class</span><span class="p">,</span> <span class="n">converter_path</span><span class="p">)</span> <span class="ow">in</span> <span class="n">converted_list</span><span class="p">:</span>
                 <span class="k">if</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">moments_class</span><span class="p">,</span> <span class="n">moments_to</span><span class="p">):</span>
                     <span class="c"># Shortest conversion path found, return the resulting total</span>
                     <span class="c"># conversion function</span>
-                    <span class="k">return</span> <span class="n">utils</span><span class="o">.</span><span class="n">composite_function</span><span class="p">(</span><span class="n">converter_path</span><span class="p">)</span>
-                <span class="c"># Apply all converters to the current moment class</span>
+                    <span class="k">return</span> <span class="n">misc</span><span class="o">.</span><span class="n">composite_function</span><span class="p">(</span><span class="n">converter_path</span><span class="p">)</span>
+                <span class="n">current_list</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">moments_class</span><span class="p">,</span> <span class="n">converter_path</span><span class="p">))</span>
+                <span class="n">parents</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">moments_class</span><span class="o">.</span><span class="n">__bases__</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">parent</span> <span class="ow">in</span> <span class="n">parents</span><span class="p">:</span>
+                    <span class="c"># Recursively add parents</span>
+                    <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">parent</span><span class="o">.</span><span class="n">__bases__</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">Moments</span><span class="p">):</span>
+                            <span class="n">parents</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+                    <span class="c"># Add un-visited parents</span>
+                    <span class="k">if</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="n">Moments</span><span class="p">)</span> <span class="ow">and</span> <span class="n">parent</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">visited</span><span class="p">:</span>
+                        <span class="n">visited</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
+                        <span class="n">current_list</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">parent</span><span class="p">,</span> <span class="n">converter_path</span><span class="p">))</span>
+
+            <span class="c"># Find all converters and extend the converter paths</span>
+            <span class="n">converted_list</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="p">(</span><span class="n">moments_class</span><span class="p">,</span> <span class="n">converter_path</span><span class="p">)</span> <span class="ow">in</span> <span class="n">current_list</span><span class="p">:</span>
                 <span class="k">for</span> <span class="p">(</span><span class="n">conv_mom_cls</span><span class="p">,</span> <span class="n">conv</span><span class="p">)</span> <span class="ow">in</span> <span class="n">moments_class</span><span class="o">.</span><span class="n">_converters</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                     <span class="k">if</span> <span class="n">conv_mom_cls</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">visited</span><span class="p">:</span>
                         <span class="n">visited</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">conv_mom_cls</span><span class="p">)</span>
                         <span class="n">converted_list</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">conv_mom_cls</span><span class="p">,</span>
                                                <span class="n">converter_path</span> <span class="o">+</span> <span class="p">[</span><span class="n">conv</span><span class="p">]))</span> 
 
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;No conversion defined from </span><span class="si">%s</span><span class="s"> to </span><span class="si">%s</span><span class="s">&quot;</span>
-                         <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span>
-                            <span class="n">moments_class</span><span class="o">.</span><span class="n">__name__</span><span class="p">))</span>
+        <span class="k">raise</span> <span class="bp">self</span><span class="o">.</span><span class="n">NoConverterError</span><span class="p">(</span><span class="s">&quot;No conversion defined from </span><span class="si">%s</span><span class="s"> to </span><span class="si">%s</span><span class="s">&quot;</span>
+                                    <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span>
+                                       <span class="n">moments_to</span><span class="o">.</span><span class="n">__name__</span><span class="p">))</span>
     
 
     <span class="k">def</span> <span class="nf">compute_fixed_moments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
@@ -221,7 +242,7 @@
     <span class="k">return</span> <span class="n">new_func</span>
 
     
-<div class="viewcode-block" id="Node"><a class="viewcode-back" href="../../../../../generated/bayespy.inference.vmp.nodes.node.Node.html#bayespy.inference.vmp.nodes.node.Node">[docs]</a><span class="k">class</span> <span class="nc">Node</span><span class="p">():</span>
+<div class="viewcode-block" id="Node"><a class="viewcode-back" href="../../../../../user_api/generated/bayespy.inference.vmp.nodes.node.Node.html#bayespy.inference.vmp.nodes.node.Node">[docs]</a><span class="k">class</span> <span class="nc">Node</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Base class for all nodes.</span>
 
@@ -251,6 +272,8 @@
     <span class="n">_parent_moments</span> <span class="o">=</span> <span class="bp">None</span>
     <span class="n">plates</span> <span class="o">=</span> <span class="bp">None</span>
 
+    <span class="n">_id_counter</span> <span class="o">=</span> <span class="mi">0</span>
+
     <span class="nd">@ensureparents</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">parents</span><span class="p">,</span> <span class="n">dims</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">plates</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">,</span> 
                  <span class="n">notify_parents</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">plotter</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
@@ -259,6 +282,12 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">dims</span> <span class="o">=</span> <span class="n">dims</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_plotter</span> <span class="o">=</span> <span class="n">plotter</span>
+
+        <span class="n">parent_id_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">parent</span> <span class="ow">in</span> <span class="n">parents</span><span class="p">:</span>
+            <span class="n">parent_id_list</span> <span class="o">=</span> <span class="n">parent_id_list</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">parent</span><span class="o">.</span><span class="n">_get_id_list</span><span class="p">())</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">parent_id_list</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">parent_id_list</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Parent nodes are not independent&quot;</span><span class="p">)</span>
 
         <span class="c"># Inform parent nodes</span>
         <span class="k">if</span> <span class="n">notify_parents</span><span class="p">:</span>
@@ -282,19 +311,39 @@
         <span class="c"># Children</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
 
+
+    <span class="k">def</span> <span class="nf">_get_id_list</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the stochastic ID list.</span>
+
+<span class="sd">        This method is used to check that same stochastic nodes are not direct</span>
+<span class="sd">        parents of a node several times. It is only valid if there are</span>
+<span class="sd">        intermediate stochastic nodes.</span>
+
+<span class="sd">        To put it another way: each ID corresponds to one factor q(..) in the</span>
+<span class="sd">        posterior approximation. Different IDs mean different factors, thus they</span>
+<span class="sd">        mean independence. The parents must have independent factors.</span>
+
+<span class="sd">        Stochastic nodes should return their unique ID. Deterministic nodes</span>
+<span class="sd">        should return the IDs of their parents. Constant nodes should return</span>
+<span class="sd">        empty list of IDs.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
+
+
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">_total_plates</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">plates</span><span class="p">,</span> <span class="o">*</span><span class="n">parent_plates</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">plates</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
             <span class="c"># By default, use the minimum number of plates determined</span>
             <span class="c"># from the parent nodes</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">utils</span><span class="o">.</span><span class="n">broadcasted_shape</span><span class="p">(</span><span class="o">*</span><span class="n">parent_plates</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">misc</span><span class="o">.</span><span class="n">broadcasted_shape</span><span class="p">(</span><span class="o">*</span><span class="n">parent_plates</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;The plates of the parents do not broadcast.&quot;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="c"># Check that the parent_plates are a subset of plates.</span>
             <span class="k">for</span> <span class="p">(</span><span class="n">ind</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">parent_plates</span><span class="p">):</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="n">utils</span><span class="o">.</span><span class="n">is_shape_subset</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">plates</span><span class="p">):</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">misc</span><span class="o">.</span><span class="n">is_shape_subset</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">plates</span><span class="p">):</span>
                     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;The plates </span><span class="si">%s</span><span class="s"> of the parents &quot;</span>
                                      <span class="s">&quot;are not broadcastable to the given &quot;</span>
                                      <span class="s">&quot;plates </span><span class="si">%s</span><span class="s">.&quot;</span>
@@ -321,7 +370,7 @@
         <span class="c"># Sub-classes may want to overwrite this if they manipulate plates</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">parents</span><span class="p">[</span><span class="n">index</span><span class="p">]</span><span class="o">.</span><span class="n">plates</span>
 
-<div class="viewcode-block" id="Node.get_shape"><a class="viewcode-back" href="../../../../../generated/bayespy.inference.vmp.nodes.node.Node.get_shape.html#bayespy.inference.vmp.nodes.node.Node.get_shape">[docs]</a>    <span class="k">def</span> <span class="nf">get_shape</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ind</span><span class="p">):</span>
+<div class="viewcode-block" id="Node.get_shape"><a class="viewcode-back" href="../../../../../user_api/generated/bayespy.inference.vmp.nodes.node.Node.get_shape.html#bayespy.inference.vmp.nodes.node.Node.get_shape">[docs]</a>    <span class="k">def</span> <span class="nf">get_shape</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ind</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">plates</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">dims</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span>
 </div>
     <span class="k">def</span> <span class="nf">_add_child</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">child</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
@@ -344,7 +393,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="o">.</span><span class="n">remove</span><span class="p">((</span><span class="n">child</span><span class="p">,</span> <span class="n">index</span><span class="p">))</span>
 
-<div class="viewcode-block" id="Node.get_mask"><a class="viewcode-back" href="../../../../../generated/bayespy.inference.vmp.nodes.node.Node.get_mask.html#bayespy.inference.vmp.nodes.node.Node.get_mask">[docs]</a>    <span class="k">def</span> <span class="nf">get_mask</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Node.get_mask"><a class="viewcode-back" href="../../../../../user_api/generated/bayespy.inference.vmp.nodes.node.Node.get_mask.html#bayespy.inference.vmp.nodes.node.Node.get_mask">[docs]</a>    <span class="k">def</span> <span class="nf">get_mask</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mask</span>
     
     <span class="c">## def _get_message_mask(self):</span>
@@ -362,7 +411,7 @@
             <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_or</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">child</span><span class="o">.</span><span class="n">_mask_to_parent</span><span class="p">(</span><span class="n">index</span><span class="p">))</span>
         <span class="c"># Set the mask of this node</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_set_mask</span><span class="p">(</span><span class="n">mask</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">utils</span><span class="o">.</span><span class="n">is_shape_subset</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mask</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">plates</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">misc</span><span class="o">.</span><span class="n">is_shape_subset</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mask</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">plates</span><span class="p">):</span>
 
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;The mask of the node </span><span class="si">%s</span><span class="s"> has updated &quot;</span>
                              <span class="s">&quot;incorrectly. The plates in the mask </span><span class="si">%s</span><span class="s"> are not a &quot;</span>
@@ -407,7 +456,7 @@
 
         <span class="c"># Check the shape of the mask</span>
         <span class="n">plates_to_parent</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_plates_to_parent</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">utils</span><span class="o">.</span><span class="n">is_shape_subset</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">mask</span><span class="p">),</span> <span class="n">plates_to_parent</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">misc</span><span class="o">.</span><span class="n">is_shape_subset</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">mask</span><span class="p">),</span> <span class="n">plates_to_parent</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;In node </span><span class="si">%s</span><span class="s">, the mask being sent to &quot;</span>
                              <span class="s">&quot;parent[</span><span class="si">%d</span><span class="s">] (</span><span class="si">%s</span><span class="s">) has invalid shape: The shape of &quot;</span>
                              <span class="s">&quot;the mask </span><span class="si">%s</span><span class="s"> is not a sub-shape of the plates of &quot;</span>
@@ -425,9 +474,9 @@
         <span class="c"># &quot;Sum&quot; (i.e., logical or) over the plates that have unit length in </span>
         <span class="c"># the parent node.</span>
         <span class="n">parent_plates</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parents</span><span class="p">[</span><span class="n">index</span><span class="p">]</span><span class="o">.</span><span class="n">plates</span>
-        <span class="n">s</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">axes_to_collapse</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">mask</span><span class="p">),</span> <span class="n">parent_plates</span><span class="p">)</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">misc</span><span class="o">.</span><span class="n">axes_to_collapse</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">mask</span><span class="p">),</span> <span class="n">parent_plates</span><span class="p">)</span>
         <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">s</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-        <span class="n">mask</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">squeeze_to_dim</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">parent_plates</span><span class="p">))</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">misc</span><span class="o">.</span><span class="n">squeeze_to_dim</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">parent_plates</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">mask</span>
     <span class="c">#return self._compute_mask_to_parent(index, self.get_mask())</span>
 
@@ -451,8 +500,8 @@
                            <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">ui</span><span class="p">)[</span><span class="o">-</span><span class="n">ndim</span><span class="p">:],</span>
                            <span class="n">dim</span><span class="p">,</span>
                            <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="n">utils</span><span class="o">.</span><span class="n">is_shape_subset</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">ui</span><span class="p">)[:</span><span class="o">-</span><span class="n">ndim</span><span class="p">],</span>
-                                             <span class="bp">self</span><span class="o">.</span><span class="n">plates</span><span class="p">):</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">misc</span><span class="o">.</span><span class="n">is_shape_subset</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">ui</span><span class="p">)[:</span><span class="o">-</span><span class="n">ndim</span><span class="p">],</span>
+                                            <span class="bp">self</span><span class="o">.</span><span class="n">plates</span><span class="p">):</span>
                     <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
                         <span class="s">&quot;A bug found by _message_to_child for </span><span class="si">%s</span><span class="s">: &quot;</span>
                         <span class="s">&quot;The plate axes of the moments </span><span class="si">%s</span><span class="s"> are not a subset of &quot;</span>
@@ -462,7 +511,7 @@
                            <span class="bp">self</span><span class="o">.</span><span class="n">plates</span><span class="p">,</span>
                            <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="n">utils</span><span class="o">.</span><span class="n">is_shape_subset</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">ui</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">plates</span><span class="p">):</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">misc</span><span class="o">.</span><span class="n">is_shape_subset</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">ui</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">plates</span><span class="p">):</span>
                     <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
                         <span class="s">&quot;A bug found by _message_to_child for </span><span class="si">%s</span><span class="s">: &quot;</span>
                         <span class="s">&quot;The plate axes of the moments </span><span class="si">%s</span><span class="s"> are not a subset of &quot;</span>
@@ -481,7 +530,7 @@
 
         <span class="c"># Compute the message and mask</span>
         <span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">mask</span><span class="p">)</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_message_and_mask_to_parent</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
-        <span class="n">mask</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="n">mask</span><span class="p">)</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">misc</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="n">mask</span><span class="p">)</span>
 
         <span class="c"># Plates in the mask</span>
         <span class="n">plates_mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">mask</span><span class="p">)</span>
@@ -539,20 +588,20 @@
 
                 <span class="c"># Sum over plates that are not in the message nor in the parent</span>
                 <span class="n">shape_parent</span> <span class="o">=</span> <span class="n">parent</span><span class="o">.</span><span class="n">get_shape</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
-                <span class="n">shape_msg</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">broadcasted_shape</span><span class="p">(</span><span class="n">shape_m</span><span class="p">,</span> <span class="n">shape_parent</span><span class="p">)</span>
-                <span class="n">axes_mask</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">axes_to_collapse</span><span class="p">(</span><span class="n">shape_mask</span><span class="p">,</span> <span class="n">shape_msg</span><span class="p">)</span>
+                <span class="n">shape_msg</span> <span class="o">=</span> <span class="n">misc</span><span class="o">.</span><span class="n">broadcasted_shape</span><span class="p">(</span><span class="n">shape_m</span><span class="p">,</span> <span class="n">shape_parent</span><span class="p">)</span>
+                <span class="n">axes_mask</span> <span class="o">=</span> <span class="n">misc</span><span class="o">.</span><span class="n">axes_to_collapse</span><span class="p">(</span><span class="n">shape_mask</span><span class="p">,</span> <span class="n">shape_msg</span><span class="p">)</span>
                 <span class="n">mask_i</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">mask_i</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axes_mask</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 
                 <span class="c"># Compute the masked message and sum over the plates that the</span>
                 <span class="c"># parent does not have.</span>
-                <span class="n">axes_msg</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">axes_to_collapse</span><span class="p">(</span><span class="n">shape_msg</span><span class="p">,</span> <span class="n">shape_parent</span><span class="p">)</span>
-                <span class="n">m</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">sum_multiply</span><span class="p">(</span><span class="n">mask_i</span><span class="p">,</span> <span class="n">m</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">r</span><span class="p">,</span> 
-                                          <span class="n">axis</span><span class="o">=</span><span class="n">axes_msg</span><span class="p">,</span> 
-                                          <span class="n">keepdims</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+                <span class="n">axes_msg</span> <span class="o">=</span> <span class="n">misc</span><span class="o">.</span><span class="n">axes_to_collapse</span><span class="p">(</span><span class="n">shape_msg</span><span class="p">,</span> <span class="n">shape_parent</span><span class="p">)</span>
+                <span class="n">m</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">misc</span><span class="o">.</span><span class="n">sum_multiply</span><span class="p">(</span><span class="n">mask_i</span><span class="p">,</span> <span class="n">m</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">r</span><span class="p">,</span> 
+                                         <span class="n">axis</span><span class="o">=</span><span class="n">axes_msg</span><span class="p">,</span> 
+                                         <span class="n">keepdims</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 
                 <span class="c"># Remove leading singular plates if the parent does not have</span>
                 <span class="c"># those plate axes.</span>
-                <span class="n">m</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">squeeze_to_dim</span><span class="p">(</span><span class="n">m</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="nb">len</span><span class="p">(</span><span class="n">shape_parent</span><span class="p">))</span>
+                <span class="n">m</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">misc</span><span class="o">.</span><span class="n">squeeze_to_dim</span><span class="p">(</span><span class="n">m</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="nb">len</span><span class="p">(</span><span class="n">shape_parent</span><span class="p">))</span>
 
         <span class="k">return</span> <span class="n">m</span>
 
@@ -564,7 +613,7 @@
             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dims</span><span class="p">)):</span>
                 <span class="k">if</span> <span class="n">m</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
                     <span class="c"># Check broadcasting shapes</span>
-                    <span class="n">sh</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">broadcasted_shape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_shape</span><span class="p">(</span><span class="n">i</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">m</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
+                    <span class="n">sh</span> <span class="o">=</span> <span class="n">misc</span><span class="o">.</span><span class="n">broadcasted_shape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_shape</span><span class="p">(</span><span class="n">i</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">m</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
                     <span class="k">try</span><span class="p">:</span>
                         <span class="c"># Try exploiting broadcasting rules</span>
                         <span class="n">msg</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="n">m</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
@@ -579,10 +628,10 @@
                 <span class="bp">None</span>
                 <span class="k">for</span> <span class="p">(</span><span class="n">ind</span><span class="p">,</span><span class="n">parent</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parents</span><span class="p">)]</span>
 
-<div class="viewcode-block" id="Node.get_moments"><a class="viewcode-back" href="../../../../../generated/bayespy.inference.vmp.nodes.node.Node.get_moments.html#bayespy.inference.vmp.nodes.node.Node.get_moments">[docs]</a>    <span class="k">def</span> <span class="nf">get_moments</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Node.get_moments"><a class="viewcode-back" href="../../../../../user_api/generated/bayespy.inference.vmp.nodes.node.Node.get_moments.html#bayespy.inference.vmp.nodes.node.Node.get_moments">[docs]</a>    <span class="k">def</span> <span class="nf">get_moments</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
 </div>
-<div class="viewcode-block" id="Node.delete"><a class="viewcode-back" href="../../../../../generated/bayespy.inference.vmp.nodes.node.Node.delete.html#bayespy.inference.vmp.nodes.node.Node.delete">[docs]</a>    <span class="k">def</span> <span class="nf">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Node.delete"><a class="viewcode-back" href="../../../../../user_api/generated/bayespy.inference.vmp.nodes.node.Node.delete.html#bayespy.inference.vmp.nodes.node.Node.delete">[docs]</a>    <span class="k">def</span> <span class="nf">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Delete this node and the children</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -614,11 +663,11 @@
         
         <span class="c"># Check broadcasting of the shapes</span>
         <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">args</span><span class="p">:</span>
-            <span class="n">utils</span><span class="o">.</span><span class="n">broadcasted_shape</span><span class="p">(</span><span class="n">plates</span><span class="p">,</span> <span class="n">arg</span><span class="p">)</span>
+            <span class="n">misc</span><span class="o">.</span><span class="n">broadcasted_shape</span><span class="p">(</span><span class="n">plates</span><span class="p">,</span> <span class="n">arg</span><span class="p">)</span>
 
         <span class="c"># Check that each arg-plates are a subset of plates?</span>
         <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">args</span><span class="p">:</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">utils</span><span class="o">.</span><span class="n">is_shape_subset</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="n">plates</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">misc</span><span class="o">.</span><span class="n">is_shape_subset</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="n">plates</span><span class="p">):</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;The shapes in args are not a sub-shape of &quot;</span>
                                  <span class="s">&quot;plates.&quot;</span><span class="p">)</span>
             
@@ -633,13 +682,13 @@
                 <span class="n">r</span> <span class="o">*=</span> <span class="n">plates</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">r</span>
 
-<div class="viewcode-block" id="Node.move_plates"><a class="viewcode-back" href="../../../../../generated/bayespy.inference.vmp.nodes.node.Node.move_plates.html#bayespy.inference.vmp.nodes.node.Node.move_plates">[docs]</a>    <span class="k">def</span> <span class="nf">move_plates</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">from_plate</span><span class="p">,</span> <span class="n">to_plate</span><span class="p">):</span>
+<div class="viewcode-block" id="Node.move_plates"><a class="viewcode-back" href="../../../../../user_api/generated/bayespy.inference.vmp.nodes.node.Node.move_plates.html#bayespy.inference.vmp.nodes.node.Node.move_plates">[docs]</a>    <span class="k">def</span> <span class="nf">move_plates</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">from_plate</span><span class="p">,</span> <span class="n">to_plate</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">_MovePlate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> 
                           <span class="n">from_plate</span><span class="p">,</span>
                           <span class="n">to_plate</span><span class="p">,</span>
                           <span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s">&quot;.move_plates&quot;</span><span class="p">)</span>
 </div>
-<div class="viewcode-block" id="Node.add_plate_axis"><a class="viewcode-back" href="../../../../../generated/bayespy.inference.vmp.nodes.node.Node.add_plate_axis.html#bayespy.inference.vmp.nodes.node.Node.add_plate_axis">[docs]</a>    <span class="k">def</span> <span class="nf">add_plate_axis</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">to_plate</span><span class="p">):</span>
+<div class="viewcode-block" id="Node.add_plate_axis"><a class="viewcode-back" href="../../../../../user_api/generated/bayespy.inference.vmp.nodes.node.Node.add_plate_axis.html#bayespy.inference.vmp.nodes.node.Node.add_plate_axis">[docs]</a>    <span class="k">def</span> <span class="nf">add_plate_axis</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">to_plate</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">AddPlateAxis</span><span class="p">(</span><span class="n">to_plate</span><span class="p">)(</span><span class="bp">self</span><span class="p">,</span>
                                       <span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="o">+</span><span class="s">&quot;.add_plate_axis&quot;</span><span class="p">)</span>
 </div>
@@ -647,16 +696,16 @@
         <span class="k">return</span> <span class="n">Slice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span>
                      <span class="n">name</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="o">+</span><span class="s">&quot;.__getitem__&quot;</span><span class="p">))</span>
 
-<div class="viewcode-block" id="Node.has_plotter"><a class="viewcode-back" href="../../../../../generated/bayespy.inference.vmp.nodes.node.Node.has_plotter.html#bayespy.inference.vmp.nodes.node.Node.has_plotter">[docs]</a>    <span class="k">def</span> <span class="nf">has_plotter</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Node.has_plotter"><a class="viewcode-back" href="../../../../../user_api/generated/bayespy.inference.vmp.nodes.node.Node.has_plotter.html#bayespy.inference.vmp.nodes.node.Node.has_plotter">[docs]</a>    <span class="k">def</span> <span class="nf">has_plotter</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return True if the node has a plotter</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">callable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_plotter</span><span class="p">)</span>
 </div>
-<div class="viewcode-block" id="Node.set_plotter"><a class="viewcode-back" href="../../../../../generated/bayespy.inference.vmp.nodes.node.Node.set_plotter.html#bayespy.inference.vmp.nodes.node.Node.set_plotter">[docs]</a>    <span class="k">def</span> <span class="nf">set_plotter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">plotter</span><span class="p">):</span>
+<div class="viewcode-block" id="Node.set_plotter"><a class="viewcode-back" href="../../../../../user_api/generated/bayespy.inference.vmp.nodes.node.Node.set_plotter.html#bayespy.inference.vmp.nodes.node.Node.set_plotter">[docs]</a>    <span class="k">def</span> <span class="nf">set_plotter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">plotter</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_plotter</span> <span class="o">=</span> <span class="n">plotter</span>
     </div>
-<div class="viewcode-block" id="Node.plot"><a class="viewcode-back" href="../../../../../generated/bayespy.inference.vmp.nodes.node.Node.plot.html#bayespy.inference.vmp.nodes.node.Node.plot">[docs]</a>    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="Node.plot"><a class="viewcode-back" href="../../../../../user_api/generated/bayespy.inference.vmp.nodes.node.Node.plot.html#bayespy.inference.vmp.nodes.node.Node.plot">[docs]</a>    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Plot the node distribution using the plotter of the node</span>
 
@@ -677,6 +726,71 @@
         <span class="k">return</span> <span class="n">converter</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
     <span class="c">## def convert(self, node_class):</span>
     <span class="c">##     return self._convert(node_class._moments_class)</span>
+
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_compute_message</span><span class="p">(</span><span class="o">*</span><span class="n">arrays</span><span class="p">,</span> <span class="n">plates_from</span><span class="o">=</span><span class="p">(),</span> <span class="n">plates_to</span><span class="o">=</span><span class="p">(),</span> <span class="n">ndim</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        A general function for computing messages by sum-multiply</span>
+
+<span class="sd">        The function computes the product of the input arrays and then sums to</span>
+<span class="sd">        the requested plates.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c"># Check that the plates broadcast properly</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">misc</span><span class="o">.</span><span class="n">is_shape_subset</span><span class="p">(</span><span class="n">plates_to</span><span class="p">,</span> <span class="n">plates_from</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;plates_to must be broadcastable to plates_from&quot;</span><span class="p">)</span>
+
+        <span class="c"># Compute the explicit shape of the product</span>
+        <span class="n">shapes</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">array</span><span class="p">)</span> <span class="k">for</span> <span class="n">array</span> <span class="ow">in</span> <span class="n">arrays</span><span class="p">]</span>
+        <span class="n">arrays_shape</span> <span class="o">=</span> <span class="n">misc</span><span class="o">.</span><span class="n">broadcasted_shape</span><span class="p">(</span><span class="o">*</span><span class="n">shapes</span><span class="p">)</span>
+
+        <span class="c"># Compute plates and dims that are present</span>
+        <span class="k">if</span> <span class="n">ndim</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">arrays_plates</span> <span class="o">=</span> <span class="n">arrays_shape</span>
+            <span class="n">dims</span> <span class="o">=</span> <span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">arrays_plates</span> <span class="o">=</span> <span class="n">arrays_shape</span><span class="p">[:</span><span class="o">-</span><span class="n">ndim</span><span class="p">]</span>
+            <span class="n">dims</span> <span class="o">=</span> <span class="n">arrays_shape</span><span class="p">[</span><span class="o">-</span><span class="n">ndim</span><span class="p">:]</span>
+
+        <span class="c"># Compute the correction term.  If some of the plates that should be</span>
+        <span class="c"># summed are actually broadcasted, one must multiply by the size of the</span>
+        <span class="c"># corresponding plate</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">Node</span><span class="o">.</span><span class="n">_plate_multiplier</span><span class="p">(</span><span class="n">plates_from</span><span class="p">,</span> <span class="n">arrays_plates</span><span class="p">,</span> <span class="n">plates_to</span><span class="p">)</span>
+
+        <span class="c"># For simplicity, make the arrays equal ndim</span>
+        <span class="n">arrays</span> <span class="o">=</span> <span class="n">misc</span><span class="o">.</span><span class="n">make_equal_ndim</span><span class="p">(</span><span class="o">*</span><span class="n">arrays</span><span class="p">)</span>
+        
+        <span class="c"># Keys for the input plates: (N-1, N-2, ..., 0)</span>
+        <span class="n">nplates</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">arrays_plates</span><span class="p">)</span>
+        <span class="n">in_plate_keys</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">nplates</span><span class="p">))</span>
+
+        <span class="c"># Keys for the output plates</span>
+        <span class="n">out_plate_keys</span> <span class="o">=</span> <span class="p">[</span><span class="n">key</span> 
+                          <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">in_plate_keys</span>
+                          <span class="k">if</span> <span class="n">key</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">plates_to</span><span class="p">)</span> <span class="ow">and</span> <span class="n">plates_to</span><span class="p">[</span><span class="o">-</span><span class="n">key</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">]</span>
+
+        <span class="c"># Keys for the dims</span>
+        <span class="n">dim_keys</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">nplates</span><span class="p">,</span> <span class="n">nplates</span><span class="o">+</span><span class="n">ndim</span><span class="p">))</span>
+
+        <span class="c"># Total input and output keys</span>
+        <span class="n">in_keys</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">arrays</span><span class="p">)</span> <span class="o">*</span> <span class="p">[</span><span class="n">in_plate_keys</span> <span class="o">+</span> <span class="n">dim_keys</span><span class="p">]</span>
+        <span class="n">out_keys</span> <span class="o">=</span> <span class="n">out_plate_keys</span> <span class="o">+</span> <span class="n">dim_keys</span>
+
+        <span class="c"># Compute the sum-product with correction</span>
+        <span class="n">einsum_args</span> <span class="o">=</span> <span class="n">misc</span><span class="o">.</span><span class="n">zipper_merge</span><span class="p">(</span><span class="n">arrays</span><span class="p">,</span> <span class="n">in_keys</span><span class="p">)</span> <span class="o">+</span> <span class="p">[</span><span class="n">out_keys</span><span class="p">]</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">r</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="o">*</span><span class="n">einsum_args</span><span class="p">)</span>
+
+        <span class="c"># Reshape the result and apply correction</span>
+        <span class="n">nplates_result</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">plates_to</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">arrays_plates</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">nplates_result</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">plates_result</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">plates_result</span> <span class="o">=</span> <span class="p">[</span><span class="nb">min</span><span class="p">(</span><span class="n">plates_to</span><span class="p">[</span><span class="n">ind</span><span class="p">],</span> <span class="n">arrays_plates</span><span class="p">[</span><span class="n">ind</span><span class="p">])</span>
+                             <span class="k">for</span> <span class="n">ind</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="o">-</span><span class="n">nplates_result</span><span class="p">,</span> <span class="mi">0</span><span class="p">)]</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">plates_result</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">dims</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">y</span>
     
 
 </div>
@@ -686,7 +800,7 @@
 <span class="k">def</span> <span class="nf">slicelen</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">length</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
         <span class="n">s</span> <span class="o">=</span> <span class="nb">slice</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">indices</span><span class="p">(</span><span class="n">length</span><span class="p">)))</span>
-    <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">utils</span><span class="o">.</span><span class="n">ceildiv</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">stop</span> <span class="o">-</span> <span class="n">s</span><span class="o">.</span><span class="n">start</span><span class="p">,</span> <span class="n">s</span><span class="o">.</span><span class="n">step</span><span class="p">))</span>
+    <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">misc</span><span class="o">.</span><span class="n">ceildiv</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">stop</span> <span class="o">-</span> <span class="n">s</span><span class="o">.</span><span class="n">start</span><span class="p">,</span> <span class="n">s</span><span class="o">.</span><span class="n">step</span><span class="p">))</span>
 
 <span class="k">class</span> <span class="nc">Slice</span><span class="p">(</span><span class="n">Deterministic</span><span class="p">):</span>
 
@@ -1053,7 +1167,7 @@
             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">m</span><span class="p">)):</span>
                 <span class="c"># Make sure the message has all the axes</span>
                 <span class="c">#diff = len(self.plates) + len(self.dims[i]) - np.ndim(m[i])</span>
-                <span class="c">#m[i] = utils.add_leading_axes(m[i], diff)</span>
+                <span class="c">#m[i] = misc.add_leading_axes(m[i], diff)</span>
                 <span class="c"># Remove the axis</span>
                 <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">ndim</span><span class="p">(</span><span class="n">m</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">&gt;=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">to_plate</span><span class="p">)</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dims</span><span class="p">[</span><span class="n">i</span><span class="p">]):</span>
                     <span class="n">axis</span> <span class="o">=</span> <span class="n">to_plate</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dims</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
@@ -1078,7 +1192,7 @@
             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">u</span><span class="p">)):</span>
                 <span class="c"># Make sure the moments have all the axes</span>
                 <span class="c">#diff = len(self.plates) + len(self.dims[i]) - np.ndim(u[i]) - 1</span>
-                <span class="c">#u[i] = utils.add_leading_axes(u[i], diff)</span>
+                <span class="c">#u[i] = misc.add_leading_axes(u[i], diff)</span>
                 
                 <span class="c"># The location of the new axis/plate:</span>
                 <span class="n">axis</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ndim</span><span class="p">(</span><span class="n">u</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">-</span> <span class="nb">abs</span><span class="p">(</span><span class="n">to_plate</span><span class="p">)</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dims</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">+</span> <span class="mi">1</span>

@@ -1,0 +1,212 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Variational message passing &mdash; BayesPy v0.1 Documentation</title>
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="BayesPy v0.1 Documentation" href="../index.html" />
+    <link rel="up" title="Developer guide" href="dev_guide.html" />
+    <link rel="next" title="Implementing nodes" href="writingnodes.html" />
+    <link rel="prev" title="Developer guide" href="dev_guide.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="writingnodes.html" title="Implementing nodes"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="dev_guide.html" title="Developer guide"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">BayesPy v0.1 Documentation</a> &raquo;</li>
+          <li><a href="dev_guide.html" accesskey="U">Developer guide</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="variational-message-passing">
+<h1>Variational message passing<a class="headerlink" href="#variational-message-passing" title="Permalink to this headline">¶</a></h1>
+<p>The general update equation for factorized approximation:</p>
+<div class="math" id="equation-vmp_general_update">
+<span class="eqno">(1)</span>\[\begin{split}\log q(\boldsymbol{\theta})
+&amp;=
+\langle
+  \log p\left( \boldsymbol{\theta} |
+               \mathrm{pa}(\boldsymbol{\theta}) \right)
+\rangle
++ \sum_{\mathbf{x} \in \mathrm{ch}(\boldsymbol{\theta})}
+  \langle \log p(\mathbf{x}|\mathrm{pa}(\mathbf{x})) \rangle
++ \mathrm{const},\end{split}\]</div>
+<p>where <span class="math">\(\mathrm{pa}(\boldsymbol{\theta})\)</span> and
+<span class="math">\(\mathrm{ch}(\boldsymbol{\theta})\)</span> are the set of parents and
+children of <span class="math">\(\boldsymbol{\theta}\)</span>, respectively.  The
+expectations are over the approximate distribution of all other
+variables than <span class="math">\(\boldsymbol{\theta}\)</span>.  Actually, not all the
+variables are needed, because the non-constant part uses only the
+Markov blanket of <span class="math">\(\boldsymbol{\theta}\)</span>.  Thus, the optimization
+can be done locally using messages from neighbouring nodes.</p>
+<p>The messages are simple for conjugate-exponential models.
+Exponential-family distributions have the form</p>
+<div class="math" id="equation-likelihood">
+<span class="eqno">(2)</span>\[\begin{split}\log p(\mathbf{x}|\mathbf{\Theta})
+&amp;=
+\mathbf{u}_{\mathbf{x}}(\mathbf{x})^{\mathrm{T}}
+\boldsymbol{\phi}_{\mathbf{x}}(\mathbf{\Theta})
++ g_{\mathbf{x}}(\mathbf{\Theta})
++ f_{\mathbf{x}}(\mathbf{x}),\end{split}\]</div>
+<p>where <span class="math">\(\mathbf{\Theta}=\{\boldsymbol{\theta}_j\}\)</span> is the set of
+parents.  If a parent has a conjugate prior, <a href="#equation-likelihood">(2)</a> is
+linear with respect to the parent&#8217;s natural statistics.  Thus,
+<a href="#equation-likelihood">(2)</a> can be re-organized with respect to
+<span class="math">\(\boldsymbol{\theta}_j\)</span> as</p>
+<div class="math">
+\[\begin{split}\log p(\mathbf{x}|\mathbf{\Theta})
+&amp;=
+\mathbf{u}_{\boldsymbol{\theta}_j}(\boldsymbol{\theta}_j)^{\mathrm{T}}
+\boldsymbol{\phi}_{\mathbf{x}\rightarrow\boldsymbol{\theta}_j}
+(\mathbf{x}, \{\boldsymbol{\theta}_k\}_{k\neq j})
++ \mathrm{const},\end{split}\]</div>
+<p>where <span class="math">\(\mathbf{u}_{\boldsymbol{\theta}_j}\)</span> is the natural
+statistics of <span class="math">\(\boldsymbol{\theta}_j\)</span>.  Thus, the update
+equation <a href="#equation-vmp_general_update">(1)</a> can be given as</p>
+<div class="math">
+\[\begin{split}\log q(\boldsymbol{\theta}_j)
+&amp;=
+\mathbf{u}_{\boldsymbol{\theta}_j}(\boldsymbol{\theta}_j)^{\mathrm{T}}
+\left(
+  \langle \boldsymbol{\phi}_{\boldsymbol{\theta}_j} \rangle
+  + \sum_{\mathbf{x} \in \mathrm{ch}(\boldsymbol{\theta}_j)}
+      \langle \boldsymbol{\phi}_{\mathbf{x}\rightarrow\boldsymbol{\theta}_j} \rangle
+\right)
++ f_{\boldsymbol{\theta}_j}(\boldsymbol{\theta}_j)
++ \mathrm{const},\end{split}\]</div>
+<p>where the summation is over all the child nodes of
+<span class="math">\(\boldsymbol{\theta}_j\)</span>.  Because of the conjugacy,
+<span class="math">\(\langle\boldsymbol{\phi}_{\boldsymbol{\theta}_j}\rangle\)</span>
+depends (multi)linearly on the expectations of the parents&#8217; natural
+statistics.  Similarly, <span class="math">\(\langle
+\boldsymbol{\phi}_{\mathbf{x}\rightarrow\boldsymbol{\theta}_j}
+\rangle\)</span> depends (multi)linearly on the expectations of the children&#8217;s
+and co-parents&#8217; natural statistics.</p>
+<p>The required expectations can be computed locally by using messages
+from the parents and the children.  The message from a parent node
+<span class="math">\(\boldsymbol{\theta}_j\)</span> to a child node <span class="math">\(\mathbf{x}\)</span> is</p>
+<div class="math">
+\[\begin{split}\mathbf{m}_{\mathbf{\boldsymbol{\theta}_j}\rightarrow\mathbf{x}}
+&amp;=
+\langle \mathbf{u}_{\boldsymbol{\theta}_j} \rangle
+=
+\tilde{\mathbf{u}}_{\boldsymbol{\theta}_j}
+(\tilde{\boldsymbol{\phi}}_{\mathbf{\boldsymbol{\theta}_j}}),\end{split}\]</div>
+<p>and the message from a child node <span class="math">\(\mathbf{x}\)</span> to a parent node
+<span class="math">\(\boldsymbol{\theta}_j\)</span> is</p>
+<div class="math">
+\[\begin{split}\mathbf{m}_{\mathbf{x}\rightarrow\boldsymbol{\theta}_j}
+&amp;=
+\langle \boldsymbol{\phi}_{\mathbf{x}\rightarrow\boldsymbol{\theta}_j} \rangle
+=
+\boldsymbol{\phi}_{\mathbf{x}\rightarrow\boldsymbol{\theta}_j}
+\left( \langle \mathbf{u}_{\mathbf{x}} \rangle,
+  \{ \mathbf{m}_{\theta_k\rightarrow\mathbf{x}} \}_
+  %\{ \langle \mathbf{u}_{\theta_k} \rangle \}_
+  {k \neq j}
+  %\in \mathrm{cp}({\boldsymbol{\theta}_j}, \mathbf{x})}
+  \right).\end{split}\]</div>
+<p>Using the messages, the natural parameters of
+<span class="math">\(q(\boldsymbol{\theta})\)</span> can be updated as</p>
+<div class="math">
+\[\begin{split}\tilde{\boldsymbol{\phi}}_{\boldsymbol{\theta}}
+&amp;=
+\boldsymbol{\phi}_{\boldsymbol{\theta}}
+\left(
+  \{ \mathbf{m}_{\mathbf{z}\rightarrow\boldsymbol{\theta}} \}_
+  {\mathbf{z} \in \mathrm{pa}(\boldsymbol{\theta})}
+\right)
++ \sum_{\mathbf{x} \in \mathrm{ch}(\boldsymbol{\theta})}
+  \mathbf{m}_{\mathbf{x}\rightarrow\boldsymbol{\theta}}.\end{split}\]</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="dev_guide.html"
+                        title="previous chapter">Developer guide</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="writingnodes.html"
+                        title="next chapter">Implementing nodes</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/dev_guide/vmp.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="writingnodes.html" title="Implementing nodes"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="dev_guide.html" title="Developer guide"
+             >previous</a> |</li>
+        <li><a href="../index.html">BayesPy v0.1 Documentation</a> &raquo;</li>
+          <li><a href="dev_guide.html" >Developer guide</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011-2014, Jaakko Luttinen, GPLv3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

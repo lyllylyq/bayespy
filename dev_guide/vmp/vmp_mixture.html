@@ -1,0 +1,216 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Mixture distribution &mdash; BayesPy v0.1 Documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="BayesPy v0.1 Documentation" href="../../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li><a href="../../index.html">BayesPy v0.1 Documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="mixture-distribution">
+<h1>Mixture distribution<a class="headerlink" href="#mixture-distribution" title="Permalink to this headline">¶</a></h1>
+<div class="math">
+\[\begin{split}\mathbf{x}
+&amp;\sim
+\mathrm{Mix}_{\mathcal{D}}
+\left(
+    \lambda,
+    \left\{ \mathbf{\Theta}^{(n)}_1, \ldots, \mathbf{\Theta}^{(n)}_K \right\}^N_{n=1}
+\right)\end{split}\]</div>
+<div class="math">
+\[\lambda \in \{1, \ldots, N\},
+\quad \mathcal{D} \text{ is an exp.fam. distribution},
+\quad \mathbf{\Theta}^{(n)}_k \text{ are parameters of } \mathcal{D}\]</div>
+<div class="math">
+\[\begin{split}\log\mathrm{Mix}_{\mathcal{D}}
+\left(
+    \mathbf{x}
+    \left| \lambda,
+           \left\{ \mathbf{\Theta}^{(n)}_1, \ldots, \mathbf{\Theta}^{(n)}_K \right\}^N_{n=1}
+    \right.
+\right)
+&amp;=
+\sum^N_{n=1} [\lambda=n]
+\mathbf{u}_{\mathcal{D}}(\mathbf{x})^{\mathrm{T}}
+\boldsymbol{\phi}_{\mathcal{D}}
+\left(
+    \mathbf{\Theta}^{(n)}_1, \ldots, \mathbf{\Theta}^{(n)}_K
+\right)
+\\
+&amp; \quad +
+\sum^N_{n=1} [\lambda=n]
+g_{\mathcal{D}}
+\left(
+    \mathbf{\Theta}^{(n)}_1, \ldots, \mathbf{\Theta}^{(n)}_K
+\right)
++ f_{\mathcal{D}} (\mathbf{x})\end{split}\]</div>
+<div class="math">
+\[\begin{split}\mathbf{u} (\mathbf{x})
+&amp;=
+\mathbf{u}_{\mathcal{D}} (\mathbf{x})
+\\
+\boldsymbol{\phi}
+\left(
+    \lambda,
+    \left\{ \mathbf{\Theta}^{(n)}_1, \ldots, \mathbf{\Theta}^{(n)}_K \right\}^N_{n=1}
+\right)
+&amp;=
+\sum^N_{n=1} [\lambda=n]
+\boldsymbol{\phi}_{\mathcal{D}}
+\left(
+    \mathbf{\Theta}^{(n)}_1, \ldots, \mathbf{\Theta}^{(n)}_K
+\right)
+%
+\\
+%
+\boldsymbol{\phi}_{\lambda}
+\left(
+  \mathbf{x},
+  \left\{ \mathbf{\Theta}^{(n)}_1, \ldots, \mathbf{\Theta}^{(n)}_K \right\}^N_{n=1}
+\right)
+&amp;=
+\left[\begin{matrix}
+    \mathbf{u}_{\mathcal{D}} (\mathbf{x})^{\mathrm{T}}
+    \boldsymbol{\phi}_{\mathcal{D}}
+    \left(
+      \mathbf{\Theta}^{(1)}_1, \ldots, \mathbf{\Theta}^{(1)}_K
+    \right)
+    + g_{\mathcal{D}}
+    \left(
+      \mathbf{\Theta}^{(1)}_1, \ldots, \mathbf{\Theta}^{(1)}_K
+    \right)
+    \\
+    \vdots
+    \\
+    \mathbf{u}_{\mathcal{D}} (\mathbf{x})^{\mathrm{T}}
+    \boldsymbol{\phi}_{\mathcal{D}}
+    \left(
+      \mathbf{\Theta}^{(N)}_1, \ldots, \mathbf{\Theta}^{(N)}_K
+    \right)
+    + g_{\mathcal{D}}
+    \left(
+      \mathbf{\Theta}^{(N)}_1, \ldots, \mathbf{\Theta}^{(N)}_K
+    \right)
+\end{matrix}\right]
+%
+\\
+%
+\boldsymbol{\phi}_{\mathbf{\Theta}^{(m)}_l}
+\left(
+  \mathbf{x},
+  \lambda,
+  \left\{ \mathbf{\Theta}^{(n)}_1, \ldots, \mathbf{\Theta}^{(n)}_K \right\}^N_{n=1}
+  \setminus \left\{ \mathbf{\Theta}^{(m)}_l \right\}
+\right)
+&amp;=
+[\lambda=m] \boldsymbol{\phi}_{\mathcal{D}\rightarrow\mathbf{\Theta}_l}
+\left(
+  \mathbf{x},
+  \left\{ \mathbf{\Theta}^{(m)}_k \right\}_{k\neq l}
+\right)
+%
+\\
+%
+g
+\left(
+  \lambda,
+  \left\{ \mathbf{\Theta}^{(n)}_1, \ldots, \mathbf{\Theta}^{(n)}_K \right\}^N_{n=1}
+\right)
+&amp;=
+\sum^N_{n=1} [\lambda=n]
+g_{\mathcal{D}}
+\left(
+  \mathbf{\Theta}^{(n)}_1, \ldots, \mathbf{\Theta}^{(n)}_K
+\right)
+\\
+g (\boldsymbol{\phi})
+&amp;=
+g_{\mathcal{D}} (\boldsymbol{\phi})
+\\
+f(\mathbf{x})
+&amp;=
+f_{\mathcal{D}} (\mathbf{x})
+\\
+\overline{\mathbf{u}}  (\boldsymbol{\phi})
+&amp;=
+\overline{\mathbf{u}}_{\mathcal{D}}  (\boldsymbol{\phi})\end{split}\]</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/dev_guide/vmp/vmp_mixture.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li><a href="../../index.html">BayesPy v0.1 Documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011-2014, Jaakko Luttinen, GPLv3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,475 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>bayespy.nodes.VaryingGaussianMarkovChain &mdash; BayesPy v0.1 Documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="BayesPy v0.1 Documentation" href="../../index.html" />
+    <link rel="up" title="Nodes" href="../nodes.html" />
+    <link rel="next" title="bayespy.nodes.VaryingGaussianMarkovChain.add_plate_axis" href="bayespy.nodes.VaryingGaussianMarkovChain.add_plate_axis.html" />
+    <link rel="prev" title="bayespy.nodes.SwitchingGaussianMarkovChain.plates" href="bayespy.nodes.SwitchingGaussianMarkovChain.plates.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="bayespy.nodes.VaryingGaussianMarkovChain.add_plate_axis.html" title="bayespy.nodes.VaryingGaussianMarkovChain.add_plate_axis"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="bayespy.nodes.SwitchingGaussianMarkovChain.plates.html" title="bayespy.nodes.SwitchingGaussianMarkovChain.plates"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">BayesPy v0.1 Documentation</a> &raquo;</li>
+          <li><a href="../user_api.html" >User API</a> &raquo;</li>
+          <li><a href="../nodes.html" accesskey="U">Nodes</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="bayespy-nodes-varyinggaussianmarkovchain">
+<h1>bayespy.nodes.VaryingGaussianMarkovChain<a class="headerlink" href="#bayespy-nodes-varyinggaussianmarkovchain" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="bayespy.nodes.VaryingGaussianMarkovChain">
+<em class="property">class </em><tt class="descclassname">bayespy.nodes.</tt><tt class="descname">VaryingGaussianMarkovChain</tt><big>(</big><em>mu</em>, <em>Lambda</em>, <em>B</em>, <em>S</em>, <em>nu</em>, <em>n=None</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#bayespy.nodes.VaryingGaussianMarkovChain" title="Permalink to this definition">¶</a></dt>
+<dd><p>Node for Gaussian Markov chain random variables with time-varying dynamics.</p>
+<p>The node models a sequence of Gaussian variables
+:math:<a href="#id1"><span class="problematic" id="id2">`</span></a>mathbf{x}_0,ldots,mathbf{x}_{N-1}$ with linear Markovian dynamics.
+The time variability of the dynamics is obtained by modelling the state
+dynamics matrix as a linear combination of a set of matrices with
+time-varying linear combination weights <a class="reference internal" href="#r1" id="id3">[R1]</a>.  The graphical model can be
+presented as:</p>
+<div class="figure">
+<p><img src="../../_images/tikz-7082c3096b56e95730068649a962f6838ff6aacf.png" alt="% tikzlibrary.code.tex
+%
+% Copyright 2010-2011 by Laura Dietz
+% Copyright 2012 by Jaakko Luttinen
+%
+% This file may be distributed and/or modified
+%
+% 1. under the LaTeX Project Public License and/or
+% 2. under the GNU General Public License.
+%
+% See the files LICENSE_LPPL and LICENSE_GPL for more details.
+
+% Load other libraries
+\usetikzlibrary{shapes}
+\usetikzlibrary{fit}
+\usetikzlibrary{chains}
+\usetikzlibrary{arrows}
+
+% Latent node
+\tikzstyle{latent} = [circle,fill=white,draw=black,inner sep=1pt,
+minimum size=20pt, font=\fontsize{10}{10}\selectfont, node distance=1]
+% Observed node
+\tikzstyle{obs} = [latent,fill=gray!25]
+% Constant node
+\tikzstyle{const} = [rectangle, inner sep=0pt, node distance=1]
+% Factor node
+\tikzstyle{factor} = [rectangle, fill=black,minimum size=5pt, inner
+sep=0pt, node distance=0.4]
+% Deterministic node
+\tikzstyle{det} = [latent, diamond]
+
+% Plate node
+\tikzstyle{plate} = [draw, rectangle, rounded corners, fit=#1]
+% Invisible wrapper node
+\tikzstyle{wrap} = [inner sep=0pt, fit=#1]
+% Gate
+\tikzstyle{gate} = [draw, rectangle, dashed, fit=#1]
+
+% Caption node
+\tikzstyle{caption} = [font=\footnotesize, node distance=0] %
+\tikzstyle{plate caption} = [caption, node distance=0, inner sep=0pt,
+below left=5pt and 0pt of #1.south east] %
+\tikzstyle{factor caption} = [caption] %
+\tikzstyle{every label} += [caption] %
+
+\tikzset{&gt;={triangle 45}}
+
+%\pgfdeclarelayer{b}
+%\pgfdeclarelayer{f}
+%\pgfsetlayers{b,main,f}
+
+% \factoredge [options] {inputs} {factors} {outputs}
+\newcommand{\factoredge}[4][]{ %
+  % Connect all nodes #2 to all nodes #4 via all factors #3.
+  \foreach \f in {#3} { %
+    \foreach \x in {#2} { %
+      \draw[-,#1] (\x) edge[-] (\f) ; %
+    } ;
+    \foreach \y in {#4} { %
+      \draw[-&gt;,#1] (\f) -- (\y) ; %
+    } ;
+  } ;
+}
+
+% \edge [options] {inputs} {outputs}
+\newcommand{\edge}[3][]{ %
+  % Connect all nodes #2 to all nodes #3.
+  \foreach \x in {#2} { %
+    \foreach \y in {#3} { %
+      \draw[-&gt;,#1] (\x) -- (\y) ;%
+    } ;
+  } ;
+}
+
+% \factor [options] {name} {caption} {inputs} {outputs}
+\newcommand{\factor}[5][]{ %
+  % Draw the factor node. Use alias to allow empty names.
+  \node[factor, label={[name=#2-caption]#3}, name=#2, #1,
+  alias=#2-alias] {} ; %
+  % Connect all inputs to outputs via this factor
+  \factoredge {#4} {#2-alias} {#5} ; %
+}
+
+% \plate [options] {name} {fitlist} {caption}
+\newcommand{\plate}[4][]{ %
+  \node[wrap=#3] (#2-wrap) {}; %
+  \node[plate caption=#2-wrap] (#2-caption) {#4}; %
+  \node[plate=(#2-wrap)(#2-caption), #1] (#2) {}; %
+}
+
+% \gate [options] {name} {fitlist} {inputs}
+\newcommand{\gate}[4][]{ %
+  \node[gate=#3, name=#2, #1, alias=#2-alias] {}; %
+  \foreach \x in {#4} { %
+    \draw [-*,thick] (\x) -- (#2-alias); %
+  } ;%
+}
+
+% \vgate {name} {fitlist-left} {caption-left} {fitlist-right}
+% {caption-right} {inputs}
+\newcommand{\vgate}[6]{ %
+  % Wrap the left and right parts
+  \node[wrap=#2] (#1-left) {}; %
+  \node[wrap=#4] (#1-right) {}; %
+  % Draw the gate
+  \node[gate=(#1-left)(#1-right)] (#1) {}; %
+  % Add captions
+  \node[caption, below left=of #1.north ] (#1-left-caption)
+  {#3}; %
+  \node[caption, below right=of #1.north ] (#1-right-caption)
+  {#5}; %
+  % Draw middle separation
+  \draw [-, dashed] (#1.north) -- (#1.south); %
+  % Draw inputs
+  \foreach \x in {#6} { %
+    \draw [-*,thick] (\x) -- (#1); %
+  } ;%
+}
+
+% \hgate {name} {fitlist-top} {caption-top} {fitlist-bottom}
+% {caption-bottom} {inputs}
+\newcommand{\hgate}[6]{ %
+  % Wrap the left and right parts
+  \node[wrap=#2] (#1-top) {}; %
+  \node[wrap=#4] (#1-bottom) {}; %
+  % Draw the gate
+  \node[gate=(#1-top)(#1-bottom)] (#1) {}; %
+  % Add captions
+  \node[caption, above right=of #1.west ] (#1-top-caption)
+  {#3}; %
+  \node[caption, below right=of #1.west ] (#1-bottom-caption)
+  {#5}; %
+  % Draw middle separation
+  \draw [-, dashed] (#1.west) -- (#1.east); %
+  % Draw inputs
+  \foreach \x in {#6} { %
+    \draw [-*,thick] (\x) -- (#1); %
+  } ;%
+}
+
+\tikzstyle{latent} += [minimum size=40pt];
+
+\node[latent] (x0) {$\mathbf{x}_0$};
+\node[latent, right=of x0] (x1) {$\mathbf{x}_1$};
+\node[right=of x1] (dots) {$\cdots$};
+\node[latent, right=of dots] (xn) {$\mathbf{x}_{N-1}$};
+\edge {x0}{x1};
+\edge {x1}{dots};
+\edge {dots}{xn};
+
+\node[latent, above left=1 and 0.1 of x0] (mu) {$\boldsymbol{\mu}$};
+\node[latent, above right=1 and 0.1 of x0] (Lambda) {$\mathbf{\Lambda}$};
+\node[det, below=of x1] (A0) {$\mathbf{A}_0$};
+\node[right=of A0] (Adots) {$\cdots$};
+\node[det, right=of Adots] (An) {$\mathbf{A}_{N-2}$};
+\node[latent, above=of dots] (nu) {$\boldsymbol{\nu}$};
+\edge {mu,Lambda} {x0};
+\edge {nu} {x1,dots,xn};
+\edge {A0} {x1};
+\edge {Adots} {dots};
+\edge {An} {xn};
+
+\node[latent, below=of A0] (s0) {$s_{0,k}$};
+\node[right=of s0] (sdots) {$\cdots$};
+\node[latent, right=of sdots] (sn) {$\mathbf{s}_{N-2,k}$};
+\node[latent, left=of s0] (B) {$\mathbf{B}_k$};
+\edge {B} {A0, Adots, An};
+\edge {s0} {A0};
+\edge {sdots} {Adots};
+\edge {sn} {An};
+
+\plate {K} {(B)(s0)(sdots)(sn)} {$k=0,\ldots,K-1$};" /></p>
+</div><p>where <span class="math">\(\boldsymbol{\mu}\)</span> and <span class="math">\(\mathbf{\Lambda}\)</span> are the mean and
+the precision matrix of the initial state, <span class="math">\(\boldsymbol{\nu}\)</span> is the
+precision of the innovation noise, and <span class="math">\(\mathbf{A}_n\)</span> are the state
+dynamics matrix obtained by mixing matrices <span class="math">\(\mathbf{B}_k\)</span> with
+weights <span class="math">\(s_{n,k}\)</span>.</p>
+<p>The probability distribution is</p>
+<div class="math">
+\[p(\mathbf{x}_0, \ldots, \mathbf{x}_{N-1}) = p(\mathbf{x}_0)
+\prod^{N-1}_{n=1} p(\mathbf{x}_n | \mathbf{x}_{n-1})\]</div>
+<p>where</p>
+<div class="math">
+\[\begin{split}p(\mathbf{x}_0) &amp;= \mathcal{N}(\mathbf{x}_0 | \boldsymbol{\mu}, \mathbf{\Lambda})
+\\
+p(\mathbf{x}_n|\mathbf{x}_{n-1}) &amp;= \mathcal{N}(\mathbf{x}_n |
+\mathbf{A}_{n-1}\mathbf{x}_{n-1}, \mathrm{diag}(\boldsymbol{\nu})),
+\quad \text{for } n=1,\ldots,N-1,
+\\
+\mathbf{A}_n &amp; = \sum^{K-1}_{k=0} s_{n,k} \mathbf{B}_k, \quad \text{for }
+n=0,\ldots,N-2.\end{split}\]</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>mu</strong> : Gaussian-like node or (...,D)-array</p>
+<blockquote>
+<div><p><span class="math">\(\boldsymbol{\mu}\)</span>, mean of <span class="math">\(x_0\)</span>, <span class="math">\(D\)</span>-dimensional
+with plates (...)</p>
+</div></blockquote>
+<p><strong>Lambda</strong> : Wishart-like node or (...,D,D)-array</p>
+<blockquote>
+<div><p><span class="math">\(\mathbf{\Lambda}\)</span>, precision matrix of <span class="math">\(x_0\)</span>,
+<span class="math">\(D\times D\)</span> -dimensional with plates (...)</p>
+</div></blockquote>
+<p><strong>B</strong> : Gaussian-like node or (...,D,D,K)-array</p>
+<blockquote>
+<div><p><span class="math">\(\{\mathbf{B}_k\}_{k=0}^{K-1}\)</span>, a set of state dynamics matrix,
+<span class="math">\(D \times K\)</span>-dimensional with plates (...,D)</p>
+</div></blockquote>
+<p><strong>S</strong> : Gaussian-like node or (...,N-1,K)-array</p>
+<blockquote>
+<div><p><span class="math">\(\{\mathbf{s}_0,\ldots,\mathbf{s}_{N-2}\}\)</span>, time-varying weights
+of the linear combination, <span class="math">\(K\)</span>-dimensional with plates (...,N-1)</p>
+</div></blockquote>
+<p><strong>nu</strong> : gamma-like node or (...,D)-array</p>
+<blockquote>
+<div><p><span class="math">\(\boldsymbol{\nu}\)</span>, diagonal elements of the precision of the
+innovation process, plates (...,D)</p>
+</div></blockquote>
+<p><strong>n</strong> : int, optional</p>
+<blockquote class="last">
+<div><p><span class="math">\(N\)</span>, the length of the chain. Must be given if <span class="math">\(\mathbf{S}\)</span>
+does not have plates over the time domain (which would not make sense).</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="bayespy.nodes.Gaussian.html#bayespy.nodes.Gaussian" title="bayespy.nodes.Gaussian"><tt class="xref py py-obj docutils literal"><span class="pre">Gaussian</span></tt></a>, <a class="reference internal" href="bayespy.nodes.GaussianARD.html#bayespy.nodes.GaussianARD" title="bayespy.nodes.GaussianARD"><tt class="xref py py-obj docutils literal"><span class="pre">GaussianARD</span></tt></a>, <a class="reference internal" href="bayespy.nodes.Wishart.html#bayespy.nodes.Wishart" title="bayespy.nodes.Wishart"><tt class="xref py py-obj docutils literal"><span class="pre">Wishart</span></tt></a>, <a class="reference internal" href="bayespy.nodes.Gamma.html#bayespy.nodes.Gamma" title="bayespy.nodes.Gamma"><tt class="xref py py-obj docutils literal"><span class="pre">Gamma</span></tt></a>, <a class="reference internal" href="bayespy.nodes.GaussianMarkovChain.html#bayespy.nodes.GaussianMarkovChain" title="bayespy.nodes.GaussianMarkovChain"><tt class="xref py py-obj docutils literal"><span class="pre">GaussianMarkovChain</span></tt></a>, <a class="reference internal" href="bayespy.nodes.SwitchingGaussianMarkovChain.html#bayespy.nodes.SwitchingGaussianMarkovChain" title="bayespy.nodes.SwitchingGaussianMarkovChain"><tt class="xref py py-obj docutils literal"><span class="pre">SwitchingGaussianMarkovChain</span></tt></a></p>
+</div>
+<p class="rubric">Notes</p>
+<p>Equivalent model block can be constructed with <a class="reference internal" href="bayespy.nodes.GaussianMarkovChain.html#bayespy.nodes.GaussianMarkovChain" title="bayespy.nodes.GaussianMarkovChain"><tt class="xref py py-class docutils literal"><span class="pre">GaussianMarkovChain</span></tt></a>
+by explicitly using <a class="reference internal" href="bayespy.nodes.SumMultiply.html#bayespy.nodes.SumMultiply" title="bayespy.nodes.SumMultiply"><tt class="xref py py-class docutils literal"><span class="pre">SumMultiply</span></tt></a> to compute the linear combination.
+However, that approach is not very efficient for large datasets because it
+does not utilize the structure of <span class="math">\(\mathbf{A}_n\)</span>, thus it explicitly
+computes huge moment arrays.</p>
+<p class="rubric">References</p>
+<table class="docutils citation" frame="void" id="r1" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label">[R1]</td><td><em>(<a class="fn-backref" href="#id3">1</a>, <a class="fn-backref" href="#id4">2</a>)</em> J. Luttinen, T. Raiko, A. Ilin, &#8220;Linear State-Space Model with
+Time-Varying Dynamics,&#8221; submitted to ECML 2014.</td></tr>
+</tbody>
+</table>
+<p class="rubric">Methods</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="bayespy.nodes.VaryingGaussianMarkovChain.add_plate_axis.html#bayespy.nodes.VaryingGaussianMarkovChain.add_plate_axis" title="bayespy.nodes.VaryingGaussianMarkovChain.add_plate_axis"><tt class="xref py py-obj docutils literal"><span class="pre">add_plate_axis</span></tt></a>(to_plate)</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="bayespy.nodes.VaryingGaussianMarkovChain.delete.html#bayespy.nodes.VaryingGaussianMarkovChain.delete" title="bayespy.nodes.VaryingGaussianMarkovChain.delete"><tt class="xref py py-obj docutils literal"><span class="pre">delete</span></tt></a>()</td>
+<td>Delete this node and the children</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="bayespy.nodes.VaryingGaussianMarkovChain.get_mask.html#bayespy.nodes.VaryingGaussianMarkovChain.get_mask" title="bayespy.nodes.VaryingGaussianMarkovChain.get_mask"><tt class="xref py py-obj docutils literal"><span class="pre">get_mask</span></tt></a>()</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="bayespy.nodes.VaryingGaussianMarkovChain.get_moments.html#bayespy.nodes.VaryingGaussianMarkovChain.get_moments" title="bayespy.nodes.VaryingGaussianMarkovChain.get_moments"><tt class="xref py py-obj docutils literal"><span class="pre">get_moments</span></tt></a>()</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="bayespy.nodes.VaryingGaussianMarkovChain.get_shape.html#bayespy.nodes.VaryingGaussianMarkovChain.get_shape" title="bayespy.nodes.VaryingGaussianMarkovChain.get_shape"><tt class="xref py py-obj docutils literal"><span class="pre">get_shape</span></tt></a>(ind)</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="bayespy.nodes.VaryingGaussianMarkovChain.has_plotter.html#bayespy.nodes.VaryingGaussianMarkovChain.has_plotter" title="bayespy.nodes.VaryingGaussianMarkovChain.has_plotter"><tt class="xref py py-obj docutils literal"><span class="pre">has_plotter</span></tt></a>()</td>
+<td>Return True if the node has a plotter</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="bayespy.nodes.VaryingGaussianMarkovChain.initialize_from_parameters.html#bayespy.nodes.VaryingGaussianMarkovChain.initialize_from_parameters" title="bayespy.nodes.VaryingGaussianMarkovChain.initialize_from_parameters"><tt class="xref py py-obj docutils literal"><span class="pre">initialize_from_parameters</span></tt></a>(*args)</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="bayespy.nodes.VaryingGaussianMarkovChain.initialize_from_prior.html#bayespy.nodes.VaryingGaussianMarkovChain.initialize_from_prior" title="bayespy.nodes.VaryingGaussianMarkovChain.initialize_from_prior"><tt class="xref py py-obj docutils literal"><span class="pre">initialize_from_prior</span></tt></a>()</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="bayespy.nodes.VaryingGaussianMarkovChain.initialize_from_random.html#bayespy.nodes.VaryingGaussianMarkovChain.initialize_from_random" title="bayespy.nodes.VaryingGaussianMarkovChain.initialize_from_random"><tt class="xref py py-obj docutils literal"><span class="pre">initialize_from_random</span></tt></a>()</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="bayespy.nodes.VaryingGaussianMarkovChain.initialize_from_value.html#bayespy.nodes.VaryingGaussianMarkovChain.initialize_from_value" title="bayespy.nodes.VaryingGaussianMarkovChain.initialize_from_value"><tt class="xref py py-obj docutils literal"><span class="pre">initialize_from_value</span></tt></a>(x,&nbsp;*args)</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="bayespy.nodes.VaryingGaussianMarkovChain.load.html#bayespy.nodes.VaryingGaussianMarkovChain.load" title="bayespy.nodes.VaryingGaussianMarkovChain.load"><tt class="xref py py-obj docutils literal"><span class="pre">load</span></tt></a>(group)</td>
+<td>Load the state of the node from a HDF5 file.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="bayespy.nodes.VaryingGaussianMarkovChain.logpdf.html#bayespy.nodes.VaryingGaussianMarkovChain.logpdf" title="bayespy.nodes.VaryingGaussianMarkovChain.logpdf"><tt class="xref py py-obj docutils literal"><span class="pre">logpdf</span></tt></a>(X[,&nbsp;mask])</td>
+<td>Compute the log probability density function Q(X) of this node.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="bayespy.nodes.VaryingGaussianMarkovChain.lower_bound_contribution.html#bayespy.nodes.VaryingGaussianMarkovChain.lower_bound_contribution" title="bayespy.nodes.VaryingGaussianMarkovChain.lower_bound_contribution"><tt class="xref py py-obj docutils literal"><span class="pre">lower_bound_contribution</span></tt></a>([gradient])</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="bayespy.nodes.VaryingGaussianMarkovChain.lowerbound.html#bayespy.nodes.VaryingGaussianMarkovChain.lowerbound" title="bayespy.nodes.VaryingGaussianMarkovChain.lowerbound"><tt class="xref py py-obj docutils literal"><span class="pre">lowerbound</span></tt></a>()</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="bayespy.nodes.VaryingGaussianMarkovChain.move_plates.html#bayespy.nodes.VaryingGaussianMarkovChain.move_plates" title="bayespy.nodes.VaryingGaussianMarkovChain.move_plates"><tt class="xref py py-obj docutils literal"><span class="pre">move_plates</span></tt></a>(from_plate,&nbsp;to_plate)</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="bayespy.nodes.VaryingGaussianMarkovChain.observe.html#bayespy.nodes.VaryingGaussianMarkovChain.observe" title="bayespy.nodes.VaryingGaussianMarkovChain.observe"><tt class="xref py py-obj docutils literal"><span class="pre">observe</span></tt></a>(x,&nbsp;*args[,&nbsp;mask])</td>
+<td>Fix moments, compute f and propagate mask.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="bayespy.nodes.VaryingGaussianMarkovChain.pdf.html#bayespy.nodes.VaryingGaussianMarkovChain.pdf" title="bayespy.nodes.VaryingGaussianMarkovChain.pdf"><tt class="xref py py-obj docutils literal"><span class="pre">pdf</span></tt></a>(X[,&nbsp;mask])</td>
+<td>Compute the probability density function of this node.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="bayespy.nodes.VaryingGaussianMarkovChain.plot.html#bayespy.nodes.VaryingGaussianMarkovChain.plot" title="bayespy.nodes.VaryingGaussianMarkovChain.plot"><tt class="xref py py-obj docutils literal"><span class="pre">plot</span></tt></a>(**kwargs)</td>
+<td>Plot the node distribution using the plotter of the node</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="bayespy.nodes.VaryingGaussianMarkovChain.random.html#bayespy.nodes.VaryingGaussianMarkovChain.random" title="bayespy.nodes.VaryingGaussianMarkovChain.random"><tt class="xref py py-obj docutils literal"><span class="pre">random</span></tt></a>()</td>
+<td>Draw a random sample from the distribution.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="bayespy.nodes.VaryingGaussianMarkovChain.rotate.html#bayespy.nodes.VaryingGaussianMarkovChain.rotate" title="bayespy.nodes.VaryingGaussianMarkovChain.rotate"><tt class="xref py py-obj docutils literal"><span class="pre">rotate</span></tt></a>(R[,&nbsp;inv,&nbsp;logdet])</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="bayespy.nodes.VaryingGaussianMarkovChain.save.html#bayespy.nodes.VaryingGaussianMarkovChain.save" title="bayespy.nodes.VaryingGaussianMarkovChain.save"><tt class="xref py py-obj docutils literal"><span class="pre">save</span></tt></a>(group)</td>
+<td>Save the state of the node into a HDF5 file.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="bayespy.nodes.VaryingGaussianMarkovChain.set_plotter.html#bayespy.nodes.VaryingGaussianMarkovChain.set_plotter" title="bayespy.nodes.VaryingGaussianMarkovChain.set_plotter"><tt class="xref py py-obj docutils literal"><span class="pre">set_plotter</span></tt></a>(plotter)</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="bayespy.nodes.VaryingGaussianMarkovChain.show.html#bayespy.nodes.VaryingGaussianMarkovChain.show" title="bayespy.nodes.VaryingGaussianMarkovChain.show"><tt class="xref py py-obj docutils literal"><span class="pre">show</span></tt></a>()</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="bayespy.nodes.VaryingGaussianMarkovChain.unobserve.html#bayespy.nodes.VaryingGaussianMarkovChain.unobserve" title="bayespy.nodes.VaryingGaussianMarkovChain.unobserve"><tt class="xref py py-obj docutils literal"><span class="pre">unobserve</span></tt></a>()</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="bayespy.nodes.VaryingGaussianMarkovChain.update.html#bayespy.nodes.VaryingGaussianMarkovChain.update" title="bayespy.nodes.VaryingGaussianMarkovChain.update"><tt class="xref py py-obj docutils literal"><span class="pre">update</span></tt></a>()</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Attributes</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="bayespy.nodes.VaryingGaussianMarkovChain.dims.html#bayespy.nodes.VaryingGaussianMarkovChain.dims" title="bayespy.nodes.VaryingGaussianMarkovChain.dims"><tt class="xref py py-obj docutils literal"><span class="pre">dims</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="bayespy.nodes.VaryingGaussianMarkovChain.plates.html#bayespy.nodes.VaryingGaussianMarkovChain.plates" title="bayespy.nodes.VaryingGaussianMarkovChain.plates"><tt class="xref py py-obj docutils literal"><span class="pre">plates</span></tt></a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="bayespy.nodes.SwitchingGaussianMarkovChain.plates.html"
+                        title="previous chapter">bayespy.nodes.SwitchingGaussianMarkovChain.plates</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="bayespy.nodes.VaryingGaussianMarkovChain.add_plate_axis.html"
+                        title="next chapter">bayespy.nodes.VaryingGaussianMarkovChain.add_plate_axis</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/user_api/generated/bayespy.nodes.VaryingGaussianMarkovChain.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="bayespy.nodes.VaryingGaussianMarkovChain.add_plate_axis.html" title="bayespy.nodes.VaryingGaussianMarkovChain.add_plate_axis"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="bayespy.nodes.SwitchingGaussianMarkovChain.plates.html" title="bayespy.nodes.SwitchingGaussianMarkovChain.plates"
+             >previous</a> |</li>
+        <li><a href="../../index.html">BayesPy v0.1 Documentation</a> &raquo;</li>
+          <li><a href="../user_api.html" >User API</a> &raquo;</li>
+          <li><a href="../nodes.html" >Nodes</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011-2014, Jaakko Luttinen, GPLv3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

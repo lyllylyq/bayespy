@@ -198,7 +198,22 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Compute the moments and :math:`f(x)` for a fixed value.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
+        <span class="c"># Check that probabilities are non-negative</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asanyarray</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">ndim</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Probabilities must be given as a vector&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">p</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">p</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Probabilities must be in range [0,1]&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">),</span> <span class="mf">1.0</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Probabilities must sum to one&quot;</span><span class="p">)</span>
+        <span class="c"># Normalize probabilities</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">p</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="c"># Message is log-probabilities</span>
+        <span class="n">logp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+        <span class="n">u</span> <span class="o">=</span> <span class="p">[</span><span class="n">logp</span><span class="p">]</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s">&quot;Check formula for f&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
 
     
     <span class="k">def</span> <span class="nf">random</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">phi</span><span class="p">,</span> <span class="n">plates</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
@@ -209,8 +224,34 @@
         
 
 <div class="viewcode-block" id="Dirichlet"><a class="viewcode-back" href="../../../../../generated.backup/bayespy.inference.vmp.nodes.dirichlet.Dirichlet.html#bayespy.inference.vmp.nodes.dirichlet.Dirichlet">[docs]</a><span class="k">class</span> <span class="nc">Dirichlet</span><span class="p">(</span><span class="n">ExponentialFamily</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+    <span class="sd">r&quot;&quot;&quot;</span>
 <span class="sd">    Node for Dirichlet random variables.</span>
+
+<span class="sd">    The node models a set of probabilities :math:`\{\pi_0, \ldots, \pi_{K-1}\}`</span>
+<span class="sd">    which satisfy :math:`\sum_{k=0}^{K-1} \pi_k = 1` and :math:`\pi_k \in [0,1]</span>
+<span class="sd">    \ \forall k=0,\ldots,K-1`.</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">        p(\pi_0, \ldots, \pi_{K-1}) = \mathrm{Dirichlet}(\alpha_0, \ldots,</span>
+<span class="sd">        \alpha_{K-1})</span>
+
+<span class="sd">    where :math:`\alpha_k` are concentration parameters.</span>
+
+<span class="sd">    The posterior approximation has the same functional form but with different</span>
+<span class="sd">    concentration parameters.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    alpha : (...,K)-shaped array</span>
+<span class="sd">    </span>
+<span class="sd">        Prior counts :math:`\alpha_k`</span>
+
+<span class="sd">    See also</span>
+<span class="sd">    --------</span>
+<span class="sd">    </span>
+<span class="sd">    Beta, Categorical, Multinomial, CategoricalMarkovChain</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">_moments</span> <span class="o">=</span> <span class="n">DirichletMoments</span><span class="p">()</span>
