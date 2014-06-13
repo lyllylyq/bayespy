@@ -1,0 +1,753 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Constructing the model &mdash; BayesPy v0.1 Documentation</title>
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="BayesPy v0.1 Documentation" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li><a href="../index.html">BayesPy v0.1 Documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="constructing-the-model">
+<h1>Constructing the model<a class="headerlink" href="#constructing-the-model" title="Permalink to this headline">¶</a></h1>
+<p>In BayesPy, the model is constructed by creating nodes which form a directed network.  There are two types of nodes: stochastic and deterministic.  A stochastic node corresponds to a random variable (or a set of random variables) from a specific probability distribution.  A deterministic node corresponds to a deterministic function of its parents. For a list of built-in nodes, see the <a class="reference internal" href="../user_api/user_api.html#sec-user-api"><em>User API</em></a>.</p>
+<div class="section" id="creating-nodes">
+<h2>Creating nodes<a class="headerlink" href="#creating-nodes" title="Permalink to this headline">¶</a></h2>
+<p>Creating a node is basically like writing the conditional prior distribution of
+the variable in Python.  The node is constructed by giving the parent nodes,
+that is, the conditioning variables as arguments.  The number of parents and
+their meaning depend on the node.  For instance, a <a class="reference internal" href="../user_api/generated/bayespy.nodes.Gaussian.html#bayespy.nodes.Gaussian" title="bayespy.nodes.Gaussian"><tt class="xref py py-class docutils literal"><span class="pre">Gaussian</span></tt></a> node is
+created by giving the mean vector and the precision matrix. These parents can be
+constant numerical arrays if they are known:</p>
+<div class="code python highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">bayespy.nodes</span> <span class="kn">import</span> <span class="n">Gaussian</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">Gaussian</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="p">[[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]])</span>
+</pre></div>
+</div>
+<p>or other nodes if they are unknown and given prior distributions:</p>
+<div class="code python highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">bayespy.nodes</span> <span class="kn">import</span> <span class="n">Gaussian</span><span class="p">,</span> <span class="n">Wishart</span>
+<span class="n">mu</span> <span class="o">=</span> <span class="n">Gaussian</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[[</span><span class="mf">1e-6</span><span class="p">,</span> <span class="mi">0</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span> <span class="mf">1e-6</span><span class="p">]])</span>
+<span class="n">Lambda</span> <span class="o">=</span> <span class="n">Wishart</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="p">[[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]])</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">Gaussian</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span> <span class="n">Lambda</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>However, there are two main restrictions for the parent nodes:
+non-constant parent nodes must be conjugate and the parent nodes must be
+independent in the posterior approximation.</p>
+<div class="section" id="conjugacy-of-the-parents">
+<h3>Conjugacy of the parents<a class="headerlink" href="#conjugacy-of-the-parents" title="Permalink to this headline">¶</a></h3>
+<p>In Bayesian framework in general, one can give quite arbitrary
+probability distributions for variables. However, one often uses
+distributions that are easy to handle in practice. Quite often this
+means that the parents are given conjugate priors. This is also one of
+the limitations in BayesPy: only conjugate family prior distributions
+are accepted currently. Thus, although in principle one could give, for
+instance, gamma prior for the mean parameter <tt class="docutils literal"><span class="pre">mu</span></tt>, only
+Gaussian-family distributions are accepted because of the conjugacy. If
+the parent is not of a proper type, an error is raised. This conjugacy
+is checked automatically by BayesPy and <tt class="docutils literal"><span class="pre">NoConverterError</span></tt> is raised
+if a parent cannot be interpreted as being from a conjugate
+distribution.</p>
+</div>
+<div class="section" id="independence-of-the-parents">
+<h3>Independence of the parents<a class="headerlink" href="#independence-of-the-parents" title="Permalink to this headline">¶</a></h3>
+<p>Another a bit rarely encountered limitation is that the parents must be
+independent (in the posterior factorization). Thus, a node cannot have
+the same stochastic node as several parents without intermediate
+stochastic nodes. For instance, the following would lead to an error:</p>
+<div class="highlight-python3"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">bayespy.nodes</span> <span class="k">import</span> <span class="n">Dot</span>
+<span class="n">Y</span> <span class="o">=</span> <span class="n">Dot</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre>ValueError: Parent nodes are not independent
+</pre></div>
+</div>
+<p>The error is raised because <tt class="docutils literal"><span class="pre">X</span></tt> is given as two parents for <tt class="docutils literal"><span class="pre">Y</span></tt>, and
+obviously <tt class="docutils literal"><span class="pre">X</span></tt> is not independent of <tt class="docutils literal"><span class="pre">X</span></tt> in the posterior
+approximation. Even if <tt class="docutils literal"><span class="pre">X</span></tt> is not given several times directly but
+there are some intermediate deterministic nodes, an error is raised
+because the deterministic nodes depend on their parents and thus the
+parents of <tt class="docutils literal"><span class="pre">Y</span></tt> would not be independent. However, it is valid that a
+node is a parent of another node via several paths if all the paths or
+all except one path has intermediate stochastic nodes. This is valid
+because the intermediate stochastic nodes have independent posterior
+approximations. Thus, for instance, the following construction does not
+raise errors:</p>
+<div class="code python highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">bayespy.nodes</span> <span class="kn">import</span> <span class="n">Dot</span>
+<span class="n">Z</span> <span class="o">=</span> <span class="n">Gaussian</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="p">[[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]])</span>
+<span class="n">Y</span> <span class="o">=</span> <span class="n">Dot</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Z</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This works because there is now an intermediate stochastic node <tt class="docutils literal"><span class="pre">Z</span></tt> on
+the other path from <tt class="docutils literal"><span class="pre">X</span></tt> node to <tt class="docutils literal"><span class="pre">Y</span></tt> node.</p>
+</div>
+</div>
+<div class="section" id="effects-of-the-nodes-on-inference">
+<h2>Effects of the nodes on inference<a class="headerlink" href="#effects-of-the-nodes-on-inference" title="Permalink to this headline">¶</a></h2>
+<p>When constructing the network with nodes, the stochastic nodes actually
+define three important aspects:</p>
+<ol class="arabic simple">
+<li>the prior probability distribution for the variables,</li>
+<li>the factorization of the posterior approximation,</li>
+<li>the functional form of the posterior approximation for the variables.</li>
+</ol>
+<div class="section" id="prior-probability-distribution">
+<h3>Prior probability distribution<a class="headerlink" href="#prior-probability-distribution" title="Permalink to this headline">¶</a></h3>
+<p>First, the most intuitive feature of the nodes is that they define the prior
+distribution. In the previous example, <tt class="docutils literal"><span class="pre">mu</span></tt> was a stochastic
+<a class="reference internal" href="../user_api/generated/bayespy.nodes.GaussianARD.html#bayespy.nodes.GaussianARD" title="bayespy.nodes.GaussianARD"><tt class="xref py py-class docutils literal"><span class="pre">GaussianARD</span></tt></a> node corresponding to <span class="math">\(\mu\)</span> from the normal
+distribution, <tt class="docutils literal"><span class="pre">tau</span></tt> was a stochastic <a class="reference internal" href="../user_api/generated/bayespy.nodes.Gamma.html#bayespy.nodes.Gamma" title="bayespy.nodes.Gamma"><tt class="xref py py-class docutils literal"><span class="pre">Gamma</span></tt></a> node corresponding to
+<span class="math">\(\tau\)</span> from the gamma distribution, and <tt class="docutils literal"><span class="pre">y</span></tt> was a stochastic
+<a class="reference internal" href="../user_api/generated/bayespy.nodes.GaussianARD.html#bayespy.nodes.GaussianARD" title="bayespy.nodes.GaussianARD"><tt class="xref py py-class docutils literal"><span class="pre">GaussianARD</span></tt></a> node corresponding to <span class="math">\(y\)</span> from the normal
+distribution with mean <span class="math">\(\mu\)</span> and precision <span class="math">\(\tau\)</span>.  If we denote the
+set of all stochastic nodes by <span class="math">\(\Omega\)</span>, and by <span class="math">\(\pi_X\)</span> the set of parents of a
+node <span class="math">\(X\)</span>, the model is defined as</p>
+<div class="math">
+\[p(\Omega) = \prod_{X \in \Omega} p(X|\pi_X),\]</div>
+<p>where nodes correspond to the terms <span class="math">\(p(X|\pi_X)\)</span>.</p>
+</div>
+<div class="section" id="posterior-factorization">
+<h3>Posterior factorization<a class="headerlink" href="#posterior-factorization" title="Permalink to this headline">¶</a></h3>
+<p>Second, the nodes define the structure of the posterior approximation.
+The variational Bayesian approximation factorizes with respect to nodes,
+that is, each node corresponds to an independent probability
+distribution in the posterior approximation. In the previous example,
+<tt class="docutils literal"><span class="pre">mu</span></tt> and <tt class="docutils literal"><span class="pre">tau</span></tt> were separate nodes, thus the posterior approximation
+factorizes with respect to them: <span class="math">\(q(\mu)q(\tau)\)</span>. Thus, the
+posterior approximation can be written as:</p>
+<div class="math">
+\[p(\tilde{\Omega}|\hat{\Omega}) \approx \prod_{X \in \tilde{\Omega}} q(X),\]</div>
+<p>where <span class="math">\(\tilde{\Omega}\)</span> is the set of latent stochastic nodes and <span class="math">\(\hat{\Omega}\)</span>
+is the set of observed stochastic nodes.  Sometimes one may want to avoid the factorization
+between some variables.  For this purpose, there are some nodes which model
+several variables jointly without factorization.  For instance,
+<a class="reference internal" href="../user_api/generated/bayespy.nodes.GaussianGammaISO.html#bayespy.nodes.GaussianGammaISO" title="bayespy.nodes.GaussianGammaISO"><tt class="xref py py-class docutils literal"><span class="pre">GaussianGammaISO</span></tt></a> is a joint node for <span class="math">\(\mu\)</span> and <span class="math">\(\tau\)</span>
+variables from the normal-gamma distribution and the posterior approximation
+does not factorize between <span class="math">\(\mu\)</span> and <span class="math">\(\tau\)</span>, that is, the posterior
+approximation is <span class="math">\(q(\mu,\tau)\)</span>.</p>
+</div>
+<div class="section" id="functional-form-of-the-posterior">
+<h3>Functional form of the posterior<a class="headerlink" href="#functional-form-of-the-posterior" title="Permalink to this headline">¶</a></h3>
+<p>Last, the nodes define the functional form of the posterior approximation.
+Usually, the posterior approximation has the same or similar functional form as
+the prior.  For instance, <a class="reference internal" href="../user_api/generated/bayespy.nodes.Gamma.html#bayespy.nodes.Gamma" title="bayespy.nodes.Gamma"><tt class="xref py py-class docutils literal"><span class="pre">Gamma</span></tt></a> uses gamma distribution to also
+approximate the posterior distribution.  Similarly, <a class="reference internal" href="../user_api/generated/bayespy.nodes.GaussianARD.html#bayespy.nodes.GaussianARD" title="bayespy.nodes.GaussianARD"><tt class="xref py py-class docutils literal"><span class="pre">GaussianARD</span></tt></a> uses
+Gaussian distribution for the posterior.  However, the posterior approximation
+of <a class="reference internal" href="../user_api/generated/bayespy.nodes.GaussianARD.html#bayespy.nodes.GaussianARD" title="bayespy.nodes.GaussianARD"><tt class="xref py py-class docutils literal"><span class="pre">GaussianARD</span></tt></a> uses a full covariance matrix although the prior assumes
+a diagonal covariance matrix.  Thus, there can be slight differences in the
+exact functional form of the posterior approximation but the rule of thumb is
+that the functional form of the posterior approximation is the same as or more general than the
+functional form of the prior.</p>
+</div>
+</div>
+<div class="section" id="using-plate-notation">
+<h2>Using plate notation<a class="headerlink" href="#using-plate-notation" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="defining-plates">
+<h3>Defining plates<a class="headerlink" href="#defining-plates" title="Permalink to this headline">¶</a></h3>
+<p>Stochastic nodes take the optional parameter <tt class="docutils literal"><span class="pre">plates</span></tt>, which can be
+used to define plates of the variable. A plate defines the number of
+repetitions of a set of variables. For instance, a set of random
+variables <span class="math">\(\mathbf{y}_{mn}\)</span> could be defined as</p>
+<div class="math">
+\[\mathbf{y}_{mn} \sim \mathcal{N}(\boldsymbol{\mu}, \mathbf{\Lambda}),\qquad m=0,\ldots,9, \quad n=0,\ldots,29.\]</div>
+<p>This can also be visualized as a graphical model:</p>
+<div class="figure">
+<p><img src="../_images/tikz-080e6a7a1af2404bf41d23492e4ea624bdc746df.png" alt="% tikzlibrary.code.tex
+%
+% Copyright 2010-2011 by Laura Dietz
+% Copyright 2012 by Jaakko Luttinen
+%
+% This file may be distributed and/or modified
+%
+% 1. under the LaTeX Project Public License and/or
+% 2. under the GNU General Public License.
+%
+% See the files LICENSE_LPPL and LICENSE_GPL for more details.
+
+% Load other libraries
+\usetikzlibrary{shapes}
+\usetikzlibrary{fit}
+\usetikzlibrary{chains}
+\usetikzlibrary{arrows}
+
+% Latent node
+\tikzstyle{latent} = [circle,fill=white,draw=black,inner sep=1pt,
+minimum size=20pt, font=\fontsize{10}{10}\selectfont, node distance=1]
+% Observed node
+\tikzstyle{obs} = [latent,fill=gray!25]
+% Constant node
+\tikzstyle{const} = [rectangle, inner sep=0pt, node distance=1]
+% Factor node
+\tikzstyle{factor} = [rectangle, fill=black,minimum size=5pt, inner
+sep=0pt, node distance=0.4]
+% Deterministic node
+\tikzstyle{det} = [latent, diamond]
+
+% Plate node
+\tikzstyle{plate} = [draw, rectangle, rounded corners, fit=#1]
+% Invisible wrapper node
+\tikzstyle{wrap} = [inner sep=0pt, fit=#1]
+% Gate
+\tikzstyle{gate} = [draw, rectangle, dashed, fit=#1]
+
+% Caption node
+\tikzstyle{caption} = [font=\footnotesize, node distance=0] %
+\tikzstyle{plate caption} = [caption, node distance=0, inner sep=0pt,
+below left=5pt and 0pt of #1.south east] %
+\tikzstyle{factor caption} = [caption] %
+\tikzstyle{every label} += [caption] %
+
+\tikzset{&gt;={triangle 45}}
+
+%\pgfdeclarelayer{b}
+%\pgfdeclarelayer{f}
+%\pgfsetlayers{b,main,f}
+
+% \factoredge [options] {inputs} {factors} {outputs}
+\newcommand{\factoredge}[4][]{ %
+  % Connect all nodes #2 to all nodes #4 via all factors #3.
+  \foreach \f in {#3} { %
+    \foreach \x in {#2} { %
+      \draw[-,#1] (\x) edge[-] (\f) ; %
+    } ;
+    \foreach \y in {#4} { %
+      \draw[-&gt;,#1] (\f) -- (\y) ; %
+    } ;
+  } ;
+}
+
+% \edge [options] {inputs} {outputs}
+\newcommand{\edge}[3][]{ %
+  % Connect all nodes #2 to all nodes #3.
+  \foreach \x in {#2} { %
+    \foreach \y in {#3} { %
+      \draw[-&gt;,#1] (\x) -- (\y) ;%
+    } ;
+  } ;
+}
+
+% \factor [options] {name} {caption} {inputs} {outputs}
+\newcommand{\factor}[5][]{ %
+  % Draw the factor node. Use alias to allow empty names.
+  \node[factor, label={[name=#2-caption]#3}, name=#2, #1,
+  alias=#2-alias] {} ; %
+  % Connect all inputs to outputs via this factor
+  \factoredge {#4} {#2-alias} {#5} ; %
+}
+
+% \plate [options] {name} {fitlist} {caption}
+\newcommand{\plate}[4][]{ %
+  \node[wrap=#3] (#2-wrap) {}; %
+  \node[plate caption=#2-wrap] (#2-caption) {#4}; %
+  \node[plate=(#2-wrap)(#2-caption), #1] (#2) {}; %
+}
+
+% \gate [options] {name} {fitlist} {inputs}
+\newcommand{\gate}[4][]{ %
+  \node[gate=#3, name=#2, #1, alias=#2-alias] {}; %
+  \foreach \x in {#4} { %
+    \draw [-*,thick] (\x) -- (#2-alias); %
+  } ;%
+}
+
+% \vgate {name} {fitlist-left} {caption-left} {fitlist-right}
+% {caption-right} {inputs}
+\newcommand{\vgate}[6]{ %
+  % Wrap the left and right parts
+  \node[wrap=#2] (#1-left) {}; %
+  \node[wrap=#4] (#1-right) {}; %
+  % Draw the gate
+  \node[gate=(#1-left)(#1-right)] (#1) {}; %
+  % Add captions
+  \node[caption, below left=of #1.north ] (#1-left-caption)
+  {#3}; %
+  \node[caption, below right=of #1.north ] (#1-right-caption)
+  {#5}; %
+  % Draw middle separation
+  \draw [-, dashed] (#1.north) -- (#1.south); %
+  % Draw inputs
+  \foreach \x in {#6} { %
+    \draw [-*,thick] (\x) -- (#1); %
+  } ;%
+}
+
+% \hgate {name} {fitlist-top} {caption-top} {fitlist-bottom}
+% {caption-bottom} {inputs}
+\newcommand{\hgate}[6]{ %
+  % Wrap the left and right parts
+  \node[wrap=#2] (#1-top) {}; %
+  \node[wrap=#4] (#1-bottom) {}; %
+  % Draw the gate
+  \node[gate=(#1-top)(#1-bottom)] (#1) {}; %
+  % Add captions
+  \node[caption, above right=of #1.west ] (#1-top-caption)
+  {#3}; %
+  \node[caption, below right=of #1.west ] (#1-bottom-caption)
+  {#5}; %
+  % Draw middle separation
+  \draw [-, dashed] (#1.west) -- (#1.east); %
+  % Draw inputs
+  \foreach \x in {#6} { %
+    \draw [-*,thick] (\x) -- (#1); %
+  } ;%
+}
+
+\node[latent] (y) {$\mathbf{y}_{mn}$} ;
+\node[latent, above left=1.8 and 0.4 of y] (mu) {$\boldsymbol{\mu}$} ;
+\node[latent, above right=1.8 and 0.4 of y] (Lambda) {$\mathbf{\Lambda}$} ;
+\factor[above=of y] {y-f} {left:$\mathcal{N}$} {mu,Lambda}     {y};
+\plate {m-plate} {(y)(y-f)(y-f-caption)} {$m=0,\ldots,9$} ;
+\plate {n-plate} {(m-plate)(m-plate-caption)} {$n=0,\ldots,29$} ;" /></p>
+</div><p>The variable has two plates: one for the index <span class="math">\(m\)</span> and one for the
+index <span class="math">\(n\)</span>. In BayesPy, this random variable can be constructed
+as:</p>
+<div class="code python highlight-python"><div class="highlight"><pre><span class="n">y</span> <span class="o">=</span> <span class="n">Gaussian</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span> <span class="n">Lambda</span><span class="p">,</span> <span class="n">plates</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">30</span><span class="p">))</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The plates are always given as a tuple of positive integers.</p>
+</div>
+</div>
+<div class="section" id="sharing-and-broadcasting-plates">
+<h3>Sharing and broadcasting plates<a class="headerlink" href="#sharing-and-broadcasting-plates" title="Permalink to this headline">¶</a></h3>
+<p>Instead of having a common mean and precision matrix for all
+<span class="math">\(\mathbf{y}_{mn}\)</span>, it is also possible to share plates with
+parents. For instance, the mean could be different for each index
+<span class="math">\(m\)</span> and the precision for each index <span class="math">\(n\)</span>:</p>
+<div class="math">
+\[\mathbf{y}_{mn} \sim \mathcal{N}(\boldsymbol{\mu}_m, \mathbf{\Lambda}_n),\qquad m=0,\ldots,9, \quad n=0,\ldots,29.\]</div>
+<p>which has the following graphical representation:</p>
+<div class="figure">
+<p><img src="../_images/tikz-2df9d841ed53381b91f19fa73574826259293091.png" alt="% tikzlibrary.code.tex
+%
+% Copyright 2010-2011 by Laura Dietz
+% Copyright 2012 by Jaakko Luttinen
+%
+% This file may be distributed and/or modified
+%
+% 1. under the LaTeX Project Public License and/or
+% 2. under the GNU General Public License.
+%
+% See the files LICENSE_LPPL and LICENSE_GPL for more details.
+
+% Load other libraries
+\usetikzlibrary{shapes}
+\usetikzlibrary{fit}
+\usetikzlibrary{chains}
+\usetikzlibrary{arrows}
+
+% Latent node
+\tikzstyle{latent} = [circle,fill=white,draw=black,inner sep=1pt,
+minimum size=20pt, font=\fontsize{10}{10}\selectfont, node distance=1]
+% Observed node
+\tikzstyle{obs} = [latent,fill=gray!25]
+% Constant node
+\tikzstyle{const} = [rectangle, inner sep=0pt, node distance=1]
+% Factor node
+\tikzstyle{factor} = [rectangle, fill=black,minimum size=5pt, inner
+sep=0pt, node distance=0.4]
+% Deterministic node
+\tikzstyle{det} = [latent, diamond]
+
+% Plate node
+\tikzstyle{plate} = [draw, rectangle, rounded corners, fit=#1]
+% Invisible wrapper node
+\tikzstyle{wrap} = [inner sep=0pt, fit=#1]
+% Gate
+\tikzstyle{gate} = [draw, rectangle, dashed, fit=#1]
+
+% Caption node
+\tikzstyle{caption} = [font=\footnotesize, node distance=0] %
+\tikzstyle{plate caption} = [caption, node distance=0, inner sep=0pt,
+below left=5pt and 0pt of #1.south east] %
+\tikzstyle{factor caption} = [caption] %
+\tikzstyle{every label} += [caption] %
+
+\tikzset{&gt;={triangle 45}}
+
+%\pgfdeclarelayer{b}
+%\pgfdeclarelayer{f}
+%\pgfsetlayers{b,main,f}
+
+% \factoredge [options] {inputs} {factors} {outputs}
+\newcommand{\factoredge}[4][]{ %
+  % Connect all nodes #2 to all nodes #4 via all factors #3.
+  \foreach \f in {#3} { %
+    \foreach \x in {#2} { %
+      \draw[-,#1] (\x) edge[-] (\f) ; %
+    } ;
+    \foreach \y in {#4} { %
+      \draw[-&gt;,#1] (\f) -- (\y) ; %
+    } ;
+  } ;
+}
+
+% \edge [options] {inputs} {outputs}
+\newcommand{\edge}[3][]{ %
+  % Connect all nodes #2 to all nodes #3.
+  \foreach \x in {#2} { %
+    \foreach \y in {#3} { %
+      \draw[-&gt;,#1] (\x) -- (\y) ;%
+    } ;
+  } ;
+}
+
+% \factor [options] {name} {caption} {inputs} {outputs}
+\newcommand{\factor}[5][]{ %
+  % Draw the factor node. Use alias to allow empty names.
+  \node[factor, label={[name=#2-caption]#3}, name=#2, #1,
+  alias=#2-alias] {} ; %
+  % Connect all inputs to outputs via this factor
+  \factoredge {#4} {#2-alias} {#5} ; %
+}
+
+% \plate [options] {name} {fitlist} {caption}
+\newcommand{\plate}[4][]{ %
+  \node[wrap=#3] (#2-wrap) {}; %
+  \node[plate caption=#2-wrap] (#2-caption) {#4}; %
+  \node[plate=(#2-wrap)(#2-caption), #1] (#2) {}; %
+}
+
+% \gate [options] {name} {fitlist} {inputs}
+\newcommand{\gate}[4][]{ %
+  \node[gate=#3, name=#2, #1, alias=#2-alias] {}; %
+  \foreach \x in {#4} { %
+    \draw [-*,thick] (\x) -- (#2-alias); %
+  } ;%
+}
+
+% \vgate {name} {fitlist-left} {caption-left} {fitlist-right}
+% {caption-right} {inputs}
+\newcommand{\vgate}[6]{ %
+  % Wrap the left and right parts
+  \node[wrap=#2] (#1-left) {}; %
+  \node[wrap=#4] (#1-right) {}; %
+  % Draw the gate
+  \node[gate=(#1-left)(#1-right)] (#1) {}; %
+  % Add captions
+  \node[caption, below left=of #1.north ] (#1-left-caption)
+  {#3}; %
+  \node[caption, below right=of #1.north ] (#1-right-caption)
+  {#5}; %
+  % Draw middle separation
+  \draw [-, dashed] (#1.north) -- (#1.south); %
+  % Draw inputs
+  \foreach \x in {#6} { %
+    \draw [-*,thick] (\x) -- (#1); %
+  } ;%
+}
+
+% \hgate {name} {fitlist-top} {caption-top} {fitlist-bottom}
+% {caption-bottom} {inputs}
+\newcommand{\hgate}[6]{ %
+  % Wrap the left and right parts
+  \node[wrap=#2] (#1-top) {}; %
+  \node[wrap=#4] (#1-bottom) {}; %
+  % Draw the gate
+  \node[gate=(#1-top)(#1-bottom)] (#1) {}; %
+  % Add captions
+  \node[caption, above right=of #1.west ] (#1-top-caption)
+  {#3}; %
+  \node[caption, below right=of #1.west ] (#1-bottom-caption)
+  {#5}; %
+  % Draw middle separation
+  \draw [-, dashed] (#1.west) -- (#1.east); %
+  % Draw inputs
+  \foreach \x in {#6} { %
+    \draw [-*,thick] (\x) -- (#1); %
+  } ;%
+}
+
+\node[latent] (y) {$\mathbf{y}_{mn}$} ;
+\node[latent, above left=1 and 2 of y] (mu) {$\boldsymbol{\mu}_m$} ;
+\node[latent, above right=1 and 1 of y] (Lambda) {$\mathbf{\Lambda}_n$} ;
+\factor[above=of y] {y-f} {above:$\mathcal{N}$} {mu,Lambda}     {y};
+\plate {m-plate} {(mu)(y)(y-f)(y-f-caption)} {$m=0,\ldots,9$} ;
+\plate {n-plate} {(Lambda)(y)(y-f)(y-f-caption)(m-plate-caption)(m-plate.north east)} {$n=0,\ldots,29$} ;" /></p>
+</div><p>This can be constructed in BayesPy, for instance, as:</p>
+<div class="code python highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">bayespy.nodes</span> <span class="kn">import</span> <span class="n">Gaussian</span><span class="p">,</span> <span class="n">Wishart</span>
+<span class="n">mu</span> <span class="o">=</span> <span class="n">Gaussian</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[[</span><span class="mf">1e-6</span><span class="p">,</span> <span class="mi">0</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span> <span class="mf">1e-6</span><span class="p">]],</span> <span class="n">plates</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
+<span class="n">Lambda</span> <span class="o">=</span> <span class="n">Wishart</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="p">[[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]],</span> <span class="n">plates</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">30</span><span class="p">))</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">Gaussian</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span> <span class="n">Lambda</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>There are a few things to notice here. First, the plates are defined
+similarly as shapes in NumPy, that is, they use similar broadcasting
+rules. For instance, the plates <tt class="docutils literal"><span class="pre">(10,1)</span></tt> and <tt class="docutils literal"><span class="pre">(1,30)</span></tt> broadcast to
+<tt class="docutils literal"><span class="pre">(10,30)</span></tt>. In fact, one could use plates <tt class="docutils literal"><span class="pre">(10,1)</span></tt> and <tt class="docutils literal"><span class="pre">(30,)</span></tt> to
+get the broadcasted plates <tt class="docutils literal"><span class="pre">(10,30)</span></tt> because broadcasting compares the
+plates from right to left starting from the last axis. Second, <tt class="docutils literal"><span class="pre">X</span></tt> is
+not given <tt class="docutils literal"><span class="pre">plates</span></tt> keyword argument because the default plates are the
+plates broadcasted from the parents and that was what we wanted so it
+was not necessary to provide the keyword argument. If we wanted, for
+instance, plates <tt class="docutils literal"><span class="pre">(20,10,30)</span></tt> for <tt class="docutils literal"><span class="pre">X</span></tt>, then we would have needed to
+provide <tt class="docutils literal"><span class="pre">plates=(20,10,30)</span></tt>.</p>
+<p>The validity of the plates between a child and its parents is checked as
+follows. The plates are compared plate-wise starting from the last axis
+and working the way forward. A plate of the child is compatible with a
+plate of the parent if either of the following conditions is met:</p>
+<ol class="arabic simple">
+<li>The two plates have equal size</li>
+<li>The parent has size 1 (or no plate)</li>
+</ol>
+<p>Table below shows an example of compatible plates for a child node and
+its two parent nodes:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="29%" />
+<col width="10%" />
+<col width="10%" />
+<col width="10%" />
+<col width="10%" />
+<col width="10%" />
+<col width="10%" />
+<col width="13%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">node</th>
+<th class="head" colspan="7">plates</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>parent1</td>
+<td>&nbsp;</td>
+<td>3</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>8</td>
+<td>10</td>
+</tr>
+<tr class="row-odd"><td>parent2</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>1</td>
+<td>1</td>
+<td>5</td>
+<td>1</td>
+<td>10</td>
+</tr>
+<tr class="row-even"><td>child</td>
+<td>5</td>
+<td>3</td>
+<td>1</td>
+<td>7</td>
+<td>5</td>
+<td>8</td>
+<td>10</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="plates-in-deterministic-nodes">
+<h3>Plates in deterministic nodes<a class="headerlink" href="#plates-in-deterministic-nodes" title="Permalink to this headline">¶</a></h3>
+<p>Note that plates can be defined explicitly only for stochastic nodes.
+For deterministic nodes, the plates are defined implicitly by the plate
+broadcasting rules from the parents. Deterministic nodes do not need
+more plates than this because there is no randomness. The deterministic
+node would just have the same value over the extra plates, but it is not
+necessary to do this explicitly because the child nodes of the
+deterministic node can utilize broadcasting anyway. Thus, there is no
+point in having extra plates in deterministic nodes, and for this
+reason, deterministic nodes do not use <tt class="docutils literal"><span class="pre">plates</span></tt> keyword argument.</p>
+</div>
+<div class="section" id="plates-and-shape">
+<h3>Plates and shape<a class="headerlink" href="#plates-and-shape" title="Permalink to this headline">¶</a></h3>
+<p>It is useful to understand how the plates and the shape of a random
+variable are connected. The shape of an array which contains all the
+plates of a random variable is the concatenation of the plates and the
+shape of the variable. For instance, consider a 2-dimensional Gaussian
+variable with plates <tt class="docutils literal"><span class="pre">(3,)</span></tt>. If you want the value of the constant
+mean vector and constant precision matrix to vary between plates, they
+are given as <tt class="docutils literal"><span class="pre">(3,2)</span></tt>-shape and <tt class="docutils literal"><span class="pre">(3,2,2)</span></tt>-shape arrays, respectively:</p>
+<div class="code python highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="n">mu</span> <span class="o">=</span> <span class="p">[</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span> <span class="p">]</span>
+<span class="n">Lambda</span> <span class="o">=</span> <span class="p">[</span> <span class="p">[[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
+            <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]],</span>
+           <span class="p">[[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">],</span>
+            <span class="p">[</span><span class="mf">0.9</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]],</span>
+           <span class="p">[[</span><span class="mf">1.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.3</span><span class="p">],</span>
+            <span class="p">[</span><span class="o">-</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]]</span> <span class="p">]</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">Gaussian</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span> <span class="n">Lambda</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s">&quot;Shape of mu:&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">mu</span><span class="p">))</span>
+<span class="k">print</span><span class="p">(</span><span class="s">&quot;Shape of Lambda:&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">Lambda</span><span class="p">))</span>
+<span class="k">print</span><span class="p">(</span><span class="s">&quot;Plates of X:&quot;</span><span class="p">,</span> <span class="n">X</span><span class="o">.</span><span class="n">plates</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre>Shape of mu: (3, 2)
+Shape of Lambda: (3, 2, 2)
+Plates of X: (3,)
+</pre></div>
+</div>
+<p>Thus, the leading axes of an array are the plate axes and the trailing
+axes are the random variable axes. In the example above, the mean vector
+has plates <tt class="docutils literal"><span class="pre">(3,)</span></tt> and shape <tt class="docutils literal"><span class="pre">(2,)</span></tt>, and the precision matrix has
+plates <tt class="docutils literal"><span class="pre">(3,)</span></tt> and shape <tt class="docutils literal"><span class="pre">(2,2)</span></tt>.</p>
+</div>
+<div class="section" id="factorization-of-plates">
+<h3>Factorization of plates<a class="headerlink" href="#factorization-of-plates" title="Permalink to this headline">¶</a></h3>
+<p>It is important to undestand the independency structure the plates
+induce for the model. First, the repetitions defined by a plate are
+independent a priori given the parents. Second, the repetitions are
+independent in the posterior approximation, that is, the posterior
+approximation factorizes with respect to plates. Thus, the plates also
+have an effect on the independence structure of the posterior
+approximation, not only prior. If dependencies between a set of
+variables need to be handled, that set must be handled as a some kind of
+multi-dimensional variable.</p>
+</div>
+<div class="section" id="irregular-plates">
+<h3>Irregular plates<a class="headerlink" href="#irregular-plates" title="Permalink to this headline">¶</a></h3>
+<p>The handling of plates is not always as simple as described above. There
+are cases in which the plates of the parents do not map directly to the
+plates of the child node. The user API should mention such
+irregularities.</p>
+<p>For instance, the parents of a mixture distribution have a plate which
+contains the different parameters for each cluster, but the variable
+from the mixture distribution does not have that plate:</p>
+<div class="code python highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">bayespy.nodes</span> <span class="kn">import</span> <span class="n">Gaussian</span><span class="p">,</span> <span class="n">Wishart</span><span class="p">,</span> <span class="n">Categorical</span><span class="p">,</span> <span class="n">Mixture</span>
+<span class="n">mu</span> <span class="o">=</span> <span class="n">Gaussian</span><span class="p">([[</span><span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="p">[</span> <span class="p">[[</span><span class="mi">1</span><span class="p">]],</span> <span class="p">[[</span><span class="mi">1</span><span class="p">]],</span> <span class="p">[[</span><span class="mi">1</span><span class="p">]]</span> <span class="p">])</span>
+<span class="n">Lambda</span> <span class="o">=</span> <span class="n">Wishart</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="p">[</span> <span class="p">[[</span><span class="mi">1</span><span class="p">]],</span> <span class="p">[[</span><span class="mi">1</span><span class="p">]],</span> <span class="p">[[</span><span class="mi">1</span><span class="p">]]])</span>
+<span class="n">Z</span> <span class="o">=</span> <span class="n">Categorical</span><span class="p">([</span><span class="mi">1</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="mi">3</span><span class="p">],</span> <span class="n">plates</span><span class="o">=</span><span class="p">(</span><span class="mi">100</span><span class="p">,))</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">Mixture</span><span class="p">(</span><span class="n">Z</span><span class="p">,</span> <span class="n">Gaussian</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">Lambda</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s">&quot;Plates of mu:&quot;</span><span class="p">,</span> <span class="n">mu</span><span class="o">.</span><span class="n">plates</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s">&quot;Plates of Lambda:&quot;</span><span class="p">,</span> <span class="n">Lambda</span><span class="o">.</span><span class="n">plates</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s">&quot;Plates of Z:&quot;</span><span class="p">,</span> <span class="n">Z</span><span class="o">.</span><span class="n">plates</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s">&quot;Plates of X:&quot;</span><span class="p">,</span> <span class="n">X</span><span class="o">.</span><span class="n">plates</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre>Plates of mu: (3,)
+Plates of Lambda: (3,)
+Plates of Z: (100,)
+Plates of X: (100,)
+</pre></div>
+</div>
+<p>The plates <cite>(3,)</cite> and <cite>(100,)</cite> should not broadcast according to the rules mentioned above. However, when validating the plates, <a class="reference internal" href="../user_api/generated/bayespy.nodes.Mixture.html#bayespy.nodes.Mixture" title="bayespy.nodes.Mixture"><tt class="xref py py-class docutils literal"><span class="pre">Mixture</span></tt></a> removes the plate which corresponds to the clusters in <cite>mu</cite> and <cite>Lambda</cite>. Thus, <cite>X</cite> has plates which are the result of broadcasting plates <cite>()</cite> and <cite>(100,)</cite> which equals <cite>(100,)</cite>.</p>
+<p>Also, sometimes the plates of the parents may be mapped to the variable
+axes. For instance, an automatic relevance determination (ARD) prior for
+a Gaussian variable is constructed by giving the diagonal elements of
+the precision matrix (or tensor). The Gaussian variable itself can be a
+scalar, a vector, a matrix or a tensor. A set of five <span class="math">\(4 \times 3\)</span>
+-dimensional Gaussian matrices with ARD prior is constructed as:</p>
+<div class="code python highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">bayespy.nodes</span> <span class="kn">import</span> <span class="n">GaussianARD</span><span class="p">,</span> <span class="n">Gamma</span>
+<span class="n">tau</span> <span class="o">=</span> <span class="n">Gamma</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">plates</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">GaussianARD</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">tau</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span>
+<span class="k">print</span><span class="p">(</span><span class="s">&quot;Plates of tau:&quot;</span><span class="p">,</span> <span class="n">tau</span><span class="o">.</span><span class="n">plates</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s">&quot;Plates of X:&quot;</span><span class="p">,</span> <span class="n">X</span><span class="o">.</span><span class="n">plates</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre>Plates of tau: (5, 4, 3)
+Plates of X: (5,)
+</pre></div>
+</div>
+<p>Note how the last two plate axes of <tt class="docutils literal"><span class="pre">tau</span></tt> are mapped to the variable
+axes of <tt class="docutils literal"><span class="pre">X</span></tt> with shape <tt class="docutils literal"><span class="pre">(4,3)</span></tt> and the plates of <tt class="docutils literal"><span class="pre">X</span></tt> are obtained
+by taking the remaining leading plate axes of <tt class="docutils literal"><span class="pre">tau</span></tt>.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Constructing the model</a><ul>
+<li><a class="reference internal" href="#creating-nodes">Creating nodes</a><ul>
+<li><a class="reference internal" href="#conjugacy-of-the-parents">Conjugacy of the parents</a></li>
+<li><a class="reference internal" href="#independence-of-the-parents">Independence of the parents</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#effects-of-the-nodes-on-inference">Effects of the nodes on inference</a><ul>
+<li><a class="reference internal" href="#prior-probability-distribution">Prior probability distribution</a></li>
+<li><a class="reference internal" href="#posterior-factorization">Posterior factorization</a></li>
+<li><a class="reference internal" href="#functional-form-of-the-posterior">Functional form of the posterior</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#using-plate-notation">Using plate notation</a><ul>
+<li><a class="reference internal" href="#defining-plates">Defining plates</a></li>
+<li><a class="reference internal" href="#sharing-and-broadcasting-plates">Sharing and broadcasting plates</a></li>
+<li><a class="reference internal" href="#plates-in-deterministic-nodes">Plates in deterministic nodes</a></li>
+<li><a class="reference internal" href="#plates-and-shape">Plates and shape</a></li>
+<li><a class="reference internal" href="#factorization-of-plates">Factorization of plates</a></li>
+<li><a class="reference internal" href="#irregular-plates">Irregular plates</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/user_guide/modelconstruct_backup.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li><a href="../index.html">BayesPy v0.1 Documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011-2014, Jaakko Luttinen, GPLv3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

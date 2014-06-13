@@ -54,114 +54,295 @@
             
   <div class="section" id="performing-inference">
 <h1>Performing inference<a class="headerlink" href="#performing-inference" title="Permalink to this headline">¶</a></h1>
-<p>Approximation of the posterior distribution can be divided into
-several steps:</p>
+<p>Approximation of the posterior distribution can be divided into several steps:</p>
 <ul class="simple">
-<li>Choosing and constructing the inference engine</li>
-<li>Initializing the engine</li>
-<li>Running the inference algorithm</li>
+<li>Observe some nodes</li>
+<li>Choose the inference engine</li>
+<li>Initialize the posterior approximation</li>
+<li>Run the inference algorithm</li>
 </ul>
-<div class="section" id="providing-the-data">
-<h2>Providing the data<a class="headerlink" href="#providing-the-data" title="Permalink to this headline">¶</a></h2>
-<p>The data is provided by simply calling <tt class="docutils literal"><span class="pre">observe</span></tt> method of the node:</p>
-<div class="highlight-python3"><div class="highlight"><pre><span class="n">y</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<p>In order to illustrate these steps, we&#8217;ll be using the PCA model constructed in
+the previous section.</p>
+<div class="section" id="observing-nodes">
+<h2>Observing nodes<a class="headerlink" href="#observing-nodes" title="Permalink to this headline">¶</a></h2>
+<p>First, let us generate some toy data:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.1</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>It is important that the shape of the <tt class="docutils literal"><span class="pre">data</span></tt> array matches the shape
-of the node <tt class="docutils literal"><span class="pre">y</span></tt>, which is the combination of the plates and the
-dimensionality.  For instance, if <tt class="docutils literal"><span class="pre">y</span></tt> is <tt class="docutils literal"><span class="pre">Wishart</span></tt> node for
-<span class="math">\(3\times 3\)</span> matrices with plates <tt class="docutils literal"><span class="pre">(5,1,10)</span></tt>, the actual shape
-of <tt class="docutils literal"><span class="pre">y</span></tt> would be <tt class="docutils literal"><span class="pre">(5,1,10,3,3)</span></tt>.  The data array must have this
-shape exactly, that is, no broadcasting rules are applied.</p>
+<p>The data is provided by simply calling <tt class="docutils literal"><span class="pre">observe</span></tt> method of a stochastic node:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Y</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>It is important that the shape of the <tt class="docutils literal"><span class="pre">data</span></tt> array matches the plates and
+shape of the node <tt class="docutils literal"><span class="pre">Y</span></tt>.  For instance, if <tt class="docutils literal"><span class="pre">Y</span></tt> was <tt class="xref py py-class docutils literal"><span class="pre">Wishart</span></tt> node for
+<span class="math">\(3\times 3\)</span> matrices with plates <tt class="docutils literal"><span class="pre">(5,1,10)</span></tt>, the full shape of <tt class="docutils literal"><span class="pre">Y</span></tt>
+would be <tt class="docutils literal"><span class="pre">(5,1,10,3,3)</span></tt>.  The <tt class="docutils literal"><span class="pre">data</span></tt> array should have this shape exactly,
+that is, no broadcasting rules are applied.</p>
 <div class="section" id="missing-values">
 <h3>Missing values<a class="headerlink" href="#missing-values" title="Permalink to this headline">¶</a></h3>
-<p>It is possible to mark missing values by providing a mask:</p>
-<div class="highlight-python3"><div class="highlight"><pre><span class="n">y</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="p">[</span><span class="k">True</span><span class="p">,</span> <span class="k">False</span><span class="p">,</span> <span class="k">False</span><span class="p">,</span> <span class="k">True</span><span class="p">,</span> <span class="k">True</span><span class="p">,</span>
-                      <span class="k">False</span><span class="p">,</span> <span class="k">True</span><span class="p">,</span> <span class="k">True</span><span class="p">,</span> <span class="k">True</span><span class="p">,</span> <span class="k">False</span><span class="p">])</span>
+<p>It is possible to mark missing values by providing a mask which is a boolean
+array:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Y</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="p">[[</span><span class="bp">True</span><span class="p">],</span> <span class="p">[</span><span class="bp">False</span><span class="p">],</span> <span class="p">[</span><span class="bp">False</span><span class="p">],</span> <span class="p">[</span><span class="bp">True</span><span class="p">],</span> <span class="p">[</span><span class="bp">True</span><span class="p">],</span>
+<span class="gp">... </span>                      <span class="p">[</span><span class="bp">False</span><span class="p">],</span> <span class="p">[</span><span class="bp">True</span><span class="p">],</span> <span class="p">[</span><span class="bp">True</span><span class="p">],</span> <span class="p">[</span><span class="bp">True</span><span class="p">],</span> <span class="p">[</span><span class="bp">False</span><span class="p">]])</span>
 </pre></div>
 </div>
-<p><tt class="docutils literal"><span class="pre">True</span></tt> means that the value is observed and <tt class="docutils literal"><span class="pre">False</span></tt> means that the
-value is missing.  To be more precise, the mask is applied to the
-plates, <em>not</em> to the data array directly.  Unlike for the data itself,
-standard NumPy broadcasting rules are applied for the mask with
-respect to the plates.  So, if the variable has plates <tt class="docutils literal"><span class="pre">(5,1,10)</span></tt>,
-the mask could have a shape <tt class="docutils literal"><span class="pre">(1,)</span></tt>, <tt class="docutils literal"><span class="pre">(10,)</span></tt>, <tt class="docutils literal"><span class="pre">(5,1,1)</span></tt> or
-<tt class="docutils literal"><span class="pre">(5,1,10)</span></tt>.</p>
-<p>From implementational point of view, the inference algorithms ignore
-the missing plates automatically if they are not needed.  Thus, the
-missing values are integrated out giving more accurate approximations
-and the computations may also be faster.</p>
+<p><tt class="docutils literal"><span class="pre">True</span></tt> means that the value is observed and <tt class="docutils literal"><span class="pre">False</span></tt> means that the value is
+missing.  The shape of the above mask is <tt class="docutils literal"><span class="pre">(10,1)</span></tt>, which broadcasts to the
+plates of Y, <tt class="docutils literal"><span class="pre">(10,100)</span></tt>.  Thus, the above mask means that the second, third,
+sixth and tenth rows of the <span class="math">\(10\times 100\)</span> data matrix are missing.</p>
+<p>The mask is applied to the <em>plates</em>, not to the data array directly.  This means
+that it is not possible to observe a random variable partially, each repetition
+defined by the plates is either fully observed or fully missing.  Thus, the mask
+is applied to the plates.  It is often possible to circumvent this seemingly
+tight restriction by adding an observable child node which factorizes more.</p>
+<p>The shape of the mask is broadcasted to plates using standard NumPy broadcasting
+rules. So, if the variable has plates <tt class="docutils literal"><span class="pre">(5,1,10)</span></tt>, the mask could have a shape
+<tt class="docutils literal"><span class="pre">()</span></tt>, <tt class="docutils literal"><span class="pre">(1,)</span></tt>, <tt class="docutils literal"><span class="pre">(1,1)</span></tt>, <tt class="docutils literal"><span class="pre">(1,1,1)</span></tt>, <tt class="docutils literal"><span class="pre">(10,)</span></tt>, <tt class="docutils literal"><span class="pre">(1,10)</span></tt>, <tt class="docutils literal"><span class="pre">(1,1,10)</span></tt>,
+<tt class="docutils literal"><span class="pre">(5,1,1)</span></tt> or <tt class="docutils literal"><span class="pre">(5,1,10)</span></tt>.  In order to speed up the inference, missing values
+are automatically integrated out if they are not needed as latent variables to
+child nodes.  This leads to faster convergence and more accurate approximations.</p>
+</div>
 </div>
 <div class="section" id="choosing-the-inference-method">
-<h3>Choosing the inference method<a class="headerlink" href="#choosing-the-inference-method" title="Permalink to this headline">¶</a></h3>
-<p>Inference methods can be found in <tt class="docutils literal"><span class="pre">bayespy.inference</span></tt> package.
-Currently, only variational Bayesian approximation is implemented
-(<tt class="docutils literal"><span class="pre">bayespy.inference.VB</span></tt>).  The inference engine is constructed by
-giving the nodes of the model.</p>
-<div class="highlight-python3"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">bayespy.inference</span> <span class="k">import</span> <span class="n">VB</span>
-<span class="n">Q</span> <span class="o">=</span> <span class="n">VB</span><span class="p">(</span><span class="n">node1</span><span class="p">,</span> <span class="n">node2</span><span class="p">,</span> <span class="n">node3</span><span class="p">,</span> <span class="n">node4</span><span class="p">)</span>
+<h2>Choosing the inference method<a class="headerlink" href="#choosing-the-inference-method" title="Permalink to this headline">¶</a></h2>
+<p>Inference methods can be found in <tt class="xref py py-mod docutils literal"><span class="pre">bayespy.inference</span></tt> package.  Currently,
+only variational Bayesian approximation is implemented
+(<tt class="xref py py-class docutils literal"><span class="pre">bayespy.inference.VB</span></tt>).  The inference engine is constructed by giving
+the stochastic nodes of the model.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">bayespy.inference</span> <span class="kn">import</span> <span class="n">VB</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Q</span> <span class="o">=</span> <span class="n">VB</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">tau</span><span class="p">)</span>
 </pre></div>
 </div>
+<p>There is no need to give any deterministic nodes.  Currently, the inference
+engine does not automatically search for stochastic parents and children, thus
+it is important that all stochastic nodes of the model are given.  This should
+be made more robust in future versions.</p>
+<p>A node of the model can be obtained by using the name of the node as a key:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Q</span><span class="p">[</span><span class="s">&#39;X&#39;</span><span class="p">]</span>
+<span class="go">&lt;bayespy.inference.vmp.nodes.gaussian.GaussianARD object at 0x...&gt;</span>
+</pre></div>
 </div>
-<div class="section" id="initializing-the-inference">
-<h3>Initializing the inference<a class="headerlink" href="#initializing-the-inference" title="Permalink to this headline">¶</a></h3>
-<p>The inference engines give some initialization to the nodes by
+<p>Note that the returned object is the same as the node object itself:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Q</span><span class="p">[</span><span class="s">&#39;X&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="n">X</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<p>Thus, one may use the object <tt class="docutils literal"><span class="pre">X</span></tt> when it is available.  However, if the model
+and the inference engine are constructed in another function or module, the node
+object may not be available directly and this feature becomes useful.</p>
+</div>
+<div class="section" id="initializing-the-posterior-approximation">
+<h2>Initializing the posterior approximation<a class="headerlink" href="#initializing-the-posterior-approximation" title="Permalink to this headline">¶</a></h2>
+<p>The inference engines give some initialization to the stochastic nodes by
 default.  However, the inference algorithms can be sensitive to the
-initialization, thus it is sometimes necessary to have full control
-over the initialization.  There may be different initialization
-methods, but for VB you can, for instance, initialize in one of the
-following ways:</p>
+initialization, thus it is sometimes necessary to have better control over the
+initialization.  For VB, the following initialization methods are available:</p>
 <ul class="simple">
-<li><tt class="docutils literal"><span class="pre">initialize_from_prior</span></tt>: Use only parent nodes to update the node.</li>
-<li><tt class="docutils literal"><span class="pre">initialize_from_parameters</span></tt>: Use the given parameter values for
-the distribution.</li>
+<li><tt class="docutils literal"><span class="pre">initialize_from_prior</span></tt>: Use the current states of the parent nodes to
+update the node. This is the default initialization.</li>
+<li><tt class="docutils literal"><span class="pre">initialize_from_parameters</span></tt>: Use the given parameter values for the
+distribution.</li>
+<li><tt class="docutils literal"><span class="pre">initialize_from_value</span></tt>: Use the given value for the variable.</li>
+<li><tt class="docutils literal"><span class="pre">initialize_from_random</span></tt>: Draw a random value for the variable.  The random
+sample is drawn from the current state of the node&#8217;s distribution.</li>
 </ul>
-<p>A random initialization for VB has to be performed manually, because
-it is not obvious what is actually wanted.  For instance, one way to
-achieve it is to first update from the parents, then to draw a random
-sample from that distribution and to set the values of the parameters
-based on that.  For <tt class="docutils literal"><span class="pre">Normal</span></tt> node, one could draw the mean parameter
-randomly and choose the precision parameter arbitrarily:</p>
-<div class="highlight-python3"><div class="highlight"><pre><span class="n">x</span> <span class="o">=</span> <span class="n">bp</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">Normal</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span> <span class="n">tau</span><span class="p">,</span> <span class="n">plates</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,))</span>
-<span class="n">x</span><span class="o">.</span><span class="n">initialize_from_prior</span><span class="p">()</span>
-<span class="n">x</span><span class="o">.</span><span class="n">initialize_from_parameters</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">random</span><span class="p">(),</span> <span class="mi">1</span><span class="p">)</span>
+<p>Note that <tt class="docutils literal"><span class="pre">initialize_from_value</span></tt> and <tt class="docutils literal"><span class="pre">initialize_from_random</span></tt> initialize
+the distribution with a value of the variable instead of parameters of the
+distribution.  Thus, the distribution is actually a delta distribution with a
+peak on the value after the initialization.  This state of the distribution does
+not have proper natural parameter values nor normalization, thus the VB lower
+bound terms are <tt class="docutils literal"><span class="pre">np.nan</span></tt> for this initial state.</p>
+<p>These initialization methods can be used to perform even a bit more complex
+initializations.  For instance, a Gaussian distribution could be initialized
+with a random mean and variance 0.1.  In our PCA model, this can be obtained by</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">X</span><span class="o">.</span><span class="n">initialize_from_parameters</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="n">D</span><span class="p">),</span> <span class="mi">10</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>In this case, the precision was set to one.  The default
-initialization method is <tt class="docutils literal"><span class="pre">initialization_from_prior</span></tt>, which is
-performed when the node is created.  If the initialization uses the
-values of the parents, they should be initialized before the children.</p>
+<p>Note that the shape of the random mean is the sum of the plates <tt class="docutils literal"><span class="pre">(1,</span> <span class="pre">100)</span></tt> and
+the variable shape <tt class="docutils literal"><span class="pre">(D,)</span></tt>.  In addition, instead of variance,
+<tt class="xref py py-class docutils literal"><span class="pre">GaussianARD</span></tt> uses precision as the second parameter, thus we initialized
+the variance to <span class="math">\(\frac{1}{10}\)</span>.  This random initialization is important
+in our PCA model because the default initialization gives <tt class="docutils literal"><span class="pre">C</span></tt> and <tt class="docutils literal"><span class="pre">X</span></tt> zero
+mean.  If the mean of the other variable was zero when the other is updated, the
+other variable gets zero mean too.  This would lead to an update algorithm where
+both means remain zeros and effectively no latent space is found.  Thus, it is
+important to give non-zero random initialization for <tt class="docutils literal"><span class="pre">X</span></tt> if <tt class="docutils literal"><span class="pre">C</span></tt> is updated
+before <tt class="docutils literal"><span class="pre">X</span></tt> the first time.  It is typical that at least some nodes need be
+initialized with some randomness.</p>
+<p>By default, nodes are initialized with the method <tt class="docutils literal"><span class="pre">initialize_from_prior</span></tt>.
+The method is not very time consuming but if for any reason you want to avoid
+that default initialization computation, you can provide <tt class="docutils literal"><span class="pre">initialize=False</span></tt>
+when creating the stochastic node.  However, the node does not have a proper
+state in that case, which leads to errors in VB learning unless the distribution
+is initialized using the above methods.</p>
 </div>
 <div class="section" id="running-the-inference-algorithm">
-<h3>Running the inference algorithm<a class="headerlink" href="#running-the-inference-algorithm" title="Permalink to this headline">¶</a></h3>
+<h2>Running the inference algorithm<a class="headerlink" href="#running-the-inference-algorithm" title="Permalink to this headline">¶</a></h2>
 <p>The approximation methods are based on iterative algorithms, which can
-be run using <tt class="docutils literal"><span class="pre">update</span></tt> method.  By default, it takes one iteration
-step updating all nodes once.  However, you can give as arguments the
-nodes you want to update and they are updated in the given order. It
-is possible to give same nodes several times, for instance:</p>
-<div class="highlight-python3"><div class="highlight"><pre><span class="n">Q</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">node1</span><span class="p">,</span> <span class="n">node3</span><span class="p">,</span> <span class="n">node1</span><span class="p">,</span> <span class="n">node4</span><span class="p">)</span>
+be run using <tt class="docutils literal"><span class="pre">update</span></tt> method. By default, it takes one iteration step
+updating all nodes once:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Q</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+<span class="go">Iteration 1: loglike=-9.022564e+02 (... seconds)</span>
 </pre></div>
 </div>
-<p>This would update <tt class="docutils literal"><span class="pre">node3</span></tt> and <tt class="docutils literal"><span class="pre">node4</span></tt> once, and <tt class="docutils literal"><span class="pre">node1</span></tt> twice.
-In order to update several times, one can use the optional argument
-<tt class="docutils literal"><span class="pre">repeat</span></tt>.</p>
-<div class="highlight-python3"><div class="highlight"><pre><span class="n">Q</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">node3</span><span class="p">,</span> <span class="n">node4</span><span class="p">,</span> <span class="n">repeat</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
-<span class="n">Q</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">node1</span><span class="p">,</span> <span class="n">node2</span><span class="p">,</span> <span class="n">node3</span><span class="p">,</span> <span class="n">node4</span><span class="p">,</span> <span class="n">repeat</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<p>The order in which the nodes are updated is the same as the order in which the
+nodes were given when creating <tt class="docutils literal"><span class="pre">Q</span></tt>.  If you want to change the order or update
+only some of the nodes, you can give as arguments the nodes you want to update
+and they are updated in the given order:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Q</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">C</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span>
+<span class="go">Iteration 2: loglike=-8.300209e+02 (... seconds)</span>
 </pre></div>
 </div>
-<p>This first updates <tt class="docutils literal"><span class="pre">node3</span></tt> and <tt class="docutils literal"><span class="pre">node4</span></tt> five times and then all the
-nodes ten times.  This might be useful, for instance, if updating some
-nodes is expensive and should be done rarely or if updating some nodes
-in the beginning would cause the algorithm to converge to a bad
-solution.</p>
-<div class="admonition warning">
-<p class="first admonition-title">Warning</p>
-<p class="last">Ideally, one constructs the model and then chooses the inference
-method to be used - possibly trying several different methods.
-However, the model construction is not yet separated from the model
-construction, that is, the constructed model network is also the
-variational message passing network for VB inference.</p>
+<p>It is also possible to give the same node several times:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Q</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">C</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">tau</span><span class="p">)</span>
+<span class="go">Iteration 3: loglike=-7.608389e+02 (... seconds)</span>
+</pre></div>
 </div>
+<p>Note that each call to <tt class="docutils literal"><span class="pre">update</span></tt> is counted as one iteration step although not
+variables are necessarily updated.  Instead of doing one iteration step,
+<tt class="docutils literal"><span class="pre">repeat</span></tt> keyword argument can be used to perform several iteration steps:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Q</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">repeat</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<span class="go">Iteration 4: loglike=-6.909768e+02 (... seconds)</span>
+<span class="go">Iteration 5: loglike=-5.975477e+02 (... seconds)</span>
+<span class="go">Iteration 6: loglike=-4.328053e+02 (... seconds)</span>
+<span class="go">Iteration 7: loglike=-2.802900e+02 (... seconds)</span>
+<span class="go">Iteration 8: loglike=-1.628321e+02 (... seconds)</span>
+<span class="go">Iteration 9: loglike=-9.664200e+01 (... seconds)</span>
+<span class="go">Iteration 10: loglike=-7.202233e+01 (... seconds)</span>
+<span class="go">Iteration 11: loglike=-6.580980e+01 (... seconds)</span>
+<span class="go">Iteration 12: loglike=-6.444844e+01 (... seconds)</span>
+<span class="go">Iteration 13: loglike=-6.400242e+01 (... seconds)</span>
+</pre></div>
+</div>
+<p>The VB algorithm stops automatically if it converges, that is, the relative
+change in the lower bound is below some threshold:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Q</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">repeat</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
+<span class="go">Iteration 14: loglike=-6.371002e+01 (... seconds)</span>
+<span class="gp">...</span>
+<span class="go">Iteration 48: loglike=8.275500e+02 (... seconds)</span>
+<span class="go">Converged at iteration 48.</span>
+</pre></div>
+</div>
+<p>Now the algorithm stopped before taking 1000 iteration steps because it
+converged.  The relative tolerance can be adjusted by providing <tt class="docutils literal"><span class="pre">tol</span></tt> keyword
+argument to the <tt class="docutils literal"><span class="pre">update</span></tt> method:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Q</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">repeat</span><span class="o">=</span><span class="mi">10000</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">)</span>
+<span class="go">Iteration 49: loglike=8.275572e+02 (... seconds)</span>
+<span class="gp">...</span>
+<span class="go">Iteration 1731: loglike=8.320980e+02 (... seconds)</span>
+<span class="go">Converged at iteration 1731.</span>
+</pre></div>
+</div>
+<p>This shows that making the tolerance smaller, may improve the result but it may
+also significantly increase the iteration steps until convergence.</p>
+<p>Instead of using <tt class="docutils literal"><span class="pre">update</span></tt> method of the inference engine <tt class="docutils literal"><span class="pre">VB</span></tt>, it is
+possible to use the <tt class="docutils literal"><span class="pre">update</span></tt> methods of the nodes directly as</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">C</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>or</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Q</span><span class="p">[</span><span class="s">&#39;C&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>However, this is not recommended, because the <tt class="docutils literal"><span class="pre">update</span></tt> method of the inference
+engine <tt class="docutils literal"><span class="pre">VB</span></tt> is a wrapper which, in addition to calling the nodes&#8217; <tt class="docutils literal"><span class="pre">update</span></tt>
+methods, checks for convergence and does a few other useful minor things.  But
+if for any reason these direct update methods are needed, they can be used.</p>
+<div class="section" id="parameter-expansion">
+<h3>Parameter expansion<a class="headerlink" href="#parameter-expansion" title="Permalink to this headline">¶</a></h3>
+<p>Sometimes the VB algorithm converges very slowly.  This may happen when the
+variables are strongly coupled in the true posterior but factorized in the
+approximate posterior.  This coupling leads to zigzagging of the variational
+parameters which progresses slowly.  One solution to this problem is to use
+parameter expansion.  The idea is to add an auxiliary variable which
+parameterizes the posterior approximation of several variables.  Then optimizing
+this auxiliary variable actually optimizes several posterior approximations
+jointly leading to faster convergence.</p>
+<p>The parameter expansion is model specific.  Currently in BayesPy, only
+state-space models have built-in parameter expansions available.  These
+state-space models contain a variable which is a dot product of two variables
+(plus some noise):</p>
+<div class="math">
+\[y = \mathbf{c}^T\mathbf{x} + \mathrm{noise}\]</div>
+<p>The parameter expansion can be motivated by noticing that we can add an
+auxiliary variable which rotates the variables <span class="math">\(\mathbf{c}\)</span> and
+<span class="math">\(\mathbf{x}\)</span> so that the dot product is unaffected:</p>
+<div class="math">
+\[\begin{split}y &amp;= \mathbf{c}^T\mathbf{x} + \mathrm{noise}
+= \mathbf{c}^T \mathbf{R} \mathbf{R}^{-1}\mathbf{x} + \mathrm{noise}
+= (\mathbf{R}^T\mathbf{c})^T(\mathbf{R}^{-1}\mathbf{x}) + \mathrm{noise}\end{split}\]</div>
+<p>Now, applying this rotation to the posterior approximations
+<span class="math">\(q(\mathbf{c})\)</span> and <span class="math">\(q(\mathbf{x})\)</span>, and optimizing the VB lower
+bound with respect to the rotation leads to parameterized joint optimization of
+<span class="math">\(\mathbf{c}\)</span> and <span class="math">\(\mathbf{x}\)</span>.</p>
+<p>The available parameter expansion methods are in module <tt class="docutils literal"><span class="pre">transformations</span></tt>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">bayespy.inference.vmp</span> <span class="kn">import</span> <span class="n">transformations</span>
+</pre></div>
+</div>
+<p>First, you create the rotation transformations for the two variables:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">rotX</span> <span class="o">=</span> <span class="n">transformations</span><span class="o">.</span><span class="n">RotateGaussianARD</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rotC</span> <span class="o">=</span> <span class="n">transformations</span><span class="o">.</span><span class="n">RotateGaussianARD</span><span class="p">(</span><span class="n">C</span><span class="p">,</span> <span class="n">alpha</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Here, the rotation for <tt class="docutils literal"><span class="pre">C</span></tt> provides the ARD parameters <tt class="docutils literal"><span class="pre">alpha</span></tt> so they are
+updated simultaneously.  In addition to <tt class="xref py py-class docutils literal"><span class="pre">RotateGaussianARD</span></tt>, there are a
+few other built-in rotations defined, for instance, <tt class="xref py py-class docutils literal"><span class="pre">RotateGaussian</span></tt> and
+<tt class="xref py py-class docutils literal"><span class="pre">RotateGaussianMarkovChain</span></tt>.  It is extremely important that the model
+satisfies the assumptions made by the rotation class and the user is mostly
+responsible for this.  The optimizer for the rotations is constructed by giving
+the two rotations and the dimensionality of the rotated space:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">R</span> <span class="o">=</span> <span class="n">transformations</span><span class="o">.</span><span class="n">RotationOptimizer</span><span class="p">(</span><span class="n">rotC</span><span class="p">,</span> <span class="n">rotX</span><span class="p">,</span> <span class="n">D</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Now, calling <tt class="docutils literal"><span class="pre">rotate</span></tt> method will find optimal rotation and update the
+relevant nodes (<tt class="docutils literal"><span class="pre">X</span></tt>, <tt class="docutils literal"><span class="pre">C</span></tt> and <tt class="docutils literal"><span class="pre">alpha</span></tt>) accordingly:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">R</span><span class="o">.</span><span class="n">rotate</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Let us see how our iteration would have gone if we had used this parameter
+expansion.  First, let us re-initialize our nodes and VB algorithm:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">alpha</span><span class="o">.</span><span class="n">initialize_from_prior</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">C</span><span class="o">.</span><span class="n">initialize_from_prior</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">X</span><span class="o">.</span><span class="n">initialize_from_parameters</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="n">D</span><span class="p">),</span> <span class="mi">10</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tau</span><span class="o">.</span><span class="n">initialize_from_prior</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Q</span> <span class="o">=</span> <span class="n">VB</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">tau</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Then, the rotation is set to run after each iteration step:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Q</span><span class="o">.</span><span class="n">callback</span> <span class="o">=</span> <span class="n">R</span><span class="o">.</span><span class="n">rotate</span>
+</pre></div>
+</div>
+<p>Now the iteration converges to the relative tolerance <span class="math">\(10^{-6}\)</span> much
+faster:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Q</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">repeat</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">)</span>
+<span class="go">Iteration 1: loglike=-9.360795e+02 (... seconds)</span>
+<span class="gp">...</span>
+<span class="go">Iteration 20: loglike=-2.962718e+01 (... seconds)</span>
+<span class="go">Converged at iteration 20.</span>
+</pre></div>
+</div>
+<p>However, the lower bound is worse than after converging to the same tolerance in
+1731 iteration steps without the parameter expansion.  To reach a better
+solution, we can force the VB algorithm to proceed for some iterations:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Q</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">repeat</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
+<span class="go">Iteration 21: loglike=-2.962718e+01 (... seconds)</span>
+<span class="gp">...</span>
+<span class="go">Iteration 70: loglike=8.560601e+02 (... seconds)</span>
+</pre></div>
+</div>
+<p>Now the iteration converged to a similar (actually slightly better) lower bound
+than before and much faster: 70 iterations versus 1731 iterations.  One can
+compare the number of iteration steps in this case because the cost per
+iteration step with or without parameter expansion is approximately the same.
+However, this shows that the parameter expansion can have the drawback that it
+converges much faster but may converge to a bad local optimum more easily.
+Usually, this can solved by updating the nodes near the observations a few times
+before starting to update the hyperparameters and to use parameter expansion.
+In any case, the parameter expansion is practically necessary when using
+state-space models in order to converge to a proper solution in a reasonable
+time.</p>
 </div>
 </div>
 </div>
@@ -175,11 +356,14 @@ variational message passing network for VB inference.</p>
   <h3><a href="../index.html">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">Performing inference</a><ul>
-<li><a class="reference internal" href="#providing-the-data">Providing the data</a><ul>
+<li><a class="reference internal" href="#observing-nodes">Observing nodes</a><ul>
 <li><a class="reference internal" href="#missing-values">Missing values</a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#choosing-the-inference-method">Choosing the inference method</a></li>
-<li><a class="reference internal" href="#initializing-the-inference">Initializing the inference</a></li>
-<li><a class="reference internal" href="#running-the-inference-algorithm">Running the inference algorithm</a></li>
+<li><a class="reference internal" href="#initializing-the-posterior-approximation">Initializing the posterior approximation</a></li>
+<li><a class="reference internal" href="#running-the-inference-algorithm">Running the inference algorithm</a><ul>
+<li><a class="reference internal" href="#parameter-expansion">Parameter expansion</a></li>
 </ul>
 </li>
 </ul>

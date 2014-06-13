@@ -1,0 +1,405 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Test title &mdash; BayesPy v0.1 Documentation</title>
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="BayesPy v0.1 Documentation" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li><a href="../index.html">BayesPy v0.1 Documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="test-title">
+<h1>Test title<a class="headerlink" href="#test-title" title="Permalink to this headline">¶</a></h1>
+<p>Some text. I&#8217;d like HTML to make a page break here.</p>
+<br style="page-break-after: always" /></div>
+<div class="section" id="performing-inference">
+<h1>Performing inference<a class="headerlink" href="#performing-inference" title="Permalink to this headline">¶</a></h1>
+<p>Approximation of the posterior distribution can be divided into several
+steps:</p>
+<ul class="simple">
+<li>Observe some nodes</li>
+<li>Choose the inference engine</li>
+<li>Initialize the posterior approximation</li>
+<li>Run the inference algorithm</li>
+</ul>
+<p>In order to illustrate these steps, we&#8217;ll consider a principal component
+analysis model:</p>
+<div class="code python highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">bayespy.nodes</span> <span class="kn">import</span> <span class="n">GaussianARD</span><span class="p">,</span> <span class="n">Gamma</span><span class="p">,</span> <span class="n">Dot</span>
+<span class="n">D</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">GaussianARD</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span>
+                <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">D</span><span class="p">,),</span>
+                <span class="n">plates</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">100</span><span class="p">),</span>
+                <span class="n">name</span><span class="o">=</span><span class="s">&#39;X&#39;</span><span class="p">)</span>
+<span class="n">alpha</span> <span class="o">=</span> <span class="n">Gamma</span><span class="p">(</span><span class="mf">1e-3</span><span class="p">,</span> <span class="mf">1e-3</span><span class="p">,</span>
+              <span class="n">plates</span><span class="o">=</span><span class="p">(</span><span class="n">D</span><span class="p">,),</span>
+              <span class="n">name</span><span class="o">=</span><span class="s">&#39;alpha&#39;</span><span class="p">)</span>
+<span class="n">C</span> <span class="o">=</span> <span class="n">GaussianARD</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span>
+                <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">D</span><span class="p">,),</span>
+                <span class="n">plates</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span>
+                <span class="n">name</span><span class="o">=</span><span class="s">&#39;C&#39;</span><span class="p">)</span>
+<span class="n">F</span> <span class="o">=</span> <span class="n">Dot</span><span class="p">(</span><span class="n">C</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span>
+<span class="n">tau</span> <span class="o">=</span> <span class="n">Gamma</span><span class="p">(</span><span class="mf">1e-3</span><span class="p">,</span> <span class="mf">1e-3</span><span class="p">)</span>
+<span class="n">Y</span> <span class="o">=</span> <span class="n">GaussianARD</span><span class="p">(</span><span class="n">F</span><span class="p">,</span> <span class="n">tau</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="figure">
+<p><img src="../_images/tikz-307fb0a885708938a65a3d026cfcd9fd78762ef6.png" alt="% tikzlibrary.code.tex
+%
+% Copyright 2010-2011 by Laura Dietz
+% Copyright 2012 by Jaakko Luttinen
+%
+% This file may be distributed and/or modified
+%
+% 1. under the LaTeX Project Public License and/or
+% 2. under the GNU General Public License.
+%
+% See the files LICENSE_LPPL and LICENSE_GPL for more details.
+
+% Load other libraries
+\usetikzlibrary{shapes}
+\usetikzlibrary{fit}
+\usetikzlibrary{chains}
+\usetikzlibrary{arrows}
+
+% Latent node
+\tikzstyle{latent} = [circle,fill=white,draw=black,inner sep=1pt,
+minimum size=20pt, font=\fontsize{10}{10}\selectfont, node distance=1]
+% Observed node
+\tikzstyle{obs} = [latent,fill=gray!25]
+% Constant node
+\tikzstyle{const} = [rectangle, inner sep=0pt, node distance=1]
+% Factor node
+\tikzstyle{factor} = [rectangle, fill=black,minimum size=5pt, inner
+sep=0pt, node distance=0.4]
+% Deterministic node
+\tikzstyle{det} = [latent, diamond]
+
+% Plate node
+\tikzstyle{plate} = [draw, rectangle, rounded corners, fit=#1]
+% Invisible wrapper node
+\tikzstyle{wrap} = [inner sep=0pt, fit=#1]
+% Gate
+\tikzstyle{gate} = [draw, rectangle, dashed, fit=#1]
+
+% Caption node
+\tikzstyle{caption} = [font=\footnotesize, node distance=0] %
+\tikzstyle{plate caption} = [caption, node distance=0, inner sep=0pt,
+below left=5pt and 0pt of #1.south east] %
+\tikzstyle{factor caption} = [caption] %
+\tikzstyle{every label} += [caption] %
+
+\tikzset{&gt;={triangle 45}}
+
+%\pgfdeclarelayer{b}
+%\pgfdeclarelayer{f}
+%\pgfsetlayers{b,main,f}
+
+% \factoredge [options] {inputs} {factors} {outputs}
+\newcommand{\factoredge}[4][]{ %
+  % Connect all nodes #2 to all nodes #4 via all factors #3.
+  \foreach \f in {#3} { %
+    \foreach \x in {#2} { %
+      \draw[-,#1] (\x) edge[-] (\f) ; %
+    } ;
+    \foreach \y in {#4} { %
+      \draw[-&gt;,#1] (\f) -- (\y) ; %
+    } ;
+  } ;
+}
+
+% \edge [options] {inputs} {outputs}
+\newcommand{\edge}[3][]{ %
+  % Connect all nodes #2 to all nodes #3.
+  \foreach \x in {#2} { %
+    \foreach \y in {#3} { %
+      \draw[-&gt;,#1] (\x) -- (\y) ;%
+    } ;
+  } ;
+}
+
+% \factor [options] {name} {caption} {inputs} {outputs}
+\newcommand{\factor}[5][]{ %
+  % Draw the factor node. Use alias to allow empty names.
+  \node[factor, label={[name=#2-caption]#3}, name=#2, #1,
+  alias=#2-alias] {} ; %
+  % Connect all inputs to outputs via this factor
+  \factoredge {#4} {#2-alias} {#5} ; %
+}
+
+% \plate [options] {name} {fitlist} {caption}
+\newcommand{\plate}[4][]{ %
+  \node[wrap=#3] (#2-wrap) {}; %
+  \node[plate caption=#2-wrap] (#2-caption) {#4}; %
+  \node[plate=(#2-wrap)(#2-caption), #1] (#2) {}; %
+}
+
+% \gate [options] {name} {fitlist} {inputs}
+\newcommand{\gate}[4][]{ %
+  \node[gate=#3, name=#2, #1, alias=#2-alias] {}; %
+  \foreach \x in {#4} { %
+    \draw [-*,thick] (\x) -- (#2-alias); %
+  } ;%
+}
+
+% \vgate {name} {fitlist-left} {caption-left} {fitlist-right}
+% {caption-right} {inputs}
+\newcommand{\vgate}[6]{ %
+  % Wrap the left and right parts
+  \node[wrap=#2] (#1-left) {}; %
+  \node[wrap=#4] (#1-right) {}; %
+  % Draw the gate
+  \node[gate=(#1-left)(#1-right)] (#1) {}; %
+  % Add captions
+  \node[caption, below left=of #1.north ] (#1-left-caption)
+  {#3}; %
+  \node[caption, below right=of #1.north ] (#1-right-caption)
+  {#5}; %
+  % Draw middle separation
+  \draw [-, dashed] (#1.north) -- (#1.south); %
+  % Draw inputs
+  \foreach \x in {#6} { %
+    \draw [-*,thick] (\x) -- (#1); %
+  } ;%
+}
+
+% \hgate {name} {fitlist-top} {caption-top} {fitlist-bottom}
+% {caption-bottom} {inputs}
+\newcommand{\hgate}[6]{ %
+  % Wrap the left and right parts
+  \node[wrap=#2] (#1-top) {}; %
+  \node[wrap=#4] (#1-bottom) {}; %
+  % Draw the gate
+  \node[gate=(#1-top)(#1-bottom)] (#1) {}; %
+  % Add captions
+  \node[caption, above right=of #1.west ] (#1-top-caption)
+  {#3}; %
+  \node[caption, below right=of #1.west ] (#1-bottom-caption)
+  {#5}; %
+  % Draw middle separation
+  \draw [-, dashed] (#1.west) -- (#1.east); %
+  % Draw inputs
+  \foreach \x in {#6} { %
+    \draw [-*,thick] (\x) -- (#1); %
+  } ;%
+}
+
+\node[latent] (y) {$\mathbf{y}_{mn}$} ;
+\node[det, above left=1 and 2 of y] (dot) {dot} ;
+\node[latent, above right=1 and 2 of y] (tau) {$\tau$} ;
+\node[latent, above left=1 and 2 of dot] (C) {$c_{md}$} ;
+\node[latent, above=of C] (alpha) {$\alpha_d$} ;
+\node[latent, above right=1 and 1 of dot] (X) {$x_{nd}$} ;
+
+\factor[above=of y] {y-f} {above:$\mathcal{N}$} {dot,tau} {y};
+\factor[above=of C] {C-f} {above:$\mathcal{N}$} {alpha} {C};
+\factor[above=of X] {X-f} {above:$\mathcal{N}$} {} {X};
+\factor[above=of alpha] {alpha-f} {above:$\mathcal{G}$} {} {alpha};
+\factor[above=of tau] {tau-f} {above:$\mathcal{G}$} {} {tau};
+
+\plate {d-plate} {(X)(X-f)(X-f-caption)(C)(C-f)(C-f-caption)(alpha)(alpha-f)(alpha-f-caption)} {$d=0,\ldots,2$} ;
+\plate {m-plate} {(y)(y-f)(y-f-caption)(C)(C-f)(C-f-caption)} {$m=0,\ldots,9$} ;
+\plate {n-plate} {(y)(y-f)(y-f-caption)(X)(X-f)(X-f-caption)(m-plate-caption)(m-plate.north east)} {$n=0,\ldots,99$} ;" /></p>
+</div><div class="section" id="observing-nodes">
+<h2>Observing nodes<a class="headerlink" href="#observing-nodes" title="Permalink to this headline">¶</a></h2>
+<p>The data is provided by simply calling <tt class="docutils literal"><span class="pre">observe</span></tt> method of a
+stochastic node:</p>
+<div class="code python highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">bayespy.nodes</span> <span class="kn">import</span> <span class="n">GaussianARD</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">GaussianARD</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">plates</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,))</span>
+<span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="mf">2.3</span><span class="p">,</span> <span class="mf">1.1</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">3.1</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">,</span> <span class="mf">2.3</span><span class="p">,</span> <span class="mf">1.9</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mf">1.2</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.1</span><span class="p">]</span>
+<span class="n">y</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>It is important that the shape of the <tt class="docutils literal"><span class="pre">data</span></tt> array matches the plates and shape
+of the node <tt class="docutils literal"><span class="pre">y</span></tt>  For instance, if <tt class="docutils literal"><span class="pre">y</span></tt> is <tt class="xref py py-class docutils literal"><span class="pre">Wishart</span></tt> node for
+<span class="math">\(3\times 3\)</span> matrices with plates <tt class="docutils literal"><span class="pre">(5,1,10)</span></tt>, the full shape
+of <tt class="docutils literal"><span class="pre">y</span></tt> would be <tt class="docutils literal"><span class="pre">(5,1,10,3,3)</span></tt>.  The data array must have this
+shape exactly, that is, no broadcasting rules are applied.</p>
+<div class="section" id="missing-values">
+<h3>Missing values<a class="headerlink" href="#missing-values" title="Permalink to this headline">¶</a></h3>
+<p>It is possible to mark missing values by providing a mask:</p>
+<div class="code python highlight-python"><div class="highlight"><pre><span class="n">y</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="p">[</span><span class="bp">True</span><span class="p">,</span> <span class="bp">False</span><span class="p">,</span> <span class="bp">False</span><span class="p">,</span> <span class="bp">True</span><span class="p">,</span> <span class="bp">True</span><span class="p">,</span>
+                      <span class="bp">False</span><span class="p">,</span> <span class="bp">True</span><span class="p">,</span> <span class="bp">True</span><span class="p">,</span> <span class="bp">True</span><span class="p">,</span> <span class="bp">False</span><span class="p">])</span>
+</pre></div>
+</div>
+<p><tt class="docutils literal"><span class="pre">True</span></tt> means that the value is observed and <tt class="docutils literal"><span class="pre">False</span></tt> means that the
+value is missing. The mask is applied to the <em>plates</em>, not to the data
+array directly. This means that it is not possible to observe a random
+variable partially, each repetition defined by the plates is either
+fully observed or fully missing. Thus, the mask is applied to the
+plates. It is often possible to circumvent this seemingly tight
+restriction by adding an observable child node which factorizes more.</p>
+<p>The shape of the mask is broadcasted to plates using standard NumPy
+broadcasting rules. So, if the variable has plates <tt class="docutils literal"><span class="pre">(5,1,10)</span></tt>, the
+mask could have a shape <tt class="docutils literal"><span class="pre">()</span></tt>, <tt class="docutils literal"><span class="pre">(1,)</span></tt>, <tt class="docutils literal"><span class="pre">(1,1)</span></tt>, <tt class="docutils literal"><span class="pre">(1,1,1)</span></tt>,
+<tt class="docutils literal"><span class="pre">(10,)</span></tt>, <tt class="docutils literal"><span class="pre">(1,10)</span></tt>, <tt class="docutils literal"><span class="pre">(1,1,10)</span></tt>, <tt class="docutils literal"><span class="pre">(5,1,1)</span></tt> or <tt class="docutils literal"><span class="pre">(5,1,10)</span></tt>. In
+order to speed up the inference, missing plates are automatically
+ignored by the inference algorithm if they are not needed. Thus, the
+missing values are integrated out giving more accurate approximations
+faster.</p>
+</div>
+</div>
+<div class="section" id="choosing-the-inference-method">
+<h2>Choosing the inference method<a class="headerlink" href="#choosing-the-inference-method" title="Permalink to this headline">¶</a></h2>
+<p>Inference methods can be found in <tt class="xref py py-mod docutils literal"><span class="pre">bayespy.inference</span></tt> package.
+Currently, only variational Bayesian approximation is implemented
+(<tt class="xref py py-class docutils literal"><span class="pre">bayespy.inference.VB</span></tt>).  The inference engine is constructed by
+giving the nodes of the model.</p>
+<div class="code python highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">bayespy.inference</span> <span class="kn">import</span> <span class="n">VB</span>
+<span class="n">Q</span> <span class="o">=</span> <span class="n">VB</span><span class="p">(</span><span class="n">node1</span><span class="p">,</span> <span class="n">node2</span><span class="p">,</span> <span class="n">node3</span><span class="p">,</span> <span class="n">node4</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="initializing-the-inference">
+<h2>Initializing the inference<a class="headerlink" href="#initializing-the-inference" title="Permalink to this headline">¶</a></h2>
+<p>The inference engines give some initialization to the nodes by default.
+However, the inference algorithms can be sensitive to the
+initialization, thus it is sometimes necessary to have full control over
+the initialization. There may be different initialization methods, but
+for VB you can, for instance, initialize in one of the following ways:</p>
+<ul class="simple">
+<li><tt class="docutils literal"><span class="pre">initialize_from_prior</span></tt>: Use only parent nodes to update the node.</li>
+<li><tt class="docutils literal"><span class="pre">initialize_from_parameters</span></tt>: Use the given parameter values for
+the distribution.</li>
+</ul>
+<p>A random initialization for VB has to be performed manually, because it
+is not obvious what is actually wanted. For instance, one way to achieve
+it is to first update from the parents, then to draw a random sample
+from that distribution and to set the values of the parameters based on
+that. For <tt class="docutils literal"><span class="pre">Normal</span></tt> node, one could draw the mean parameter randomly
+and choose the precision parameter arbitrarily:</p>
+<div class="code python highlight-python"><div class="highlight"><pre><span class="n">x</span> <span class="o">=</span> <span class="n">bp</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">Normal</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span> <span class="n">tau</span><span class="p">,</span> <span class="n">plates</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,))</span>
+<span class="n">x</span><span class="o">.</span><span class="n">initialize_from_prior</span><span class="p">()</span>
+<span class="n">x</span><span class="o">.</span><span class="n">initialize_from_parameters</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">random</span><span class="p">(),</span> <span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>In this case, the precision was set to one. The default initialization
+method is <tt class="docutils literal"><span class="pre">initialization_from_prior</span></tt>, which is performed when the
+node is created. If the initialization uses the values of the parents,
+they should be initialized before the children.</p>
+</div>
+<div class="section" id="running-the-inference-algorithm">
+<h2>Running the inference algorithm<a class="headerlink" href="#running-the-inference-algorithm" title="Permalink to this headline">¶</a></h2>
+<p>The approximation methods are based on iterative algorithms, which can
+be run using <tt class="docutils literal"><span class="pre">update</span></tt> method. By default, it takes one iteration step
+updating all nodes once. However, you can give as arguments the nodes
+you want to update and they are updated in the given order. It is
+possible to give same nodes several times, for instance:</p>
+<div class="code python highlight-python"><div class="highlight"><pre><span class="n">Q</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">node1</span><span class="p">,</span> <span class="n">node3</span><span class="p">,</span> <span class="n">node1</span><span class="p">,</span> <span class="n">node4</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This would update <tt class="docutils literal"><span class="pre">node3</span></tt> and <tt class="docutils literal"><span class="pre">node4</span></tt> once, and <tt class="docutils literal"><span class="pre">node1</span></tt> twice. In
+order to update several times, one can use the optional argument
+<tt class="docutils literal"><span class="pre">repeat</span></tt>.</p>
+<div class="code python highlight-python"><div class="highlight"><pre><span class="n">Q</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">node3</span><span class="p">,</span> <span class="n">node4</span><span class="p">,</span> <span class="n">repeat</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">Q</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">node1</span><span class="p">,</span> <span class="n">node2</span><span class="p">,</span> <span class="n">node3</span><span class="p">,</span> <span class="n">node4</span><span class="p">,</span> <span class="n">repeat</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This first updates <tt class="docutils literal"><span class="pre">node3</span></tt> and <tt class="docutils literal"><span class="pre">node4</span></tt> five times and then all the
+nodes ten times. This might be useful, for instance, if updating some
+nodes is expensive and should be done rarely or if updating some nodes
+in the beginning would cause the algorithm to converge to a bad
+solution.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Ideally, one constructs the model and then chooses the inference
+method to be used - possibly trying several different methods.
+However, the model construction is not yet separated from the model
+construction, that is, the constructed model network is also the
+variational message passing network for VB inference.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Test title</a></li>
+<li><a class="reference internal" href="#performing-inference">Performing inference</a><ul>
+<li><a class="reference internal" href="#observing-nodes">Observing nodes</a><ul>
+<li><a class="reference internal" href="#missing-values">Missing values</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#choosing-the-inference-method">Choosing the inference method</a></li>
+<li><a class="reference internal" href="#initializing-the-inference">Initializing the inference</a></li>
+<li><a class="reference internal" href="#running-the-inference-algorithm">Running the inference algorithm</a></li>
+</ul>
+</li>
+</ul>
+
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/user_guide/inference_backup.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li><a href="../index.html">BayesPy v0.1 Documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011-2014, Jaakko Luttinen, GPLv3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>
