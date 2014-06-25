@@ -25,7 +25,7 @@
     <script type="text/javascript" src="../../../../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="top" title="BayesPy v0.1 Documentation" href="../../../../../index.html" />
-    <link rel="up" title="Module code" href="../../../../index.html" /> 
+    <link rel="up" title="bayespy.inference" href="../../../inference.html" /> 
   </head>
   <body>
     <div class="related">
@@ -34,8 +34,12 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../../../../genindex.html" title="General Index"
              accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
         <li><a href="../../../../../index.html">BayesPy v0.1 Documentation</a> &raquo;</li>
-          <li><a href="../../../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+          <li><a href="../../../../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../../../inference.html" accesskey="U">bayespy.inference</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -130,7 +134,7 @@
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
 
         
-<div class="viewcode-block" id="Stochastic"><a class="viewcode-back" href="../../../../../user_api/generated/bayespy.inference.vmp.nodes.stochastic.Stochastic.html#bayespy.inference.vmp.nodes.stochastic.Stochastic">[docs]</a><span class="k">class</span> <span class="nc">Stochastic</span><span class="p">(</span><span class="n">Node</span><span class="p">):</span>
+<div class="viewcode-block" id="Stochastic"><a class="viewcode-back" href="../../../../../dev_api/generated/bayespy.inference.vmp.nodes.stochastic.Stochastic.html#bayespy.inference.vmp.nodes.stochastic.Stochastic">[docs]</a><span class="k">class</span> <span class="nc">Stochastic</span><span class="p">(</span><span class="n">Node</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Base class for nodes that are stochastic.</span>
 
@@ -210,7 +214,7 @@
     <span class="k">def</span> <span class="nf">_compute_mask_to_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">mask</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_distribution</span><span class="o">.</span><span class="n">compute_mask_to_parent</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">mask</span><span class="p">)</span>
 
-<div class="viewcode-block" id="Stochastic.get_moments"><a class="viewcode-back" href="../../../../../user_api/generated/bayespy.inference.vmp.nodes.stochastic.Stochastic.get_moments.html#bayespy.inference.vmp.nodes.stochastic.Stochastic.get_moments">[docs]</a>    <span class="k">def</span> <span class="nf">get_moments</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Stochastic.get_moments"><a class="viewcode-back" href="../../../../../dev_api/generated/bayespy.inference.vmp.nodes.stochastic.Stochastic.get_moments.html#bayespy.inference.vmp.nodes.stochastic.Stochastic.get_moments">[docs]</a>    <span class="k">def</span> <span class="nf">get_moments</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c"># Just for safety, do not return a reference to the moment list of this</span>
         <span class="c"># node but instead create a copy of the list. </span>
         <span class="k">return</span> <span class="p">[</span><span class="n">ui</span> <span class="k">for</span> <span class="n">ui</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="p">]</span>
@@ -278,24 +282,24 @@
                        <span class="bp">self</span><span class="o">.</span><span class="n">dims</span><span class="p">[</span><span class="n">ind</span><span class="p">]))</span>
 
                 
-<div class="viewcode-block" id="Stochastic.update"><a class="viewcode-back" href="../../../../../user_api/generated/bayespy.inference.vmp.nodes.stochastic.Stochastic.update.html#bayespy.inference.vmp.nodes.stochastic.Stochastic.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Stochastic.update"><a class="viewcode-back" href="../../../../../dev_api/generated/bayespy.inference.vmp.nodes.stochastic.Stochastic.update.html#bayespy.inference.vmp.nodes.stochastic.Stochastic.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">observed</span><span class="p">):</span>
             <span class="n">u_parents</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_message_from_parents</span><span class="p">()</span>
             <span class="n">m_children</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_message_from_children</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_update_distribution_and_lowerbound</span><span class="p">(</span><span class="n">m_children</span><span class="p">,</span> <span class="o">*</span><span class="n">u_parents</span><span class="p">)</span>
 </div>
-<div class="viewcode-block" id="Stochastic.observe"><a class="viewcode-back" href="../../../../../user_api/generated/bayespy.inference.vmp.nodes.stochastic.Stochastic.observe.html#bayespy.inference.vmp.nodes.stochastic.Stochastic.observe">[docs]</a>    <span class="k">def</span> <span class="nf">observe</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+<div class="viewcode-block" id="Stochastic.observe"><a class="viewcode-back" href="../../../../../dev_api/generated/bayespy.inference.vmp.nodes.stochastic.Stochastic.observe.html#bayespy.inference.vmp.nodes.stochastic.Stochastic.observe">[docs]</a>    <span class="k">def</span> <span class="nf">observe</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Fix moments, compute f and propagate mask.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
 </div>
-<div class="viewcode-block" id="Stochastic.unobserve"><a class="viewcode-back" href="../../../../../user_api/generated/bayespy.inference.vmp.nodes.stochastic.Stochastic.unobserve.html#bayespy.inference.vmp.nodes.stochastic.Stochastic.unobserve">[docs]</a>    <span class="k">def</span> <span class="nf">unobserve</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Stochastic.unobserve"><a class="viewcode-back" href="../../../../../dev_api/generated/bayespy.inference.vmp.nodes.stochastic.Stochastic.unobserve.html#bayespy.inference.vmp.nodes.stochastic.Stochastic.unobserve">[docs]</a>    <span class="k">def</span> <span class="nf">unobserve</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c"># Update mask</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">observed</span> <span class="o">=</span> <span class="bp">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_update_mask</span><span class="p">()</span>
 </div>
-<div class="viewcode-block" id="Stochastic.lowerbound"><a class="viewcode-back" href="../../../../../user_api/generated/bayespy.inference.vmp.nodes.stochastic.Stochastic.lowerbound.html#bayespy.inference.vmp.nodes.stochastic.Stochastic.lowerbound">[docs]</a>    <span class="k">def</span> <span class="nf">lowerbound</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Stochastic.lowerbound"><a class="viewcode-back" href="../../../../../dev_api/generated/bayespy.inference.vmp.nodes.stochastic.Stochastic.lowerbound.html#bayespy.inference.vmp.nodes.stochastic.Stochastic.lowerbound">[docs]</a>    <span class="k">def</span> <span class="nf">lowerbound</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c"># Sub-class should implement this</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
 </div>
@@ -305,7 +309,7 @@
 
 
 
-<div class="viewcode-block" id="Stochastic.save"><a class="viewcode-back" href="../../../../../user_api/generated/bayespy.inference.vmp.nodes.stochastic.Stochastic.save.html#bayespy.inference.vmp.nodes.stochastic.Stochastic.save">[docs]</a>    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
+<div class="viewcode-block" id="Stochastic.save"><a class="viewcode-back" href="../../../../../dev_api/generated/bayespy.inference.vmp.nodes.stochastic.Stochastic.save.html#bayespy.inference.vmp.nodes.stochastic.Stochastic.save">[docs]</a>    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Save the state of the node into a HDF5 file.</span>
 
@@ -319,7 +323,7 @@
             <span class="n">misc</span><span class="o">.</span><span class="n">write_to_hdf5</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="s">&#39;u</span><span class="si">%d</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">i</span><span class="p">)</span>
         <span class="n">misc</span><span class="o">.</span><span class="n">write_to_hdf5</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">observed</span><span class="p">,</span> <span class="s">&#39;observed&#39;</span><span class="p">)</span>
 </div>
-<div class="viewcode-block" id="Stochastic.load"><a class="viewcode-back" href="../../../../../user_api/generated/bayespy.inference.vmp.nodes.stochastic.Stochastic.load.html#bayespy.inference.vmp.nodes.stochastic.Stochastic.load">[docs]</a>    <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
+<div class="viewcode-block" id="Stochastic.load"><a class="viewcode-back" href="../../../../../dev_api/generated/bayespy.inference.vmp.nodes.stochastic.Stochastic.load.html#bayespy.inference.vmp.nodes.stochastic.Stochastic.load">[docs]</a>    <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Load the state of the node from a HDF5 file.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -335,7 +339,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_update_mask</span><span class="p">()</span>
             
 </div>
-<div class="viewcode-block" id="Stochastic.random"><a class="viewcode-back" href="../../../../../user_api/generated/bayespy.inference.vmp.nodes.stochastic.Stochastic.random.html#bayespy.inference.vmp.nodes.stochastic.Stochastic.random">[docs]</a>    <span class="k">def</span> <span class="nf">random</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Stochastic.random"><a class="viewcode-back" href="../../../../../dev_api/generated/bayespy.inference.vmp.nodes.stochastic.Stochastic.random.html#bayespy.inference.vmp.nodes.stochastic.Stochastic.random">[docs]</a>    <span class="k">def</span> <span class="nf">random</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Draw a random sample from the distribution.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -370,8 +374,12 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../../../../genindex.html" title="General Index"
              >index</a></li>
+        <li class="right" >
+          <a href="../../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
         <li><a href="../../../../../index.html">BayesPy v0.1 Documentation</a> &raquo;</li>
-          <li><a href="../../../../index.html" >Module code</a> &raquo;</li> 
+          <li><a href="../../../../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../../../inference.html" >bayespy.inference</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

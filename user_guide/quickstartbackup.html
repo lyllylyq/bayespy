@@ -33,6 +33,9 @@
         <li class="right" style="margin-right: 10px">
           <a href="../genindex.html" title="General Index"
              accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
         <li><a href="../index.html">BayesPy v0.1 Documentation</a> &raquo;</li> 
       </ul>
     </div>  
@@ -237,7 +240,7 @@ below left=5pt and 0pt of #1.south east] %
 <span class="n">y</span> <span class="o">=</span> <span class="n">GaussianARD</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span> <span class="n">tau</span><span class="p">,</span> <span class="n">plates</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,))</span>
 </pre></div>
 </div>
-<p>This is quite self-explanatory given the model definitions above. We have used two types of nodes <a class="reference internal" href="../user_api/generated/bayespy.nodes.GaussianARD.html#bayespy.nodes.GaussianARD" title="bayespy.nodes.GaussianARD"><tt class="xref py py-class docutils literal"><span class="pre">GaussianARD</span></tt></a> and <a class="reference internal" href="../user_api/generated/bayespy.nodes.Gamma.html#bayespy.nodes.Gamma" title="bayespy.nodes.Gamma"><tt class="xref py py-class docutils literal"><span class="pre">Gamma</span></tt></a> to represent Gaussian and gamma distributions, respectively. There are much more distributions in <tt class="xref py py-mod docutils literal"><span class="pre">bayespy.nodes</span></tt> so you can construct quite complex conjugate exponential family models. The node <tt class="code docutils literal"><span class="pre">y</span></tt> uses keyword argument <tt class="code docutils literal"><span class="pre">plates</span></tt> to define the plates <span class="math">\(n=0,\ldots,9\)</span>.</p>
+<p>This is quite self-explanatory given the model definitions above. We have used two types of nodes <a class="reference internal" href="../user_api/generated/generated/bayespy.nodes.GaussianARD.html#bayespy.nodes.GaussianARD" title="bayespy.nodes.GaussianARD"><tt class="xref py py-class docutils literal"><span class="pre">GaussianARD</span></tt></a> and <a class="reference internal" href="../user_api/generated/generated/bayespy.nodes.Gamma.html#bayespy.nodes.Gamma" title="bayespy.nodes.Gamma"><tt class="xref py py-class docutils literal"><span class="pre">Gamma</span></tt></a> to represent Gaussian and gamma distributions, respectively. There are much more distributions in <a class="reference internal" href="../user_api/generated/bayespy.nodes.html#module-bayespy.nodes" title="bayespy.nodes"><tt class="xref py py-mod docutils literal"><span class="pre">bayespy.nodes</span></tt></a> so you can construct quite complex conjugate exponential family models. The node <tt class="code docutils literal"><span class="pre">y</span></tt> uses keyword argument <tt class="code docutils literal"><span class="pre">plates</span></tt> to define the plates <span class="math">\(n=0,\ldots,9\)</span>.</p>
 <p>Now that we have created the model, we can provide our data by setting <tt class="code docutils literal"><span class="pre">y</span></tt> as observed:</p>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="n">y</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 </pre></div>
@@ -320,6 +323,9 @@ more details about the phases.</p>
         <li class="right" style="margin-right: 10px">
           <a href="../genindex.html" title="General Index"
              >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
         <li><a href="../index.html">BayesPy v0.1 Documentation</a> &raquo;</li> 
       </ul>
     </div>

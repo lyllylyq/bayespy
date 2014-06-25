@@ -1,0 +1,24 @@
+bayespy.inference.vmp.transformations.RotateGaussianMarkovChain
+===============================================================
+
+.. currentmodule:: bayespy.inference.vmp.transformations
+
+.. autoclass:: RotateGaussianMarkovChain
+
+   
+
+      .. rubric:: Methods
+
+      .. autosummary::
+         :toctree:
+      
+         ~RotateGaussianMarkovChain.bound
+         ~RotateGaussianMarkovChain.get_bound_terms
+         ~RotateGaussianMarkovChain.nodes
+         ~RotateGaussianMarkovChain.rotate
+         ~RotateGaussianMarkovChain.setup
+
+
+
+   
+

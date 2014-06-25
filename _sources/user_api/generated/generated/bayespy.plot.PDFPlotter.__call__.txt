@@ -1,0 +1,6 @@
+bayespy.plot.PDFPlotter.__call__
+================================
+
+.. currentmodule:: bayespy.plot
+
+.. automethod:: PDFPlotter.__call__

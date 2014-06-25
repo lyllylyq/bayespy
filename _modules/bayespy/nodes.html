@@ -34,6 +34,9 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../genindex.html" title="General Index"
              accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
         <li><a href="../../index.html">BayesPy v0.1 Documentation</a> &raquo;</li>
           <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
@@ -68,6 +71,89 @@
 <span class="c"># along with BayesPy.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
 <span class="c">######################################################################</span>
 
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Package for nodes used to construct the model.</span>
+
+<span class="sd">Stochastic nodes</span>
+<span class="sd">================</span>
+
+<span class="sd">.. currentmodule:: bayespy.nodes</span>
+
+<span class="sd">Nodes for Gaussian variables:</span>
+
+<span class="sd">.. autosummary::</span>
+<span class="sd">   :toctree: generated/</span>
+
+<span class="sd">   Gaussian</span>
+<span class="sd">   GaussianARD</span>
+
+<span class="sd">Nodes for precision and scale variables:</span>
+
+<span class="sd">.. autosummary::</span>
+<span class="sd">   :toctree: generated/</span>
+
+<span class="sd">   Gamma</span>
+<span class="sd">   Wishart</span>
+<span class="sd">   Exponential</span>
+
+<span class="sd">Nodes for modelling Gaussian and precision variables jointly (useful as prior</span>
+<span class="sd">for Gaussian nodes):</span>
+
+<span class="sd">.. autosummary::</span>
+<span class="sd">   :toctree: generated/</span>
+
+<span class="sd">   GaussianGammaISO</span>
+<span class="sd">   GaussianGammaARD</span>
+<span class="sd">   GaussianWishart</span>
+
+<span class="sd">Nodes for discrete count variables:</span>
+
+<span class="sd">.. autosummary::</span>
+<span class="sd">   :toctree: generated/</span>
+
+<span class="sd">   Bernoulli</span>
+<span class="sd">   Binomial</span>
+<span class="sd">   Categorical</span>
+<span class="sd">   Multinomial</span>
+<span class="sd">   Poisson</span>
+
+<span class="sd">Nodes for probabilities:</span>
+
+<span class="sd">.. autosummary::</span>
+<span class="sd">   :toctree: generated/</span>
+
+<span class="sd">   Beta</span>
+<span class="sd">   Dirichlet</span>
+
+<span class="sd">Nodes for dynamic variables:</span>
+
+<span class="sd">.. autosummary::</span>
+<span class="sd">   :toctree: generated/</span>
+
+<span class="sd">   CategoricalMarkovChain</span>
+<span class="sd">   GaussianMarkovChain</span>
+<span class="sd">   SwitchingGaussianMarkovChain</span>
+<span class="sd">   VaryingGaussianMarkovChain</span>
+
+<span class="sd">Other stochastic nodes:</span>
+
+<span class="sd">.. autosummary::</span>
+<span class="sd">   :toctree: generated/</span>
+
+<span class="sd">   Mixture</span>
+
+
+
+<span class="sd">Deterministic nodes</span>
+<span class="sd">===================</span>
+
+<span class="sd">.. autosummary::</span>
+<span class="sd">   :toctree: generated/</span>
+
+<span class="sd">   Dot</span>
+<span class="sd">   SumMultiply</span>
+<span class="sd">   Gate</span>
+<span class="sd">&quot;&quot;&quot;</span>
 
 <span class="c"># Currently, model construction and the inference network are not separated so</span>
 <span class="c"># the model is constructed using variational message passing nodes.</span>
@@ -102,6 +188,9 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../genindex.html" title="General Index"
              >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
         <li><a href="../../index.html">BayesPy v0.1 Documentation</a> &raquo;</li>
           <li><a href="../index.html" >Module code</a> &raquo;</li> 
       </ul>

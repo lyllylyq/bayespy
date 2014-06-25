@@ -1,0 +1,51 @@
+bayespy.nodes.Beta
+==================
+
+.. currentmodule:: bayespy.nodes
+
+.. autoclass:: Beta
+
+   
+
+      .. rubric:: Methods
+
+      .. autosummary::
+         :toctree:
+      
+         ~Beta.add_plate_axis
+         ~Beta.delete
+         ~Beta.get_mask
+         ~Beta.get_moments
+         ~Beta.get_shape
+         ~Beta.has_plotter
+         ~Beta.initialize_from_parameters
+         ~Beta.initialize_from_prior
+         ~Beta.initialize_from_random
+         ~Beta.initialize_from_value
+         ~Beta.load
+         ~Beta.logpdf
+         ~Beta.lower_bound_contribution
+         ~Beta.lowerbound
+         ~Beta.move_plates
+         ~Beta.observe
+         ~Beta.pdf
+         ~Beta.plot
+         ~Beta.random
+         ~Beta.save
+         ~Beta.set_plotter
+         ~Beta.show
+         ~Beta.unobserve
+         ~Beta.update
+
+
+
+   
+
+      .. rubric:: Attributes
+
+      .. autosummary::
+         :toctree:
+      
+         ~Beta.dims
+         ~Beta.plates
+

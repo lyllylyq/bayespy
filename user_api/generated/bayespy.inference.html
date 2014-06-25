@@ -1,0 +1,176 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>bayespy.inference &mdash; BayesPy v0.1 Documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="BayesPy v0.1 Documentation" href="../../index.html" />
+    <link rel="up" title="User API" href="../user_api.html" />
+    <link rel="next" title="bayespy.inference.VB" href="generated/bayespy.inference.VB.html" />
+    <link rel="prev" title="bayespy.nodes.Gate.plates" href="generated/bayespy.nodes.Gate.plates.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="generated/bayespy.inference.VB.html" title="bayespy.inference.VB"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="generated/bayespy.nodes.Gate.plates.html" title="bayespy.nodes.Gate.plates"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">BayesPy v0.1 Documentation</a> &raquo;</li>
+          <li><a href="../user_api.html" accesskey="U">User API</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-bayespy.inference">
+<span id="bayespy-inference"></span><h1>bayespy.inference<a class="headerlink" href="#module-bayespy.inference" title="Permalink to this headline">¶</a></h1>
+<p>Package for Bayesian inference engines</p>
+<div class="section" id="inference-engines">
+<h2>Inference engines<a class="headerlink" href="#inference-engines" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.inference.VB.html#bayespy.inference.VB" title="bayespy.inference.VB"><tt class="xref py py-obj docutils literal"><span class="pre">VB</span></tt></a>(*nodes[,&nbsp;tol,&nbsp;autosave_filename,&nbsp;...])</td>
+<td>Variational Bayesian (VB) inference engine</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="parameter-expansions">
+<h2>Parameter expansions<a class="headerlink" href="#parameter-expansions" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.inference.vmp.transformations.RotationOptimizer.html#bayespy.inference.vmp.transformations.RotationOptimizer" title="bayespy.inference.vmp.transformations.RotationOptimizer"><tt class="xref py py-obj docutils literal"><span class="pre">vmp.transformations.RotationOptimizer</span></tt></a>(...)</td>
+<td>Optimizer for rotation parameter expansion in state-space models</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.inference.vmp.transformations.RotateGaussian.html#bayespy.inference.vmp.transformations.RotateGaussian" title="bayespy.inference.vmp.transformations.RotateGaussian"><tt class="xref py py-obj docutils literal"><span class="pre">vmp.transformations.RotateGaussian</span></tt></a>(X)</td>
+<td>Rotation parameter expansion for <a class="reference internal" href="generated/bayespy.nodes.Gaussian.html#bayespy.nodes.Gaussian" title="bayespy.nodes.Gaussian"><tt class="xref py py-class docutils literal"><span class="pre">bayespy.nodes.Gaussian</span></tt></a></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.inference.vmp.transformations.RotateGaussianARD.html#bayespy.inference.vmp.transformations.RotateGaussianARD" title="bayespy.inference.vmp.transformations.RotateGaussianARD"><tt class="xref py py-obj docutils literal"><span class="pre">vmp.transformations.RotateGaussianARD</span></tt></a>(X,&nbsp;*alpha)</td>
+<td>Rotation parameter expansion for <a class="reference internal" href="generated/bayespy.nodes.GaussianARD.html#bayespy.nodes.GaussianARD" title="bayespy.nodes.GaussianARD"><tt class="xref py py-class docutils literal"><span class="pre">bayespy.nodes.GaussianARD</span></tt></a></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.inference.vmp.transformations.RotateGaussianMarkovChain.html#bayespy.inference.vmp.transformations.RotateGaussianMarkovChain" title="bayespy.inference.vmp.transformations.RotateGaussianMarkovChain"><tt class="xref py py-obj docutils literal"><span class="pre">vmp.transformations.RotateGaussianMarkovChain</span></tt></a>(X,&nbsp;...)</td>
+<td>Rotation parameter expansion for <a class="reference internal" href="generated/bayespy.nodes.GaussianMarkovChain.html#bayespy.nodes.GaussianMarkovChain" title="bayespy.nodes.GaussianMarkovChain"><tt class="xref py py-class docutils literal"><span class="pre">bayespy.nodes.GaussianMarkovChain</span></tt></a></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.inference.vmp.transformations.RotateSwitchingMarkovChain.html#bayespy.inference.vmp.transformations.RotateSwitchingMarkovChain" title="bayespy.inference.vmp.transformations.RotateSwitchingMarkovChain"><tt class="xref py py-obj docutils literal"><span class="pre">vmp.transformations.RotateSwitchingMarkovChain</span></tt></a>(X,&nbsp;...)</td>
+<td>Rotation for <a class="reference internal" href="generated/bayespy.nodes.VaryingGaussianMarkovChain.html#bayespy.nodes.VaryingGaussianMarkovChain" title="bayespy.nodes.VaryingGaussianMarkovChain"><tt class="xref py py-class docutils literal"><span class="pre">bayespy.nodes.VaryingGaussianMarkovChain</span></tt></a></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.inference.vmp.transformations.RotateVaryingMarkovChain.html#bayespy.inference.vmp.transformations.RotateVaryingMarkovChain" title="bayespy.inference.vmp.transformations.RotateVaryingMarkovChain"><tt class="xref py py-obj docutils literal"><span class="pre">vmp.transformations.RotateVaryingMarkovChain</span></tt></a>(X,&nbsp;...)</td>
+<td>Rotation for <a class="reference internal" href="generated/bayespy.nodes.SwitchingGaussianMarkovChain.html#bayespy.nodes.SwitchingGaussianMarkovChain" title="bayespy.nodes.SwitchingGaussianMarkovChain"><tt class="xref py py-class docutils literal"><span class="pre">bayespy.nodes.SwitchingGaussianMarkovChain</span></tt></a></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.inference.vmp.transformations.RotateMultiple.html#bayespy.inference.vmp.transformations.RotateMultiple" title="bayespy.inference.vmp.transformations.RotateMultiple"><tt class="xref py py-obj docutils literal"><span class="pre">vmp.transformations.RotateMultiple</span></tt></a>(*rotators)</td>
+<td>Identical parameter expansion for several nodes simultaneously</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">bayespy.inference</a><ul>
+<li><a class="reference internal" href="#inference-engines">Inference engines</a></li>
+<li><a class="reference internal" href="#parameter-expansions">Parameter expansions</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="generated/bayespy.nodes.Gate.plates.html"
+                        title="previous chapter">bayespy.nodes.Gate.plates</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="generated/bayespy.inference.VB.html"
+                        title="next chapter">bayespy.inference.VB</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/user_api/generated/bayespy.inference.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="generated/bayespy.inference.VB.html" title="bayespy.inference.VB"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="generated/bayespy.nodes.Gate.plates.html" title="bayespy.nodes.Gate.plates"
+             >previous</a> |</li>
+        <li><a href="../../index.html">BayesPy v0.1 Documentation</a> &raquo;</li>
+          <li><a href="../user_api.html" >User API</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011-2014, Jaakko Luttinen, GPLv3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

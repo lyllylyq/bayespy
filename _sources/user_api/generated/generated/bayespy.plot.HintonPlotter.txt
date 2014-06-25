@@ -1,0 +1,20 @@
+bayespy.plot.HintonPlotter
+==========================
+
+.. currentmodule:: bayespy.plot
+
+.. autoclass:: HintonPlotter
+
+   
+
+      .. rubric:: Methods
+
+      .. autosummary::
+         :toctree:
+      
+         ~HintonPlotter.__call__
+
+
+
+   
+

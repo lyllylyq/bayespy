@@ -1,0 +1,20 @@
+bayespy.plot.CategoricalMarkovChainPlotter
+==========================================
+
+.. currentmodule:: bayespy.plot
+
+.. autoclass:: CategoricalMarkovChainPlotter
+
+   
+
+      .. rubric:: Methods
+
+      .. autosummary::
+         :toctree:
+      
+         ~CategoricalMarkovChainPlotter.__call__
+
+
+
+   
+

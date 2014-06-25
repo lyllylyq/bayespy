@@ -1,0 +1,20 @@
+bayespy.plot.PDFPlotter
+=======================
+
+.. currentmodule:: bayespy.plot
+
+.. autoclass:: PDFPlotter
+
+   
+
+      .. rubric:: Methods
+
+      .. autosummary::
+         :toctree:
+      
+         ~PDFPlotter.__call__
+
+
+
+   
+

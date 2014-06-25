@@ -1,0 +1,20 @@
+bayespy.inference.vmp.transformations.RotationOptimizer
+=======================================================
+
+.. currentmodule:: bayespy.inference.vmp.transformations
+
+.. autoclass:: RotationOptimizer
+
+   
+
+      .. rubric:: Methods
+
+      .. autosummary::
+         :toctree:
+      
+         ~RotationOptimizer.rotate
+
+
+
+   
+

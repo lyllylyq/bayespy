@@ -1,0 +1,6 @@
+bayespy.plot.Plotter.__call__
+=============================
+
+.. currentmodule:: bayespy.plot
+
+.. automethod:: Plotter.__call__

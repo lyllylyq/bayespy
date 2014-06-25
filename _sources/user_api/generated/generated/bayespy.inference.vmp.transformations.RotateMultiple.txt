@@ -1,0 +1,24 @@
+bayespy.inference.vmp.transformations.RotateMultiple
+====================================================
+
+.. currentmodule:: bayespy.inference.vmp.transformations
+
+.. autoclass:: RotateMultiple
+
+   
+
+      .. rubric:: Methods
+
+      .. autosummary::
+         :toctree:
+      
+         ~RotateMultiple.bound
+         ~RotateMultiple.get_bound_terms
+         ~RotateMultiple.nodes
+         ~RotateMultiple.rotate
+         ~RotateMultiple.setup
+
+
+
+   
+

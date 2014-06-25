@@ -1,0 +1,20 @@
+bayespy.plot.GaussianTimeseriesPlotter
+======================================
+
+.. currentmodule:: bayespy.plot
+
+.. autoclass:: GaussianTimeseriesPlotter
+
+   
+
+      .. rubric:: Methods
+
+      .. autosummary::
+         :toctree:
+      
+         ~GaussianTimeseriesPlotter.__call__
+
+
+
+   
+

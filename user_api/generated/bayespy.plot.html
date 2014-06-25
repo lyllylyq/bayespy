@@ -1,0 +1,185 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>bayespy.plot &mdash; BayesPy v0.1 Documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="BayesPy v0.1 Documentation" href="../../index.html" />
+    <link rel="up" title="User API" href="../user_api.html" />
+    <link rel="next" title="bayespy.plot.pdf" href="generated/bayespy.plot.pdf.html" />
+    <link rel="prev" title="bayespy.inference.vmp.transformations.RotateMultiple.setup" href="generated/bayespy.inference.vmp.transformations.RotateMultiple.setup.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="generated/bayespy.plot.pdf.html" title="bayespy.plot.pdf"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="generated/bayespy.inference.vmp.transformations.RotateMultiple.setup.html" title="bayespy.inference.vmp.transformations.RotateMultiple.setup"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">BayesPy v0.1 Documentation</a> &raquo;</li>
+          <li><a href="../user_api.html" accesskey="U">User API</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-bayespy.plot">
+<span id="bayespy-plot"></span><h1>bayespy.plot<a class="headerlink" href="#module-bayespy.plot" title="Permalink to this headline">¶</a></h1>
+<p>Functions for plotting nodes.</p>
+<div class="section" id="functions">
+<h2>Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.plot.pdf.html#bayespy.plot.pdf" title="bayespy.plot.pdf"><tt class="xref py py-obj docutils literal"><span class="pre">pdf</span></tt></a>(Z,&nbsp;x,&nbsp;*args[,&nbsp;name])</td>
+<td>Plot probability density function of a scalar variable.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.plot.contour.html#bayespy.plot.contour" title="bayespy.plot.contour"><tt class="xref py py-obj docutils literal"><span class="pre">contour</span></tt></a>(Z,&nbsp;x,&nbsp;y[,&nbsp;n])</td>
+<td>Plot 2-D probability density function of a 2-D variable.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.plot.plot.html#bayespy.plot.plot" title="bayespy.plot.plot"><tt class="xref py py-obj docutils literal"><span class="pre">plot</span></tt></a>(Y[,&nbsp;axis,&nbsp;scale,&nbsp;center])</td>
+<td>Plot a variable or an array as 1-D function with errorbars</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.plot.hinton.html#bayespy.plot.hinton" title="bayespy.plot.hinton"><tt class="xref py py-obj docutils literal"><span class="pre">hinton</span></tt></a>(X,&nbsp;**kwargs)</td>
+<td>Plot the Hinton diagram of a node</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="plotters">
+<h2>Plotters<a class="headerlink" href="#plotters" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.plot.Plotter.html#bayespy.plot.Plotter" title="bayespy.plot.Plotter"><tt class="xref py py-obj docutils literal"><span class="pre">Plotter</span></tt></a>(plotter,&nbsp;*args,&nbsp;**kwargs)</td>
+<td>Wrapper for plotting functions and base class for node plotters</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.plot.PDFPlotter.html#bayespy.plot.PDFPlotter" title="bayespy.plot.PDFPlotter"><tt class="xref py py-obj docutils literal"><span class="pre">PDFPlotter</span></tt></a>(x_grid,&nbsp;**kwargs)</td>
+<td>Plotter of probability density function of a scalar node</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.plot.ContourPlotter.html#bayespy.plot.ContourPlotter" title="bayespy.plot.ContourPlotter"><tt class="xref py py-obj docutils literal"><span class="pre">ContourPlotter</span></tt></a>(x1_grid,&nbsp;x2_grid,&nbsp;**kwargs)</td>
+<td>Plotter of probability density function of a two-dimensional node</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.plot.HintonPlotter.html#bayespy.plot.HintonPlotter" title="bayespy.plot.HintonPlotter"><tt class="xref py py-obj docutils literal"><span class="pre">HintonPlotter</span></tt></a>(**kwargs)</td>
+<td>Plotter of the Hinton diagram of a node</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.plot.FunctionPlotter.html#bayespy.plot.FunctionPlotter" title="bayespy.plot.FunctionPlotter"><tt class="xref py py-obj docutils literal"><span class="pre">FunctionPlotter</span></tt></a>(**kwargs)</td>
+<td>Plotter of a node as a 1-dimensional function</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.plot.GaussianTimeseriesPlotter.html#bayespy.plot.GaussianTimeseriesPlotter" title="bayespy.plot.GaussianTimeseriesPlotter"><tt class="xref py py-obj docutils literal"><span class="pre">GaussianTimeseriesPlotter</span></tt></a>(**kwargs)</td>
+<td>Plotter of a Gaussian node as a timeseries</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.plot.CategoricalMarkovChainPlotter.html#bayespy.plot.CategoricalMarkovChainPlotter" title="bayespy.plot.CategoricalMarkovChainPlotter"><tt class="xref py py-obj docutils literal"><span class="pre">CategoricalMarkovChainPlotter</span></tt></a>(**kwargs)</td>
+<td>Plotter of a Categorical timeseries</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">bayespy.plot</a><ul>
+<li><a class="reference internal" href="#functions">Functions</a></li>
+<li><a class="reference internal" href="#plotters">Plotters</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="generated/bayespy.inference.vmp.transformations.RotateMultiple.setup.html"
+                        title="previous chapter">bayespy.inference.vmp.transformations.RotateMultiple.setup</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="generated/bayespy.plot.pdf.html"
+                        title="next chapter">bayespy.plot.pdf</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/user_api/generated/bayespy.plot.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="generated/bayespy.plot.pdf.html" title="bayespy.plot.pdf"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="generated/bayespy.inference.vmp.transformations.RotateMultiple.setup.html" title="bayespy.inference.vmp.transformations.RotateMultiple.setup"
+             >previous</a> |</li>
+        <li><a href="../../index.html">BayesPy v0.1 Documentation</a> &raquo;</li>
+          <li><a href="../user_api.html" >User API</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011-2014, Jaakko Luttinen, GPLv3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

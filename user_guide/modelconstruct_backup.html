@@ -33,6 +33,9 @@
         <li class="right" style="margin-right: 10px">
           <a href="../genindex.html" title="General Index"
              accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
         <li><a href="../index.html">BayesPy v0.1 Documentation</a> &raquo;</li> 
       </ul>
     </div>  
@@ -50,7 +53,7 @@
 <p>Creating a node is basically like writing the conditional prior distribution of
 the variable in Python.  The node is constructed by giving the parent nodes,
 that is, the conditioning variables as arguments.  The number of parents and
-their meaning depend on the node.  For instance, a <a class="reference internal" href="../user_api/generated/bayespy.nodes.Gaussian.html#bayespy.nodes.Gaussian" title="bayespy.nodes.Gaussian"><tt class="xref py py-class docutils literal"><span class="pre">Gaussian</span></tt></a> node is
+their meaning depend on the node.  For instance, a <a class="reference internal" href="../user_api/generated/generated/bayespy.nodes.Gaussian.html#bayespy.nodes.Gaussian" title="bayespy.nodes.Gaussian"><tt class="xref py py-class docutils literal"><span class="pre">Gaussian</span></tt></a> node is
 created by giving the mean vector and the precision matrix. These parents can be
 constant numerical arrays if they are known:</p>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">bayespy.nodes</span> <span class="kn">import</span> <span class="n">Gaussian</span>
@@ -128,10 +131,10 @@ define three important aspects:</p>
 <h3>Prior probability distribution<a class="headerlink" href="#prior-probability-distribution" title="Permalink to this headline">¶</a></h3>
 <p>First, the most intuitive feature of the nodes is that they define the prior
 distribution. In the previous example, <tt class="docutils literal"><span class="pre">mu</span></tt> was a stochastic
-<a class="reference internal" href="../user_api/generated/bayespy.nodes.GaussianARD.html#bayespy.nodes.GaussianARD" title="bayespy.nodes.GaussianARD"><tt class="xref py py-class docutils literal"><span class="pre">GaussianARD</span></tt></a> node corresponding to <span class="math">\(\mu\)</span> from the normal
-distribution, <tt class="docutils literal"><span class="pre">tau</span></tt> was a stochastic <a class="reference internal" href="../user_api/generated/bayespy.nodes.Gamma.html#bayespy.nodes.Gamma" title="bayespy.nodes.Gamma"><tt class="xref py py-class docutils literal"><span class="pre">Gamma</span></tt></a> node corresponding to
+<a class="reference internal" href="../user_api/generated/generated/bayespy.nodes.GaussianARD.html#bayespy.nodes.GaussianARD" title="bayespy.nodes.GaussianARD"><tt class="xref py py-class docutils literal"><span class="pre">GaussianARD</span></tt></a> node corresponding to <span class="math">\(\mu\)</span> from the normal
+distribution, <tt class="docutils literal"><span class="pre">tau</span></tt> was a stochastic <a class="reference internal" href="../user_api/generated/generated/bayespy.nodes.Gamma.html#bayespy.nodes.Gamma" title="bayespy.nodes.Gamma"><tt class="xref py py-class docutils literal"><span class="pre">Gamma</span></tt></a> node corresponding to
 <span class="math">\(\tau\)</span> from the gamma distribution, and <tt class="docutils literal"><span class="pre">y</span></tt> was a stochastic
-<a class="reference internal" href="../user_api/generated/bayespy.nodes.GaussianARD.html#bayespy.nodes.GaussianARD" title="bayespy.nodes.GaussianARD"><tt class="xref py py-class docutils literal"><span class="pre">GaussianARD</span></tt></a> node corresponding to <span class="math">\(y\)</span> from the normal
+<a class="reference internal" href="../user_api/generated/generated/bayespy.nodes.GaussianARD.html#bayespy.nodes.GaussianARD" title="bayespy.nodes.GaussianARD"><tt class="xref py py-class docutils literal"><span class="pre">GaussianARD</span></tt></a> node corresponding to <span class="math">\(y\)</span> from the normal
 distribution with mean <span class="math">\(\mu\)</span> and precision <span class="math">\(\tau\)</span>.  If we denote the
 set of all stochastic nodes by <span class="math">\(\Omega\)</span>, and by <span class="math">\(\pi_X\)</span> the set of parents of a
 node <span class="math">\(X\)</span>, the model is defined as</p>
@@ -154,7 +157,7 @@ posterior approximation can be written as:</p>
 is the set of observed stochastic nodes.  Sometimes one may want to avoid the factorization
 between some variables.  For this purpose, there are some nodes which model
 several variables jointly without factorization.  For instance,
-<a class="reference internal" href="../user_api/generated/bayespy.nodes.GaussianGammaISO.html#bayespy.nodes.GaussianGammaISO" title="bayespy.nodes.GaussianGammaISO"><tt class="xref py py-class docutils literal"><span class="pre">GaussianGammaISO</span></tt></a> is a joint node for <span class="math">\(\mu\)</span> and <span class="math">\(\tau\)</span>
+<a class="reference internal" href="../user_api/generated/generated/bayespy.nodes.GaussianGammaISO.html#bayespy.nodes.GaussianGammaISO" title="bayespy.nodes.GaussianGammaISO"><tt class="xref py py-class docutils literal"><span class="pre">GaussianGammaISO</span></tt></a> is a joint node for <span class="math">\(\mu\)</span> and <span class="math">\(\tau\)</span>
 variables from the normal-gamma distribution and the posterior approximation
 does not factorize between <span class="math">\(\mu\)</span> and <span class="math">\(\tau\)</span>, that is, the posterior
 approximation is <span class="math">\(q(\mu,\tau)\)</span>.</p>
@@ -163,10 +166,10 @@ approximation is <span class="math">\(q(\mu,\tau)\)</span>.</p>
 <h3>Functional form of the posterior<a class="headerlink" href="#functional-form-of-the-posterior" title="Permalink to this headline">¶</a></h3>
 <p>Last, the nodes define the functional form of the posterior approximation.
 Usually, the posterior approximation has the same or similar functional form as
-the prior.  For instance, <a class="reference internal" href="../user_api/generated/bayespy.nodes.Gamma.html#bayespy.nodes.Gamma" title="bayespy.nodes.Gamma"><tt class="xref py py-class docutils literal"><span class="pre">Gamma</span></tt></a> uses gamma distribution to also
-approximate the posterior distribution.  Similarly, <a class="reference internal" href="../user_api/generated/bayespy.nodes.GaussianARD.html#bayespy.nodes.GaussianARD" title="bayespy.nodes.GaussianARD"><tt class="xref py py-class docutils literal"><span class="pre">GaussianARD</span></tt></a> uses
+the prior.  For instance, <a class="reference internal" href="../user_api/generated/generated/bayespy.nodes.Gamma.html#bayespy.nodes.Gamma" title="bayespy.nodes.Gamma"><tt class="xref py py-class docutils literal"><span class="pre">Gamma</span></tt></a> uses gamma distribution to also
+approximate the posterior distribution.  Similarly, <a class="reference internal" href="../user_api/generated/generated/bayespy.nodes.GaussianARD.html#bayespy.nodes.GaussianARD" title="bayespy.nodes.GaussianARD"><tt class="xref py py-class docutils literal"><span class="pre">GaussianARD</span></tt></a> uses
 Gaussian distribution for the posterior.  However, the posterior approximation
-of <a class="reference internal" href="../user_api/generated/bayespy.nodes.GaussianARD.html#bayespy.nodes.GaussianARD" title="bayespy.nodes.GaussianARD"><tt class="xref py py-class docutils literal"><span class="pre">GaussianARD</span></tt></a> uses a full covariance matrix although the prior assumes
+of <a class="reference internal" href="../user_api/generated/generated/bayespy.nodes.GaussianARD.html#bayespy.nodes.GaussianARD" title="bayespy.nodes.GaussianARD"><tt class="xref py py-class docutils literal"><span class="pre">GaussianARD</span></tt></a> uses a full covariance matrix although the prior assumes
 a diagonal covariance matrix.  Thus, there can be slight differences in the
 exact functional form of the posterior approximation but the rule of thumb is
 that the functional form of the posterior approximation is the same as or more general than the
@@ -656,7 +659,7 @@ Plates of Z: (100,)
 Plates of X: (100,)
 </pre></div>
 </div>
-<p>The plates <cite>(3,)</cite> and <cite>(100,)</cite> should not broadcast according to the rules mentioned above. However, when validating the plates, <a class="reference internal" href="../user_api/generated/bayespy.nodes.Mixture.html#bayespy.nodes.Mixture" title="bayespy.nodes.Mixture"><tt class="xref py py-class docutils literal"><span class="pre">Mixture</span></tt></a> removes the plate which corresponds to the clusters in <cite>mu</cite> and <cite>Lambda</cite>. Thus, <cite>X</cite> has plates which are the result of broadcasting plates <cite>()</cite> and <cite>(100,)</cite> which equals <cite>(100,)</cite>.</p>
+<p>The plates <cite>(3,)</cite> and <cite>(100,)</cite> should not broadcast according to the rules mentioned above. However, when validating the plates, <a class="reference internal" href="../user_api/generated/generated/bayespy.nodes.Mixture.html#bayespy.nodes.Mixture" title="bayespy.nodes.Mixture"><tt class="xref py py-class docutils literal"><span class="pre">Mixture</span></tt></a> removes the plate which corresponds to the clusters in <cite>mu</cite> and <cite>Lambda</cite>. Thus, <cite>X</cite> has plates which are the result of broadcasting plates <cite>()</cite> and <cite>(100,)</cite> which equals <cite>(100,)</cite>.</p>
 <p>Also, sometimes the plates of the parents may be mapped to the variable
 axes. For instance, an automatic relevance determination (ARD) prior for
 a Gaussian variable is constructed by giving the diagonal elements of
@@ -742,6 +745,9 @@ by taking the remaining leading plate axes of <tt class="docutils literal"><span
         <li class="right" style="margin-right: 10px">
           <a href="../genindex.html" title="General Index"
              >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
         <li><a href="../index.html">BayesPy v0.1 Documentation</a> &raquo;</li> 
       </ul>
     </div>

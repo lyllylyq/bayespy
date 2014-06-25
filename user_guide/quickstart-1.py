@@ -1,4 +1,5 @@
 import numpy as np
+np.random.seed(1)
 data = np.random.normal(5, 10, size=(10,))
 from bayespy.nodes import GaussianARD, Gamma
 mu = GaussianARD(0, 1e-6)

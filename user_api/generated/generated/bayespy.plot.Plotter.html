@@ -1,0 +1,186 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>bayespy.plot.Plotter &mdash; BayesPy v0.1 Documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="BayesPy v0.1 Documentation" href="../../../index.html" />
+    <link rel="up" title="bayespy.plot" href="../bayespy.plot.html" />
+    <link rel="next" title="bayespy.plot.Plotter.__call__" href="bayespy.plot.Plotter.__call__.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="bayespy.plot.Plotter.__call__.html" title="bayespy.plot.Plotter.__call__"
+             accesskey="N">next</a> |</li>
+        <li><a href="../../../index.html">BayesPy v0.1 Documentation</a> &raquo;</li>
+          <li><a href="../../user_api.html" >User API</a> &raquo;</li>
+          <li><a href="../bayespy.plot.html" accesskey="U">bayespy.plot</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="bayespy-plot-plotter">
+<h1>bayespy.plot.Plotter<a class="headerlink" href="#bayespy-plot-plotter" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="bayespy.plot.Plotter">
+<em class="property">class </em><tt class="descclassname">bayespy.plot.</tt><tt class="descname">Plotter</tt><big>(</big><em>plotter</em>, <em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../../_modules/bayespy/plot.html#Plotter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bayespy.plot.Plotter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrapper for plotting functions and base class for node plotters</p>
+<p>The purpose of this class is to collect all the parameters needed by a
+plotting function and provide a callable interface which needs only the node
+as the input.</p>
+<p>Plotter instances are callable objects that plot a given node using a
+specified plotting function.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>plotter</strong> : function</p>
+<blockquote>
+<div><p>Plotting function to use</p>
+</div></blockquote>
+<p><strong>args</strong> : defined by the plotting function</p>
+<blockquote>
+<div><p>Additional inputs needed by the plotting function</p>
+</div></blockquote>
+<p><strong>kwargs</strong> : defined by the plotting function</p>
+<blockquote class="last">
+<div><p>Additional keyword arguments supported by the plotting function</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Examples</p>
+<p>First, create a gamma variable:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">bayespy.nodes</span> <span class="kn">import</span> <span class="n">Gamma</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">Gamma</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The probability density function can be plotted as:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">bayespy.plot</span> <span class="kn">as</span> <span class="nn">bpplt</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">bpplt</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="mi">100</span><span class="p">))</span>         
+<span class="go">[&lt;matplotlib.lines.Line2D object at 0x...&gt;]</span>
+</pre></div>
+</div>
+<p>However, this can be problematic when one needs to provide a
+plotting function for the inference engine as the inference engine
+gives only the node as input.  Thus, we need to create a simple
+plotter wrapper:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">p</span> <span class="o">=</span> <span class="n">bpplt</span><span class="o">.</span><span class="n">Plotter</span><span class="p">(</span><span class="n">bpplt</span><span class="o">.</span><span class="n">pdf</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="mi">100</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>Now, this callable object <tt class="docutils literal"><span class="pre">p</span></tt> needs only the node as the input:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">p</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>                                                
+<span class="go">[&lt;matplotlib.lines.Line2D object at 0x...&gt;]</span>
+</pre></div>
+</div>
+<p>Thus, it can be given to the inference engine to use as a plotting function:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">Gamma</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">plotter</span><span class="o">=</span><span class="n">p</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>                                            
+<span class="go">[&lt;matplotlib.lines.Line2D object at 0x...&gt;]</span>
+</pre></div>
+</div>
+<p class="rubric">Methods</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="bayespy.plot.Plotter.__call__.html#bayespy.plot.Plotter.__call__" title="bayespy.plot.Plotter.__call__"><tt class="xref py py-obj docutils literal"><span class="pre">__call__</span></tt></a>(X)</td>
+<td>Plot the node using the specified plotting function</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Next topic</h4>
+  <p class="topless"><a href="bayespy.plot.Plotter.__call__.html"
+                        title="next chapter">bayespy.plot.Plotter.__call__</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../../_sources/user_api/generated/generated/bayespy.plot.Plotter.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="bayespy.plot.Plotter.__call__.html" title="bayespy.plot.Plotter.__call__"
+             >next</a> |</li>
+        <li><a href="../../../index.html">BayesPy v0.1 Documentation</a> &raquo;</li>
+          <li><a href="../../user_api.html" >User API</a> &raquo;</li>
+          <li><a href="../bayespy.plot.html" >bayespy.plot</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011-2014, Jaakko Luttinen, GPLv3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

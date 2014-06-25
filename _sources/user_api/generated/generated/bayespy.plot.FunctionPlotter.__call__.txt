@@ -1,0 +1,6 @@
+bayespy.plot.FunctionPlotter.__call__
+=====================================
+
+.. currentmodule:: bayespy.plot
+
+.. automethod:: FunctionPlotter.__call__

@@ -1,0 +1,20 @@
+bayespy.plot.ContourPlotter
+===========================
+
+.. currentmodule:: bayespy.plot
+
+.. autoclass:: ContourPlotter
+
+   
+
+      .. rubric:: Methods
+
+      .. autosummary::
+         :toctree:
+      
+         ~ContourPlotter.__call__
+
+
+
+   
+

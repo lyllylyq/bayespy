@@ -1,0 +1,6 @@
+bayespy.plot.ContourPlotter.__call__
+====================================
+
+.. currentmodule:: bayespy.plot
+
+.. automethod:: ContourPlotter.__call__

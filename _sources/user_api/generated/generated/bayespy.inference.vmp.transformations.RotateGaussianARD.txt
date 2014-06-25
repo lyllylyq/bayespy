@@ -1,0 +1,24 @@
+bayespy.inference.vmp.transformations.RotateGaussianARD
+=======================================================
+
+.. currentmodule:: bayespy.inference.vmp.transformations
+
+.. autoclass:: RotateGaussianARD
+
+   
+
+      .. rubric:: Methods
+
+      .. autosummary::
+         :toctree:
+      
+         ~RotateGaussianARD.bound
+         ~RotateGaussianARD.get_bound_terms
+         ~RotateGaussianARD.nodes
+         ~RotateGaussianARD.rotate
+         ~RotateGaussianARD.setup
+
+
+
+   
+

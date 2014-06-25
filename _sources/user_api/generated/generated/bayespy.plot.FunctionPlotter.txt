@@ -1,0 +1,20 @@
+bayespy.plot.FunctionPlotter
+============================
+
+.. currentmodule:: bayespy.plot
+
+.. autoclass:: FunctionPlotter
+
+   
+
+      .. rubric:: Methods
+
+      .. autosummary::
+         :toctree:
+      
+         ~FunctionPlotter.__call__
+
+
+
+   
+

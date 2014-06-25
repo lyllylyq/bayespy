@@ -1,0 +1,6 @@
+bayespy.plot.CategoricalMarkovChainPlotter.__call__
+===================================================
+
+.. currentmodule:: bayespy.plot
+
+.. automethod:: CategoricalMarkovChainPlotter.__call__

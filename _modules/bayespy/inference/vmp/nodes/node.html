@@ -25,7 +25,7 @@
     <script type="text/javascript" src="../../../../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="top" title="BayesPy v0.1 Documentation" href="../../../../../index.html" />
-    <link rel="up" title="Module code" href="../../../../index.html" /> 
+    <link rel="up" title="bayespy.inference" href="../../../inference.html" /> 
   </head>
   <body>
     <div class="related">
@@ -34,8 +34,12 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../../../../genindex.html" title="General Index"
              accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
         <li><a href="../../../../../index.html">BayesPy v0.1 Documentation</a> &raquo;</li>
-          <li><a href="../../../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+          <li><a href="../../../../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../../../inference.html" accesskey="U">bayespy.inference</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -242,7 +246,7 @@
     <span class="k">return</span> <span class="n">new_func</span>
 
     
-<div class="viewcode-block" id="Node"><a class="viewcode-back" href="../../../../../user_api/generated/bayespy.inference.vmp.nodes.node.Node.html#bayespy.inference.vmp.nodes.node.Node">[docs]</a><span class="k">class</span> <span class="nc">Node</span><span class="p">():</span>
+<div class="viewcode-block" id="Node"><a class="viewcode-back" href="../../../../../dev_api/generated/bayespy.inference.vmp.nodes.node.Node.html#bayespy.inference.vmp.nodes.node.Node">[docs]</a><span class="k">class</span> <span class="nc">Node</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Base class for all nodes.</span>
 
@@ -370,7 +374,7 @@
         <span class="c"># Sub-classes may want to overwrite this if they manipulate plates</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">parents</span><span class="p">[</span><span class="n">index</span><span class="p">]</span><span class="o">.</span><span class="n">plates</span>
 
-<div class="viewcode-block" id="Node.get_shape"><a class="viewcode-back" href="../../../../../user_api/generated/bayespy.inference.vmp.nodes.node.Node.get_shape.html#bayespy.inference.vmp.nodes.node.Node.get_shape">[docs]</a>    <span class="k">def</span> <span class="nf">get_shape</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ind</span><span class="p">):</span>
+<div class="viewcode-block" id="Node.get_shape"><a class="viewcode-back" href="../../../../../dev_api/generated/bayespy.inference.vmp.nodes.node.Node.get_shape.html#bayespy.inference.vmp.nodes.node.Node.get_shape">[docs]</a>    <span class="k">def</span> <span class="nf">get_shape</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ind</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">plates</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">dims</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span>
 </div>
     <span class="k">def</span> <span class="nf">_add_child</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">child</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
@@ -393,7 +397,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="o">.</span><span class="n">remove</span><span class="p">((</span><span class="n">child</span><span class="p">,</span> <span class="n">index</span><span class="p">))</span>
 
-<div class="viewcode-block" id="Node.get_mask"><a class="viewcode-back" href="../../../../../user_api/generated/bayespy.inference.vmp.nodes.node.Node.get_mask.html#bayespy.inference.vmp.nodes.node.Node.get_mask">[docs]</a>    <span class="k">def</span> <span class="nf">get_mask</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Node.get_mask"><a class="viewcode-back" href="../../../../../dev_api/generated/bayespy.inference.vmp.nodes.node.Node.get_mask.html#bayespy.inference.vmp.nodes.node.Node.get_mask">[docs]</a>    <span class="k">def</span> <span class="nf">get_mask</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mask</span>
     
     <span class="c">## def _get_message_mask(self):</span>
@@ -628,10 +632,10 @@
                 <span class="bp">None</span>
                 <span class="k">for</span> <span class="p">(</span><span class="n">ind</span><span class="p">,</span><span class="n">parent</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parents</span><span class="p">)]</span>
 
-<div class="viewcode-block" id="Node.get_moments"><a class="viewcode-back" href="../../../../../user_api/generated/bayespy.inference.vmp.nodes.node.Node.get_moments.html#bayespy.inference.vmp.nodes.node.Node.get_moments">[docs]</a>    <span class="k">def</span> <span class="nf">get_moments</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Node.get_moments"><a class="viewcode-back" href="../../../../../dev_api/generated/bayespy.inference.vmp.nodes.node.Node.get_moments.html#bayespy.inference.vmp.nodes.node.Node.get_moments">[docs]</a>    <span class="k">def</span> <span class="nf">get_moments</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
 </div>
-<div class="viewcode-block" id="Node.delete"><a class="viewcode-back" href="../../../../../user_api/generated/bayespy.inference.vmp.nodes.node.Node.delete.html#bayespy.inference.vmp.nodes.node.Node.delete">[docs]</a>    <span class="k">def</span> <span class="nf">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Node.delete"><a class="viewcode-back" href="../../../../../dev_api/generated/bayespy.inference.vmp.nodes.node.Node.delete.html#bayespy.inference.vmp.nodes.node.Node.delete">[docs]</a>    <span class="k">def</span> <span class="nf">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Delete this node and the children</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -682,13 +686,13 @@
                 <span class="n">r</span> <span class="o">*=</span> <span class="n">plates</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">r</span>
 
-<div class="viewcode-block" id="Node.move_plates"><a class="viewcode-back" href="../../../../../user_api/generated/bayespy.inference.vmp.nodes.node.Node.move_plates.html#bayespy.inference.vmp.nodes.node.Node.move_plates">[docs]</a>    <span class="k">def</span> <span class="nf">move_plates</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">from_plate</span><span class="p">,</span> <span class="n">to_plate</span><span class="p">):</span>
+<div class="viewcode-block" id="Node.move_plates"><a class="viewcode-back" href="../../../../../dev_api/generated/bayespy.inference.vmp.nodes.node.Node.move_plates.html#bayespy.inference.vmp.nodes.node.Node.move_plates">[docs]</a>    <span class="k">def</span> <span class="nf">move_plates</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">from_plate</span><span class="p">,</span> <span class="n">to_plate</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">_MovePlate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> 
                           <span class="n">from_plate</span><span class="p">,</span>
                           <span class="n">to_plate</span><span class="p">,</span>
                           <span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s">&quot;.move_plates&quot;</span><span class="p">)</span>
 </div>
-<div class="viewcode-block" id="Node.add_plate_axis"><a class="viewcode-back" href="../../../../../user_api/generated/bayespy.inference.vmp.nodes.node.Node.add_plate_axis.html#bayespy.inference.vmp.nodes.node.Node.add_plate_axis">[docs]</a>    <span class="k">def</span> <span class="nf">add_plate_axis</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">to_plate</span><span class="p">):</span>
+<div class="viewcode-block" id="Node.add_plate_axis"><a class="viewcode-back" href="../../../../../dev_api/generated/bayespy.inference.vmp.nodes.node.Node.add_plate_axis.html#bayespy.inference.vmp.nodes.node.Node.add_plate_axis">[docs]</a>    <span class="k">def</span> <span class="nf">add_plate_axis</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">to_plate</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">AddPlateAxis</span><span class="p">(</span><span class="n">to_plate</span><span class="p">)(</span><span class="bp">self</span><span class="p">,</span>
                                       <span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="o">+</span><span class="s">&quot;.add_plate_axis&quot;</span><span class="p">)</span>
 </div>
@@ -696,16 +700,16 @@
         <span class="k">return</span> <span class="n">Slice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span>
                      <span class="n">name</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="o">+</span><span class="s">&quot;.__getitem__&quot;</span><span class="p">))</span>
 
-<div class="viewcode-block" id="Node.has_plotter"><a class="viewcode-back" href="../../../../../user_api/generated/bayespy.inference.vmp.nodes.node.Node.has_plotter.html#bayespy.inference.vmp.nodes.node.Node.has_plotter">[docs]</a>    <span class="k">def</span> <span class="nf">has_plotter</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Node.has_plotter"><a class="viewcode-back" href="../../../../../dev_api/generated/bayespy.inference.vmp.nodes.node.Node.has_plotter.html#bayespy.inference.vmp.nodes.node.Node.has_plotter">[docs]</a>    <span class="k">def</span> <span class="nf">has_plotter</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return True if the node has a plotter</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">callable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_plotter</span><span class="p">)</span>
 </div>
-<div class="viewcode-block" id="Node.set_plotter"><a class="viewcode-back" href="../../../../../user_api/generated/bayespy.inference.vmp.nodes.node.Node.set_plotter.html#bayespy.inference.vmp.nodes.node.Node.set_plotter">[docs]</a>    <span class="k">def</span> <span class="nf">set_plotter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">plotter</span><span class="p">):</span>
+<div class="viewcode-block" id="Node.set_plotter"><a class="viewcode-back" href="../../../../../dev_api/generated/bayespy.inference.vmp.nodes.node.Node.set_plotter.html#bayespy.inference.vmp.nodes.node.Node.set_plotter">[docs]</a>    <span class="k">def</span> <span class="nf">set_plotter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">plotter</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_plotter</span> <span class="o">=</span> <span class="n">plotter</span>
     </div>
-<div class="viewcode-block" id="Node.plot"><a class="viewcode-back" href="../../../../../user_api/generated/bayespy.inference.vmp.nodes.node.Node.plot.html#bayespy.inference.vmp.nodes.node.Node.plot">[docs]</a>    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="Node.plot"><a class="viewcode-back" href="../../../../../dev_api/generated/bayespy.inference.vmp.nodes.node.Node.plot.html#bayespy.inference.vmp.nodes.node.Node.plot">[docs]</a>    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Plot the node distribution using the plotter of the node</span>
 
@@ -715,11 +719,11 @@
 <span class="sd">        that is, functions that perform plotting for a node.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_plotter</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_plotter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="n">ax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_plotter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
             <span class="n">plt</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="s">&#39;q(</span><span class="si">%s</span><span class="s">)&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">ax</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;No plotter defined, can not plot&quot;</span><span class="p">)</span>
-        <span class="k">return</span>
 </div>
     <span class="k">def</span> <span class="nf">_convert</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">moments_class</span><span class="p">):</span>
         <span class="n">converter</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_moments</span><span class="o">.</span><span class="n">get_converter</span><span class="p">(</span><span class="n">moments_class</span><span class="p">)</span>
@@ -1283,8 +1287,12 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../../../../genindex.html" title="General Index"
              >index</a></li>
+        <li class="right" >
+          <a href="../../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
         <li><a href="../../../../../index.html">BayesPy v0.1 Documentation</a> &raquo;</li>
-          <li><a href="../../../../index.html" >Module code</a> &raquo;</li> 
+          <li><a href="../../../../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../../../inference.html" >bayespy.inference</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

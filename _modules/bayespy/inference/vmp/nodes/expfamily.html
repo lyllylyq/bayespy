@@ -1,0 +1,499 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>bayespy.inference.vmp.nodes.expfamily &mdash; BayesPy v0.1 Documentation</title>
+    
+    <link rel="stylesheet" href="../../../../../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../../../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="BayesPy v0.1 Documentation" href="../../../../../index.html" />
+    <link rel="up" title="bayespy.inference" href="../../../inference.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../../../index.html">BayesPy v0.1 Documentation</a> &raquo;</li>
+          <li><a href="../../../../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../../../inference.html" accesskey="U">bayespy.inference</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for bayespy.inference.vmp.nodes.expfamily</h1><div class="highlight"><pre>
+<span class="c">######################################################################</span>
+<span class="c"># Copyright (C) 2013-2014 Jaakko Luttinen</span>
+<span class="c">#</span>
+<span class="c"># This file is licensed under Version 3.0 of the GNU General Public</span>
+<span class="c"># License. See LICENSE for a text of the license.</span>
+<span class="c">######################################################################</span>
+
+<span class="c">######################################################################</span>
+<span class="c"># This file is part of BayesPy.</span>
+<span class="c">#</span>
+<span class="c"># BayesPy is free software: you can redistribute it and/or modify it</span>
+<span class="c"># under the terms of the GNU General Public License version 3 as</span>
+<span class="c"># published by the Free Software Foundation.</span>
+<span class="c">#</span>
+<span class="c"># BayesPy is distributed in the hope that it will be useful, but</span>
+<span class="c"># WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="c"># MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU</span>
+<span class="c"># General Public License for more details.</span>
+<span class="c">#</span>
+<span class="c"># You should have received a copy of the GNU General Public License</span>
+<span class="c"># along with BayesPy.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
+<span class="c">######################################################################</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">bayespy.utils</span> <span class="kn">import</span> <span class="n">misc</span>
+
+<span class="kn">from</span> <span class="nn">.node</span> <span class="kn">import</span> <span class="n">ensureparents</span>
+<span class="kn">from</span> <span class="nn">.stochastic</span> <span class="kn">import</span> <span class="n">Stochastic</span><span class="p">,</span> <span class="n">Distribution</span>
+
+<span class="k">class</span> <span class="nc">ExponentialFamilyDistribution</span><span class="p">(</span><span class="n">Distribution</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Sub-classes implement distribution specific computations.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c">#</span>
+    <span class="c"># The following methods are for ExponentialFamily distributions</span>
+    <span class="c">#</span>
+
+    <span class="k">def</span> <span class="nf">compute_message_to_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">u_self</span><span class="p">,</span> <span class="o">*</span><span class="n">u_parents</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">compute_phi_from_parents</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">u_parents</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">compute_moments_and_cgf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">phi</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
+
+    <span class="c">#</span>
+    <span class="c"># The following methods are for Mixture class</span>
+    <span class="c">#</span>
+
+    <span class="k">def</span> <span class="nf">compute_cgf_from_parents</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">u_parents</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
+        
+    <span class="k">def</span> <span class="nf">compute_fixed_moments_and_f</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">compute_logpdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">phi</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">ndims</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Compute E[log p(X)] given E[u], E[phi], E[g] and</span>
+<span class="sd">        E[f]. Does not sum over plates.&quot;&quot;&quot;</span>
+
+        <span class="c"># TODO/FIXME: Should I take into account what is latent or</span>
+        <span class="c"># observed, or what is even totally ignored (by the mask).</span>
+        <span class="n">L</span> <span class="o">=</span> <span class="n">g</span> <span class="o">+</span> <span class="n">f</span>
+        <span class="k">for</span> <span class="p">(</span><span class="n">phi_i</span><span class="p">,</span> <span class="n">u_i</span><span class="p">,</span> <span class="n">ndims_i</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">phi</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">ndims</span><span class="p">):</span>
+            <span class="c"># Axes to sum (dimensions of the variable, not the plates)</span>
+            <span class="n">axis_sum</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="o">-</span><span class="n">ndims_i</span><span class="p">,</span><span class="mi">0</span><span class="p">))</span>
+            <span class="c"># Compute the term</span>
+            <span class="c"># TODO/FIXME: Use einsum!</span>
+            <span class="n">L</span> <span class="o">=</span> <span class="n">L</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">phi_i</span> <span class="o">*</span> <span class="n">u_i</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis_sum</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">L</span>
+
+
+<span class="k">def</span> <span class="nf">useconstructor</span><span class="p">(</span><span class="n">__init__</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">constructor_decorator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dims</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">or</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_distribution</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">or</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_moments</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">or</span> 
+            <span class="bp">self</span><span class="o">.</span><span class="n">_parent_moments</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">):</span>
+
+            <span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">,</span> <span class="n">dims</span><span class="p">,</span> <span class="n">plates</span><span class="p">,</span> <span class="n">dist</span><span class="p">,</span> <span class="n">stats</span><span class="p">,</span> <span class="n">pstats</span><span class="p">)</span> <span class="o">=</span> \
+              <span class="bp">self</span><span class="o">.</span><span class="n">_constructor</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            
+            <span class="bp">self</span><span class="o">.</span><span class="n">dims</span> <span class="o">=</span> <span class="n">dims</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_distribution</span> <span class="o">=</span> <span class="n">dist</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_moments</span> <span class="o">=</span> <span class="n">stats</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_parent_moments</span> <span class="o">=</span> <span class="n">pstats</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">plates</span> <span class="o">=</span> <span class="n">plates</span>
+
+        <span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">constructor_decorator</span>
+
+<div class="viewcode-block" id="ExponentialFamily"><a class="viewcode-back" href="../../../../../dev_api/generated/bayespy.inference.vmp.nodes.expfamily.ExponentialFamily.html#bayespy.inference.vmp.nodes.expfamily.ExponentialFamily">[docs]</a><span class="k">class</span> <span class="nc">ExponentialFamily</span><span class="p">(</span><span class="n">Stochastic</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A base class for nodes using natural parameterization `phi`.</span>
+
+<span class="sd">    phi</span>
+
+<span class="sd">    Sub-classes must implement the following static methods:</span>
+<span class="sd">       _compute_message_to_parent(index, u_self, *u_parents)</span>
+<span class="sd">       _compute_phi_from_parents(*u_parents, mask)</span>
+<span class="sd">       _compute_moments_and_cgf(phi, mask)</span>
+<span class="sd">       _compute_fixed_moments_and_f(x, mask=True)</span>
+
+<span class="sd">    Sub-classes may need to re-implement:</span>
+<span class="sd">    1. If they manipulate plates:</span>
+<span class="sd">       _compute_mask_to_parent(index, mask)</span>
+<span class="sd">       _plates_to_parent(self, index)</span>
+<span class="sd">       _plates_from_parent(self, index)</span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c"># Sub-classes should overwrite this (possibly using _constructor)</span>
+    <span class="n">dims</span> <span class="o">=</span> <span class="bp">None</span>
+    
+    <span class="c"># Sub-classes should overwrite this</span>
+    <span class="n">_distribution</span> <span class="o">=</span> <span class="bp">None</span>
+
+    <span class="nd">@useconstructor</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">parents</span><span class="p">,</span> <span class="n">initialize</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+        <span class="c"># Terms for the lower bound (G for latent and F for observed)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">g</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">f</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">parents</span><span class="p">,</span>
+                         <span class="n">initialize</span><span class="o">=</span><span class="n">initialize</span><span class="p">,</span>
+                         <span class="n">dims</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dims</span><span class="p">,</span>
+                         <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">initialize</span><span class="p">:</span>
+            <span class="n">axes</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">plates</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="p">,)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">phi</span> <span class="o">=</span> <span class="p">[</span><span class="n">misc</span><span class="o">.</span><span class="n">nans</span><span class="p">(</span><span class="n">axes</span><span class="o">+</span><span class="n">dim</span><span class="p">)</span> <span class="k">for</span> <span class="n">dim</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dims</span><span class="p">]</span>
+
+
+    <span class="nd">@classmethod</span>
+    <span class="nd">@ensureparents</span>
+    <span class="k">def</span> <span class="nf">_constructor</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">parents</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Constructs distribution and moments objects.</span>
+
+<span class="sd">        If __init__ uses useconstructor decorator, this method is called to</span>
+<span class="sd">        construct distribution and moments objects.</span>
+
+<span class="sd">        The method is given the same inputs as __init__. For some nodes, some of</span>
+<span class="sd">        these can&#39;t be &quot;static&quot; class attributes, then the node class must</span>
+<span class="sd">        overwrite this method to construct the objects manually.</span>
+
+<span class="sd">        The point of distribution class is to move general distribution but</span>
+<span class="sd">        not-node specific code. The point of moments class is to define the</span>
+<span class="sd">        messaging protocols.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">parent_plates</span> <span class="o">=</span> <span class="p">[</span><span class="n">cls</span><span class="o">.</span><span class="n">_distribution</span><span class="o">.</span><span class="n">plates_from_parent</span><span class="p">(</span><span class="n">ind</span><span class="p">,</span> <span class="n">parent</span><span class="o">.</span><span class="n">plates</span><span class="p">)</span>
+                         <span class="k">for</span> <span class="p">(</span><span class="n">ind</span><span class="p">,</span> <span class="n">parent</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">parents</span><span class="p">)]</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">parents</span><span class="p">,</span>
+                <span class="n">kwargs</span><span class="p">,</span>
+                <span class="n">cls</span><span class="o">.</span><span class="n">dims</span><span class="p">,</span>
+                <span class="n">cls</span><span class="o">.</span><span class="n">_total_plates</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;plates&#39;</span><span class="p">),</span> <span class="o">*</span><span class="n">parent_plates</span><span class="p">),</span>
+                <span class="n">cls</span><span class="o">.</span><span class="n">_distribution</span><span class="p">,</span> 
+                <span class="n">cls</span><span class="o">.</span><span class="n">_moments</span><span class="p">,</span> 
+                <span class="n">cls</span><span class="o">.</span><span class="n">_parent_moments</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_initialize_from_parent_moments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">u_parents</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">observed</span><span class="p">):</span>
+            <span class="c"># Update natural parameters using parents</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_update_phi_from_parents</span><span class="p">(</span><span class="o">*</span><span class="n">u_parents</span><span class="p">)</span>
+
+            <span class="c"># Update moments</span>
+            <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_not</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">observed</span><span class="p">)</span>
+            <span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">g</span><span class="p">)</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_distribution</span><span class="o">.</span><span class="n">compute_moments_and_cgf</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">phi</span><span class="p">,</span>
+                                                                <span class="n">mask</span><span class="o">=</span><span class="n">mask</span><span class="p">)</span>
+            <span class="c"># TODO/FIXME/BUG: You should use observation mask in order to not</span>
+            <span class="c"># overwrite them!</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_set_moments_and_cgf</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">mask</span><span class="p">)</span>
+        
+
+<div class="viewcode-block" id="ExponentialFamily.initialize_from_prior"><a class="viewcode-back" href="../../../../../dev_api/generated/bayespy.inference.vmp.nodes.expfamily.ExponentialFamily.initialize_from_prior.html#bayespy.inference.vmp.nodes.expfamily.ExponentialFamily.initialize_from_prior">[docs]</a>    <span class="k">def</span> <span class="nf">initialize_from_prior</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">u_parents</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_message_from_parents</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_initialize_from_parent_moments</span><span class="p">(</span><span class="o">*</span><span class="n">u_parents</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="ExponentialFamily.initialize_from_parameters"><a class="viewcode-back" href="../../../../../dev_api/generated/bayespy.inference.vmp.nodes.expfamily.ExponentialFamily.initialize_from_parameters.html#bayespy.inference.vmp.nodes.expfamily.ExponentialFamily.initialize_from_parameters">[docs]</a>    <span class="k">def</span> <span class="nf">initialize_from_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="n">u_parents</span> <span class="o">=</span> <span class="p">[</span><span class="n">p_mom</span><span class="o">.</span><span class="n">compute_fixed_moments</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> 
+                     <span class="k">for</span> <span class="p">(</span><span class="n">p_mom</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_parent_moments</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_initialize_from_parent_moments</span><span class="p">(</span><span class="o">*</span><span class="n">u_parents</span><span class="p">)</span>
+        
+</div>
+<div class="viewcode-block" id="ExponentialFamily.initialize_from_value"><a class="viewcode-back" href="../../../../../dev_api/generated/bayespy.inference.vmp.nodes.expfamily.ExponentialFamily.initialize_from_value.html#bayespy.inference.vmp.nodes.expfamily.ExponentialFamily.initialize_from_value">[docs]</a>    <span class="k">def</span> <span class="nf">initialize_from_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="c"># Update moments from value</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_not</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">observed</span><span class="p">)</span>
+        <span class="n">u</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_moments</span><span class="o">.</span><span class="n">compute_fixed_moments</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span>
+        <span class="c"># Check that the shape is correct</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">u</span><span class="p">)):</span>
+            <span class="n">ndim</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dims</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">ndim</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">u</span><span class="p">[</span><span class="n">i</span><span class="p">])[</span><span class="o">-</span><span class="n">ndim</span><span class="p">:]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dims</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;The initial value for node </span><span class="si">%s</span><span class="s"> has invalid shape </span><span class="si">%s</span><span class="s">.&quot;</span>
+                                     <span class="o">%</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">x</span><span class="p">)))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_moments_and_cgf</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">mask</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="ExponentialFamily.initialize_from_random"><a class="viewcode-back" href="../../../../../dev_api/generated/bayespy.inference.vmp.nodes.expfamily.ExponentialFamily.initialize_from_random.html#bayespy.inference.vmp.nodes.expfamily.ExponentialFamily.initialize_from_random">[docs]</a>    <span class="k">def</span> <span class="nf">initialize_from_random</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set the variable to a random sample from the current distribution.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c">#self.initialize_from_prior()</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">random</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">initialize_from_value</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+</div>
+    <span class="k">def</span> <span class="nf">_update_phi_from_parents</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">u_parents</span><span class="p">):</span>
+
+        <span class="c"># TODO/FIXME: Could this be combined to the function</span>
+        <span class="c"># _update_distribution_and_lowerbound ?</span>
+        <span class="c"># No, because some initialization methods may want to use this.</span>
+
+        <span class="c"># This makes correct broadcasting</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">phi</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_distribution</span><span class="o">.</span><span class="n">compute_phi_from_parents</span><span class="p">(</span><span class="o">*</span><span class="n">u_parents</span><span class="p">)</span>
+        <span class="c">#self.phi = self._compute_phi_from_parents(*u_parents)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">phi</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">phi</span><span class="p">)</span>
+        <span class="c"># Make sure phi has the correct number of axes. It makes life</span>
+        <span class="c"># a bit easier elsewhere.</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">phi</span><span class="p">)):</span>
+            <span class="n">axes</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">plates</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">ndims</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">ndim</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">phi</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">axes</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="c"># Add axes</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">phi</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">misc</span><span class="o">.</span><span class="n">add_leading_axes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">phi</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">axes</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">axes</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="c"># Remove extra leading axes</span>
+                <span class="n">first</span> <span class="o">=</span> <span class="o">-</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">plates</span><span class="p">)</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">ndims</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                <span class="n">sh</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">phi</span><span class="p">[</span><span class="n">i</span><span class="p">])[</span><span class="n">first</span><span class="p">:]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">phi</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">phi</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">sh</span><span class="p">)</span>
+            <span class="c"># Check that the shape is correct</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">misc</span><span class="o">.</span><span class="n">is_shape_subset</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">phi</span><span class="p">[</span><span class="n">i</span><span class="p">]),</span>
+                                         <span class="bp">self</span><span class="o">.</span><span class="n">get_shape</span><span class="p">(</span><span class="n">i</span><span class="p">)):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Incorrect shape of phi[</span><span class="si">%d</span><span class="s">] in node class </span><span class="si">%s</span><span class="s">. &quot;</span>
+                                 <span class="s">&quot;Shape is </span><span class="si">%s</span><span class="s"> but it should be broadcastable &quot;</span>
+                                 <span class="s">&quot;to shape </span><span class="si">%s</span><span class="s">.&quot;</span>
+                                 <span class="o">%</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span>
+                                    <span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span>
+                                    <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">phi</span><span class="p">[</span><span class="n">i</span><span class="p">]),</span>
+                                    <span class="bp">self</span><span class="o">.</span><span class="n">get_shape</span><span class="p">(</span><span class="n">i</span><span class="p">)))</span>
+
+    <span class="k">def</span> <span class="nf">_set_moments_and_cgf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_moments</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">mask</span><span class="p">)</span>
+        <span class="c"># TODO/FIXME: Apply mask to g too!!</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">g</span> <span class="o">=</span> <span class="n">g</span>
+
+    <span class="k">def</span> <span class="nf">_update_distribution_and_lowerbound</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">m_children</span><span class="p">,</span> <span class="o">*</span><span class="n">u_parents</span><span class="p">):</span>
+
+        <span class="c"># Update phi first from parents..</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_update_phi_from_parents</span><span class="p">(</span><span class="o">*</span><span class="n">u_parents</span><span class="p">)</span>
+        <span class="c"># .. then just add children&#39;s message</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">phi</span><span class="p">)):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">phi</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">phi</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">m_children</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+        <span class="c"># Update u and g</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_update_moments_and_cgf</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_update_moments_and_cgf</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Update moments and cgf based on current phi.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c"># Mask for plates to update (i.e., unobserved plates)</span>
+        <span class="n">update_mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_not</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">observed</span><span class="p">)</span>
+
+        <span class="c"># Compute the moments (u) and CGF (g)...</span>
+        <span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">g</span><span class="p">)</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_distribution</span><span class="o">.</span><span class="n">compute_moments_and_cgf</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">phi</span><span class="p">,</span>
+                                                            <span class="n">mask</span><span class="o">=</span><span class="n">update_mask</span><span class="p">)</span>
+        <span class="c"># ... and store them</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_moments_and_cgf</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">update_mask</span><span class="p">)</span>
+            
+<div class="viewcode-block" id="ExponentialFamily.observe"><a class="viewcode-back" href="../../../../../dev_api/generated/bayespy.inference.vmp.nodes.expfamily.ExponentialFamily.observe.html#bayespy.inference.vmp.nodes.expfamily.ExponentialFamily.observe">[docs]</a>    <span class="k">def</span> <span class="nf">observe</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Fix moments, compute f and propagate mask.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c"># Compute fixed moments</span>
+        <span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_distribution</span><span class="o">.</span><span class="n">compute_fixed_moments_and_f</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span>
+                                                                <span class="n">mask</span><span class="o">=</span><span class="n">mask</span><span class="p">)</span>
+
+        <span class="c"># Check the dimensionality of the observations</span>
+        <span class="k">for</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">v</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">u</span><span class="p">):</span>
+            <span class="c"># This is what the dimensionality &quot;should&quot; be</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">plates</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">dims</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">s</span> <span class="o">!=</span> <span class="n">t</span><span class="p">:</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="s">&quot;Dimensionality of the observations incorrect.&quot;</span>
+                <span class="n">msg</span> <span class="o">+=</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">Shape of input: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+                <span class="n">msg</span> <span class="o">+=</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">Expected shape: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+                <span class="n">msg</span> <span class="o">+=</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">Check plates.&quot;</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+        <span class="c"># Set the moments</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_moments</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">mask</span><span class="p">)</span>
+        
+        <span class="c"># TODO/FIXME: Use the mask?</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">f</span> <span class="o">=</span> <span class="n">f</span>
+
+        <span class="c"># Observed nodes should not be ignored</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">observed</span> <span class="o">=</span> <span class="n">mask</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_update_mask</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="ExponentialFamily.lower_bound_contribution"><a class="viewcode-back" href="../../../../../dev_api/generated/bayespy.inference.vmp.nodes.expfamily.ExponentialFamily.lower_bound_contribution.html#bayespy.inference.vmp.nodes.expfamily.ExponentialFamily.lower_bound_contribution">[docs]</a>    <span class="k">def</span> <span class="nf">lower_bound_contribution</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gradient</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="c"># Compute E[ log p(X|parents) - log q(X) ] over q(X)q(parents)</span>
+        
+        <span class="c"># Messages from parents</span>
+        <span class="c">#u_parents = [parent.message_to_child() for parent in self.parents]</span>
+        <span class="n">u_parents</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_message_from_parents</span><span class="p">()</span>
+        <span class="n">phi</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_distribution</span><span class="o">.</span><span class="n">compute_phi_from_parents</span><span class="p">(</span><span class="o">*</span><span class="n">u_parents</span><span class="p">)</span>
+        <span class="c"># G from parents</span>
+        <span class="n">L</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_distribution</span><span class="o">.</span><span class="n">compute_cgf_from_parents</span><span class="p">(</span><span class="o">*</span><span class="n">u_parents</span><span class="p">)</span>
+        <span class="c"># L = g</span>
+        <span class="c"># G for unobserved variables (ignored variables are handled</span>
+        <span class="c"># properly automatically)</span>
+        <span class="n">latent_mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_not</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">observed</span><span class="p">)</span>
+        <span class="c">#latent_mask = np.logical_and(self.mask, np.logical_not(self.observed))</span>
+        <span class="c"># F for observed, G for latent</span>
+        <span class="n">L</span> <span class="o">=</span> <span class="n">L</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">observed</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="p">,</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">g</span><span class="p">)</span>
+        <span class="k">for</span> <span class="p">(</span><span class="n">phi_p</span><span class="p">,</span> <span class="n">phi_q</span><span class="p">,</span> <span class="n">u_q</span><span class="p">,</span> <span class="n">dims</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">phi</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">phi</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dims</span><span class="p">):</span>
+            <span class="c"># Form a mask which puts observed variables to zero and</span>
+            <span class="c"># broadcasts properly</span>
+            <span class="n">latent_mask_i</span> <span class="o">=</span> <span class="n">misc</span><span class="o">.</span><span class="n">add_trailing_axes</span><span class="p">(</span>
+                                <span class="n">misc</span><span class="o">.</span><span class="n">add_leading_axes</span><span class="p">(</span>
+                                    <span class="n">latent_mask</span><span class="p">,</span>
+                                    <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">plates</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">ndim</span><span class="p">(</span><span class="n">latent_mask</span><span class="p">)),</span>
+                                <span class="nb">len</span><span class="p">(</span><span class="n">dims</span><span class="p">))</span>
+            <span class="n">axis_sum</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="n">dims</span><span class="p">),</span><span class="mi">0</span><span class="p">))</span>
+
+            <span class="c"># Compute the term</span>
+            <span class="n">phi_q</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">latent_mask_i</span><span class="p">,</span> <span class="n">phi_q</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="c"># TODO/FIXME: Use einsum here?</span>
+            <span class="n">Z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">phi_p</span><span class="o">-</span><span class="n">phi_q</span><span class="p">)</span> <span class="o">*</span> <span class="n">u_q</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis_sum</span><span class="p">)</span>
+
+            <span class="n">L</span> <span class="o">=</span> <span class="n">L</span> <span class="o">+</span> <span class="n">Z</span>
+
+        <span class="k">return</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mask</span><span class="p">,</span> <span class="n">L</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+                <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_plate_multiplier</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">plates</span><span class="p">,</span>
+                                         <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">L</span><span class="p">),</span>
+                                         <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mask</span><span class="p">)))</span>
+        <span class="c">#return L</span>
+</div>
+<div class="viewcode-block" id="ExponentialFamily.logpdf"><a class="viewcode-back" href="../../../../../dev_api/generated/bayespy.inference.vmp.nodes.expfamily.ExponentialFamily.logpdf.html#bayespy.inference.vmp.nodes.expfamily.ExponentialFamily.logpdf">[docs]</a>    <span class="k">def</span> <span class="nf">logpdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute the log probability density function Q(X) of this node.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">mask</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">True</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s">&#39;Mask not yet implemented&#39;</span><span class="p">)</span>
+        <span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_distribution</span><span class="o">.</span><span class="n">compute_fixed_moments_and_f</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">mask</span><span class="p">)</span>
+        <span class="n">Z</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="p">(</span><span class="n">phi_d</span><span class="p">,</span> <span class="n">u_d</span><span class="p">,</span> <span class="n">dims</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">phi</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dims</span><span class="p">):</span>
+            <span class="n">axis_sum</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="n">dims</span><span class="p">),</span><span class="mi">0</span><span class="p">))</span>
+            <span class="c"># TODO/FIXME: Use einsum here?</span>
+            <span class="n">Z</span> <span class="o">=</span> <span class="n">Z</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">phi_d</span> <span class="o">*</span> <span class="n">u_d</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis_sum</span><span class="p">)</span>
+            <span class="c">#Z = Z + misc.sum_multiply(phi_d, u_d, axis=axis_sum)</span>
+
+        <span class="c">## print(&#39;Z&#39;, Z)</span>
+        <span class="c">## print(&#39;f&#39;, f)</span>
+        <span class="c">## print(&#39;g&#39;, self.g)</span>
+        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">g</span> <span class="o">+</span> <span class="n">f</span> <span class="o">+</span> <span class="n">Z</span><span class="p">)</span>
+        
+</div>
+<div class="viewcode-block" id="ExponentialFamily.pdf"><a class="viewcode-back" href="../../../../../dev_api/generated/bayespy.inference.vmp.nodes.expfamily.ExponentialFamily.pdf.html#bayespy.inference.vmp.nodes.expfamily.ExponentialFamily.pdf">[docs]</a>    <span class="k">def</span> <span class="nf">pdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute the probability density function of this node.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">logpdf</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">mask</span><span class="p">))</span>
+        
+</div>
+<div class="viewcode-block" id="ExponentialFamily.save"><a class="viewcode-back" href="../../../../../dev_api/generated/bayespy.inference.vmp.nodes.expfamily.ExponentialFamily.save.html#bayespy.inference.vmp.nodes.expfamily.ExponentialFamily.save">[docs]</a>    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Save the state of the node into a HDF5 file.</span>
+
+<span class="sd">        group can be the root</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c">## if name is None:</span>
+        <span class="c">##     name = self.name</span>
+        <span class="c">## subgroup = group.create_group(name)</span>
+        
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">phi</span><span class="p">)):</span>
+            <span class="n">misc</span><span class="o">.</span><span class="n">write_to_hdf5</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">phi</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="s">&#39;phi</span><span class="si">%d</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">i</span><span class="p">)</span>
+        <span class="n">misc</span><span class="o">.</span><span class="n">write_to_hdf5</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="p">,</span> <span class="s">&#39;f&#39;</span><span class="p">)</span>
+        <span class="n">misc</span><span class="o">.</span><span class="n">write_to_hdf5</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">g</span><span class="p">,</span> <span class="s">&#39;g&#39;</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>
+    </div>
+<div class="viewcode-block" id="ExponentialFamily.load"><a class="viewcode-back" href="../../../../../dev_api/generated/bayespy.inference.vmp.nodes.expfamily.ExponentialFamily.load.html#bayespy.inference.vmp.nodes.expfamily.ExponentialFamily.load">[docs]</a>    <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Load the state of the node from a HDF5 file.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c"># TODO/FIXME: Check that the shapes are correct!</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">phi</span><span class="p">)):</span>
+            <span class="n">phii</span> <span class="o">=</span> <span class="n">group</span><span class="p">[</span><span class="s">&#39;phi</span><span class="si">%d</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">i</span><span class="p">][</span><span class="o">...</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">phi</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">phii</span>
+            
+        <span class="bp">self</span><span class="o">.</span><span class="n">f</span> <span class="o">=</span> <span class="n">group</span><span class="p">[</span><span class="s">&#39;f&#39;</span><span class="p">][</span><span class="o">...</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">g</span> <span class="o">=</span> <span class="n">group</span><span class="p">[</span><span class="s">&#39;g&#39;</span><span class="p">][</span><span class="o">...</span><span class="p">]</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>
+
+        </div>
+<div class="viewcode-block" id="ExponentialFamily.random"><a class="viewcode-back" href="../../../../../dev_api/generated/bayespy.inference.vmp.nodes.expfamily.ExponentialFamily.random.html#bayespy.inference.vmp.nodes.expfamily.ExponentialFamily.random">[docs]</a>    <span class="k">def</span> <span class="nf">random</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Draw a random sample from the distribution.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_distribution</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">phi</span><span class="p">),</span> <span class="n">plates</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">plates</span><span class="p">)</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../../../index.html">BayesPy v0.1 Documentation</a> &raquo;</li>
+          <li><a href="../../../../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../../../inference.html" >bayespy.inference</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011-2014, Jaakko Luttinen, GPLv3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

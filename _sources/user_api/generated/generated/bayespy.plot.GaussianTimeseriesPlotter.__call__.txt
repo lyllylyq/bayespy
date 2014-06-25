@@ -1,0 +1,6 @@
+bayespy.plot.GaussianTimeseriesPlotter.__call__
+===============================================
+
+.. currentmodule:: bayespy.plot
+
+.. automethod:: GaussianTimeseriesPlotter.__call__

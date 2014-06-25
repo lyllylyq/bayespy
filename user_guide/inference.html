@@ -37,6 +37,9 @@
           <a href="../genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
           <a href="plot.html" title="Examining the results"
              accesskey="N">next</a> |</li>
         <li class="right" >
@@ -68,7 +71,7 @@ the previous section.</p>
 <p>First, let us generate some toy data:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.1</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.1</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>The data is provided by simply calling <tt class="docutils literal"><span class="pre">observe</span></tt> method of a stochastic node:</p>
@@ -107,9 +110,9 @@ child nodes.  This leads to faster convergence and more accurate approximations.
 </div>
 <div class="section" id="choosing-the-inference-method">
 <h2>Choosing the inference method<a class="headerlink" href="#choosing-the-inference-method" title="Permalink to this headline">¶</a></h2>
-<p>Inference methods can be found in <tt class="xref py py-mod docutils literal"><span class="pre">bayespy.inference</span></tt> package.  Currently,
+<p>Inference methods can be found in <a class="reference internal" href="../user_api/generated/bayespy.inference.html#module-bayespy.inference" title="bayespy.inference"><tt class="xref py py-mod docutils literal"><span class="pre">bayespy.inference</span></tt></a> package.  Currently,
 only variational Bayesian approximation is implemented
-(<tt class="xref py py-class docutils literal"><span class="pre">bayespy.inference.VB</span></tt>).  The inference engine is constructed by giving
+(<a class="reference internal" href="../user_api/generated/generated/bayespy.inference.VB.html#bayespy.inference.VB" title="bayespy.inference.VB"><tt class="xref py py-class docutils literal"><span class="pre">bayespy.inference.VB</span></tt></a>).  The inference engine is constructed by giving
 the stochastic nodes of the model.</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">bayespy.inference</span> <span class="kn">import</span> <span class="n">VB</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">Q</span> <span class="o">=</span> <span class="n">VB</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">tau</span><span class="p">)</span>
@@ -184,59 +187,60 @@ is initialized using the above methods.</p>
 be run using <tt class="docutils literal"><span class="pre">update</span></tt> method. By default, it takes one iteration step
 updating all nodes once:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Q</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
-<span class="go">Iteration 1: loglike=-9.022564e+02 (... seconds)</span>
+<span class="go">Iteration 1: loglike=-9.305259e+02 (... seconds)</span>
 </pre></div>
 </div>
-<p>The order in which the nodes are updated is the same as the order in which the
-nodes were given when creating <tt class="docutils literal"><span class="pre">Q</span></tt>.  If you want to change the order or update
-only some of the nodes, you can give as arguments the nodes you want to update
-and they are updated in the given order:</p>
+<p>The <tt class="docutils literal"><span class="pre">loglike</span></tt> tells the VB lower bound.  The order in which the nodes are
+updated is the same as the order in which the nodes were given when creating
+<tt class="docutils literal"><span class="pre">Q</span></tt>.  If you want to change the order or update only some of the nodes, you
+can give as arguments the nodes you want to update and they are updated in the
+given order:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Q</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">C</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span>
-<span class="go">Iteration 2: loglike=-8.300209e+02 (... seconds)</span>
+<span class="go">Iteration 2: loglike=-8.818976e+02 (... seconds)</span>
 </pre></div>
 </div>
 <p>It is also possible to give the same node several times:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Q</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">C</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">tau</span><span class="p">)</span>
-<span class="go">Iteration 3: loglike=-7.608389e+02 (... seconds)</span>
+<span class="go">Iteration 3: loglike=-8.071222e+02 (... seconds)</span>
 </pre></div>
 </div>
 <p>Note that each call to <tt class="docutils literal"><span class="pre">update</span></tt> is counted as one iteration step although not
 variables are necessarily updated.  Instead of doing one iteration step,
 <tt class="docutils literal"><span class="pre">repeat</span></tt> keyword argument can be used to perform several iteration steps:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Q</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">repeat</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
-<span class="go">Iteration 4: loglike=-6.909768e+02 (... seconds)</span>
-<span class="go">Iteration 5: loglike=-5.975477e+02 (... seconds)</span>
-<span class="go">Iteration 6: loglike=-4.328053e+02 (... seconds)</span>
-<span class="go">Iteration 7: loglike=-2.802900e+02 (... seconds)</span>
-<span class="go">Iteration 8: loglike=-1.628321e+02 (... seconds)</span>
-<span class="go">Iteration 9: loglike=-9.664200e+01 (... seconds)</span>
-<span class="go">Iteration 10: loglike=-7.202233e+01 (... seconds)</span>
-<span class="go">Iteration 11: loglike=-6.580980e+01 (... seconds)</span>
-<span class="go">Iteration 12: loglike=-6.444844e+01 (... seconds)</span>
-<span class="go">Iteration 13: loglike=-6.400242e+01 (... seconds)</span>
+<span class="go">Iteration 4: loglike=-7.167588e+02 (... seconds)</span>
+<span class="go">Iteration 5: loglike=-6.827873e+02 (... seconds)</span>
+<span class="go">Iteration 6: loglike=-6.259477e+02 (... seconds)</span>
+<span class="go">Iteration 7: loglike=-4.725400e+02 (... seconds)</span>
+<span class="go">Iteration 8: loglike=-3.270816e+02 (... seconds)</span>
+<span class="go">Iteration 9: loglike=-2.208865e+02 (... seconds)</span>
+<span class="go">Iteration 10: loglike=-1.658761e+02 (... seconds)</span>
+<span class="go">Iteration 11: loglike=-1.469468e+02 (... seconds)</span>
+<span class="go">Iteration 12: loglike=-1.420311e+02 (... seconds)</span>
+<span class="go">Iteration 13: loglike=-1.405139e+02 (... seconds)</span>
 </pre></div>
 </div>
 <p>The VB algorithm stops automatically if it converges, that is, the relative
 change in the lower bound is below some threshold:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Q</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">repeat</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
-<span class="go">Iteration 14: loglike=-6.371002e+01 (... seconds)</span>
+<span class="go">Iteration 14: loglike=-1.396481e+02 (... seconds)</span>
 <span class="gp">...</span>
-<span class="go">Iteration 48: loglike=8.275500e+02 (... seconds)</span>
-<span class="go">Converged at iteration 48.</span>
+<span class="go">Iteration 488: loglike=-1.224106e+02 (... seconds)</span>
+<span class="go">Converged at iteration 488.</span>
 </pre></div>
 </div>
 <p>Now the algorithm stopped before taking 1000 iteration steps because it
 converged.  The relative tolerance can be adjusted by providing <tt class="docutils literal"><span class="pre">tol</span></tt> keyword
 argument to the <tt class="docutils literal"><span class="pre">update</span></tt> method:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Q</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">repeat</span><span class="o">=</span><span class="mi">10000</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">)</span>
-<span class="go">Iteration 49: loglike=8.275572e+02 (... seconds)</span>
+<span class="go">Iteration 489: loglike=-1.224094e+02 (... seconds)</span>
 <span class="gp">...</span>
-<span class="go">Iteration 1731: loglike=8.320980e+02 (... seconds)</span>
-<span class="go">Converged at iteration 1731.</span>
+<span class="go">Iteration 847: loglike=-1.222506e+02 (... seconds)</span>
+<span class="go">Converged at iteration 847.</span>
 </pre></div>
 </div>
-<p>This shows that making the tolerance smaller, may improve the result but it may
-also significantly increase the iteration steps until convergence.</p>
+<p>Making the tolerance smaller, may improve the result but it may also
+significantly increase the iteration steps until convergence.</p>
 <p>Instead of using <tt class="docutils literal"><span class="pre">update</span></tt> method of the inference engine <tt class="docutils literal"><span class="pre">VB</span></tt>, it is
 possible to use the <tt class="docutils literal"><span class="pre">update</span></tt> methods of the nodes directly as</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">C</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
@@ -287,9 +291,9 @@ bound with respect to the rotation leads to parameterized joint optimization of
 </pre></div>
 </div>
 <p>Here, the rotation for <tt class="docutils literal"><span class="pre">C</span></tt> provides the ARD parameters <tt class="docutils literal"><span class="pre">alpha</span></tt> so they are
-updated simultaneously.  In addition to <tt class="xref py py-class docutils literal"><span class="pre">RotateGaussianARD</span></tt>, there are a
-few other built-in rotations defined, for instance, <tt class="xref py py-class docutils literal"><span class="pre">RotateGaussian</span></tt> and
-<tt class="xref py py-class docutils literal"><span class="pre">RotateGaussianMarkovChain</span></tt>.  It is extremely important that the model
+updated simultaneously.  In addition to <a class="reference internal" href="../user_api/generated/generated/bayespy.inference.vmp.transformations.RotateGaussianARD.html#bayespy.inference.vmp.transformations.RotateGaussianARD" title="bayespy.inference.vmp.transformations.RotateGaussianARD"><tt class="xref py py-class docutils literal"><span class="pre">RotateGaussianARD</span></tt></a>, there are a
+few other built-in rotations defined, for instance, <a class="reference internal" href="../user_api/generated/generated/bayespy.inference.vmp.transformations.RotateGaussian.html#bayespy.inference.vmp.transformations.RotateGaussian" title="bayespy.inference.vmp.transformations.RotateGaussian"><tt class="xref py py-class docutils literal"><span class="pre">RotateGaussian</span></tt></a> and
+<a class="reference internal" href="../user_api/generated/generated/bayespy.inference.vmp.transformations.RotateGaussianMarkovChain.html#bayespy.inference.vmp.transformations.RotateGaussianMarkovChain" title="bayespy.inference.vmp.transformations.RotateGaussianMarkovChain"><tt class="xref py py-class docutils literal"><span class="pre">RotateGaussianMarkovChain</span></tt></a>.  It is extremely important that the model
 satisfies the assumptions made by the rotation class and the user is mostly
 responsible for this.  The optimizer for the rotations is constructed by giving
 the two rotations and the dimensionality of the rotated space:</p>
@@ -317,32 +321,22 @@ expansion.  First, let us re-initialize our nodes and VB algorithm:</p>
 <p>Now the iteration converges to the relative tolerance <span class="math">\(10^{-6}\)</span> much
 faster:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Q</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">repeat</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">)</span>
-<span class="go">Iteration 1: loglike=-9.360795e+02 (... seconds)</span>
+<span class="go">Iteration 1: loglike=-9.363500e+02 (... seconds)</span>
 <span class="gp">...</span>
-<span class="go">Iteration 20: loglike=-2.962718e+01 (... seconds)</span>
-<span class="go">Converged at iteration 20.</span>
+<span class="go">Iteration 18: loglike=-1.221354e+02 (... seconds)</span>
+<span class="go">Converged at iteration 18.</span>
 </pre></div>
 </div>
-<p>However, the lower bound is worse than after converging to the same tolerance in
-1731 iteration steps without the parameter expansion.  To reach a better
-solution, we can force the VB algorithm to proceed for some iterations:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Q</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">repeat</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
-<span class="go">Iteration 21: loglike=-2.962718e+01 (... seconds)</span>
-<span class="gp">...</span>
-<span class="go">Iteration 70: loglike=8.560601e+02 (... seconds)</span>
-</pre></div>
-</div>
-<p>Now the iteration converged to a similar (actually slightly better) lower bound
-than before and much faster: 70 iterations versus 1731 iterations.  One can
-compare the number of iteration steps in this case because the cost per
-iteration step with or without parameter expansion is approximately the same.
-However, this shows that the parameter expansion can have the drawback that it
-converges much faster but may converge to a bad local optimum more easily.
-Usually, this can solved by updating the nodes near the observations a few times
-before starting to update the hyperparameters and to use parameter expansion.
-In any case, the parameter expansion is practically necessary when using
-state-space models in order to converge to a proper solution in a reasonable
-time.</p>
+<p>The convergence took 18 iterations with rotations and 488 or 847 iterations
+without the parameter expansion.  In addition, the lower bound is improved
+slightly.  One can compare the number of iteration steps in this case because
+the cost per iteration step with or without parameter expansion is approximately
+the same.  Sometimes the parameter expansion can have the drawback that it
+converges to a bad local optimum.  Usually, this can be solved by updating the
+nodes near the observations a few times before starting to update the
+hyperparameters and to use parameter expansion.  In any case, the parameter
+expansion is practically necessary when using state-space models in order to
+converge to a proper solution in a reasonable time.</p>
 </div>
 </div>
 </div>
@@ -404,6 +398,9 @@ time.</p>
         <li class="right" style="margin-right: 10px">
           <a href="../genindex.html" title="General Index"
              >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
         <li class="right" >
           <a href="plot.html" title="Examining the results"
              >next</a> |</li>
