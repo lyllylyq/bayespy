@@ -6,15 +6,18 @@ bayespy.plot.ContourPlotter
 .. autoclass:: ContourPlotter
 
    
-
-      .. rubric:: Methods
-
-      .. autosummary::
-         :toctree:
-      
-         ~ContourPlotter.__call__
-
-
+   .. automethod:: __init__
 
    
+   .. rubric:: Methods
 
+   .. autosummary::
+      :toctree: generated/
+   
+      ~ContourPlotter.__init__
+   
+   
+
+   
+   
+   

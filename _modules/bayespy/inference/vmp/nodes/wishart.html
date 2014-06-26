@@ -25,7 +25,7 @@
     <script type="text/javascript" src="../../../../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="top" title="BayesPy v0.1 Documentation" href="../../../../../index.html" />
-    <link rel="up" title="Module code" href="../../../../index.html" /> 
+    <link rel="up" title="bayespy.inference" href="../../../inference.html" /> 
   </head>
   <body>
     <div class="related">
@@ -34,8 +34,12 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../../../../genindex.html" title="General Index"
              accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
         <li><a href="../../../../../index.html">BayesPy v0.1 Documentation</a> &raquo;</li>
-          <li><a href="../../../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+          <li><a href="../../../../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../../../inference.html" accesskey="U">bayespy.inference</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -95,16 +99,16 @@
         <span class="sd">&quot;&quot;&quot; Compute the dimensions of phi or u. &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">(</span> <span class="p">(),</span> <span class="p">()</span> <span class="p">)</span>
 
-<span class="k">class</span> <span class="nc">WishartMoments</span><span class="p">(</span><span class="n">Moments</span><span class="p">):</span>
+<div class="viewcode-block" id="WishartMoments"><a class="viewcode-back" href="../../../../../dev_api/generated/bayespy.inference.vmp.nodes.wishart.WishartMoments.html#bayespy.inference.vmp.nodes.wishart.WishartMoments">[docs]</a><span class="k">class</span> <span class="nc">WishartMoments</span><span class="p">(</span><span class="n">Moments</span><span class="p">):</span>
 
-    <span class="k">def</span> <span class="nf">compute_fixed_moments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Lambda</span><span class="p">):</span>
+<div class="viewcode-block" id="WishartMoments.compute_fixed_moments"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.wishart.WishartMoments.compute_fixed_moments.html#bayespy.inference.vmp.nodes.wishart.WishartMoments.compute_fixed_moments">[docs]</a>    <span class="k">def</span> <span class="nf">compute_fixed_moments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Lambda</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Compute moments for fixed x. &quot;&quot;&quot;</span>
         <span class="n">ldet</span> <span class="o">=</span> <span class="n">misc</span><span class="o">.</span><span class="n">m_chol_logdet</span><span class="p">(</span><span class="n">misc</span><span class="o">.</span><span class="n">m_chol</span><span class="p">(</span><span class="n">Lambda</span><span class="p">))</span>
         <span class="n">u</span> <span class="o">=</span> <span class="p">[</span><span class="n">Lambda</span><span class="p">,</span>
              <span class="n">ldet</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">u</span>
-
-    <span class="k">def</span> <span class="nf">compute_dims_from_values</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+</div>
+<div class="viewcode-block" id="WishartMoments.compute_dims_from_values"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.wishart.WishartMoments.compute_dims_from_values.html#bayespy.inference.vmp.nodes.wishart.WishartMoments.compute_dims_from_values">[docs]</a>    <span class="k">def</span> <span class="nf">compute_dims_from_values</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Compute the dimensions of phi and u. &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">ndim</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Values for Wishart distribution must be at least &quot;</span>
@@ -115,21 +119,21 @@
                              <span class="s">&quot;length.&quot;</span><span class="p">)</span>
         <span class="n">d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">x</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
         <span class="k">return</span> <span class="p">(</span> <span class="p">(</span><span class="n">d</span><span class="p">,</span><span class="n">d</span><span class="p">),</span> <span class="p">()</span> <span class="p">)</span>
-
-<span class="k">class</span> <span class="nc">WishartDistribution</span><span class="p">(</span><span class="n">ExponentialFamilyDistribution</span><span class="p">):</span>
+</div></div>
+<div class="viewcode-block" id="WishartDistribution"><a class="viewcode-back" href="../../../../../dev_api/generated/bayespy.inference.vmp.nodes.wishart.WishartDistribution.html#bayespy.inference.vmp.nodes.wishart.WishartDistribution">[docs]</a><span class="k">class</span> <span class="nc">WishartDistribution</span><span class="p">(</span><span class="n">ExponentialFamilyDistribution</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Sub-classes implement distribution specific computations.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
 
-    <span class="k">def</span> <span class="nf">compute_message_to_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">u_self</span><span class="p">,</span> <span class="o">*</span><span class="n">u_parents</span><span class="p">):</span>
+<div class="viewcode-block" id="WishartDistribution.compute_message_to_parent"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.wishart.WishartDistribution.compute_message_to_parent.html#bayespy.inference.vmp.nodes.wishart.WishartDistribution.compute_message_to_parent">[docs]</a>    <span class="k">def</span> <span class="nf">compute_message_to_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">u_self</span><span class="p">,</span> <span class="o">*</span><span class="n">u_parents</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
-
-    <span class="k">def</span> <span class="nf">compute_phi_from_parents</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">u_parents</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+</div>
+<div class="viewcode-block" id="WishartDistribution.compute_phi_from_parents"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.wishart.WishartDistribution.compute_phi_from_parents.html#bayespy.inference.vmp.nodes.wishart.WishartDistribution.compute_phi_from_parents">[docs]</a>    <span class="k">def</span> <span class="nf">compute_phi_from_parents</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">u_parents</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">[</span><span class="o">-</span><span class="mf">0.5</span> <span class="o">*</span> <span class="n">u_parents</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span>
                 <span class="mf">0.5</span> <span class="o">*</span> <span class="n">u_parents</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]]</span>
-
-    <span class="k">def</span> <span class="nf">compute_moments_and_cgf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">phi</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+</div>
+<div class="viewcode-block" id="WishartDistribution.compute_moments_and_cgf"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.wishart.WishartDistribution.compute_moments_and_cgf.html#bayespy.inference.vmp.nodes.wishart.WishartDistribution.compute_moments_and_cgf">[docs]</a>    <span class="k">def</span> <span class="nf">compute_moments_and_cgf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">phi</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
         <span class="n">U</span> <span class="o">=</span> <span class="n">misc</span><span class="o">.</span><span class="n">m_chol</span><span class="p">(</span><span class="o">-</span><span class="n">phi</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
         <span class="n">k</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">phi</span><span class="p">[</span><span class="mi">0</span><span class="p">])[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
         <span class="c">#k = self.dims[0][0]</span>
@@ -139,8 +143,8 @@
         <span class="n">u</span> <span class="o">=</span> <span class="p">[</span><span class="n">u0</span><span class="p">,</span> <span class="n">u1</span><span class="p">]</span>
         <span class="n">g</span> <span class="o">=</span> <span class="n">phi</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">logdet_phi0</span> <span class="o">-</span> <span class="n">special</span><span class="o">.</span><span class="n">multigammaln</span><span class="p">(</span><span class="n">phi</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">k</span><span class="p">)</span>
         <span class="k">return</span> <span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">g</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">compute_cgf_from_parents</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">u_parents</span><span class="p">):</span>
+</div>
+<div class="viewcode-block" id="WishartDistribution.compute_cgf_from_parents"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.wishart.WishartDistribution.compute_cgf_from_parents.html#bayespy.inference.vmp.nodes.wishart.WishartDistribution.compute_cgf_from_parents">[docs]</a>    <span class="k">def</span> <span class="nf">compute_cgf_from_parents</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">u_parents</span><span class="p">):</span>
         <span class="n">n</span> <span class="o">=</span> <span class="n">u_parents</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">gammaln_n</span> <span class="o">=</span> <span class="n">u_parents</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
         <span class="n">V</span> <span class="o">=</span> <span class="n">u_parents</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
@@ -151,8 +155,8 @@
         <span class="c">#g = 0.5*n*logdet_V - special.multigammaln(n/2, k)</span>
         <span class="n">g</span> <span class="o">=</span> <span class="mf">0.5</span><span class="o">*</span><span class="n">n</span><span class="o">*</span><span class="n">logdet_V</span> <span class="o">-</span> <span class="mf">0.5</span><span class="o">*</span><span class="n">k</span><span class="o">*</span><span class="n">n</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">-</span> <span class="n">gammaln_n</span> <span class="c">#special.multigammaln(n/2, k)</span>
         <span class="k">return</span> <span class="n">g</span>
-
-    <span class="k">def</span> <span class="nf">compute_fixed_moments_and_f</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Lambda</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+</div>
+<div class="viewcode-block" id="WishartDistribution.compute_fixed_moments_and_f"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.wishart.WishartDistribution.compute_fixed_moments_and_f.html#bayespy.inference.vmp.nodes.wishart.WishartDistribution.compute_fixed_moments_and_f">[docs]</a>    <span class="k">def</span> <span class="nf">compute_fixed_moments_and_f</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Lambda</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Compute u(x) and f(x) for given x. &quot;&quot;&quot;</span>
         <span class="n">k</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">Lambda</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
         <span class="n">ldet</span> <span class="o">=</span> <span class="n">misc</span><span class="o">.</span><span class="n">m_chol_logdet</span><span class="p">(</span><span class="n">misc</span><span class="o">.</span><span class="n">m_chol</span><span class="p">(</span><span class="n">Lambda</span><span class="p">))</span>
@@ -161,8 +165,8 @@
         <span class="n">f</span> <span class="o">=</span> <span class="o">-</span><span class="p">(</span><span class="n">k</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span> <span class="o">*</span> <span class="n">ldet</span>
         <span class="k">return</span> <span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
 
-
-<div class="viewcode-block" id="Wishart"><a class="viewcode-back" href="../../../../../generated.backup/bayespy.inference.vmp.nodes.wishart.Wishart.html#bayespy.inference.vmp.nodes.wishart.Wishart">[docs]</a><span class="k">class</span> <span class="nc">Wishart</span><span class="p">(</span><span class="n">ExponentialFamily</span><span class="p">):</span>
+</div></div>
+<span class="k">class</span> <span class="nc">Wishart</span><span class="p">(</span><span class="n">ExponentialFamily</span><span class="p">):</span>
     <span class="sd">r&quot;&quot;&quot;</span>
 <span class="sd">    Node for Wishart random variables.</span>
 
@@ -190,13 +194,13 @@
     <span class="n">_moments</span> <span class="o">=</span> <span class="n">WishartMoments</span><span class="p">()</span>
 
 
-<div class="viewcode-block" id="Wishart.__init__"><a class="viewcode-back" href="../../../../../generated.backup/bayespy.inference.vmp.nodes.wishart.Wishart.html#bayespy.inference.vmp.nodes.wishart.Wishart.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">V</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">V</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create Wishart node.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">V</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-        </div>
+        
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">_constructor</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">V</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -234,7 +238,7 @@
         <span class="k">print</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">phi</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
         <span class="k">print</span><span class="p">(</span><span class="s">&quot;  A =&quot;</span><span class="p">)</span>
         <span class="k">print</span><span class="p">(</span><span class="mf">0.5</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">phi</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="o">...</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">])</span>
-</pre></div></div>
+</pre></div>
 
           </div>
         </div>
@@ -264,8 +268,12 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../../../../genindex.html" title="General Index"
              >index</a></li>
+        <li class="right" >
+          <a href="../../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
         <li><a href="../../../../../index.html">BayesPy v0.1 Documentation</a> &raquo;</li>
-          <li><a href="../../../../index.html" >Module code</a> &raquo;</li> 
+          <li><a href="../../../../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../../../inference.html" >bayespy.inference</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

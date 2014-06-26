@@ -26,8 +26,8 @@
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="top" title="BayesPy v0.1 Documentation" href="../../../index.html" />
     <link rel="up" title="bayespy.nodes" href="../bayespy.nodes.html" />
-    <link rel="next" title="bayespy.nodes.CategoricalMarkovChain.add_plate_axis" href="bayespy.nodes.CategoricalMarkovChain.add_plate_axis.html" />
-    <link rel="prev" title="bayespy.nodes.Dirichlet.plates" href="bayespy.nodes.Dirichlet.plates.html" /> 
+    <link rel="next" title="bayespy.nodes.CategoricalMarkovChain.__init__" href="generated/bayespy.nodes.CategoricalMarkovChain.__init__.html" />
+    <link rel="prev" title="bayespy.nodes.Dirichlet.plates" href="generated/bayespy.nodes.Dirichlet.plates.html" /> 
   </head>
   <body>
     <div class="related">
@@ -40,10 +40,10 @@
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="bayespy.nodes.CategoricalMarkovChain.add_plate_axis.html" title="bayespy.nodes.CategoricalMarkovChain.add_plate_axis"
+          <a href="generated/bayespy.nodes.CategoricalMarkovChain.__init__.html" title="bayespy.nodes.CategoricalMarkovChain.__init__"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="bayespy.nodes.Dirichlet.plates.html" title="bayespy.nodes.Dirichlet.plates"
+          <a href="generated/bayespy.nodes.Dirichlet.plates.html" title="bayespy.nodes.Dirichlet.plates"
              accesskey="P">previous</a> |</li>
         <li><a href="../../../index.html">BayesPy v0.1 Documentation</a> &raquo;</li>
           <li><a href="../../user_api.html" >User API</a> &raquo;</li>
@@ -262,6 +262,12 @@ transitions. <span class="math">\(K\)</span>-dimensional Dirichlet with plates (
 <p class="first admonition-title">See also</p>
 <p class="last"><a class="reference internal" href="bayespy.nodes.Categorical.html#bayespy.nodes.Categorical" title="bayespy.nodes.Categorical"><tt class="xref py py-obj docutils literal"><span class="pre">Categorical</span></tt></a>, <a class="reference internal" href="bayespy.nodes.Dirichlet.html#bayespy.nodes.Dirichlet" title="bayespy.nodes.Dirichlet"><tt class="xref py py-obj docutils literal"><span class="pre">Dirichlet</span></tt></a>, <a class="reference internal" href="bayespy.nodes.GaussianMarkovChain.html#bayespy.nodes.GaussianMarkovChain" title="bayespy.nodes.GaussianMarkovChain"><tt class="xref py py-obj docutils literal"><span class="pre">GaussianMarkovChain</span></tt></a>, <a class="reference internal" href="bayespy.nodes.Mixture.html#bayespy.nodes.Mixture" title="bayespy.nodes.Mixture"><tt class="xref py py-obj docutils literal"><span class="pre">Mixture</span></tt></a>, <a class="reference internal" href="bayespy.nodes.SwitchingGaussianMarkovChain.html#bayespy.nodes.SwitchingGaussianMarkovChain" title="bayespy.nodes.SwitchingGaussianMarkovChain"><tt class="xref py py-obj docutils literal"><span class="pre">SwitchingGaussianMarkovChain</span></tt></a></p>
 </div>
+<dl class="method">
+<dt id="bayespy.nodes.CategoricalMarkovChain.__init__">
+<tt class="descname">__init__</tt><big>(</big><em>pi</em>, <em>A</em>, <em>states=None</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#bayespy.nodes.CategoricalMarkovChain.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create categorical Markov chain</p>
+</dd></dl>
+
 <p class="rubric">Methods</p>
 <table border="1" class="longtable docutils">
 <colgroup>
@@ -269,76 +275,79 @@ transitions. <span class="math">\(K\)</span>-dimensional Dirichlet with plates (
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="bayespy.nodes.CategoricalMarkovChain.add_plate_axis.html#bayespy.nodes.CategoricalMarkovChain.add_plate_axis" title="bayespy.nodes.CategoricalMarkovChain.add_plate_axis"><tt class="xref py py-obj docutils literal"><span class="pre">add_plate_axis</span></tt></a>(to_plate)</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.nodes.CategoricalMarkovChain.__init__.html#bayespy.nodes.CategoricalMarkovChain.__init__" title="bayespy.nodes.CategoricalMarkovChain.__init__"><tt class="xref py py-obj docutils literal"><span class="pre">__init__</span></tt></a>(pi,&nbsp;A[,&nbsp;states])</td>
+<td>Create categorical Markov chain</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.nodes.CategoricalMarkovChain.add_plate_axis.html#bayespy.nodes.CategoricalMarkovChain.add_plate_axis" title="bayespy.nodes.CategoricalMarkovChain.add_plate_axis"><tt class="xref py py-obj docutils literal"><span class="pre">add_plate_axis</span></tt></a>(to_plate)</td>
 <td></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="bayespy.nodes.CategoricalMarkovChain.delete.html#bayespy.nodes.CategoricalMarkovChain.delete" title="bayespy.nodes.CategoricalMarkovChain.delete"><tt class="xref py py-obj docutils literal"><span class="pre">delete</span></tt></a>()</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.nodes.CategoricalMarkovChain.delete.html#bayespy.nodes.CategoricalMarkovChain.delete" title="bayespy.nodes.CategoricalMarkovChain.delete"><tt class="xref py py-obj docutils literal"><span class="pre">delete</span></tt></a>()</td>
 <td>Delete this node and the children</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="bayespy.nodes.CategoricalMarkovChain.get_mask.html#bayespy.nodes.CategoricalMarkovChain.get_mask" title="bayespy.nodes.CategoricalMarkovChain.get_mask"><tt class="xref py py-obj docutils literal"><span class="pre">get_mask</span></tt></a>()</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.nodes.CategoricalMarkovChain.get_mask.html#bayespy.nodes.CategoricalMarkovChain.get_mask" title="bayespy.nodes.CategoricalMarkovChain.get_mask"><tt class="xref py py-obj docutils literal"><span class="pre">get_mask</span></tt></a>()</td>
 <td></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="bayespy.nodes.CategoricalMarkovChain.get_moments.html#bayespy.nodes.CategoricalMarkovChain.get_moments" title="bayespy.nodes.CategoricalMarkovChain.get_moments"><tt class="xref py py-obj docutils literal"><span class="pre">get_moments</span></tt></a>()</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.nodes.CategoricalMarkovChain.get_moments.html#bayespy.nodes.CategoricalMarkovChain.get_moments" title="bayespy.nodes.CategoricalMarkovChain.get_moments"><tt class="xref py py-obj docutils literal"><span class="pre">get_moments</span></tt></a>()</td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="bayespy.nodes.CategoricalMarkovChain.get_shape.html#bayespy.nodes.CategoricalMarkovChain.get_shape" title="bayespy.nodes.CategoricalMarkovChain.get_shape"><tt class="xref py py-obj docutils literal"><span class="pre">get_shape</span></tt></a>(ind)</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.nodes.CategoricalMarkovChain.get_shape.html#bayespy.nodes.CategoricalMarkovChain.get_shape" title="bayespy.nodes.CategoricalMarkovChain.get_shape"><tt class="xref py py-obj docutils literal"><span class="pre">get_shape</span></tt></a>(ind)</td>
 <td></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="bayespy.nodes.CategoricalMarkovChain.has_plotter.html#bayespy.nodes.CategoricalMarkovChain.has_plotter" title="bayespy.nodes.CategoricalMarkovChain.has_plotter"><tt class="xref py py-obj docutils literal"><span class="pre">has_plotter</span></tt></a>()</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.nodes.CategoricalMarkovChain.has_plotter.html#bayespy.nodes.CategoricalMarkovChain.has_plotter" title="bayespy.nodes.CategoricalMarkovChain.has_plotter"><tt class="xref py py-obj docutils literal"><span class="pre">has_plotter</span></tt></a>()</td>
 <td>Return True if the node has a plotter</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="bayespy.nodes.CategoricalMarkovChain.initialize_from_parameters.html#bayespy.nodes.CategoricalMarkovChain.initialize_from_parameters" title="bayespy.nodes.CategoricalMarkovChain.initialize_from_parameters"><tt class="xref py py-obj docutils literal"><span class="pre">initialize_from_parameters</span></tt></a>(*args)</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.nodes.CategoricalMarkovChain.initialize_from_parameters.html#bayespy.nodes.CategoricalMarkovChain.initialize_from_parameters" title="bayespy.nodes.CategoricalMarkovChain.initialize_from_parameters"><tt class="xref py py-obj docutils literal"><span class="pre">initialize_from_parameters</span></tt></a>(*args)</td>
 <td></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="bayespy.nodes.CategoricalMarkovChain.initialize_from_prior.html#bayespy.nodes.CategoricalMarkovChain.initialize_from_prior" title="bayespy.nodes.CategoricalMarkovChain.initialize_from_prior"><tt class="xref py py-obj docutils literal"><span class="pre">initialize_from_prior</span></tt></a>()</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.nodes.CategoricalMarkovChain.initialize_from_prior.html#bayespy.nodes.CategoricalMarkovChain.initialize_from_prior" title="bayespy.nodes.CategoricalMarkovChain.initialize_from_prior"><tt class="xref py py-obj docutils literal"><span class="pre">initialize_from_prior</span></tt></a>()</td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="bayespy.nodes.CategoricalMarkovChain.initialize_from_random.html#bayespy.nodes.CategoricalMarkovChain.initialize_from_random" title="bayespy.nodes.CategoricalMarkovChain.initialize_from_random"><tt class="xref py py-obj docutils literal"><span class="pre">initialize_from_random</span></tt></a>()</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.nodes.CategoricalMarkovChain.initialize_from_random.html#bayespy.nodes.CategoricalMarkovChain.initialize_from_random" title="bayespy.nodes.CategoricalMarkovChain.initialize_from_random"><tt class="xref py py-obj docutils literal"><span class="pre">initialize_from_random</span></tt></a>()</td>
 <td>Set the variable to a random sample from the current distribution.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="bayespy.nodes.CategoricalMarkovChain.initialize_from_value.html#bayespy.nodes.CategoricalMarkovChain.initialize_from_value" title="bayespy.nodes.CategoricalMarkovChain.initialize_from_value"><tt class="xref py py-obj docutils literal"><span class="pre">initialize_from_value</span></tt></a>(x,&nbsp;*args)</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.nodes.CategoricalMarkovChain.initialize_from_value.html#bayespy.nodes.CategoricalMarkovChain.initialize_from_value" title="bayespy.nodes.CategoricalMarkovChain.initialize_from_value"><tt class="xref py py-obj docutils literal"><span class="pre">initialize_from_value</span></tt></a>(x,&nbsp;*args)</td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="bayespy.nodes.CategoricalMarkovChain.load.html#bayespy.nodes.CategoricalMarkovChain.load" title="bayespy.nodes.CategoricalMarkovChain.load"><tt class="xref py py-obj docutils literal"><span class="pre">load</span></tt></a>(group)</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.nodes.CategoricalMarkovChain.load.html#bayespy.nodes.CategoricalMarkovChain.load" title="bayespy.nodes.CategoricalMarkovChain.load"><tt class="xref py py-obj docutils literal"><span class="pre">load</span></tt></a>(group)</td>
 <td>Load the state of the node from a HDF5 file.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="bayespy.nodes.CategoricalMarkovChain.logpdf.html#bayespy.nodes.CategoricalMarkovChain.logpdf" title="bayespy.nodes.CategoricalMarkovChain.logpdf"><tt class="xref py py-obj docutils literal"><span class="pre">logpdf</span></tt></a>(X[,&nbsp;mask])</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.nodes.CategoricalMarkovChain.logpdf.html#bayespy.nodes.CategoricalMarkovChain.logpdf" title="bayespy.nodes.CategoricalMarkovChain.logpdf"><tt class="xref py py-obj docutils literal"><span class="pre">logpdf</span></tt></a>(X[,&nbsp;mask])</td>
 <td>Compute the log probability density function Q(X) of this node.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="bayespy.nodes.CategoricalMarkovChain.lower_bound_contribution.html#bayespy.nodes.CategoricalMarkovChain.lower_bound_contribution" title="bayespy.nodes.CategoricalMarkovChain.lower_bound_contribution"><tt class="xref py py-obj docutils literal"><span class="pre">lower_bound_contribution</span></tt></a>([gradient])</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.nodes.CategoricalMarkovChain.lower_bound_contribution.html#bayespy.nodes.CategoricalMarkovChain.lower_bound_contribution" title="bayespy.nodes.CategoricalMarkovChain.lower_bound_contribution"><tt class="xref py py-obj docutils literal"><span class="pre">lower_bound_contribution</span></tt></a>([gradient])</td>
 <td></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="bayespy.nodes.CategoricalMarkovChain.lowerbound.html#bayespy.nodes.CategoricalMarkovChain.lowerbound" title="bayespy.nodes.CategoricalMarkovChain.lowerbound"><tt class="xref py py-obj docutils literal"><span class="pre">lowerbound</span></tt></a>()</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.nodes.CategoricalMarkovChain.lowerbound.html#bayespy.nodes.CategoricalMarkovChain.lowerbound" title="bayespy.nodes.CategoricalMarkovChain.lowerbound"><tt class="xref py py-obj docutils literal"><span class="pre">lowerbound</span></tt></a>()</td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="bayespy.nodes.CategoricalMarkovChain.move_plates.html#bayespy.nodes.CategoricalMarkovChain.move_plates" title="bayespy.nodes.CategoricalMarkovChain.move_plates"><tt class="xref py py-obj docutils literal"><span class="pre">move_plates</span></tt></a>(from_plate,&nbsp;to_plate)</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.nodes.CategoricalMarkovChain.move_plates.html#bayespy.nodes.CategoricalMarkovChain.move_plates" title="bayespy.nodes.CategoricalMarkovChain.move_plates"><tt class="xref py py-obj docutils literal"><span class="pre">move_plates</span></tt></a>(from_plate,&nbsp;to_plate)</td>
 <td></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="bayespy.nodes.CategoricalMarkovChain.observe.html#bayespy.nodes.CategoricalMarkovChain.observe" title="bayespy.nodes.CategoricalMarkovChain.observe"><tt class="xref py py-obj docutils literal"><span class="pre">observe</span></tt></a>(x,&nbsp;*args[,&nbsp;mask])</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.nodes.CategoricalMarkovChain.observe.html#bayespy.nodes.CategoricalMarkovChain.observe" title="bayespy.nodes.CategoricalMarkovChain.observe"><tt class="xref py py-obj docutils literal"><span class="pre">observe</span></tt></a>(x,&nbsp;*args[,&nbsp;mask])</td>
 <td>Fix moments, compute f and propagate mask.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="bayespy.nodes.CategoricalMarkovChain.pdf.html#bayespy.nodes.CategoricalMarkovChain.pdf" title="bayespy.nodes.CategoricalMarkovChain.pdf"><tt class="xref py py-obj docutils literal"><span class="pre">pdf</span></tt></a>(X[,&nbsp;mask])</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.nodes.CategoricalMarkovChain.pdf.html#bayespy.nodes.CategoricalMarkovChain.pdf" title="bayespy.nodes.CategoricalMarkovChain.pdf"><tt class="xref py py-obj docutils literal"><span class="pre">pdf</span></tt></a>(X[,&nbsp;mask])</td>
 <td>Compute the probability density function of this node.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="bayespy.nodes.CategoricalMarkovChain.plot.html#bayespy.nodes.CategoricalMarkovChain.plot" title="bayespy.nodes.CategoricalMarkovChain.plot"><tt class="xref py py-obj docutils literal"><span class="pre">plot</span></tt></a>(**kwargs)</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.nodes.CategoricalMarkovChain.plot.html#bayespy.nodes.CategoricalMarkovChain.plot" title="bayespy.nodes.CategoricalMarkovChain.plot"><tt class="xref py py-obj docutils literal"><span class="pre">plot</span></tt></a>(**kwargs)</td>
 <td>Plot the node distribution using the plotter of the node</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="bayespy.nodes.CategoricalMarkovChain.random.html#bayespy.nodes.CategoricalMarkovChain.random" title="bayespy.nodes.CategoricalMarkovChain.random"><tt class="xref py py-obj docutils literal"><span class="pre">random</span></tt></a>()</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.nodes.CategoricalMarkovChain.random.html#bayespy.nodes.CategoricalMarkovChain.random" title="bayespy.nodes.CategoricalMarkovChain.random"><tt class="xref py py-obj docutils literal"><span class="pre">random</span></tt></a>()</td>
 <td>Draw a random sample from the distribution.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="bayespy.nodes.CategoricalMarkovChain.save.html#bayespy.nodes.CategoricalMarkovChain.save" title="bayespy.nodes.CategoricalMarkovChain.save"><tt class="xref py py-obj docutils literal"><span class="pre">save</span></tt></a>(group)</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.nodes.CategoricalMarkovChain.save.html#bayespy.nodes.CategoricalMarkovChain.save" title="bayespy.nodes.CategoricalMarkovChain.save"><tt class="xref py py-obj docutils literal"><span class="pre">save</span></tt></a>(group)</td>
 <td>Save the state of the node into a HDF5 file.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="bayespy.nodes.CategoricalMarkovChain.set_plotter.html#bayespy.nodes.CategoricalMarkovChain.set_plotter" title="bayespy.nodes.CategoricalMarkovChain.set_plotter"><tt class="xref py py-obj docutils literal"><span class="pre">set_plotter</span></tt></a>(plotter)</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.nodes.CategoricalMarkovChain.set_plotter.html#bayespy.nodes.CategoricalMarkovChain.set_plotter" title="bayespy.nodes.CategoricalMarkovChain.set_plotter"><tt class="xref py py-obj docutils literal"><span class="pre">set_plotter</span></tt></a>(plotter)</td>
 <td></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="bayespy.nodes.CategoricalMarkovChain.show.html#bayespy.nodes.CategoricalMarkovChain.show" title="bayespy.nodes.CategoricalMarkovChain.show"><tt class="xref py py-obj docutils literal"><span class="pre">show</span></tt></a>()</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.nodes.CategoricalMarkovChain.show.html#bayespy.nodes.CategoricalMarkovChain.show" title="bayespy.nodes.CategoricalMarkovChain.show"><tt class="xref py py-obj docutils literal"><span class="pre">show</span></tt></a>()</td>
 <td>Print the distribution using standard parameterization.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="bayespy.nodes.CategoricalMarkovChain.unobserve.html#bayespy.nodes.CategoricalMarkovChain.unobserve" title="bayespy.nodes.CategoricalMarkovChain.unobserve"><tt class="xref py py-obj docutils literal"><span class="pre">unobserve</span></tt></a>()</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.nodes.CategoricalMarkovChain.unobserve.html#bayespy.nodes.CategoricalMarkovChain.unobserve" title="bayespy.nodes.CategoricalMarkovChain.unobserve"><tt class="xref py py-obj docutils literal"><span class="pre">unobserve</span></tt></a>()</td>
 <td></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="bayespy.nodes.CategoricalMarkovChain.update.html#bayespy.nodes.CategoricalMarkovChain.update" title="bayespy.nodes.CategoricalMarkovChain.update"><tt class="xref py py-obj docutils literal"><span class="pre">update</span></tt></a>()</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.nodes.CategoricalMarkovChain.update.html#bayespy.nodes.CategoricalMarkovChain.update" title="bayespy.nodes.CategoricalMarkovChain.update"><tt class="xref py py-obj docutils literal"><span class="pre">update</span></tt></a>()</td>
 <td></td>
 </tr>
 </tbody>
@@ -350,10 +359,10 @@ transitions. <span class="math">\(K\)</span>-dimensional Dirichlet with plates (
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="bayespy.nodes.CategoricalMarkovChain.dims.html#bayespy.nodes.CategoricalMarkovChain.dims" title="bayespy.nodes.CategoricalMarkovChain.dims"><tt class="xref py py-obj docutils literal"><span class="pre">dims</span></tt></a></td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.nodes.CategoricalMarkovChain.dims.html#bayespy.nodes.CategoricalMarkovChain.dims" title="bayespy.nodes.CategoricalMarkovChain.dims"><tt class="xref py py-obj docutils literal"><span class="pre">dims</span></tt></a></td>
 <td></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="bayespy.nodes.CategoricalMarkovChain.plates.html#bayespy.nodes.CategoricalMarkovChain.plates" title="bayespy.nodes.CategoricalMarkovChain.plates"><tt class="xref py py-obj docutils literal"><span class="pre">plates</span></tt></a></td>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.nodes.CategoricalMarkovChain.plates.html#bayespy.nodes.CategoricalMarkovChain.plates" title="bayespy.nodes.CategoricalMarkovChain.plates"><tt class="xref py py-obj docutils literal"><span class="pre">plates</span></tt></a></td>
 <td></td>
 </tr>
 </tbody>
@@ -369,11 +378,11 @@ transitions. <span class="math">\(K\)</span>-dimensional Dirichlet with plates (
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
   <h4>Previous topic</h4>
-  <p class="topless"><a href="bayespy.nodes.Dirichlet.plates.html"
+  <p class="topless"><a href="generated/bayespy.nodes.Dirichlet.plates.html"
                         title="previous chapter">bayespy.nodes.Dirichlet.plates</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="bayespy.nodes.CategoricalMarkovChain.add_plate_axis.html"
-                        title="next chapter">bayespy.nodes.CategoricalMarkovChain.add_plate_axis</a></p>
+  <p class="topless"><a href="generated/bayespy.nodes.CategoricalMarkovChain.__init__.html"
+                        title="next chapter">bayespy.nodes.CategoricalMarkovChain.__init__</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../../../_sources/user_api/generated/generated/bayespy.nodes.CategoricalMarkovChain.txt"
@@ -406,10 +415,10 @@ transitions. <span class="math">\(K\)</span>-dimensional Dirichlet with plates (
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="bayespy.nodes.CategoricalMarkovChain.add_plate_axis.html" title="bayespy.nodes.CategoricalMarkovChain.add_plate_axis"
+          <a href="generated/bayespy.nodes.CategoricalMarkovChain.__init__.html" title="bayespy.nodes.CategoricalMarkovChain.__init__"
              >next</a> |</li>
         <li class="right" >
-          <a href="bayespy.nodes.Dirichlet.plates.html" title="bayespy.nodes.Dirichlet.plates"
+          <a href="generated/bayespy.nodes.Dirichlet.plates.html" title="bayespy.nodes.Dirichlet.plates"
              >previous</a> |</li>
         <li><a href="../../../index.html">BayesPy v0.1 Documentation</a> &raquo;</li>
           <li><a href="../../user_api.html" >User API</a> &raquo;</li>

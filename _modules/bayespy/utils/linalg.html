@@ -1,0 +1,551 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>bayespy.utils.linalg &mdash; BayesPy v0.1 Documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="BayesPy v0.1 Documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">BayesPy v0.1 Documentation</a> &raquo;</li>
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for bayespy.utils.linalg</h1><div class="highlight"><pre>
+<span class="c">######################################################################</span>
+<span class="c"># Copyright (C) 2011-2014 Jaakko Luttinen</span>
+<span class="c">#</span>
+<span class="c"># This file is licensed under Version 3.0 of the GNU General Public</span>
+<span class="c"># License. See LICENSE for a text of the license.</span>
+<span class="c">######################################################################</span>
+
+<span class="c">######################################################################</span>
+<span class="c"># This file is part of BayesPy.</span>
+<span class="c">#</span>
+<span class="c"># BayesPy is free software: you can redistribute it and/or modify it</span>
+<span class="c"># under the terms of the GNU General Public License version 3 as</span>
+<span class="c"># published by the Free Software Foundation.</span>
+<span class="c">#</span>
+<span class="c"># BayesPy is distributed in the hope that it will be useful, but</span>
+<span class="c"># WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="c"># MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU</span>
+<span class="c"># General Public License for more details.</span>
+<span class="c">#</span>
+<span class="c"># You should have received a copy of the GNU General Public License</span>
+<span class="c"># along with BayesPy.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
+<span class="c">######################################################################</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">General numerical functions and methods.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">itertools</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">scipy</span> <span class="kn">as</span> <span class="nn">sp</span>
+<span class="c">#import scipy.linalg.decomp_cholesky as decomp</span>
+<span class="kn">import</span> <span class="nn">scipy.linalg</span> <span class="kn">as</span> <span class="nn">linalg</span>
+<span class="kn">import</span> <span class="nn">scipy.special</span> <span class="kn">as</span> <span class="nn">special</span>
+<span class="kn">import</span> <span class="nn">scipy.optimize</span> <span class="kn">as</span> <span class="nn">optimize</span>
+<span class="kn">import</span> <span class="nn">scipy.sparse</span> <span class="kn">as</span> <span class="nn">sparse</span>
+<span class="c">#import scikits.sparse.cholmod as cholmod</span>
+
+<span class="c"># THIS IS SOME NEW GENERALIZED UFUNC FOR LINALG FEATURE, NOT IN OFFICIAL NUMPY</span>
+<span class="c"># REPO YET</span>
+<span class="c">#import numpy.linalg._gufuncs_linalg as gula</span>
+<span class="c">#import numpy.core.gufuncs_linalg as gula</span>
+
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">misc</span>
+
+<div class="viewcode-block" id="chol"><a class="viewcode-back" href="../../../dev_api/generated/generated/bayespy.utils.linalg.chol.html#bayespy.utils.linalg.chol">[docs]</a><span class="k">def</span> <span class="nf">chol</span><span class="p">(</span><span class="n">C</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">sparse</span><span class="o">.</span><span class="n">issparse</span><span class="p">(</span><span class="n">C</span><span class="p">):</span>
+        <span class="c"># Sparse Cholesky decomposition (returns a Factor object)</span>
+        <span class="k">return</span> <span class="n">cholmod</span><span class="o">.</span><span class="n">cholesky</span><span class="p">(</span><span class="n">C</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c"># Computes Cholesky decomposition for a collection of matrices.</span>
+        <span class="c"># The last two axes of C are considered as the matrix.</span>
+        <span class="n">C</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_2d</span><span class="p">(</span><span class="n">C</span><span class="p">)</span>
+        <span class="n">U</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">C</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">misc</span><span class="o">.</span><span class="n">nested_iterator</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">U</span><span class="p">)[:</span><span class="o">-</span><span class="mi">2</span><span class="p">]):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">U</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">linalg</span><span class="o">.</span><span class="n">cho_factor</span><span class="p">(</span><span class="n">C</span><span class="p">[</span><span class="n">i</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">except</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">LinAlgError</span><span class="p">:</span>
+                <span class="k">print</span><span class="p">(</span><span class="n">C</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;Matrix not positive definite&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">U</span>
+</div>
+<div class="viewcode-block" id="chol_solve"><a class="viewcode-back" href="../../../dev_api/generated/generated/bayespy.utils.linalg.chol_solve.html#bayespy.utils.linalg.chol_solve">[docs]</a><span class="k">def</span> <span class="nf">chol_solve</span><span class="p">(</span><span class="n">U</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">matrix</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">U</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">sparse</span><span class="o">.</span><span class="n">issparse</span><span class="p">(</span><span class="n">b</span><span class="p">):</span>
+            <span class="n">b</span> <span class="o">=</span> <span class="n">b</span><span class="o">.</span><span class="n">toarray</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">matrix</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">ndim</span><span class="p">(</span><span class="n">b</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;b is not a matrix&quot;</span><span class="p">)</span>
+            <span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">swapaxes</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">)</span>
+            <span class="n">U</span> <span class="o">=</span> <span class="n">U</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="bp">None</span><span class="p">,:,:]</span>
+            
+            
+        <span class="c"># Allocate memory</span>
+        <span class="n">U</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_2d</span><span class="p">(</span><span class="n">U</span><span class="p">)</span>
+        <span class="n">B</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+        <span class="n">sh_u</span> <span class="o">=</span> <span class="n">U</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
+        <span class="n">sh_b</span> <span class="o">=</span> <span class="n">B</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">l_u</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">sh_u</span><span class="p">)</span>
+        <span class="n">l_b</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">sh_b</span><span class="p">)</span>
+
+        <span class="c"># Check which axis are iterated over with B along with U</span>
+        <span class="n">ind_b</span> <span class="o">=</span> <span class="p">[</span><span class="bp">Ellipsis</span><span class="p">]</span> <span class="o">*</span> <span class="n">l_b</span>
+        <span class="n">l_min</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">l_u</span><span class="p">,</span> <span class="n">l_b</span><span class="p">)</span>
+        <span class="n">jnd_b</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="o">-</span><span class="n">l_min</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span> <span class="k">if</span> <span class="n">sh_b</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">==</span><span class="n">sh_u</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="n">out</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="c"># Shape of the result (broadcasting rules)</span>
+            <span class="n">sh</span> <span class="o">=</span> <span class="n">misc</span><span class="o">.</span><span class="n">broadcasted_shape</span><span class="p">(</span><span class="n">sh_u</span><span class="p">,</span> <span class="n">sh_b</span><span class="p">)</span>
+            <span class="c">#out = np.zeros(np.shape(B))</span>
+            <span class="n">out</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">sh</span> <span class="o">+</span> <span class="n">B</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">:])</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">misc</span><span class="o">.</span><span class="n">nested_iterator</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">U</span><span class="p">)[:</span><span class="o">-</span><span class="mi">2</span><span class="p">]):</span>
+
+            <span class="c"># The goal is to run Cholesky solver once for all vectors of B</span>
+            <span class="c"># for which the matrices of U are the same (according to the</span>
+            <span class="c"># broadcasting rules). Thus, we collect all the axes of B for</span>
+            <span class="c"># which U is singleton and form them as a 2-D matrix and then</span>
+            <span class="c"># run the solver once.</span>
+
+            <span class="c"># Select those axes of B for which U and B are not singleton</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">jnd_b</span><span class="p">:</span>
+                <span class="n">ind_b</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+
+            <span class="c"># Collect all the axes for which U is singleton</span>
+            <span class="n">b</span> <span class="o">=</span> <span class="n">B</span><span class="p">[</span><span class="nb">tuple</span><span class="p">(</span><span class="n">ind_b</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="bp">Ellipsis</span><span class="p">,)]</span>
+
+            <span class="c"># Reshape it to a 2-D (or 1-D) array</span>
+            <span class="n">orig_shape</span> <span class="o">=</span> <span class="n">b</span><span class="o">.</span><span class="n">shape</span>
+            <span class="k">if</span> <span class="n">b</span><span class="o">.</span><span class="n">ndim</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">b</span> <span class="o">=</span> <span class="n">b</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">b</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
+
+            <span class="c"># Ellipsis to all preceeding axes and ellipsis for the last</span>
+            <span class="c"># axis:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ind_b</span><span class="p">)</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">sh</span><span class="p">):</span>
+                <span class="n">ind_out</span> <span class="o">=</span> <span class="p">(</span><span class="bp">Ellipsis</span><span class="p">,)</span> <span class="o">+</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">ind_b</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="bp">Ellipsis</span><span class="p">,)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">ind_out</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">ind_b</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="bp">Ellipsis</span><span class="p">,)</span>
+
+            <span class="n">out</span><span class="p">[</span><span class="n">ind_out</span><span class="p">]</span> <span class="o">=</span> <span class="n">linalg</span><span class="o">.</span><span class="n">cho_solve</span><span class="p">((</span><span class="n">U</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="bp">False</span><span class="p">),</span>
+                                            <span class="n">b</span><span class="o">.</span><span class="n">T</span><span class="p">)</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">orig_shape</span><span class="p">)</span>
+
+
+        <span class="k">if</span> <span class="n">matrix</span><span class="p">:</span>
+            <span class="n">out</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">swapaxes</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">)</span>
+            
+        <span class="k">return</span> <span class="n">out</span>
+
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">U</span><span class="p">,</span> <span class="n">cholmod</span><span class="o">.</span><span class="n">Factor</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">matrix</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">sparse</span><span class="o">.</span><span class="n">issparse</span><span class="p">(</span><span class="n">b</span><span class="p">):</span>
+            <span class="n">b</span> <span class="o">=</span> <span class="n">b</span><span class="o">.</span><span class="n">toarray</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">U</span><span class="o">.</span><span class="n">solve_A</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Unknown type of Cholesky factor&quot;</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="chol_inv"><a class="viewcode-back" href="../../../dev_api/generated/generated/bayespy.utils.linalg.chol_inv.html#bayespy.utils.linalg.chol_inv">[docs]</a><span class="k">def</span> <span class="nf">chol_inv</span><span class="p">(</span><span class="n">U</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">U</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+        <span class="c"># Allocate memory</span>
+        <span class="n">V</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">U</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]),</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">U</span><span class="p">)[:</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span><span class="o">+</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">misc</span><span class="o">.</span><span class="n">nested_iterator</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">U</span><span class="p">)[:</span><span class="o">-</span><span class="mi">2</span><span class="p">]):</span>
+            <span class="n">V</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">linalg</span><span class="o">.</span><span class="n">cho_solve</span><span class="p">((</span><span class="n">U</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="bp">False</span><span class="p">),</span>
+                                    <span class="n">V</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+                                    <span class="n">overwrite_b</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span> <span class="c"># This would need Fortran order</span>
+
+        <span class="k">return</span> <span class="n">V</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">U</span><span class="p">,</span> <span class="n">cholmod</span><span class="o">.</span><span class="n">Factor</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+        <span class="c">## if sparse.issparse(b):</span>
+        <span class="c">##     b = b.toarray()</span>
+        <span class="c">## return U.solve_A(b)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Unknown type of Cholesky factor&quot;</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="chol_logdet"><a class="viewcode-back" href="../../../dev_api/generated/generated/bayespy.utils.linalg.chol_logdet.html#bayespy.utils.linalg.chol_logdet">[docs]</a><span class="k">def</span> <span class="nf">chol_logdet</span><span class="p">(</span><span class="n">U</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">U</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+        <span class="k">return</span> <span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s">&#39;...ii-&gt;...i&#39;</span><span class="p">,</span><span class="n">U</span><span class="p">)),</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">U</span><span class="p">,</span> <span class="n">cholmod</span><span class="o">.</span><span class="n">Factor</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">U</span><span class="o">.</span><span class="n">D</span><span class="p">()))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Unknown type of Cholesky factor&quot;</span><span class="p">)</span>
+    </div>
+<div class="viewcode-block" id="logdet_chol"><a class="viewcode-back" href="../../../dev_api/generated/generated/bayespy.utils.linalg.logdet_chol.html#bayespy.utils.linalg.logdet_chol">[docs]</a><span class="k">def</span> <span class="nf">logdet_chol</span><span class="p">(</span><span class="n">U</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">U</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+        <span class="c"># Computes Cholesky decomposition for a collection of matrices.</span>
+        <span class="k">return</span> <span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s">&#39;...ii-&gt;...i&#39;</span><span class="p">,</span> <span class="n">U</span><span class="p">)),</span> <span class="n">axis</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,))</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">U</span><span class="p">,</span> <span class="n">cholmod</span><span class="o">.</span><span class="n">Factor</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">U</span><span class="o">.</span><span class="n">D</span><span class="p">()))</span>
+    </div>
+<div class="viewcode-block" id="logdet_tri"><a class="viewcode-back" href="../../../dev_api/generated/generated/bayespy.utils.linalg.logdet_tri.html#bayespy.utils.linalg.logdet_tri">[docs]</a><span class="k">def</span> <span class="nf">logdet_tri</span><span class="p">(</span><span class="n">R</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Logarithm of the absolute value of the determinant of a triangular matrix.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s">&#39;...ii-&gt;...i&#39;</span><span class="p">,</span> <span class="n">R</span><span class="p">))))</span>
+    </div>
+<div class="viewcode-block" id="logdet_cov"><a class="viewcode-back" href="../../../dev_api/generated/generated/bayespy.utils.linalg.logdet_cov.html#bayespy.utils.linalg.logdet_cov">[docs]</a><span class="k">def</span> <span class="nf">logdet_cov</span><span class="p">(</span><span class="n">C</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">logdet_chol</span><span class="p">(</span><span class="n">chol</span><span class="p">(</span><span class="n">C</span><span class="p">))</span>
+</div>
+<div class="viewcode-block" id="solve_triangular"><a class="viewcode-back" href="../../../dev_api/generated/generated/bayespy.utils.linalg.solve_triangular.html#bayespy.utils.linalg.solve_triangular">[docs]</a><span class="k">def</span> <span class="nf">solve_triangular</span><span class="p">(</span><span class="n">U</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="c"># Allocate memory</span>
+    <span class="n">U</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_2d</span><span class="p">(</span><span class="n">U</span><span class="p">)</span>
+    <span class="n">B</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">B</span><span class="p">)</span>
+    <span class="n">sh_u</span> <span class="o">=</span> <span class="n">U</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
+    <span class="n">sh_b</span> <span class="o">=</span> <span class="n">B</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">l_u</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">sh_u</span><span class="p">)</span>
+    <span class="n">l_b</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">sh_b</span><span class="p">)</span>
+
+    <span class="c"># Check which axis are iterated over with B along with U</span>
+    <span class="n">ind_b</span> <span class="o">=</span> <span class="p">[</span><span class="bp">Ellipsis</span><span class="p">]</span> <span class="o">*</span> <span class="n">l_b</span>
+    <span class="n">l_min</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">l_u</span><span class="p">,</span> <span class="n">l_b</span><span class="p">)</span>
+    <span class="n">jnd_b</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="o">-</span><span class="n">l_min</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span> <span class="k">if</span> <span class="n">sh_b</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">==</span><span class="n">sh_u</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+
+    <span class="c"># Shape of the result (broadcasting rules)</span>
+    <span class="n">sh</span> <span class="o">=</span> <span class="n">misc</span><span class="o">.</span><span class="n">broadcasted_shape</span><span class="p">(</span><span class="n">sh_u</span><span class="p">,</span> <span class="n">sh_b</span><span class="p">)</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">sh</span> <span class="o">+</span> <span class="n">B</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">:])</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">misc</span><span class="o">.</span><span class="n">nested_iterator</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">U</span><span class="p">)[:</span><span class="o">-</span><span class="mi">2</span><span class="p">]):</span>
+
+        <span class="c"># The goal is to run triangular solver once for all vectors of</span>
+        <span class="c"># B for which the matrices of U are the same (according to the</span>
+        <span class="c"># broadcasting rules). Thus, we collect all the axes of B for</span>
+        <span class="c"># which U is singleton and form them as a 2-D matrix and then</span>
+        <span class="c"># run the solver once.</span>
+        
+        <span class="c"># Select those axes of B for which U and B are not singleton</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">jnd_b</span><span class="p">:</span>
+            <span class="n">ind_b</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+            
+        <span class="c"># Collect all the axes for which U is singleton</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="n">B</span><span class="p">[</span><span class="nb">tuple</span><span class="p">(</span><span class="n">ind_b</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="bp">Ellipsis</span><span class="p">,)]</span>
+
+        <span class="c"># Reshape it to a 2-D (or 1-D) array</span>
+        <span class="n">orig_shape</span> <span class="o">=</span> <span class="n">b</span><span class="o">.</span><span class="n">shape</span>
+        <span class="k">if</span> <span class="n">b</span><span class="o">.</span><span class="n">ndim</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">b</span> <span class="o">=</span> <span class="n">b</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">b</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
+
+        <span class="c"># Ellipsis to all preceeding axes and ellipsis for the last</span>
+        <span class="c"># axis:</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ind_b</span><span class="p">)</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">sh</span><span class="p">):</span>
+            <span class="n">ind_out</span> <span class="o">=</span> <span class="p">(</span><span class="bp">Ellipsis</span><span class="p">,)</span> <span class="o">+</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">ind_b</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="bp">Ellipsis</span><span class="p">,)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ind_out</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">ind_b</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="bp">Ellipsis</span><span class="p">,)</span>
+
+        <span class="n">out</span><span class="p">[</span><span class="n">ind_out</span><span class="p">]</span> <span class="o">=</span> <span class="n">linalg</span><span class="o">.</span><span class="n">solve_triangular</span><span class="p">(</span><span class="n">U</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+                                               <span class="n">b</span><span class="o">.</span><span class="n">T</span><span class="p">,</span>
+                                               <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">orig_shape</span><span class="p">)</span>
+        
+    <span class="k">return</span> <span class="n">out</span>
+    
+
+    
+</div>
+<div class="viewcode-block" id="inner"><a class="viewcode-back" href="../../../dev_api/generated/generated/bayespy.utils.linalg.inner.html#bayespy.utils.linalg.inner">[docs]</a><span class="k">def</span> <span class="nf">inner</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Compute inner product.</span>
+
+<span class="sd">    The number of arrays is arbitrary.  The number of dimensions is arbitrary.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">axes</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="o">-</span><span class="n">ndim</span><span class="p">,</span><span class="mi">0</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">misc</span><span class="o">.</span><span class="n">sum_product</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">axes_to_sum</span><span class="o">=</span><span class="n">axes</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="outer"><a class="viewcode-back" href="../../../dev_api/generated/generated/bayespy.utils.linalg.outer.html#bayespy.utils.linalg.outer">[docs]</a><span class="k">def</span> <span class="nf">outer</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Computes outer product over the last axes of A and B.</span>
+
+<span class="sd">    The other axes are broadcasted. Thus, if A has shape (..., N) and B has</span>
+<span class="sd">    shape (..., M), then the result has shape (..., N, M).</span>
+
+<span class="sd">    Using the argument `ndim` it is possible to change that how many axes</span>
+<span class="sd">    trailing axes are used for the outer product. For instance, if ndim=3, A and</span>
+<span class="sd">    B have shapes (...,N1,N2,N3) and (...,M1,M2,M3), the result has shape</span>
+<span class="sd">    (...,N1,M1,N2,M2,N3,M3).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ndim</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">or</span> <span class="n">ndim</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&#39;ndim must be non-negative integer&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">ndim</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">ndim</span> <span class="o">&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndim</span><span class="p">(</span><span class="n">A</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&#39;Argument ndim larger than ndim of the first &#39;</span>
+                             <span class="s">&#39;parameter&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">ndim</span> <span class="o">&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndim</span><span class="p">(</span><span class="n">B</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&#39;Argument ndim larger than ndim of the second &#39;</span>
+                             <span class="s">&#39;parameter&#39;</span><span class="p">)</span>
+        <span class="n">shape_A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">A</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span><span class="p">,)</span><span class="o">*</span><span class="n">ndim</span>
+        <span class="n">shape_B</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">B</span><span class="p">)[:</span><span class="o">-</span><span class="n">ndim</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span><span class="p">,)</span><span class="o">*</span><span class="n">ndim</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">B</span><span class="p">)[</span><span class="o">-</span><span class="n">ndim</span><span class="p">:]</span>
+        <span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">shape_A</span><span class="p">)</span>
+        <span class="n">B</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="n">shape_B</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">asanyarray</span><span class="p">(</span><span class="n">A</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">asanyarray</span><span class="p">(</span><span class="n">B</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="dot"><a class="viewcode-back" href="../../../dev_api/generated/generated/bayespy.utils.linalg.dot.html#bayespy.utils.linalg.dot">[docs]</a><span class="k">def</span> <span class="nf">dot</span><span class="p">(</span><span class="o">*</span><span class="n">arrays</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Compute matrix-matrix product.</span>
+
+<span class="sd">    You can give multiple arrays, the dot product is computed from left to</span>
+<span class="sd">    right: A1*A2*A3*...*AN. The dot product is computed over the last two axes</span>
+<span class="sd">    of each arrays. All other axes must be broadcastable.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">arrays</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">0</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asanyarray</span><span class="p">(</span><span class="n">arrays</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">for</span> <span class="n">X</span> <span class="ow">in</span> <span class="n">arrays</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
+            <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asanyarray</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">ndim</span><span class="p">(</span><span class="n">Y</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span> <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">ndim</span><span class="p">(</span><span class="n">X</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Must be at least 2-D arrays&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">Y</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">X</span><span class="p">)[</span><span class="o">-</span><span class="mi">2</span><span class="p">]:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Dimensions do not match&quot;</span><span class="p">)</span>
+            <span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s">&#39;...ik,...kj-&gt;...ij&#39;</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span>
+            <span class="c">#Y = gula.matrix_multiply(Y, X)</span>
+        <span class="k">return</span> <span class="n">Y</span>
+</div>
+<div class="viewcode-block" id="tracedot"><a class="viewcode-back" href="../../../dev_api/generated/generated/bayespy.utils.linalg.tracedot.html#bayespy.utils.linalg.tracedot">[docs]</a><span class="k">def</span> <span class="nf">tracedot</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Computes trace(A*B).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s">&#39;...ij,...ji-&gt;...&#39;</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="inv"><a class="viewcode-back" href="../../../dev_api/generated/generated/bayespy.utils.linalg.inv.html#bayespy.utils.linalg.inv">[docs]</a><span class="k">def</span> <span class="nf">inv</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    General array inversion.</span>
+
+<span class="sd">    Supports broadcasting and inversion of multidimensional arrays.  For</span>
+<span class="sd">    instance, an array with shape (4,3,2,3,2) could mean that there are four</span>
+<span class="sd">    (3*2) x (3*2) matrices to be inverted. This can be done by inv(A, ndim=2).</span>
+<span class="sd">    For inverting scalars, ndim=0. For inverting matrices, ndim=1.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asanyarray</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">ndim</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">A</span>
+    <span class="k">elif</span> <span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
+
+</div>
+<div class="viewcode-block" id="mvdot"><a class="viewcode-back" href="../../../dev_api/generated/generated/bayespy.utils.linalg.mvdot.html#bayespy.utils.linalg.mvdot">[docs]</a><span class="k">def</span> <span class="nf">mvdot</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Compute matrix-vector product.</span>
+
+<span class="sd">    Applies broadcasting.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c"># TODO/FIXME: A bug in inner1d:</span>
+    <span class="c"># https://github.com/numpy/numpy/issues/3338</span>
+    <span class="c">#</span>
+    <span class="c"># b = np.asanyarray(b)</span>
+    <span class="c"># return gula.inner1d(A, b[...,np.newaxis,:])</span>
+    <span class="c"># </span>
+    <span class="c"># Use einsum instead:</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s">&#39;...ik,...k-&gt;...i&#39;</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="mmdot"><a class="viewcode-back" href="../../../dev_api/generated/generated/bayespy.utils.linalg.mmdot.html#bayespy.utils.linalg.mmdot">[docs]</a><span class="k">def</span> <span class="nf">mmdot</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Compute matrix-matrix product.</span>
+
+<span class="sd">    Applies broadcasting.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s">&#39;...ik,...kj-&gt;...ij&#39;</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="m_dot"><a class="viewcode-back" href="../../../dev_api/generated/generated/bayespy.utils.linalg.m_dot.html#bayespy.utils.linalg.m_dot">[docs]</a><span class="k">def</span> <span class="nf">m_dot</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="n">b</span><span class="p">):</span>
+    <span class="k">raise</span> <span class="ne">DeprecationWarning</span><span class="p">()</span>
+    <span class="c"># Compute matrix-vector product over the last two axes of A and</span>
+    <span class="c"># the last axes of b.  Other axes are broadcasted. If A has shape</span>
+    <span class="c"># (..., M, N) and b has shape (..., N), then the result has shape</span>
+    <span class="c"># (..., M)</span>
+    
+    <span class="c">#b = reshape(b, shape(b)[:-1] + (1,) + shape(b)[-1:])</span>
+    <span class="c">#return np.dot(A, b)</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s">&#39;...ik,...k-&gt;...i&#39;</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+    <span class="c"># TODO: Use einsum!!</span>
+    <span class="c">#return np.sum(A*b[...,np.newaxis,:], axis=(-1,))</span>
+</div>
+<div class="viewcode-block" id="block_banded_solve"><a class="viewcode-back" href="../../../dev_api/generated/generated/bayespy.utils.linalg.block_banded_solve.html#bayespy.utils.linalg.block_banded_solve">[docs]</a><span class="k">def</span> <span class="nf">block_banded_solve</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Invert symmetric, banded, positive-definite matrix.</span>
+
+<span class="sd">    A contains the diagonal blocks.</span>
+
+<span class="sd">    B contains the superdiagonal blocks (their transposes are the</span>
+<span class="sd">    subdiagonal blocks).</span>
+
+<span class="sd">    Shapes:</span>
+<span class="sd">    A: (...,   N, D, D)</span>
+<span class="sd">    B: (..., N-1, D, D)</span>
+<span class="sd">    y: (...,   N,    D)</span>
+
+<span class="sd">    The algorithm is basically LU decomposition.</span>
+
+<span class="sd">    Computes only the diagonal and super-diagonal blocks of the</span>
+<span class="sd">    inverse. The true inverse is dense, in general.</span>
+
+<span class="sd">    Assume each block has the same size.</span>
+
+<span class="sd">    Return:</span>
+<span class="sd">    * inverse blocks</span>
+<span class="sd">    * solution to the system</span>
+<span class="sd">    * log-determinant</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="c"># Number of time instance and dimensionality</span>
+    <span class="n">N</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">y</span><span class="p">)[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
+    <span class="n">D</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">y</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="c"># Check the shape of the diagonal blocks</span>
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">A</span><span class="p">)[</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span> <span class="o">!=</span> <span class="n">N</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;The number of diagonal blocks is incorrect&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">A</span><span class="p">)[</span><span class="o">-</span><span class="mi">2</span><span class="p">:]</span> <span class="o">!=</span> <span class="p">(</span><span class="n">D</span><span class="p">,</span><span class="n">D</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;The diagonal blocks have wrong shape&quot;</span><span class="p">)</span>
+
+    <span class="c"># Check the shape of the super-diagonal blocks</span>
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">B</span><span class="p">)[</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span> <span class="o">!=</span> <span class="n">N</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;The number of super-diagonal blocks is incorrect&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">B</span><span class="p">)[</span><span class="o">-</span><span class="mi">2</span><span class="p">:]</span> <span class="o">!=</span> <span class="p">(</span><span class="n">D</span><span class="p">,</span><span class="n">D</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;The diagonal blocks have wrong shape&quot;</span><span class="p">)</span>
+
+    <span class="n">plates_VC</span> <span class="o">=</span> <span class="n">misc</span><span class="o">.</span><span class="n">broadcasted_shape</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">A</span><span class="p">)[:</span><span class="o">-</span><span class="mi">3</span><span class="p">],</span>
+                                       <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">B</span><span class="p">)[:</span><span class="o">-</span><span class="mi">3</span><span class="p">])</span>
+    <span class="n">plates_y</span> <span class="o">=</span> <span class="n">misc</span><span class="o">.</span><span class="n">broadcasted_shape</span><span class="p">(</span><span class="n">plates_VC</span><span class="p">,</span>
+                                      <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">y</span><span class="p">)[:</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span>
+                      
+    <span class="n">V</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">plates_VC</span><span class="o">+</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="n">D</span><span class="p">,</span><span class="n">D</span><span class="p">))</span>
+    <span class="n">C</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">plates_VC</span><span class="o">+</span><span class="p">(</span><span class="n">N</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="n">D</span><span class="p">,</span><span class="n">D</span><span class="p">))</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">plates_y</span><span class="o">+</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="n">D</span><span class="p">))</span>
+
+    <span class="c">#</span>
+    <span class="c"># Forward recursion</span>
+    <span class="c">#</span>
+    
+    <span class="c"># In the forward recursion, store the Cholesky factor in V. So you</span>
+    <span class="c"># don&#39;t need to recompute them in the backward recursion.</span>
+
+    <span class="c"># TODO: This whole algorithm could be implemented as in-place operation.</span>
+    <span class="c"># Might be a nice feature (optional?)</span>
+
+    <span class="n">x</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="mi">0</span><span class="p">,:]</span> <span class="o">=</span> <span class="n">y</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="mi">0</span><span class="p">,:]</span>
+    <span class="n">V</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="mi">0</span><span class="p">,:,:]</span> <span class="o">=</span> <span class="n">chol</span><span class="p">(</span><span class="n">A</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="mi">0</span><span class="p">,:,:])</span>
+    <span class="n">ldet</span> <span class="o">=</span> <span class="n">chol_logdet</span><span class="p">(</span><span class="n">V</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="mi">0</span><span class="p">,:,:])</span>
+    <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+        <span class="c"># Compute the solution of the system</span>
+        <span class="n">x</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">,:]</span> <span class="o">=</span> <span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">,:]</span> 
+                        <span class="o">-</span> <span class="n">mvdot</span><span class="p">(</span><span class="n">misc</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">B</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="n">n</span><span class="p">,:,:]),</span> 
+                                <span class="n">chol_solve</span><span class="p">(</span><span class="n">V</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="n">n</span><span class="p">,:,:],</span> 
+                                           <span class="n">x</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="n">n</span><span class="p">,:])))</span>
+        <span class="c"># Compute the superdiagonal block of the inverse</span>
+        <span class="n">C</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="n">n</span><span class="p">,:,:]</span> <span class="o">=</span> <span class="n">chol_solve</span><span class="p">(</span><span class="n">V</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="n">n</span><span class="p">,:,:],</span> 
+                                  <span class="n">B</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="n">n</span><span class="p">,:,:],</span>
+                                  <span class="n">matrix</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="c"># Compute the diagonal block</span>
+        <span class="n">V</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">,:,:]</span> <span class="o">=</span> <span class="p">(</span><span class="n">A</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">,:,:]</span> 
+                        <span class="o">-</span> <span class="n">mmdot</span><span class="p">(</span><span class="n">misc</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">B</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="n">n</span><span class="p">,:,:]),</span> <span class="n">C</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="n">n</span><span class="p">,:,:]))</span>
+        <span class="c"># Ensure symmetry by 0.5*(V+V.T)</span>
+        <span class="n">V</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">,:,:]</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">V</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">,:,:]</span> <span class="o">+</span> <span class="n">misc</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">V</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">,:,:]))</span>
+        <span class="c"># Compute and store the Cholesky factor of the diagonal block</span>
+        <span class="n">V</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">,:,:]</span> <span class="o">=</span> <span class="n">chol</span><span class="p">(</span><span class="n">V</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">,:,:])</span>
+        <span class="c"># Compute the log-det term here, too</span>
+        <span class="n">ldet</span> <span class="o">+=</span> <span class="n">chol_logdet</span><span class="p">(</span><span class="n">V</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">,:,:])</span>
+
+    <span class="c">#</span>
+    <span class="c"># Backward recursion</span>
+    <span class="c">#</span>
+    <span class="n">x</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">,:]</span> <span class="o">=</span> <span class="n">chol_solve</span><span class="p">(</span><span class="n">V</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">,:,:],</span> <span class="n">x</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">,:])</span>
+    <span class="n">V</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">,:,:]</span> <span class="o">=</span> <span class="n">chol_inv</span><span class="p">(</span><span class="n">V</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">,:,:])</span>
+    <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="o">-</span><span class="mi">1</span><span class="p">)):</span>
+        <span class="c"># Compute the solution of the system</span>
+        <span class="n">x</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="n">n</span><span class="p">,:]</span> <span class="o">=</span> <span class="n">chol_solve</span><span class="p">(</span><span class="n">V</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="n">n</span><span class="p">,:,:],</span> 
+                                <span class="n">x</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="n">n</span><span class="p">,:]</span> <span class="o">-</span> <span class="n">mvdot</span><span class="p">(</span><span class="n">B</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="n">n</span><span class="p">,:,:],</span> 
+                                                   <span class="n">x</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">,:]))</span>
+        <span class="c"># Compute the diagonal block of the inverse</span>
+        <span class="n">V</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="n">n</span><span class="p">,:,:]</span> <span class="o">=</span> <span class="p">(</span><span class="n">chol_inv</span><span class="p">(</span><span class="n">V</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="n">n</span><span class="p">,:,:])</span> 
+                        <span class="o">+</span> <span class="n">mmdot</span><span class="p">(</span><span class="n">C</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="n">n</span><span class="p">,:,:],</span> 
+                                <span class="n">mmdot</span><span class="p">(</span><span class="n">V</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">,:,:],</span> 
+                                <span class="n">misc</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">C</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="n">n</span><span class="p">,:,:]))))</span>
+        <span class="n">C</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="n">n</span><span class="p">,:,:]</span> <span class="o">=</span> <span class="o">-</span> <span class="n">mmdot</span><span class="p">(</span><span class="n">C</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="n">n</span><span class="p">,:,:],</span> <span class="n">V</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">,:,:])</span>
+        <span class="c"># Ensure symmetry by 0.5*(V+V.T)</span>
+        <span class="n">V</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="n">n</span><span class="p">,:,:]</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">V</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="n">n</span><span class="p">,:,:]</span> <span class="o">+</span> <span class="n">misc</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">V</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="n">n</span><span class="p">,:,:]))</span>
+
+    <span class="k">return</span> <span class="p">(</span><span class="n">V</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">ldet</span><span class="p">)</span>
+    </div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">BayesPy v0.1 Documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011-2014, Jaakko Luttinen, GPLv3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

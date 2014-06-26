@@ -45,51 +45,8 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <p>{% extends &#8221;!autosummary/class.rst&#8221; %}</p>
-<p>{% block methods %}
-{% if methods %}</p>
-<blockquote>
-<div><p class="rubric">Methods</p>
-<table border="1" class="longtable docutils">
-<colgroup>
-<col width="10%" />
-<col width="90%" />
-</colgroup>
-<tbody valign="top">
-</tbody>
-</table>
-<dl class="docutils">
-<dt>{% for item in all_methods %}</dt>
-<dd>{%- if not item.startswith(&#8216;_&#8217;) or item in [&#8216;__call__&#8217;] %}
-~{{ name }}.{{ item }}
-{%- endif -%}</dd>
-</dl>
-<p>{%- endfor %}</p>
-</div></blockquote>
-<p>{% endif %}
-{% endblock %}</p>
-<p>{% block attributes %}
-{% if attributes %}</p>
-<blockquote>
-<div><p class="rubric">Attributes</p>
-<table border="1" class="longtable docutils">
-<colgroup>
-<col width="10%" />
-<col width="90%" />
-</colgroup>
-<tbody valign="top">
-</tbody>
-</table>
-<dl class="docutils">
-<dt>{% for item in all_attributes %}</dt>
-<dd>{%- if not item.startswith(&#8216;_&#8217;) %}
-~{{ name }}.{{ item }}
-{%- endif -%}</dd>
-</dl>
-<p>{%- endfor %}</p>
-</div></blockquote>
-<p>{% endif %}
-{% endblock %}</p>
+  <p>{{ fullname }}
+{{ underline }}</p>
 
 
           </div>

@@ -6,46 +6,50 @@ bayespy.nodes.Beta
 .. autoclass:: Beta
 
    
-
-      .. rubric:: Methods
-
-      .. autosummary::
-         :toctree:
-      
-         ~Beta.add_plate_axis
-         ~Beta.delete
-         ~Beta.get_mask
-         ~Beta.get_moments
-         ~Beta.get_shape
-         ~Beta.has_plotter
-         ~Beta.initialize_from_parameters
-         ~Beta.initialize_from_prior
-         ~Beta.initialize_from_random
-         ~Beta.initialize_from_value
-         ~Beta.load
-         ~Beta.logpdf
-         ~Beta.lower_bound_contribution
-         ~Beta.lowerbound
-         ~Beta.move_plates
-         ~Beta.observe
-         ~Beta.pdf
-         ~Beta.plot
-         ~Beta.random
-         ~Beta.save
-         ~Beta.set_plotter
-         ~Beta.show
-         ~Beta.unobserve
-         ~Beta.update
-
-
+   .. automethod:: __init__
 
    
+   .. rubric:: Methods
 
-      .. rubric:: Attributes
+   .. autosummary::
+      :toctree: generated/
+   
+      ~Beta.__init__
+      ~Beta.add_plate_axis
+      ~Beta.delete
+      ~Beta.get_mask
+      ~Beta.get_moments
+      ~Beta.get_shape
+      ~Beta.has_plotter
+      ~Beta.initialize_from_parameters
+      ~Beta.initialize_from_prior
+      ~Beta.initialize_from_random
+      ~Beta.initialize_from_value
+      ~Beta.load
+      ~Beta.logpdf
+      ~Beta.lower_bound_contribution
+      ~Beta.lowerbound
+      ~Beta.move_plates
+      ~Beta.observe
+      ~Beta.pdf
+      ~Beta.plot
+      ~Beta.random
+      ~Beta.save
+      ~Beta.set_plotter
+      ~Beta.show
+      ~Beta.unobserve
+      ~Beta.update
+   
+   
 
-      .. autosummary::
-         :toctree:
-      
-         ~Beta.dims
-         ~Beta.plates
+   
+   
+   .. rubric:: Attributes
 
+   .. autosummary::
+      :toctree: generated/
+   
+      ~Beta.dims
+      ~Beta.plates
+   
+   

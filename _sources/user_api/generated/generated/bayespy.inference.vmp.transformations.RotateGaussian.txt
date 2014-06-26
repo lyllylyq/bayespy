@@ -6,19 +6,23 @@ bayespy.inference.vmp.transformations.RotateGaussian
 .. autoclass:: RotateGaussian
 
    
-
-      .. rubric:: Methods
-
-      .. autosummary::
-         :toctree:
-      
-         ~RotateGaussian.bound
-         ~RotateGaussian.get_bound_terms
-         ~RotateGaussian.nodes
-         ~RotateGaussian.rotate
-         ~RotateGaussian.setup
-
-
+   .. automethod:: __init__
 
    
+   .. rubric:: Methods
 
+   .. autosummary::
+      :toctree: generated/
+   
+      ~RotateGaussian.__init__
+      ~RotateGaussian.bound
+      ~RotateGaussian.get_bound_terms
+      ~RotateGaussian.nodes
+      ~RotateGaussian.rotate
+      ~RotateGaussian.setup
+   
+   
+
+   
+   
+   

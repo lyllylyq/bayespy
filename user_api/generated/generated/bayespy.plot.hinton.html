@@ -26,6 +26,7 @@
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="top" title="BayesPy v0.1 Documentation" href="../../../index.html" />
     <link rel="up" title="bayespy.plot" href="../bayespy.plot.html" />
+    <link rel="next" title="bayespy.plot.Plotter" href="bayespy.plot.Plotter.html" />
     <link rel="prev" title="bayespy.plot.plot" href="bayespy.plot.plot.html" /> 
   </head>
   <body>
@@ -38,6 +39,9 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
+        <li class="right" >
+          <a href="bayespy.plot.Plotter.html" title="bayespy.plot.Plotter"
+             accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="bayespy.plot.plot.html" title="bayespy.plot.plot"
              accesskey="P">previous</a> |</li>
@@ -58,33 +62,14 @@
 <dt id="bayespy.plot.hinton">
 <tt class="descclassname">bayespy.plot.</tt><tt class="descname">hinton</tt><big>(</big><em>X</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../../_modules/bayespy/plot.html#hinton"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bayespy.plot.hinton" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plot the Hinton diagram of a node</p>
-<p>The keyword arguments depend on the node type.  For some node types,
-the diagram also shows uncertainty with non-filled rectangles.</p>
+<p>The keyword arguments depend on the node type.  For some node types, the
+diagram also shows uncertainty with non-filled rectangles.  Currently,
+beta-like, Gaussian-like and Dirichlet-like nodes are supported.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>X</strong> : node</td>
-</tr>
-</tbody>
-</table>
-<p class="rubric">Notes</p>
-<p>The function is a simple wrapper for node specific Hinton diagram
-plotting functions:</p>
-<table border="1" class="longtable docutils">
-<colgroup>
-<col width="10%" />
-<col width="90%" />
-</colgroup>
-<tbody valign="top">
-<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">gaussian_hinton</span></tt>(X[,&nbsp;rows,&nbsp;cols,&nbsp;scale])</td>
-<td>Plot the Hinton diagram of a Gaussian node</td>
-</tr>
-<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">beta_hinton</span></tt>(P)</td>
-<td>Plot a beta distributed random variable as a Hinton diagram</td>
-</tr>
-<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">dirichlet_hinton</span></tt>(P[,&nbsp;square])</td>
-<td>Plot a beta distributed random variable as a Hinton diagram</td>
 </tr>
 </tbody>
 </table>
@@ -101,6 +86,9 @@ plotting functions:</p>
   <h4>Previous topic</h4>
   <p class="topless"><a href="bayespy.plot.plot.html"
                         title="previous chapter">bayespy.plot.plot</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="bayespy.plot.Plotter.html"
+                        title="next chapter">bayespy.plot.Plotter</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../../../_sources/user_api/generated/generated/bayespy.plot.hinton.txt"
@@ -132,6 +120,9 @@ plotting functions:</p>
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
+        <li class="right" >
+          <a href="bayespy.plot.Plotter.html" title="bayespy.plot.Plotter"
+             >next</a> |</li>
         <li class="right" >
           <a href="bayespy.plot.plot.html" title="bayespy.plot.plot"
              >previous</a> |</li>

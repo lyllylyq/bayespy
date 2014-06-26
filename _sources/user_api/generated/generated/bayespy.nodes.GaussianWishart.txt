@@ -6,46 +6,50 @@ bayespy.nodes.GaussianWishart
 .. autoclass:: GaussianWishart
 
    
-
-      .. rubric:: Methods
-
-      .. autosummary::
-         :toctree:
-      
-         ~GaussianWishart.add_plate_axis
-         ~GaussianWishart.delete
-         ~GaussianWishart.get_mask
-         ~GaussianWishart.get_moments
-         ~GaussianWishart.get_shape
-         ~GaussianWishart.has_plotter
-         ~GaussianWishart.initialize_from_parameters
-         ~GaussianWishart.initialize_from_prior
-         ~GaussianWishart.initialize_from_random
-         ~GaussianWishart.initialize_from_value
-         ~GaussianWishart.load
-         ~GaussianWishart.logpdf
-         ~GaussianWishart.lower_bound_contribution
-         ~GaussianWishart.lowerbound
-         ~GaussianWishart.move_plates
-         ~GaussianWishart.observe
-         ~GaussianWishart.pdf
-         ~GaussianWishart.plot
-         ~GaussianWishart.random
-         ~GaussianWishart.save
-         ~GaussianWishart.set_plotter
-         ~GaussianWishart.show
-         ~GaussianWishart.unobserve
-         ~GaussianWishart.update
-
-
+   .. automethod:: __init__
 
    
+   .. rubric:: Methods
 
-      .. rubric:: Attributes
+   .. autosummary::
+      :toctree: generated/
+   
+      ~GaussianWishart.__init__
+      ~GaussianWishart.add_plate_axis
+      ~GaussianWishart.delete
+      ~GaussianWishart.get_mask
+      ~GaussianWishart.get_moments
+      ~GaussianWishart.get_shape
+      ~GaussianWishart.has_plotter
+      ~GaussianWishart.initialize_from_parameters
+      ~GaussianWishart.initialize_from_prior
+      ~GaussianWishart.initialize_from_random
+      ~GaussianWishart.initialize_from_value
+      ~GaussianWishart.load
+      ~GaussianWishart.logpdf
+      ~GaussianWishart.lower_bound_contribution
+      ~GaussianWishart.lowerbound
+      ~GaussianWishart.move_plates
+      ~GaussianWishart.observe
+      ~GaussianWishart.pdf
+      ~GaussianWishart.plot
+      ~GaussianWishart.random
+      ~GaussianWishart.save
+      ~GaussianWishart.set_plotter
+      ~GaussianWishart.show
+      ~GaussianWishart.unobserve
+      ~GaussianWishart.update
+   
+   
 
-      .. autosummary::
-         :toctree:
-      
-         ~GaussianWishart.dims
-         ~GaussianWishart.plates
+   
+   
+   .. rubric:: Attributes
 
+   .. autosummary::
+      :toctree: generated/
+   
+      ~GaussianWishart.dims
+      ~GaussianWishart.plates
+   
+   

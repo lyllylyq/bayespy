@@ -103,9 +103,9 @@
 <span class="sd">    </span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="Deterministic.__init__"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.deterministic.Deterministic.__init__.html#bayespy.inference.vmp.nodes.deterministic.Deterministic.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">plates</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">notify_parents</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-
+</div>
     <span class="k">def</span> <span class="nf">_get_id_list</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns the stochastic ID list.</span>
@@ -127,7 +127,7 @@
             <span class="n">id_list</span> <span class="o">=</span> <span class="n">id_list</span> <span class="o">+</span> <span class="n">parent</span><span class="o">.</span><span class="n">_get_id_list</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">id_list</span>
     
-<div class="viewcode-block" id="Deterministic.get_moments"><a class="viewcode-back" href="../../../../../dev_api/generated/bayespy.inference.vmp.nodes.deterministic.Deterministic.get_moments.html#bayespy.inference.vmp.nodes.deterministic.Deterministic.get_moments">[docs]</a>    <span class="k">def</span> <span class="nf">get_moments</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Deterministic.get_moments"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.deterministic.Deterministic.get_moments.html#bayespy.inference.vmp.nodes.deterministic.Deterministic.get_moments">[docs]</a>    <span class="k">def</span> <span class="nf">get_moments</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">u_parents</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_message_from_parents</span><span class="p">()</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compute_moments</span><span class="p">(</span><span class="o">*</span><span class="n">u_parents</span><span class="p">)</span>
 </div>
@@ -205,7 +205,7 @@
             <span class="k">for</span> <span class="p">(</span><span class="n">ind</span><span class="p">,</span> <span class="n">parent</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parents</span><span class="p">):</span>
                 <span class="n">parent</span><span class="o">.</span><span class="n">_remove_child</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ind</span><span class="p">)</span>
 
-<div class="viewcode-block" id="Deterministic.lower_bound_contribution"><a class="viewcode-back" href="../../../../../dev_api/generated/bayespy.inference.vmp.nodes.deterministic.Deterministic.lower_bound_contribution.html#bayespy.inference.vmp.nodes.deterministic.Deterministic.lower_bound_contribution">[docs]</a>    <span class="k">def</span> <span class="nf">lower_bound_contribution</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gradient</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+<div class="viewcode-block" id="Deterministic.lower_bound_contribution"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.deterministic.Deterministic.lower_bound_contribution.html#bayespy.inference.vmp.nodes.deterministic.Deterministic.lower_bound_contribution">[docs]</a>    <span class="k">def</span> <span class="nf">lower_bound_contribution</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gradient</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
         <span class="c"># Deterministic functions are delta distributions so the lower bound</span>
         <span class="c"># contribuion is zero.</span>
         <span class="k">return</span> <span class="mi">0</span>

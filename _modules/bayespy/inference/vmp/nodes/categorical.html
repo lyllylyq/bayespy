@@ -25,7 +25,7 @@
     <script type="text/javascript" src="../../../../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="top" title="BayesPy v0.1 Documentation" href="../../../../../index.html" />
-    <link rel="up" title="Module code" href="../../../../index.html" /> 
+    <link rel="up" title="bayespy.inference" href="../../../inference.html" /> 
   </head>
   <body>
     <div class="related">
@@ -34,8 +34,12 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../../../../genindex.html" title="General Index"
              accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
         <li><a href="../../../../../index.html">BayesPy v0.1 Documentation</a> &raquo;</li>
-          <li><a href="../../../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+          <li><a href="../../../../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../../../inference.html" accesskey="U">bayespy.inference</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -86,21 +90,21 @@
 <span class="kn">from</span> <span class="nn">bayespy.utils</span> <span class="kn">import</span> <span class="n">misc</span>
 
 
-<span class="k">class</span> <span class="nc">CategoricalMoments</span><span class="p">(</span><span class="n">MultinomialMoments</span><span class="p">):</span>
+<div class="viewcode-block" id="CategoricalMoments"><a class="viewcode-back" href="../../../../../dev_api/generated/bayespy.inference.vmp.nodes.categorical.CategoricalMoments.html#bayespy.inference.vmp.nodes.categorical.CategoricalMoments">[docs]</a><span class="k">class</span> <span class="nc">CategoricalMoments</span><span class="p">(</span><span class="n">MultinomialMoments</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Class for the moments of categorical variables.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">categories</span><span class="p">):</span>
+<div class="viewcode-block" id="CategoricalMoments.__init__"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.categorical.CategoricalMoments.__init__.html#bayespy.inference.vmp.nodes.categorical.CategoricalMoments.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">categories</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create moments object for categorical variables</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">D</span> <span class="o">=</span> <span class="n">categories</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">()</span>
 
-        
-    <span class="k">def</span> <span class="nf">compute_fixed_moments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        </div>
+<div class="viewcode-block" id="CategoricalMoments.compute_fixed_moments"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.categorical.CategoricalMoments.compute_fixed_moments.html#bayespy.inference.vmp.nodes.categorical.CategoricalMoments.compute_fixed_moments">[docs]</a>    <span class="k">def</span> <span class="nf">compute_fixed_moments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Compute the moments for a fixed value</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -118,8 +122,8 @@
 
         <span class="k">return</span> <span class="p">[</span><span class="n">u0</span><span class="p">]</span>
     
-
-    <span class="k">def</span> <span class="nf">compute_dims_from_values</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+</div>
+<div class="viewcode-block" id="CategoricalMoments.compute_dims_from_values"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.categorical.CategoricalMoments.compute_dims_from_values.html#bayespy.inference.vmp.nodes.categorical.CategoricalMoments.compute_dims_from_values">[docs]</a>    <span class="k">def</span> <span class="nf">compute_dims_from_values</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return the shape of the moments for a fixed value.</span>
 
@@ -127,13 +131,13 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">(</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">D</span><span class="p">,),</span> <span class="p">)</span>
 
-
-<span class="k">class</span> <span class="nc">CategoricalDistribution</span><span class="p">(</span><span class="n">MultinomialDistribution</span><span class="p">):</span>
+</div></div>
+<div class="viewcode-block" id="CategoricalDistribution"><a class="viewcode-back" href="../../../../../dev_api/generated/bayespy.inference.vmp.nodes.categorical.CategoricalDistribution.html#bayespy.inference.vmp.nodes.categorical.CategoricalDistribution">[docs]</a><span class="k">class</span> <span class="nc">CategoricalDistribution</span><span class="p">(</span><span class="n">MultinomialDistribution</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Class for the VMP formulas of categorical variables.</span>
 <span class="sd">    &quot;&quot;&quot;</span>    
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">categories</span><span class="p">):</span>
+<div class="viewcode-block" id="CategoricalDistribution.__init__"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.categorical.CategoricalDistribution.__init__.html#bayespy.inference.vmp.nodes.categorical.CategoricalDistribution.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">categories</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create VMP formula node for a categorical variable</span>
 
@@ -146,36 +150,36 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">D</span> <span class="o">=</span> <span class="n">categories</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
         
-
-    <span class="k">def</span> <span class="nf">compute_message_to_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">u_p</span><span class="p">):</span>
+</div>
+<div class="viewcode-block" id="CategoricalDistribution.compute_message_to_parent"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.categorical.CategoricalDistribution.compute_message_to_parent.html#bayespy.inference.vmp.nodes.categorical.CategoricalDistribution.compute_message_to_parent">[docs]</a>    <span class="k">def</span> <span class="nf">compute_message_to_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">u_p</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Compute the message to a parent node.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">compute_message_to_parent</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">u_p</span><span class="p">)</span>
 
-
-    <span class="k">def</span> <span class="nf">compute_phi_from_parents</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u_p</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+</div>
+<div class="viewcode-block" id="CategoricalDistribution.compute_phi_from_parents"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.categorical.CategoricalDistribution.compute_phi_from_parents.html#bayespy.inference.vmp.nodes.categorical.CategoricalDistribution.compute_phi_from_parents">[docs]</a>    <span class="k">def</span> <span class="nf">compute_phi_from_parents</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u_p</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Compute the natural parameter vector given parent moments.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">compute_phi_from_parents</span><span class="p">(</span><span class="n">u_p</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">mask</span><span class="p">)</span>
 
-
-    <span class="k">def</span> <span class="nf">compute_moments_and_cgf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">phi</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+</div>
+<div class="viewcode-block" id="CategoricalDistribution.compute_moments_and_cgf"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.categorical.CategoricalDistribution.compute_moments_and_cgf.html#bayespy.inference.vmp.nodes.categorical.CategoricalDistribution.compute_moments_and_cgf">[docs]</a>    <span class="k">def</span> <span class="nf">compute_moments_and_cgf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">phi</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Compute the moments and :math:`g(\phi)`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">compute_moments_and_cgf</span><span class="p">(</span><span class="n">phi</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">mask</span><span class="p">)</span>
 
-        
-    <span class="k">def</span> <span class="nf">compute_cgf_from_parents</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u_p</span><span class="p">):</span>
+        </div>
+<div class="viewcode-block" id="CategoricalDistribution.compute_cgf_from_parents"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.categorical.CategoricalDistribution.compute_cgf_from_parents.html#bayespy.inference.vmp.nodes.categorical.CategoricalDistribution.compute_cgf_from_parents">[docs]</a>    <span class="k">def</span> <span class="nf">compute_cgf_from_parents</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u_p</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Compute :math:`\mathrm{E}_{q(p)}[g(p)]`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">compute_cgf_from_parents</span><span class="p">(</span><span class="n">u_p</span><span class="p">)</span>
     
-
-    <span class="k">def</span> <span class="nf">compute_fixed_moments_and_f</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+</div>
+<div class="viewcode-block" id="CategoricalDistribution.compute_fixed_moments_and_f"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.categorical.CategoricalDistribution.compute_fixed_moments_and_f.html#bayespy.inference.vmp.nodes.categorical.CategoricalDistribution.compute_fixed_moments_and_f">[docs]</a>    <span class="k">def</span> <span class="nf">compute_fixed_moments_and_f</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Compute the moments and :math:`f(x)` for a fixed value.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -198,8 +202,8 @@
 
         <span class="k">return</span> <span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
 
-    
-    <span class="k">def</span> <span class="nf">random</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">phi</span><span class="p">,</span> <span class="n">plates</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    </div>
+<div class="viewcode-block" id="CategoricalDistribution.random"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.categorical.CategoricalDistribution.random.html#bayespy.inference.vmp.nodes.categorical.CategoricalDistribution.random">[docs]</a>    <span class="k">def</span> <span class="nf">random</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">phi</span><span class="p">,</span> <span class="n">plates</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Draw a random sample from the distribution.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -208,8 +212,8 @@
         <span class="n">p</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">logp</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">random</span><span class="o">.</span><span class="n">categorical</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">plates</span><span class="p">)</span>
 
-    
-<div class="viewcode-block" id="Categorical"><a class="viewcode-back" href="../../../../../generated.backup/bayespy.inference.vmp.nodes.categorical.Categorical.html#bayespy.inference.vmp.nodes.categorical.Categorical">[docs]</a><span class="k">class</span> <span class="nc">Categorical</span><span class="p">(</span><span class="n">ExponentialFamily</span><span class="p">):</span>
+    </div></div>
+<span class="k">class</span> <span class="nc">Categorical</span><span class="p">(</span><span class="n">ExponentialFamily</span><span class="p">):</span>
     <span class="sd">r&quot;&quot;&quot;</span>
 <span class="sd">    Node for categorical random variables.</span>
 <span class="sd">    </span>
@@ -280,7 +284,7 @@
         <span class="n">p</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">print</span><span class="p">(</span><span class="s">&quot;</span><span class="si">%s</span><span class="s"> ~ Categorical(p)&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
         <span class="k">print</span><span class="p">(</span><span class="s">&quot;  p = &quot;</span><span class="p">)</span>
-        <span class="k">print</span><span class="p">(</span><span class="n">p</span><span class="p">)</span></div>
+        <span class="k">print</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
 </pre></div>
 
           </div>
@@ -311,8 +315,12 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../../../../genindex.html" title="General Index"
              >index</a></li>
+        <li class="right" >
+          <a href="../../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
         <li><a href="../../../../../index.html">BayesPy v0.1 Documentation</a> &raquo;</li>
-          <li><a href="../../../../index.html" >Module code</a> &raquo;</li> 
+          <li><a href="../../../../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../../../inference.html" >bayespy.inference</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

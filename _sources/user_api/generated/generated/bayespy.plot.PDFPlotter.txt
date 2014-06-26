@@ -6,15 +6,18 @@ bayespy.plot.PDFPlotter
 .. autoclass:: PDFPlotter
 
    
-
-      .. rubric:: Methods
-
-      .. autosummary::
-         :toctree:
-      
-         ~PDFPlotter.__call__
-
-
+   .. automethod:: __init__
 
    
+   .. rubric:: Methods
 
+   .. autosummary::
+      :toctree: generated/
+   
+      ~PDFPlotter.__init__
+   
+   
+
+   
+   
+   

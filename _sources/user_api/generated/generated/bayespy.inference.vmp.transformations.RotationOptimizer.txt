@@ -6,15 +6,19 @@ bayespy.inference.vmp.transformations.RotationOptimizer
 .. autoclass:: RotationOptimizer
 
    
-
-      .. rubric:: Methods
-
-      .. autosummary::
-         :toctree:
-      
-         ~RotationOptimizer.rotate
-
-
+   .. automethod:: __init__
 
    
+   .. rubric:: Methods
 
+   .. autosummary::
+      :toctree: generated/
+   
+      ~RotationOptimizer.__init__
+      ~RotationOptimizer.rotate
+   
+   
+
+   
+   
+   

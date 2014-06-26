@@ -1,0 +1,189 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>bayespy.utils.random &mdash; BayesPy v0.1 Documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="BayesPy v0.1 Documentation" href="../../index.html" />
+    <link rel="up" title="Utility functions" href="../utils.html" />
+    <link rel="next" title="bayespy.utils.random.alpha_beta_recursion" href="generated/bayespy.utils.random.alpha_beta_recursion.html" />
+    <link rel="prev" title="bayespy.utils.linalg.tracedot" href="generated/bayespy.utils.linalg.tracedot.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="generated/bayespy.utils.random.alpha_beta_recursion.html" title="bayespy.utils.random.alpha_beta_recursion"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="generated/bayespy.utils.linalg.tracedot.html" title="bayespy.utils.linalg.tracedot"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">BayesPy v0.1 Documentation</a> &raquo;</li>
+          <li><a href="../dev_api.html" >Developer API</a> &raquo;</li>
+          <li><a href="../utils.html" accesskey="U">Utility functions</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-bayespy.utils.random">
+<span id="bayespy-utils-random"></span><h1>bayespy.utils.random<a class="headerlink" href="#module-bayespy.utils.random" title="Permalink to this headline">¶</a></h1>
+<p>General functions random sampling and distributions.</p>
+<p class="rubric">Functions</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.utils.random.alpha_beta_recursion.html#bayespy.utils.random.alpha_beta_recursion" title="bayespy.utils.random.alpha_beta_recursion"><tt class="xref py py-obj docutils literal"><span class="pre">alpha_beta_recursion</span></tt></a>(logp0,&nbsp;logP)</td>
+<td>Compute alpha-beta recursion for Markov chain</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.utils.random.bernoulli.html#bayespy.utils.random.bernoulli" title="bayespy.utils.random.bernoulli"><tt class="xref py py-obj docutils literal"><span class="pre">bernoulli</span></tt></a>(p[,&nbsp;size])</td>
+<td>Draw random samples from the Bernoulli distribution.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.utils.random.categorical.html#bayespy.utils.random.categorical" title="bayespy.utils.random.categorical"><tt class="xref py py-obj docutils literal"><span class="pre">categorical</span></tt></a>(p[,&nbsp;size])</td>
+<td>Draw random samples from a categorical distribution.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.utils.random.correlation.html#bayespy.utils.random.correlation" title="bayespy.utils.random.correlation"><tt class="xref py py-obj docutils literal"><span class="pre">correlation</span></tt></a>(D)</td>
+<td>Draw a random correlation matrix.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.utils.random.covariance.html#bayespy.utils.random.covariance" title="bayespy.utils.random.covariance"><tt class="xref py py-obj docutils literal"><span class="pre">covariance</span></tt></a>(D[,&nbsp;size])</td>
+<td>Draw a random covariance matrix.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.utils.random.dirichlet.html#bayespy.utils.random.dirichlet" title="bayespy.utils.random.dirichlet"><tt class="xref py py-obj docutils literal"><span class="pre">dirichlet</span></tt></a>(alpha[,&nbsp;size])</td>
+<td>Draw random samples from the Dirichlet distribution.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.utils.random.gamma_entropy.html#bayespy.utils.random.gamma_entropy" title="bayespy.utils.random.gamma_entropy"><tt class="xref py py-obj docutils literal"><span class="pre">gamma_entropy</span></tt></a>(a,&nbsp;log_b,&nbsp;gammaln_a,&nbsp;psi_a,&nbsp;...)</td>
+<td>Entropy of <span class="math">\(\mathcal{G}(a,b)\)</span>.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.utils.random.gamma_logpdf.html#bayespy.utils.random.gamma_logpdf" title="bayespy.utils.random.gamma_logpdf"><tt class="xref py py-obj docutils literal"><span class="pre">gamma_logpdf</span></tt></a>(bx,&nbsp;logx,&nbsp;a_logx,&nbsp;a_logb,&nbsp;gammaln_a)</td>
+<td>Log-density of <span class="math">\(\mathcal{G}(x|a,b)\)</span>.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.utils.random.gaussian_entropy.html#bayespy.utils.random.gaussian_entropy" title="bayespy.utils.random.gaussian_entropy"><tt class="xref py py-obj docutils literal"><span class="pre">gaussian_entropy</span></tt></a>(logdet_V,&nbsp;D)</td>
+<td>Compute the entropy of a Gaussian distribution.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.utils.random.gaussian_gamma_to_t.html#bayespy.utils.random.gaussian_gamma_to_t" title="bayespy.utils.random.gaussian_gamma_to_t"><tt class="xref py py-obj docutils literal"><span class="pre">gaussian_gamma_to_t</span></tt></a>(mu,&nbsp;Cov,&nbsp;a,&nbsp;b[,&nbsp;ndim])</td>
+<td>Integrates gamma distribution to obtain parameters of t distribution</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.utils.random.gaussian_logpdf.html#bayespy.utils.random.gaussian_logpdf" title="bayespy.utils.random.gaussian_logpdf"><tt class="xref py py-obj docutils literal"><span class="pre">gaussian_logpdf</span></tt></a>(yVy,&nbsp;yVmu,&nbsp;muVmu,&nbsp;logdet_V,&nbsp;D)</td>
+<td>Log-density of a Gaussian distribution.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.utils.random.intervals.html#bayespy.utils.random.intervals" title="bayespy.utils.random.intervals"><tt class="xref py py-obj docutils literal"><span class="pre">intervals</span></tt></a>(N,&nbsp;length[,&nbsp;amount,&nbsp;gap])</td>
+<td>Return random non-overlapping parts of a sequence.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.utils.random.invwishart_rand.html#bayespy.utils.random.invwishart_rand" title="bayespy.utils.random.invwishart_rand"><tt class="xref py py-obj docutils literal"><span class="pre">invwishart_rand</span></tt></a>(nu,&nbsp;V)</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.utils.random.mask.html#bayespy.utils.random.mask" title="bayespy.utils.random.mask"><tt class="xref py py-obj docutils literal"><span class="pre">mask</span></tt></a>(*shape[,&nbsp;p])</td>
+<td>Return a boolean array of the given shape.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.utils.random.orth.html#bayespy.utils.random.orth" title="bayespy.utils.random.orth"><tt class="xref py py-obj docutils literal"><span class="pre">orth</span></tt></a>(D)</td>
+<td>Draw random orthogonal matrix.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.utils.random.sphere.html#bayespy.utils.random.sphere" title="bayespy.utils.random.sphere"><tt class="xref py py-obj docutils literal"><span class="pre">sphere</span></tt></a>([N])</td>
+<td>Draw random points uniformly on a unit sphere.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.utils.random.svd.html#bayespy.utils.random.svd" title="bayespy.utils.random.svd"><tt class="xref py py-obj docutils literal"><span class="pre">svd</span></tt></a>(s)</td>
+<td>Draw a random matrix given its singular values.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.utils.random.t_logpdf.html#bayespy.utils.random.t_logpdf" title="bayespy.utils.random.t_logpdf"><tt class="xref py py-obj docutils literal"><span class="pre">t_logpdf</span></tt></a>(z2,&nbsp;logdet_cov,&nbsp;nu,&nbsp;D)</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.utils.random.wishart_rand.html#bayespy.utils.random.wishart_rand" title="bayespy.utils.random.wishart_rand"><tt class="xref py py-obj docutils literal"><span class="pre">wishart_rand</span></tt></a>(nu,&nbsp;V)</td>
+<td>Draw a random sample from the Wishart distribution.</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="generated/bayespy.utils.linalg.tracedot.html"
+                        title="previous chapter">bayespy.utils.linalg.tracedot</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="generated/bayespy.utils.random.alpha_beta_recursion.html"
+                        title="next chapter">bayespy.utils.random.alpha_beta_recursion</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/dev_api/generated/bayespy.utils.random.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="generated/bayespy.utils.random.alpha_beta_recursion.html" title="bayespy.utils.random.alpha_beta_recursion"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="generated/bayespy.utils.linalg.tracedot.html" title="bayespy.utils.linalg.tracedot"
+             >previous</a> |</li>
+        <li><a href="../../index.html">BayesPy v0.1 Documentation</a> &raquo;</li>
+          <li><a href="../dev_api.html" >Developer API</a> &raquo;</li>
+          <li><a href="../utils.html" >Utility functions</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011-2014, Jaakko Luttinen, GPLv3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

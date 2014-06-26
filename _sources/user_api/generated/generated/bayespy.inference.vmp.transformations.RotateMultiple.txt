@@ -6,19 +6,23 @@ bayespy.inference.vmp.transformations.RotateMultiple
 .. autoclass:: RotateMultiple
 
    
-
-      .. rubric:: Methods
-
-      .. autosummary::
-         :toctree:
-      
-         ~RotateMultiple.bound
-         ~RotateMultiple.get_bound_terms
-         ~RotateMultiple.nodes
-         ~RotateMultiple.rotate
-         ~RotateMultiple.setup
-
-
+   .. automethod:: __init__
 
    
+   .. rubric:: Methods
 
+   .. autosummary::
+      :toctree: generated/
+   
+      ~RotateMultiple.__init__
+      ~RotateMultiple.bound
+      ~RotateMultiple.get_bound_terms
+      ~RotateMultiple.nodes
+      ~RotateMultiple.rotate
+      ~RotateMultiple.setup
+   
+   
+
+   
+   
+   

@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Nodes &mdash; BayesPy v0.1 Documentation</title>
+    <title>Developer nodes &mdash; BayesPy v0.1 Documentation</title>
     
     <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -55,9 +55,9 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <div class="section" id="nodes">
-<h1>Nodes<a class="headerlink" href="#nodes" title="Permalink to this headline">¶</a></h1>
-<p>Base classes and special nodes:</p>
+  <div class="section" id="developer-nodes">
+<h1>Developer nodes<a class="headerlink" href="#developer-nodes" title="Permalink to this headline">¶</a></h1>
+<p>The following base classes are useful if writing new nodes:</p>
 <table border="1" class="longtable docutils">
 <colgroup>
 <col width="10%" />
@@ -76,8 +76,36 @@
 <tr class="row-even"><td><a class="reference internal" href="generated/bayespy.inference.vmp.nodes.deterministic.Deterministic.html#bayespy.inference.vmp.nodes.deterministic.Deterministic" title="bayespy.inference.vmp.nodes.deterministic.Deterministic"><tt class="xref py py-obj docutils literal"><span class="pre">deterministic.Deterministic</span></tt></a>(*args,&nbsp;**kwargs)</td>
 <td>Base class for deterministic nodes.</td>
 </tr>
+</tbody>
+</table>
+<p>The following nodes are examples of special nodes that remain hidden for the
+user although they are often implicitly used:</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
 <tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.inference.vmp.nodes.constant.Constant.html#bayespy.inference.vmp.nodes.constant.Constant" title="bayespy.inference.vmp.nodes.constant.Constant"><tt class="xref py py-obj docutils literal"><span class="pre">constant.Constant</span></tt></a>(moments,&nbsp;x,&nbsp;**kwargs)</td>
 <td>Node for presenting constant values.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.inference.vmp.nodes.gaussian.GaussianToGaussianGammaISO.html#bayespy.inference.vmp.nodes.gaussian.GaussianToGaussianGammaISO" title="bayespy.inference.vmp.nodes.gaussian.GaussianToGaussianGammaISO"><tt class="xref py py-obj docutils literal"><span class="pre">gaussian.GaussianToGaussianGammaISO</span></tt></a>(X,&nbsp;**kwargs)</td>
+<td>Converter for Gaussian moments to Gaussian-gamma isotropic moments</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.inference.vmp.nodes.gaussian.GaussianGammaISOToGaussianGammaARD.html#bayespy.inference.vmp.nodes.gaussian.GaussianGammaISOToGaussianGammaARD" title="bayespy.inference.vmp.nodes.gaussian.GaussianGammaISOToGaussianGammaARD"><tt class="xref py py-obj docutils literal"><span class="pre">gaussian.GaussianGammaISOToGaussianGammaARD</span></tt></a>(X,&nbsp;...)</td>
+<td>Converter for Gaussian-gamma ISO moments to Gaussian-gamma ARD moments</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.inference.vmp.nodes.gaussian.GaussianGammaARDToGaussianWishart.html#bayespy.inference.vmp.nodes.gaussian.GaussianGammaARDToGaussianWishart" title="bayespy.inference.vmp.nodes.gaussian.GaussianGammaARDToGaussianWishart"><tt class="xref py py-obj docutils literal"><span class="pre">gaussian.GaussianGammaARDToGaussianWishart</span></tt></a>(...)</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.inference.vmp.nodes.gaussian.WrapToGaussianGammaISO.html#bayespy.inference.vmp.nodes.gaussian.WrapToGaussianGammaISO" title="bayespy.inference.vmp.nodes.gaussian.WrapToGaussianGammaISO"><tt class="xref py py-obj docutils literal"><span class="pre">gaussian.WrapToGaussianGammaISO</span></tt></a>(*parents,&nbsp;...)</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.inference.vmp.nodes.gaussian.WrapToGaussianGammaARD.html#bayespy.inference.vmp.nodes.gaussian.WrapToGaussianGammaARD" title="bayespy.inference.vmp.nodes.gaussian.WrapToGaussianGammaARD"><tt class="xref py py-obj docutils literal"><span class="pre">gaussian.WrapToGaussianGammaARD</span></tt></a>(mu_alpha,&nbsp;...)</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.inference.vmp.nodes.gaussian.WrapToGaussianWishart.html#bayespy.inference.vmp.nodes.gaussian.WrapToGaussianWishart" title="bayespy.inference.vmp.nodes.gaussian.WrapToGaussianWishart"><tt class="xref py py-obj docutils literal"><span class="pre">gaussian.WrapToGaussianWishart</span></tt></a>(X,&nbsp;Lambda,&nbsp;...)</td>
+<td>Wraps Gaussian and Wishart nodes into a Gaussian-Wishart node.</td>
 </tr>
 </tbody>
 </table>

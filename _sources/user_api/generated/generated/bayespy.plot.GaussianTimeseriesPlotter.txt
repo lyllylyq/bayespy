@@ -6,15 +6,18 @@ bayespy.plot.GaussianTimeseriesPlotter
 .. autoclass:: GaussianTimeseriesPlotter
 
    
-
-      .. rubric:: Methods
-
-      .. autosummary::
-         :toctree:
-      
-         ~GaussianTimeseriesPlotter.__call__
-
-
+   .. automethod:: __init__
 
    
+   .. rubric:: Methods
 
+   .. autosummary::
+      :toctree: generated/
+   
+      ~GaussianTimeseriesPlotter.__init__
+   
+   
+
+   
+   
+   

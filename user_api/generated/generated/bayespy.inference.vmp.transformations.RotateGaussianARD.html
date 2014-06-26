@@ -26,8 +26,8 @@
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="top" title="BayesPy v0.1 Documentation" href="../../../index.html" />
     <link rel="up" title="bayespy.inference" href="../bayespy.inference.html" />
-    <link rel="next" title="bayespy.inference.vmp.transformations.RotateGaussianARD.bound" href="bayespy.inference.vmp.transformations.RotateGaussianARD.bound.html" />
-    <link rel="prev" title="bayespy.inference.vmp.transformations.RotateGaussian.setup" href="bayespy.inference.vmp.transformations.RotateGaussian.setup.html" /> 
+    <link rel="next" title="bayespy.inference.vmp.transformations.RotateGaussianARD.__init__" href="generated/bayespy.inference.vmp.transformations.RotateGaussianARD.__init__.html" />
+    <link rel="prev" title="bayespy.inference.vmp.transformations.RotateGaussian.setup" href="generated/bayespy.inference.vmp.transformations.RotateGaussian.setup.html" /> 
   </head>
   <body>
     <div class="related">
@@ -40,10 +40,10 @@
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="bayespy.inference.vmp.transformations.RotateGaussianARD.bound.html" title="bayespy.inference.vmp.transformations.RotateGaussianARD.bound"
+          <a href="generated/bayespy.inference.vmp.transformations.RotateGaussianARD.__init__.html" title="bayespy.inference.vmp.transformations.RotateGaussianARD.__init__"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="bayespy.inference.vmp.transformations.RotateGaussian.setup.html" title="bayespy.inference.vmp.transformations.RotateGaussian.setup"
+          <a href="generated/bayespy.inference.vmp.transformations.RotateGaussian.setup.html" title="bayespy.inference.vmp.transformations.RotateGaussian.setup"
              accesskey="P">previous</a> |</li>
         <li><a href="../../../index.html">BayesPy v0.1 Documentation</a> &raquo;</li>
           <li><a href="../../user_api.html" >User API</a> &raquo;</li>
@@ -69,6 +69,17 @@ X ~ N(mu, alpha)</p>
 <p>Transform q(X) and q(alpha) by rotating X.</p>
 <p>Requirements:
 * X and alpha do not contain any observed values</p>
+<dl class="method">
+<dt id="bayespy.inference.vmp.transformations.RotateGaussianARD.__init__">
+<tt class="descname">__init__</tt><big>(</big><em>X</em>, <em>*alpha</em>, <em>axis=-1</em>, <em>precompute=False</em><big>)</big><a class="reference internal" href="../../../_modules/bayespy/inference/vmp/transformations.html#RotateGaussianARD.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bayespy.inference.vmp.transformations.RotateGaussianARD.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Precompute tells whether to compute some moments once in the setup
+function instead of every time in the bound function.  However, they are
+computed a bit differently in the bound function so it can be useful
+too. Precomputation is probably beneficial only when there are large
+axes that are not rotated (by R nor Q) and they are not contained in the
+plates of alpha, and the dimensions for R and Q are quite small.</p>
+</dd></dl>
+
 <p class="rubric">Methods</p>
 <table border="1" class="longtable docutils">
 <colgroup>
@@ -76,19 +87,22 @@ X ~ N(mu, alpha)</p>
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="bayespy.inference.vmp.transformations.RotateGaussianARD.bound.html#bayespy.inference.vmp.transformations.RotateGaussianARD.bound" title="bayespy.inference.vmp.transformations.RotateGaussianARD.bound"><tt class="xref py py-obj docutils literal"><span class="pre">bound</span></tt></a>(R[,&nbsp;logdet,&nbsp;inv,&nbsp;Q])</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.inference.vmp.transformations.RotateGaussianARD.__init__.html#bayespy.inference.vmp.transformations.RotateGaussianARD.__init__" title="bayespy.inference.vmp.transformations.RotateGaussianARD.__init__"><tt class="xref py py-obj docutils literal"><span class="pre">__init__</span></tt></a>(X,&nbsp;*alpha[,&nbsp;axis,&nbsp;precompute])</td>
+<td>Precompute tells whether to compute some moments once in the setup function instead of every time in the bound function.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.inference.vmp.transformations.RotateGaussianARD.bound.html#bayespy.inference.vmp.transformations.RotateGaussianARD.bound" title="bayespy.inference.vmp.transformations.RotateGaussianARD.bound"><tt class="xref py py-obj docutils literal"><span class="pre">bound</span></tt></a>(R[,&nbsp;logdet,&nbsp;inv,&nbsp;Q])</td>
 <td></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="bayespy.inference.vmp.transformations.RotateGaussianARD.get_bound_terms.html#bayespy.inference.vmp.transformations.RotateGaussianARD.get_bound_terms" title="bayespy.inference.vmp.transformations.RotateGaussianARD.get_bound_terms"><tt class="xref py py-obj docutils literal"><span class="pre">get_bound_terms</span></tt></a>(R[,&nbsp;logdet,&nbsp;inv,&nbsp;Q])</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.inference.vmp.transformations.RotateGaussianARD.get_bound_terms.html#bayespy.inference.vmp.transformations.RotateGaussianARD.get_bound_terms" title="bayespy.inference.vmp.transformations.RotateGaussianARD.get_bound_terms"><tt class="xref py py-obj docutils literal"><span class="pre">get_bound_terms</span></tt></a>(R[,&nbsp;logdet,&nbsp;inv,&nbsp;Q])</td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="bayespy.inference.vmp.transformations.RotateGaussianARD.nodes.html#bayespy.inference.vmp.transformations.RotateGaussianARD.nodes" title="bayespy.inference.vmp.transformations.RotateGaussianARD.nodes"><tt class="xref py py-obj docutils literal"><span class="pre">nodes</span></tt></a>()</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.inference.vmp.transformations.RotateGaussianARD.nodes.html#bayespy.inference.vmp.transformations.RotateGaussianARD.nodes" title="bayespy.inference.vmp.transformations.RotateGaussianARD.nodes"><tt class="xref py py-obj docutils literal"><span class="pre">nodes</span></tt></a>()</td>
 <td></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="bayespy.inference.vmp.transformations.RotateGaussianARD.rotate.html#bayespy.inference.vmp.transformations.RotateGaussianARD.rotate" title="bayespy.inference.vmp.transformations.RotateGaussianARD.rotate"><tt class="xref py py-obj docutils literal"><span class="pre">rotate</span></tt></a>(R[,&nbsp;inv,&nbsp;logdet,&nbsp;Q])</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.inference.vmp.transformations.RotateGaussianARD.rotate.html#bayespy.inference.vmp.transformations.RotateGaussianARD.rotate" title="bayespy.inference.vmp.transformations.RotateGaussianARD.rotate"><tt class="xref py py-obj docutils literal"><span class="pre">rotate</span></tt></a>(R[,&nbsp;inv,&nbsp;logdet,&nbsp;Q])</td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="bayespy.inference.vmp.transformations.RotateGaussianARD.setup.html#bayespy.inference.vmp.transformations.RotateGaussianARD.setup" title="bayespy.inference.vmp.transformations.RotateGaussianARD.setup"><tt class="xref py py-obj docutils literal"><span class="pre">setup</span></tt></a>([plate_axis])</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.inference.vmp.transformations.RotateGaussianARD.setup.html#bayespy.inference.vmp.transformations.RotateGaussianARD.setup" title="bayespy.inference.vmp.transformations.RotateGaussianARD.setup"><tt class="xref py py-obj docutils literal"><span class="pre">setup</span></tt></a>([plate_axis])</td>
 <td>This method should be called just before optimization.</td>
 </tr>
 </tbody>
@@ -104,11 +118,11 @@ X ~ N(mu, alpha)</p>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
   <h4>Previous topic</h4>
-  <p class="topless"><a href="bayespy.inference.vmp.transformations.RotateGaussian.setup.html"
+  <p class="topless"><a href="generated/bayespy.inference.vmp.transformations.RotateGaussian.setup.html"
                         title="previous chapter">bayespy.inference.vmp.transformations.RotateGaussian.setup</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="bayespy.inference.vmp.transformations.RotateGaussianARD.bound.html"
-                        title="next chapter">bayespy.inference.vmp.transformations.RotateGaussianARD.bound</a></p>
+  <p class="topless"><a href="generated/bayespy.inference.vmp.transformations.RotateGaussianARD.__init__.html"
+                        title="next chapter">bayespy.inference.vmp.transformations.RotateGaussianARD.__init__</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../../../_sources/user_api/generated/generated/bayespy.inference.vmp.transformations.RotateGaussianARD.txt"
@@ -141,10 +155,10 @@ X ~ N(mu, alpha)</p>
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="bayespy.inference.vmp.transformations.RotateGaussianARD.bound.html" title="bayespy.inference.vmp.transformations.RotateGaussianARD.bound"
+          <a href="generated/bayespy.inference.vmp.transformations.RotateGaussianARD.__init__.html" title="bayespy.inference.vmp.transformations.RotateGaussianARD.__init__"
              >next</a> |</li>
         <li class="right" >
-          <a href="bayespy.inference.vmp.transformations.RotateGaussian.setup.html" title="bayespy.inference.vmp.transformations.RotateGaussian.setup"
+          <a href="generated/bayespy.inference.vmp.transformations.RotateGaussian.setup.html" title="bayespy.inference.vmp.transformations.RotateGaussian.setup"
              >previous</a> |</li>
         <li><a href="../../../index.html">BayesPy v0.1 Documentation</a> &raquo;</li>
           <li><a href="../../user_api.html" >User API</a> &raquo;</li>

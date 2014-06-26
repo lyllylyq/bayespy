@@ -25,7 +25,7 @@
     <script type="text/javascript" src="../../../../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="top" title="BayesPy v0.1 Documentation" href="../../../../../index.html" />
-    <link rel="up" title="Module code" href="../../../../index.html" /> 
+    <link rel="up" title="bayespy.inference" href="../../../inference.html" /> 
   </head>
   <body>
     <div class="related">
@@ -34,8 +34,12 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../../../../genindex.html" title="General Index"
              accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
         <li><a href="../../../../../index.html">BayesPy v0.1 Documentation</a> &raquo;</li>
-          <li><a href="../../../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+          <li><a href="../../../../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../../../inference.html" accesskey="U">bayespy.inference</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -160,26 +164,26 @@
 <span class="c">##         return ((), ())</span>
         
 
-<span class="k">class</span> <span class="nc">GaussianMoments</span><span class="p">(</span><span class="n">Moments</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="GaussianMoments"><a class="viewcode-back" href="../../../../../dev_api/generated/bayespy.inference.vmp.nodes.gaussian.GaussianMoments.html#bayespy.inference.vmp.nodes.gaussian.GaussianMoments">[docs]</a><span class="k">class</span> <span class="nc">GaussianMoments</span><span class="p">(</span><span class="n">Moments</span><span class="p">):</span>
+    <span class="sd">r&quot;&quot;&quot;</span>
 <span class="sd">    Class for the moments of Gaussian variables.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ndim</span><span class="p">):</span>
+<div class="viewcode-block" id="GaussianMoments.__init__"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.gaussian.GaussianMoments.__init__.html#bayespy.inference.vmp.nodes.gaussian.GaussianMoments.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ndim</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ndim</span> <span class="o">=</span> <span class="n">ndim</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">()</span>
 
-
-    <span class="k">def</span> <span class="nf">compute_fixed_moments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+</div>
+<div class="viewcode-block" id="GaussianMoments.compute_fixed_moments"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.gaussian.GaussianMoments.compute_fixed_moments.html#bayespy.inference.vmp.nodes.gaussian.GaussianMoments.compute_fixed_moments">[docs]</a>    <span class="k">def</span> <span class="nf">compute_fixed_moments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="sd">r&quot;&quot;&quot;</span>
 <span class="sd">        Compute the moments for a fixed value</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">x</span> <span class="o">=</span> <span class="n">misc</span><span class="o">.</span><span class="n">atleast_nd</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ndim</span><span class="p">)</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="n">linalg</span><span class="o">.</span><span class="n">outer</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ndim</span><span class="p">)]</span>
-
-    <span class="k">def</span> <span class="nf">compute_dims_from_values</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+</div>
+<div class="viewcode-block" id="GaussianMoments.compute_dims_from_values"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.gaussian.GaussianMoments.compute_dims_from_values.html#bayespy.inference.vmp.nodes.gaussian.GaussianMoments.compute_dims_from_values">[docs]</a>    <span class="k">def</span> <span class="nf">compute_dims_from_values</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="sd">r&quot;&quot;&quot;</span>
 <span class="sd">        Return the shape of the moments for a fixed value.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">x</span> <span class="o">=</span> <span class="n">misc</span><span class="o">.</span><span class="n">atleast_nd</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ndim</span><span class="p">)</span>
@@ -189,15 +193,15 @@
             <span class="n">shape</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">x</span><span class="p">)[</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">ndim</span><span class="p">:]</span>
         <span class="k">return</span> <span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">shape</span><span class="o">+</span><span class="n">shape</span><span class="p">)</span>
 
-
-<span class="k">class</span> <span class="nc">GaussianGammaISOMoments</span><span class="p">(</span><span class="n">Moments</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+</div></div>
+<div class="viewcode-block" id="GaussianGammaISOMoments"><a class="viewcode-back" href="../../../../../dev_api/generated/bayespy.inference.vmp.nodes.gaussian.GaussianGammaISOMoments.html#bayespy.inference.vmp.nodes.gaussian.GaussianGammaISOMoments">[docs]</a><span class="k">class</span> <span class="nc">GaussianGammaISOMoments</span><span class="p">(</span><span class="n">Moments</span><span class="p">):</span>
+    <span class="sd">r&quot;&quot;&quot;</span>
 <span class="sd">    Class for the moments of Gaussian-gamma-ISO variables.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ndim</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="GaussianGammaISOMoments.__init__"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.gaussian.GaussianGammaISOMoments.__init__.html#bayespy.inference.vmp.nodes.gaussian.GaussianGammaISOMoments.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ndim</span><span class="p">):</span>
+        <span class="sd">r&quot;&quot;&quot;</span>
 <span class="sd">        Create moments object for Gaussian-gamma isotropic variables</span>
 
 <span class="sd">        ndim=0: scalar</span>
@@ -208,9 +212,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">ndim</span> <span class="o">=</span> <span class="n">ndim</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">()</span>
 
-    
-    <span class="k">def</span> <span class="nf">compute_fixed_moments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">alpha</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+    </div>
+<div class="viewcode-block" id="GaussianGammaISOMoments.compute_fixed_moments"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.gaussian.GaussianGammaISOMoments.compute_fixed_moments.html#bayespy.inference.vmp.nodes.gaussian.GaussianGammaISOMoments.compute_fixed_moments">[docs]</a>    <span class="k">def</span> <span class="nf">compute_fixed_moments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">alpha</span><span class="p">):</span>
+        <span class="sd">r&quot;&quot;&quot;</span>
 <span class="sd">        Compute the moments for a fixed value</span>
 
 <span class="sd">        `x` is a mean vector.</span>
@@ -229,9 +233,9 @@
 
         <span class="k">return</span> <span class="n">u</span>
     
-
-    <span class="k">def</span> <span class="nf">compute_dims_from_values</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">alpha</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+</div>
+<div class="viewcode-block" id="GaussianGammaISOMoments.compute_dims_from_values"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.gaussian.GaussianGammaISOMoments.compute_dims_from_values.html#bayespy.inference.vmp.nodes.gaussian.GaussianGammaISOMoments.compute_dims_from_values">[docs]</a>    <span class="k">def</span> <span class="nf">compute_dims_from_values</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">alpha</span><span class="p">):</span>
+        <span class="sd">r&quot;&quot;&quot;</span>
 <span class="sd">        Return the shape of the moments for a fixed value.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
@@ -245,15 +249,15 @@
 
         <span class="k">return</span> <span class="p">(</span> <span class="n">dims</span><span class="p">,</span> <span class="mi">2</span><span class="o">*</span><span class="n">dims</span><span class="p">,</span> <span class="p">(),</span> <span class="p">()</span> <span class="p">)</span>
 
-
-<span class="k">class</span> <span class="nc">GaussianGammaARDMoments</span><span class="p">(</span><span class="n">Moments</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+</div></div>
+<div class="viewcode-block" id="GaussianGammaARDMoments"><a class="viewcode-back" href="../../../../../dev_api/generated/bayespy.inference.vmp.nodes.gaussian.GaussianGammaARDMoments.html#bayespy.inference.vmp.nodes.gaussian.GaussianGammaARDMoments">[docs]</a><span class="k">class</span> <span class="nc">GaussianGammaARDMoments</span><span class="p">(</span><span class="n">Moments</span><span class="p">):</span>
+    <span class="sd">r&quot;&quot;&quot;</span>
 <span class="sd">    Class for the moments of Gaussian-gamma-ARD variables.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ndim</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="GaussianGammaARDMoments.__init__"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.gaussian.GaussianGammaARDMoments.__init__.html#bayespy.inference.vmp.nodes.gaussian.GaussianGammaARDMoments.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ndim</span><span class="p">):</span>
+        <span class="sd">r&quot;&quot;&quot;</span>
 <span class="sd">        Create moments object for Gaussian-gamma isotropic variables</span>
 
 <span class="sd">        ndim=0: scalar</span>
@@ -264,9 +268,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">ndim</span> <span class="o">=</span> <span class="n">ndim</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">()</span>
 
-    
-    <span class="k">def</span> <span class="nf">compute_fixed_moments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">alpha</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+    </div>
+<div class="viewcode-block" id="GaussianGammaARDMoments.compute_fixed_moments"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.gaussian.GaussianGammaARDMoments.compute_fixed_moments.html#bayespy.inference.vmp.nodes.gaussian.GaussianGammaARDMoments.compute_fixed_moments">[docs]</a>    <span class="k">def</span> <span class="nf">compute_fixed_moments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">alpha</span><span class="p">):</span>
+        <span class="sd">r&quot;&quot;&quot;</span>
 <span class="sd">        Compute the moments for a fixed value</span>
 
 <span class="sd">        `x` is a mean vector.</span>
@@ -292,9 +296,9 @@
 
         <span class="k">return</span> <span class="n">u</span>
     
-
-    <span class="k">def</span> <span class="nf">compute_dims_from_values</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">alpha</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+</div>
+<div class="viewcode-block" id="GaussianGammaARDMoments.compute_dims_from_values"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.gaussian.GaussianGammaARDMoments.compute_dims_from_values.html#bayespy.inference.vmp.nodes.gaussian.GaussianGammaARDMoments.compute_dims_from_values">[docs]</a>    <span class="k">def</span> <span class="nf">compute_dims_from_values</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">alpha</span><span class="p">):</span>
+        <span class="sd">r&quot;&quot;&quot;</span>
 <span class="sd">        Return the shape of the moments for a fixed value.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
@@ -312,15 +316,15 @@
 
         <span class="k">return</span> <span class="p">(</span> <span class="n">shape</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">shape</span> <span class="p">)</span>
 
-
-<span class="k">class</span> <span class="nc">GaussianWishartMoments</span><span class="p">(</span><span class="n">Moments</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+</div></div>
+<div class="viewcode-block" id="GaussianWishartMoments"><a class="viewcode-back" href="../../../../../dev_api/generated/bayespy.inference.vmp.nodes.gaussian.GaussianWishartMoments.html#bayespy.inference.vmp.nodes.gaussian.GaussianWishartMoments">[docs]</a><span class="k">class</span> <span class="nc">GaussianWishartMoments</span><span class="p">(</span><span class="n">Moments</span><span class="p">):</span>
+    <span class="sd">r&quot;&quot;&quot;</span>
 <span class="sd">    Class for the moments of Gaussian-Wishart variables.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     
     
-    <span class="k">def</span> <span class="nf">compute_fixed_moments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">Lambda</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="GaussianWishartMoments.compute_fixed_moments"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.gaussian.GaussianWishartMoments.compute_fixed_moments.html#bayespy.inference.vmp.nodes.gaussian.GaussianWishartMoments.compute_fixed_moments">[docs]</a>    <span class="k">def</span> <span class="nf">compute_fixed_moments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">Lambda</span><span class="p">):</span>
+        <span class="sd">r&quot;&quot;&quot;</span>
 <span class="sd">        Compute the moments for a fixed value</span>
 
 <span class="sd">        `x` is a vector.</span>
@@ -337,9 +341,9 @@
 
         <span class="k">return</span> <span class="p">[</span><span class="n">u0</span><span class="p">,</span> <span class="n">u1</span><span class="p">,</span> <span class="n">u2</span><span class="p">,</span> <span class="n">u3</span><span class="p">]</span>
     
-
-    <span class="k">def</span> <span class="nf">compute_dims_from_values</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">Lambda</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+</div>
+<div class="viewcode-block" id="GaussianWishartMoments.compute_dims_from_values"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.gaussian.GaussianWishartMoments.compute_dims_from_values.html#bayespy.inference.vmp.nodes.gaussian.GaussianWishartMoments.compute_dims_from_values">[docs]</a>    <span class="k">def</span> <span class="nf">compute_dims_from_values</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">Lambda</span><span class="p">):</span>
+        <span class="sd">r&quot;&quot;&quot;</span>
 <span class="sd">        Return the shape of the moments for a fixed value.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
@@ -361,9 +365,9 @@
 <span class="c"># DISTRIBUTIONS</span>
 <span class="c">#</span>
 
-
-<span class="k">class</span> <span class="nc">GaussianDistribution</span><span class="p">(</span><span class="n">ExponentialFamilyDistribution</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+</div></div>
+<div class="viewcode-block" id="GaussianDistribution"><a class="viewcode-back" href="../../../../../dev_api/generated/bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.html#bayespy.inference.vmp.nodes.gaussian.GaussianDistribution">[docs]</a><span class="k">class</span> <span class="nc">GaussianDistribution</span><span class="p">(</span><span class="n">ExponentialFamilyDistribution</span><span class="p">):</span>
+    <span class="sd">r&quot;&quot;&quot;</span>
 <span class="sd">    Class for the VMP formulas of Gaussian variables.</span>
 
 <span class="sd">    Currently, supports only vector variables.</span>
@@ -458,8 +462,8 @@
 <span class="sd">    &quot;&quot;&quot;</span>    
 
     
-    <span class="k">def</span> <span class="nf">compute_message_to_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">u_mu_Lambda</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="GaussianDistribution.compute_message_to_parent"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.compute_message_to_parent.html#bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.compute_message_to_parent">[docs]</a>    <span class="k">def</span> <span class="nf">compute_message_to_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">u_mu_Lambda</span><span class="p">):</span>
+        <span class="sd">r&quot;&quot;&quot;</span>
 <span class="sd">        Compute the message to a parent node.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">index</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
@@ -472,18 +476,18 @@
             <span class="k">return</span> <span class="p">[</span><span class="n">m0</span><span class="p">,</span> <span class="n">m1</span><span class="p">,</span> <span class="n">m2</span><span class="p">,</span> <span class="n">m3</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Index out of bounds&quot;</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">compute_phi_from_parents</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u_mu_Lambda</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+</div>
+<div class="viewcode-block" id="GaussianDistribution.compute_phi_from_parents"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.compute_phi_from_parents.html#bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.compute_phi_from_parents">[docs]</a>    <span class="k">def</span> <span class="nf">compute_phi_from_parents</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u_mu_Lambda</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+        <span class="sd">r&quot;&quot;&quot;</span>
 <span class="sd">        Compute the natural parameter vector given parent moments.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">Lambda_mu</span> <span class="o">=</span> <span class="n">u_mu_Lambda</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">Lambda</span> <span class="o">=</span> <span class="n">u_mu_Lambda</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">Lambda_mu</span><span class="p">,</span>
                 <span class="o">-</span><span class="mf">0.5</span> <span class="o">*</span> <span class="n">Lambda</span><span class="p">]</span>
-
-    <span class="k">def</span> <span class="nf">compute_moments_and_cgf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">phi</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+</div>
+<div class="viewcode-block" id="GaussianDistribution.compute_moments_and_cgf"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.compute_moments_and_cgf.html#bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.compute_moments_and_cgf">[docs]</a>    <span class="k">def</span> <span class="nf">compute_moments_and_cgf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">phi</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+        <span class="sd">r&quot;&quot;&quot;</span>
 <span class="sd">        Compute the moments and :math:`g(\phi)`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c"># TODO: Compute -2*phi[1] and simplify the formulas</span>
@@ -498,18 +502,18 @@
              <span class="o">+</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">misc</span><span class="o">.</span><span class="n">m_chol_logdet</span><span class="p">(</span><span class="n">L</span><span class="p">))</span>
              <span class="c">#+ 0.5 * np.log(2) * self.dims[0][0])</span>
         <span class="k">return</span> <span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">g</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">compute_cgf_from_parents</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u_mu_Lambda</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+</div>
+<div class="viewcode-block" id="GaussianDistribution.compute_cgf_from_parents"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.compute_cgf_from_parents.html#bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.compute_cgf_from_parents">[docs]</a>    <span class="k">def</span> <span class="nf">compute_cgf_from_parents</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u_mu_Lambda</span><span class="p">):</span>
+        <span class="sd">r&quot;&quot;&quot;</span>
 <span class="sd">        Compute :math:`\mathrm{E}_{q(p)}[g(p)]`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">mu_Lambda_mu</span> <span class="o">=</span> <span class="n">u_mu_Lambda</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
         <span class="n">logdet_Lambda</span> <span class="o">=</span> <span class="n">u_mu_Lambda</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
         <span class="n">g</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.5</span><span class="o">*</span><span class="n">mu_Lambda_mu</span> <span class="o">+</span> <span class="mf">0.5</span><span class="o">*</span><span class="n">logdet_Lambda</span>
         <span class="k">return</span> <span class="n">g</span>
-
-    <span class="k">def</span> <span class="nf">compute_fixed_moments_and_f</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+</div>
+<div class="viewcode-block" id="GaussianDistribution.compute_fixed_moments_and_f"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.compute_fixed_moments_and_f.html#bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.compute_fixed_moments_and_f">[docs]</a>    <span class="k">def</span> <span class="nf">compute_fixed_moments_and_f</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+        <span class="sd">r&quot;&quot;&quot;</span>
 <span class="sd">        Compute the moments and :math:`f(x)` for a fixed value.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">k</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">x</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
@@ -517,9 +521,9 @@
         <span class="n">f</span> <span class="o">=</span> <span class="o">-</span><span class="n">k</span><span class="o">/</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
         <span class="k">return</span> <span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
 
-
-    <span class="k">def</span> <span class="nf">random</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">phi</span><span class="p">,</span> <span class="n">plates</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+</div>
+<div class="viewcode-block" id="GaussianDistribution.random"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.random.html#bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.random">[docs]</a>    <span class="k">def</span> <span class="nf">random</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">phi</span><span class="p">,</span> <span class="n">plates</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">r&quot;&quot;&quot;</span>
 <span class="sd">        Draw a random sample from the distribution.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c"># TODO/FIXME: You shouldn&#39;t draw random values for</span>
@@ -533,9 +537,9 @@
         <span class="n">z</span> <span class="o">=</span> <span class="n">misc</span><span class="o">.</span><span class="n">m_solve_triangular</span><span class="p">(</span><span class="n">U</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">trans</span><span class="o">=</span><span class="s">&#39;T&#39;</span><span class="p">,</span> <span class="n">lower</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">mu</span> <span class="o">+</span> <span class="n">z</span>
             
-
-<span class="k">class</span> <span class="nc">GaussianARDDistribution</span><span class="p">(</span><span class="n">ExponentialFamilyDistribution</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+</div></div>
+<div class="viewcode-block" id="GaussianARDDistribution"><a class="viewcode-back" href="../../../../../dev_api/generated/bayespy.inference.vmp.nodes.gaussian.GaussianARDDistribution.html#bayespy.inference.vmp.nodes.gaussian.GaussianARDDistribution">[docs]</a><span class="k">class</span> <span class="nc">GaussianARDDistribution</span><span class="p">(</span><span class="n">ExponentialFamilyDistribution</span><span class="p">):</span>
+    <span class="sd">r&quot;&quot;&quot;</span>
 <span class="sd">    ...</span>
 
 <span class="sd">    Log probability density function:</span>
@@ -561,14 +565,14 @@
 <span class="sd">        \end{bmatrix}</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">ndim_mu</span><span class="p">):</span>
+<div class="viewcode-block" id="GaussianARDDistribution.__init__"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.gaussian.GaussianARDDistribution.__init__.html#bayespy.inference.vmp.nodes.gaussian.GaussianARDDistribution.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">ndim_mu</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">shape</span> <span class="o">=</span> <span class="n">shape</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ndim_mu</span> <span class="o">=</span> <span class="n">ndim_mu</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ndim</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">()</span>
-    
-    <span class="k">def</span> <span class="nf">compute_message_to_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">u_mu_alpha</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+    </div>
+<div class="viewcode-block" id="GaussianARDDistribution.compute_message_to_parent"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.gaussian.GaussianARDDistribution.compute_message_to_parent.html#bayespy.inference.vmp.nodes.gaussian.GaussianARDDistribution.compute_message_to_parent">[docs]</a>    <span class="k">def</span> <span class="nf">compute_message_to_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">u_mu_alpha</span><span class="p">):</span>
+        <span class="sd">r&quot;&quot;&quot;</span>
 <span class="sd">        ...</span>
 
 
@@ -630,9 +634,9 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Invalid parent index&quot;</span><span class="p">)</span>
 
-
-    <span class="k">def</span> <span class="nf">compute_mask_to_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">mask</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+</div>
+<div class="viewcode-block" id="GaussianARDDistribution.compute_mask_to_parent"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.gaussian.GaussianARDDistribution.compute_mask_to_parent.html#bayespy.inference.vmp.nodes.gaussian.GaussianARDDistribution.compute_mask_to_parent">[docs]</a>    <span class="k">def</span> <span class="nf">compute_mask_to_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">mask</span><span class="p">):</span>
+        <span class="sd">r&quot;&quot;&quot;</span>
 <span class="sd">        Maps the mask to the plates of a parent.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">index</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
@@ -646,8 +650,8 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Invalid parent index&quot;</span><span class="p">)</span>
 
-
-    <span class="k">def</span> <span class="nf">compute_phi_from_parents</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u_mu_alpha</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+</div>
+<div class="viewcode-block" id="GaussianARDDistribution.compute_phi_from_parents"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.gaussian.GaussianARDDistribution.compute_phi_from_parents.html#bayespy.inference.vmp.nodes.gaussian.GaussianARDDistribution.compute_phi_from_parents">[docs]</a>    <span class="k">def</span> <span class="nf">compute_phi_from_parents</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u_mu_alpha</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
         <span class="n">alpha_mu</span> <span class="o">=</span> <span class="n">u_mu_alpha</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">alpha</span> <span class="o">=</span> <span class="n">u_mu_alpha</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
         <span class="c">#mu = u_mu[0]</span>
@@ -669,8 +673,8 @@
         <span class="c"># Make a diagonal matrix</span>
         <span class="n">phi1</span> <span class="o">=</span> <span class="n">misc</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">phi1</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ndim</span><span class="p">)</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">phi0</span><span class="p">,</span> <span class="n">phi1</span><span class="p">]</span>
-
-    <span class="k">def</span> <span class="nf">compute_moments_and_cgf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">phi</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+</div>
+<div class="viewcode-block" id="GaussianARDDistribution.compute_moments_and_cgf"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.gaussian.GaussianARDDistribution.compute_moments_and_cgf.html#bayespy.inference.vmp.nodes.gaussian.GaussianARDDistribution.compute_moments_and_cgf">[docs]</a>    <span class="k">def</span> <span class="nf">compute_moments_and_cgf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">phi</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="c"># Use scalar equations</span>
             <span class="n">u0</span> <span class="o">=</span> <span class="o">-</span><span class="n">phi</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">phi</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
@@ -706,9 +710,9 @@
 
         <span class="k">return</span> <span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">g</span><span class="p">)</span>
 
-
-    <span class="k">def</span> <span class="nf">compute_cgf_from_parents</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u_mu_alpha</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+</div>
+<div class="viewcode-block" id="GaussianARDDistribution.compute_cgf_from_parents"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.gaussian.GaussianARDDistribution.compute_cgf_from_parents.html#bayespy.inference.vmp.nodes.gaussian.GaussianARDDistribution.compute_cgf_from_parents">[docs]</a>    <span class="k">def</span> <span class="nf">compute_cgf_from_parents</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u_mu_alpha</span><span class="p">):</span>
+        <span class="sd">r&quot;&quot;&quot;</span>
 <span class="sd">        Compute the value of the cumulant generating function.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
@@ -731,9 +735,9 @@
         <span class="n">g</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.5</span><span class="o">*</span><span class="n">alpha_mu2</span> <span class="o">+</span> <span class="mf">0.5</span><span class="o">*</span><span class="n">logdet_alpha</span>
 
         <span class="k">return</span> <span class="n">g</span>
-
-    <span class="k">def</span> <span class="nf">compute_fixed_moments_and_f</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Compute u(x) and f(x) for given x. &quot;&quot;&quot;</span>
+</div>
+<div class="viewcode-block" id="GaussianARDDistribution.compute_fixed_moments_and_f"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.gaussian.GaussianARDDistribution.compute_fixed_moments_and_f.html#bayespy.inference.vmp.nodes.gaussian.GaussianARDDistribution.compute_fixed_moments_and_f">[docs]</a>    <span class="k">def</span> <span class="nf">compute_fixed_moments_and_f</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+        <span class="sd">r&quot;&quot;&quot; Compute u(x) and f(x) for given x. &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ndim</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">x</span><span class="p">)[</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">ndim</span><span class="p">:]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Invalid shape&quot;</span><span class="p">)</span>
         <span class="n">k</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
@@ -741,9 +745,9 @@
         <span class="n">f</span> <span class="o">=</span> <span class="o">-</span><span class="n">k</span><span class="o">/</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
         <span class="k">return</span> <span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
 
-
-    <span class="k">def</span> <span class="nf">plates_to_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">plates</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+</div>
+<div class="viewcode-block" id="GaussianARDDistribution.plates_to_parent"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.gaussian.GaussianARDDistribution.plates_to_parent.html#bayespy.inference.vmp.nodes.gaussian.GaussianARDDistribution.plates_to_parent">[docs]</a>    <span class="k">def</span> <span class="nf">plates_to_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">plates</span><span class="p">):</span>
+        <span class="sd">r&quot;&quot;&quot;</span>
 <span class="sd">        Resolves the plate mapping to a parent.</span>
 
 <span class="sd">        Given the plates of the node&#39;s moments, this method returns the plates</span>
@@ -760,9 +764,9 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Invalid parent index&quot;</span><span class="p">)</span>
             
-
-    <span class="k">def</span> <span class="nf">plates_from_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">plates</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+</div>
+<div class="viewcode-block" id="GaussianARDDistribution.plates_from_parent"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.gaussian.GaussianARDDistribution.plates_from_parent.html#bayespy.inference.vmp.nodes.gaussian.GaussianARDDistribution.plates_from_parent">[docs]</a>    <span class="k">def</span> <span class="nf">plates_from_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">plates</span><span class="p">):</span>
+        <span class="sd">r&quot;&quot;&quot;</span>
 <span class="sd">        Resolve the plate mapping from a parent.</span>
 
 <span class="sd">        Given the plates of a parent&#39;s moments, this method returns the plates</span>
@@ -779,9 +783,9 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Invalid parent index&quot;</span><span class="p">)</span>
 
-
-    <span class="k">def</span> <span class="nf">random</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">phi</span><span class="p">,</span> <span class="n">plates</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+</div>
+<div class="viewcode-block" id="GaussianARDDistribution.random"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.gaussian.GaussianARDDistribution.random.html#bayespy.inference.vmp.nodes.gaussian.GaussianARDDistribution.random">[docs]</a>    <span class="k">def</span> <span class="nf">random</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">phi</span><span class="p">,</span> <span class="n">plates</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">r&quot;&quot;&quot;</span>
 <span class="sd">        Draw a random sample from the Gaussian distribution.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c"># TODO/FIXME: You shouldn&#39;t draw random values for</span>
@@ -826,17 +830,17 @@
             <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">plates</span> <span class="o">+</span> <span class="n">dims</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">x</span>
 
-
-<span class="k">class</span> <span class="nc">GaussianGammaISODistribution</span><span class="p">(</span><span class="n">ExponentialFamilyDistribution</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+</div></div>
+<div class="viewcode-block" id="GaussianGammaISODistribution"><a class="viewcode-back" href="../../../../../dev_api/generated/bayespy.inference.vmp.nodes.gaussian.GaussianGammaISODistribution.html#bayespy.inference.vmp.nodes.gaussian.GaussianGammaISODistribution">[docs]</a><span class="k">class</span> <span class="nc">GaussianGammaISODistribution</span><span class="p">(</span><span class="n">ExponentialFamilyDistribution</span><span class="p">):</span>
+    <span class="sd">r&quot;&quot;&quot;</span>
 <span class="sd">    Class for the VMP formulas of Gaussian-Gamma-ISO variables.</span>
 
 <span class="sd">    Currently, supports only vector variables.</span>
 <span class="sd">    &quot;&quot;&quot;</span>    
 
 
-    <span class="k">def</span> <span class="nf">compute_message_to_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">u_mu_Lambda</span><span class="p">,</span> <span class="n">u_a</span><span class="p">,</span> <span class="n">u_b</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="GaussianGammaISODistribution.compute_message_to_parent"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.gaussian.GaussianGammaISODistribution.compute_message_to_parent.html#bayespy.inference.vmp.nodes.gaussian.GaussianGammaISODistribution.compute_message_to_parent">[docs]</a>    <span class="k">def</span> <span class="nf">compute_message_to_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">u_mu_Lambda</span><span class="p">,</span> <span class="n">u_a</span><span class="p">,</span> <span class="n">u_b</span><span class="p">):</span>
+        <span class="sd">r&quot;&quot;&quot;</span>
 <span class="sd">        Compute the message to a parent node.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">index</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
@@ -848,9 +852,9 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Index out of bounds&quot;</span><span class="p">)</span>
 
-
-    <span class="k">def</span> <span class="nf">compute_phi_from_parents</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u_mu_Lambda</span><span class="p">,</span> <span class="n">u_a</span><span class="p">,</span> <span class="n">u_b</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+</div>
+<div class="viewcode-block" id="GaussianGammaISODistribution.compute_phi_from_parents"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.gaussian.GaussianGammaISODistribution.compute_phi_from_parents.html#bayespy.inference.vmp.nodes.gaussian.GaussianGammaISODistribution.compute_phi_from_parents">[docs]</a>    <span class="k">def</span> <span class="nf">compute_phi_from_parents</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u_mu_Lambda</span><span class="p">,</span> <span class="n">u_a</span><span class="p">,</span> <span class="n">u_b</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+        <span class="sd">r&quot;&quot;&quot;</span>
 <span class="sd">        Compute the natural parameter vector given parent moments.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">Lambda_mu</span> <span class="o">=</span> <span class="n">u_mu_Lambda</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
@@ -864,9 +868,9 @@
                <span class="n">a</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">phi</span>
 
-
-    <span class="k">def</span> <span class="nf">compute_moments_and_cgf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">phi</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+</div>
+<div class="viewcode-block" id="GaussianGammaISODistribution.compute_moments_and_cgf"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.gaussian.GaussianGammaISODistribution.compute_moments_and_cgf.html#bayespy.inference.vmp.nodes.gaussian.GaussianGammaISODistribution.compute_moments_and_cgf">[docs]</a>    <span class="k">def</span> <span class="nf">compute_moments_and_cgf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">phi</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+        <span class="sd">r&quot;&quot;&quot;</span>
 <span class="sd">        Compute the moments and :math:`g(\phi)`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c"># Compute helpful variables</span>
@@ -891,9 +895,9 @@
 
         <span class="k">return</span> <span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">g</span><span class="p">)</span>
 
-    
-    <span class="k">def</span> <span class="nf">compute_cgf_from_parents</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u_mu_Lambda</span><span class="p">,</span> <span class="n">u_a</span><span class="p">,</span> <span class="n">u_b</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+    </div>
+<div class="viewcode-block" id="GaussianGammaISODistribution.compute_cgf_from_parents"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.gaussian.GaussianGammaISODistribution.compute_cgf_from_parents.html#bayespy.inference.vmp.nodes.gaussian.GaussianGammaISODistribution.compute_cgf_from_parents">[docs]</a>    <span class="k">def</span> <span class="nf">compute_cgf_from_parents</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u_mu_Lambda</span><span class="p">,</span> <span class="n">u_a</span><span class="p">,</span> <span class="n">u_b</span><span class="p">):</span>
+        <span class="sd">r&quot;&quot;&quot;</span>
 <span class="sd">        Compute :math:`\mathrm{E}_{q(p)}[g(p)]`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">logdet_Lambda</span> <span class="o">=</span> <span class="n">u_mu_Lambda</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
@@ -903,9 +907,9 @@
         <span class="n">g</span> <span class="o">=</span> <span class="mf">0.5</span><span class="o">*</span><span class="n">logdet_Lambda</span> <span class="o">+</span> <span class="n">a</span><span class="o">*</span><span class="n">log_b</span> <span class="o">-</span> <span class="n">gammaln_a</span>
         <span class="k">return</span> <span class="n">g</span>
 
-    
-    <span class="k">def</span> <span class="nf">compute_fixed_moments_and_f</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+    </div>
+<div class="viewcode-block" id="GaussianGammaISODistribution.compute_fixed_moments_and_f"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.gaussian.GaussianGammaISODistribution.compute_fixed_moments_and_f.html#bayespy.inference.vmp.nodes.gaussian.GaussianGammaISODistribution.compute_fixed_moments_and_f">[docs]</a>    <span class="k">def</span> <span class="nf">compute_fixed_moments_and_f</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+        <span class="sd">r&quot;&quot;&quot;</span>
 <span class="sd">        Compute the moments and :math:`f(x)` for a fixed value.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">logalpha</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">alpha</span><span class="p">)</span>
@@ -918,33 +922,33 @@
         <span class="n">f</span> <span class="o">=</span> <span class="p">(</span><span class="n">D</span><span class="o">/</span><span class="mi">2</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">logalpha</span> <span class="o">-</span> <span class="n">D</span><span class="o">/</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
         <span class="k">return</span> <span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
 
-    
-    <span class="k">def</span> <span class="nf">random</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">params</span><span class="p">,</span> <span class="n">plates</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+    </div>
+<div class="viewcode-block" id="GaussianGammaISODistribution.random"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.gaussian.GaussianGammaISODistribution.random.html#bayespy.inference.vmp.nodes.gaussian.GaussianGammaISODistribution.random">[docs]</a>    <span class="k">def</span> <span class="nf">random</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">params</span><span class="p">,</span> <span class="n">plates</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">r&quot;&quot;&quot;</span>
 <span class="sd">        Draw a random sample from the distribution.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
 
-
-<span class="k">class</span> <span class="nc">GaussianGammaARDDistribution</span><span class="p">(</span><span class="n">ExponentialFamilyDistribution</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+</div></div>
+<div class="viewcode-block" id="GaussianGammaARDDistribution"><a class="viewcode-back" href="../../../../../dev_api/generated/bayespy.inference.vmp.nodes.gaussian.GaussianGammaARDDistribution.html#bayespy.inference.vmp.nodes.gaussian.GaussianGammaARDDistribution">[docs]</a><span class="k">class</span> <span class="nc">GaussianGammaARDDistribution</span><span class="p">(</span><span class="n">ExponentialFamilyDistribution</span><span class="p">):</span>
+    <span class="sd">r&quot;&quot;&quot;</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="GaussianGammaARDDistribution.__init__"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.gaussian.GaussianGammaARDDistribution.__init__.html#bayespy.inference.vmp.nodes.gaussian.GaussianGammaARDDistribution.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
 
-    
-<span class="k">class</span> <span class="nc">GaussianWishartDistribution</span><span class="p">(</span><span class="n">ExponentialFamilyDistribution</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+    </div></div>
+<div class="viewcode-block" id="GaussianWishartDistribution"><a class="viewcode-back" href="../../../../../dev_api/generated/bayespy.inference.vmp.nodes.gaussian.GaussianWishartDistribution.html#bayespy.inference.vmp.nodes.gaussian.GaussianWishartDistribution">[docs]</a><span class="k">class</span> <span class="nc">GaussianWishartDistribution</span><span class="p">(</span><span class="n">ExponentialFamilyDistribution</span><span class="p">):</span>
+    <span class="sd">r&quot;&quot;&quot;</span>
 <span class="sd">    Class for the VMP formulas of Gaussian-Wishart variables.</span>
 
 <span class="sd">    Currently, supports only vector variables.</span>
 <span class="sd">    &quot;&quot;&quot;</span>    
 
 
-    <span class="k">def</span> <span class="nf">compute_message_to_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">u_mu_alpha</span><span class="p">,</span> <span class="n">u_V</span><span class="p">,</span> <span class="n">u_n</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="GaussianWishartDistribution.compute_message_to_parent"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.gaussian.GaussianWishartDistribution.compute_message_to_parent.html#bayespy.inference.vmp.nodes.gaussian.GaussianWishartDistribution.compute_message_to_parent">[docs]</a>    <span class="k">def</span> <span class="nf">compute_message_to_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">u_mu_alpha</span><span class="p">,</span> <span class="n">u_V</span><span class="p">,</span> <span class="n">u_n</span><span class="p">):</span>
+        <span class="sd">r&quot;&quot;&quot;</span>
 <span class="sd">        Compute the message to a parent node.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">index</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
@@ -956,40 +960,40 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Index out of bounds&quot;</span><span class="p">)</span>
 
-
-    <span class="k">def</span> <span class="nf">compute_phi_from_parents</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u_mu_alpha</span><span class="p">,</span> <span class="n">u_V</span><span class="p">,</span> <span class="n">u_n</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+</div>
+<div class="viewcode-block" id="GaussianWishartDistribution.compute_phi_from_parents"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.gaussian.GaussianWishartDistribution.compute_phi_from_parents.html#bayespy.inference.vmp.nodes.gaussian.GaussianWishartDistribution.compute_phi_from_parents">[docs]</a>    <span class="k">def</span> <span class="nf">compute_phi_from_parents</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u_mu_alpha</span><span class="p">,</span> <span class="n">u_V</span><span class="p">,</span> <span class="n">u_n</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+        <span class="sd">r&quot;&quot;&quot;</span>
 <span class="sd">        Compute the natural parameter vector given parent moments.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
 
-
-    <span class="k">def</span> <span class="nf">compute_moments_and_cgf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">phi</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+</div>
+<div class="viewcode-block" id="GaussianWishartDistribution.compute_moments_and_cgf"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.gaussian.GaussianWishartDistribution.compute_moments_and_cgf.html#bayespy.inference.vmp.nodes.gaussian.GaussianWishartDistribution.compute_moments_and_cgf">[docs]</a>    <span class="k">def</span> <span class="nf">compute_moments_and_cgf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">phi</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+        <span class="sd">r&quot;&quot;&quot;</span>
 <span class="sd">        Compute the moments and :math:`g(\phi)`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
         <span class="k">return</span> <span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">g</span><span class="p">)</span>
 
-    
-    <span class="k">def</span> <span class="nf">compute_cgf_from_parents</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u_mu_alpha</span><span class="p">,</span> <span class="n">u_V</span><span class="p">,</span> <span class="n">u_n</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+    </div>
+<div class="viewcode-block" id="GaussianWishartDistribution.compute_cgf_from_parents"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.gaussian.GaussianWishartDistribution.compute_cgf_from_parents.html#bayespy.inference.vmp.nodes.gaussian.GaussianWishartDistribution.compute_cgf_from_parents">[docs]</a>    <span class="k">def</span> <span class="nf">compute_cgf_from_parents</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u_mu_alpha</span><span class="p">,</span> <span class="n">u_V</span><span class="p">,</span> <span class="n">u_n</span><span class="p">):</span>
+        <span class="sd">r&quot;&quot;&quot;</span>
 <span class="sd">        Compute :math:`\mathrm{E}_{q(p)}[g(p)]`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">g</span>
 
-    
-    <span class="k">def</span> <span class="nf">compute_fixed_moments_and_f</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">Lambda</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+    </div>
+<div class="viewcode-block" id="GaussianWishartDistribution.compute_fixed_moments_and_f"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.gaussian.GaussianWishartDistribution.compute_fixed_moments_and_f.html#bayespy.inference.vmp.nodes.gaussian.GaussianWishartDistribution.compute_fixed_moments_and_f">[docs]</a>    <span class="k">def</span> <span class="nf">compute_fixed_moments_and_f</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">Lambda</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+        <span class="sd">r&quot;&quot;&quot;</span>
 <span class="sd">        Compute the moments and :math:`f(x)` for a fixed value.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
         <span class="k">return</span> <span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
 
-    
-    <span class="k">def</span> <span class="nf">random</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">params</span><span class="p">,</span> <span class="n">plates</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+    </div>
+<div class="viewcode-block" id="GaussianWishartDistribution.random"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.gaussian.GaussianWishartDistribution.random.html#bayespy.inference.vmp.nodes.gaussian.GaussianWishartDistribution.random">[docs]</a>    <span class="k">def</span> <span class="nf">random</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">params</span><span class="p">,</span> <span class="n">plates</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">r&quot;&quot;&quot;</span>
 <span class="sd">        Draw a random sample from the distribution.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
@@ -999,8 +1003,8 @@
 <span class="c"># NODES</span>
 <span class="c">#</span>
 
-
-<div class="viewcode-block" id="Gaussian"><a class="viewcode-back" href="../../../../../generated.backup/bayespy.inference.vmp.nodes.gaussian.Gaussian.html#bayespy.inference.vmp.nodes.gaussian.Gaussian">[docs]</a><span class="k">class</span> <span class="nc">Gaussian</span><span class="p">(</span><span class="n">ExponentialFamily</span><span class="p">):</span>
+</div></div>
+<span class="k">class</span> <span class="nc">Gaussian</span><span class="p">(</span><span class="n">ExponentialFamily</span><span class="p">):</span>
     <span class="sd">r&quot;&quot;&quot;</span>
 <span class="sd">    Node for Gaussian variables.</span>
 
@@ -1042,16 +1046,16 @@
     <span class="n">_parent_moments</span> <span class="o">=</span> <span class="p">[</span><span class="n">GaussianWishartMoments</span><span class="p">()]</span>
 
 
-<div class="viewcode-block" id="Gaussian.__init__"><a class="viewcode-back" href="../../../../../generated.backup/bayespy.inference.vmp.nodes.gaussian.Gaussian.html#bayespy.inference.vmp.nodes.gaussian.Gaussian.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">Lambda</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">Lambda</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">r&quot;&quot;&quot;</span>
 <span class="sd">        Create Gaussian node</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span> <span class="n">Lambda</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
     
-</div>
+
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">_constructor</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">Lambda</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+        <span class="sd">r&quot;&quot;&quot;</span>
 <span class="sd">        Constructs distribution and moments objects.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
@@ -1074,6 +1078,11 @@
                 <span class="n">cls</span><span class="o">.</span><span class="n">_parent_moments</span><span class="p">)</span>
 
 
+    <span class="k">def</span> <span class="nf">initialize_from_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">Lambda</span><span class="p">):</span>
+        <span class="n">u</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parent_moments</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">compute_fixed_moments</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span> <span class="n">Lambda</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_initialize_from_parent_moments</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
+
+        
     <span class="k">def</span> <span class="nf">show</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">mu</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">Cov</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">misc</span><span class="o">.</span><span class="n">m_outer</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span> <span class="n">mu</span><span class="p">)</span>
@@ -1123,7 +1132,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">g</span> <span class="o">-=</span> <span class="n">logdetR</span>
 
     <span class="k">def</span> <span class="nf">rotate_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">R1</span><span class="p">,</span> <span class="n">R2</span><span class="p">,</span> <span class="n">inv1</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">logdet1</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">inv2</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">logdet2</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">Q</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+        <span class="sd">r&quot;&quot;&quot;</span>
 <span class="sd">        The vector is reshaped into a matrix by stacking the row vectors.</span>
 
 <span class="sd">        Computes R1*X*R2&#39;, which is identical to kron(R1,R2)*x (??)</span>
@@ -1181,7 +1190,7 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_update_moments_and_cgf</span><span class="p">()</span>
 
-</div>
+
 <span class="k">class</span> <span class="nc">GaussianARD</span><span class="p">(</span><span class="n">ExponentialFamily</span><span class="p">):</span>
     <span class="sd">r&quot;&quot;&quot;</span>
 <span class="sd">    Node for Gaussian variables with ARD prior.</span>
@@ -1222,7 +1231,7 @@
 
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+        <span class="sd">r&quot;&quot;&quot;</span>
 <span class="sd">        Create GaussianARD node.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="n">ndim</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="n">shape</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -1230,7 +1239,7 @@
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">_constructor</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+        <span class="sd">r&quot;&quot;&quot;</span>
 <span class="sd">        Constructs distribution and moments objects.</span>
 
 <span class="sd">        If __init__ uses useconstructor decorator, this method is called to</span>
@@ -1306,8 +1315,7 @@
         <span class="n">shape_cov</span> <span class="o">=</span> <span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="n">ndim_mu</span><span class="p">:]</span> <span class="o">+</span> <span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="n">ndim_mu</span><span class="p">:]</span>
 
         <span class="n">moments</span> <span class="o">=</span> <span class="n">GaussianMoments</span><span class="p">(</span><span class="n">ndim</span><span class="p">)</span>
-        <span class="n">parent_moments</span> <span class="o">=</span> <span class="p">[</span><span class="n">mu_alpha</span><span class="o">.</span><span class="n">_moments</span><span class="p">,</span>
-                          <span class="n">GammaMoments</span><span class="p">()]</span>
+        <span class="n">parent_moments</span> <span class="o">=</span> <span class="p">[</span><span class="n">mu_alpha</span><span class="o">.</span><span class="n">_moments</span><span class="p">]</span>
         <span class="n">distribution</span> <span class="o">=</span> <span class="n">GaussianARDDistribution</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">ndim_mu</span><span class="p">)</span>
 
         <span class="n">dims</span> <span class="o">=</span> <span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">shape</span><span class="o">+</span><span class="n">shape</span><span class="p">)</span>
@@ -1324,6 +1332,17 @@
                 <span class="n">moments</span><span class="p">,</span>
                 <span class="n">parent_moments</span><span class="p">)</span>
         
+
+    <span class="k">def</span> <span class="nf">initialize_from_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">alpha</span><span class="p">):</span>
+        <span class="c"># Explicit broadcasting so the shapes match</span>
+        <span class="n">mu</span> <span class="o">=</span> <span class="n">mu</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">alpha</span><span class="p">))</span>
+        <span class="n">alpha</span> <span class="o">=</span> <span class="n">alpha</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">mu</span><span class="p">))</span>
+        <span class="c"># Compute parent moments</span>
+        <span class="n">u</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parent_moments</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">compute_fixed_moments</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span> <span class="n">alpha</span><span class="p">)</span>
+        <span class="c"># Initialize distribution</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_initialize_from_parent_moments</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
+
+
     <span class="k">def</span> <span class="nf">initialize_from_mean_and_covariance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">Cov</span><span class="p">):</span>
         <span class="n">ndim</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_distribution</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
         <span class="n">u</span> <span class="o">=</span> <span class="p">[</span><span class="n">mu</span><span class="p">,</span> <span class="n">Cov</span> <span class="o">+</span> <span class="n">linalg</span><span class="o">.</span><span class="n">outer</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="n">ndim</span><span class="p">)]</span>
@@ -1377,7 +1396,7 @@
         <span class="k">return</span>
 
     <span class="k">def</span> <span class="nf">rotate_plates</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Q</span><span class="p">,</span> <span class="n">plate_axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+        <span class="sd">r&quot;&quot;&quot;</span>
 <span class="sd">        Approximate rotation of a plate axis.</span>
 
 <span class="sd">        Mean is rotated exactly but covariance/precision matrix is rotated</span>
@@ -1439,7 +1458,7 @@
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">_constructor</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">Lambda</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+        <span class="sd">r&quot;&quot;&quot;</span>
 <span class="sd">        Constructs distribution and moments objects.</span>
 
 <span class="sd">        This method is called if useconstructor decorator is used for __init__.</span>
@@ -1484,14 +1503,14 @@
 
     
     <span class="k">def</span> <span class="nf">show</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+        <span class="sd">r&quot;&quot;&quot;</span>
 <span class="sd">        Print the distribution using standard parameterization.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
 
 
     <span class="k">def</span> <span class="nf">plotmatrix</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+        <span class="sd">r&quot;&quot;&quot;</span>
 <span class="sd">        Creates a matrix of marginal plots.</span>
 
 <span class="sd">        On diagonal, are marginal plots of each variable. Off-diagonal plot</span>
@@ -1553,7 +1572,7 @@
 
 
     <span class="k">def</span> <span class="nf">get_gaussian_mean_and_variance</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+        <span class="sd">r&quot;&quot;&quot;</span>
 <span class="sd">        Return the mean and variance of the distribution</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">phi</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
@@ -1576,7 +1595,7 @@
 
 
     <span class="k">def</span> <span class="nf">get_marginal_logpdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gaussian</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+        <span class="sd">r&quot;&quot;&quot;</span>
 <span class="sd">        Get the (marginal) log pdf of a subset of the variables</span>
 
 <span class="sd">        Parameters</span>
@@ -1697,7 +1716,7 @@
 
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+        <span class="sd">r&quot;&quot;&quot;</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
 
@@ -1727,7 +1746,7 @@
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">_constructor</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">V</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+        <span class="sd">r&quot;&quot;&quot;</span>
 <span class="sd">        Constructs distribution and moments objects.</span>
 
 <span class="sd">        This method is called if useconstructor decorator is used for __init__.</span>
@@ -1776,7 +1795,7 @@
 
     
     <span class="k">def</span> <span class="nf">show</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+        <span class="sd">r&quot;&quot;&quot;</span>
 <span class="sd">        Print the distribution using standard parameterization.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
@@ -1913,8 +1932,8 @@
 <span class="c">##                                  GaussianARDToGaussianISO)</span>
 
 
-<span class="k">class</span> <span class="nc">GaussianToGaussianGammaISO</span><span class="p">(</span><span class="n">Deterministic</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="GaussianToGaussianGammaISO"><a class="viewcode-back" href="../../../../../dev_api/generated/bayespy.inference.vmp.nodes.gaussian.GaussianToGaussianGammaISO.html#bayespy.inference.vmp.nodes.gaussian.GaussianToGaussianGammaISO">[docs]</a><span class="k">class</span> <span class="nc">GaussianToGaussianGammaISO</span><span class="p">(</span><span class="n">Deterministic</span><span class="p">):</span>
+    <span class="sd">r&quot;&quot;&quot;</span>
 <span class="sd">    Converter for Gaussian moments to Gaussian-gamma isotropic moments</span>
 
 <span class="sd">    Combines the Gaussian moments with gamma moments for a fixed value 1.</span>
@@ -1922,8 +1941,8 @@
 
 
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="GaussianToGaussianGammaISO.__init__"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.gaussian.GaussianToGaussianGammaISO.__init__.html#bayespy.inference.vmp.nodes.gaussian.GaussianToGaussianGammaISO.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">r&quot;&quot;&quot;</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ndim</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">_moments</span><span class="o">.</span><span class="n">ndim</span>
         
@@ -1934,9 +1953,9 @@
         <span class="n">dims</span> <span class="o">=</span> <span class="p">(</span> <span class="n">shape</span><span class="p">,</span> <span class="mi">2</span><span class="o">*</span><span class="n">shape</span><span class="p">,</span> <span class="p">(),</span> <span class="p">()</span> <span class="p">)</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">dims</span><span class="o">=</span><span class="n">dims</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
             
-
+</div>
     <span class="k">def</span> <span class="nf">_compute_moments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u_X</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+        <span class="sd">r&quot;&quot;&quot;</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">x</span> <span class="o">=</span> <span class="n">u_X</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">xx</span> <span class="o">=</span> <span class="n">u_X</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
@@ -1945,7 +1964,7 @@
     
 
     <span class="k">def</span> <span class="nf">_compute_message_to_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">m_child</span><span class="p">,</span> <span class="n">u_X</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+        <span class="sd">r&quot;&quot;&quot;</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">index</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">m</span> <span class="o">=</span> <span class="n">m_child</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span>
@@ -1953,19 +1972,19 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Invalid parent index&quot;</span><span class="p">)</span>
 
-
+</div>
 <span class="n">GaussianMoments</span><span class="o">.</span><span class="n">add_converter</span><span class="p">(</span><span class="n">GaussianGammaISOMoments</span><span class="p">,</span>
                               <span class="n">GaussianToGaussianGammaISO</span><span class="p">)</span>
 
 
-<span class="k">class</span> <span class="nc">GaussianGammaISOToGaussianGammaARD</span><span class="p">(</span><span class="n">Deterministic</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="GaussianGammaISOToGaussianGammaARD"><a class="viewcode-back" href="../../../../../dev_api/generated/bayespy.inference.vmp.nodes.gaussian.GaussianGammaISOToGaussianGammaARD.html#bayespy.inference.vmp.nodes.gaussian.GaussianGammaISOToGaussianGammaARD">[docs]</a><span class="k">class</span> <span class="nc">GaussianGammaISOToGaussianGammaARD</span><span class="p">(</span><span class="n">Deterministic</span><span class="p">):</span>
+    <span class="sd">r&quot;&quot;&quot;</span>
 <span class="sd">    Converter for Gaussian-gamma ISO moments to Gaussian-gamma ARD moments</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="GaussianGammaISOToGaussianGammaARD.__init__"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.gaussian.GaussianGammaISOToGaussianGammaARD.__init__.html#bayespy.inference.vmp.nodes.gaussian.GaussianGammaISOToGaussianGammaARD.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">r&quot;&quot;&quot;</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ndim</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">_moments</span><span class="o">.</span><span class="n">ndim</span>
         
@@ -1976,9 +1995,9 @@
         <span class="n">dims</span> <span class="o">=</span> <span class="p">(</span> <span class="n">shape</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">shape</span> <span class="p">)</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">dims</span><span class="o">=</span><span class="n">dims</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
             
-
+</div>
     <span class="k">def</span> <span class="nf">_compute_moments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u_X_alpha</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+        <span class="sd">r&quot;&quot;&quot;</span>
 <span class="sd">        ...</span>
 
 <span class="sd">        .. math::</span>
@@ -2001,7 +2020,7 @@
     
 
     <span class="k">def</span> <span class="nf">_compute_message_to_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">m_child</span><span class="p">,</span> <span class="n">u_X_alpha</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+        <span class="sd">r&quot;&quot;&quot;</span>
 <span class="sd">        ...</span>
 
 <span class="sd">        Message from the child is :math:`[m_0, m_1, m_2, m_3]`:</span>
@@ -2034,20 +2053,20 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Invalid parent index&quot;</span><span class="p">)</span>
 
-
+</div>
 <span class="n">GaussianGammaISOMoments</span><span class="o">.</span><span class="n">add_converter</span><span class="p">(</span><span class="n">GaussianGammaARDMoments</span><span class="p">,</span>
                                       <span class="n">GaussianGammaISOToGaussianGammaARD</span><span class="p">)</span>
 
 
-<span class="k">class</span> <span class="nc">GaussianGammaARDToGaussianWishart</span><span class="p">(</span><span class="n">Deterministic</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="GaussianGammaARDToGaussianWishart"><a class="viewcode-back" href="../../../../../dev_api/generated/bayespy.inference.vmp.nodes.gaussian.GaussianGammaARDToGaussianWishart.html#bayespy.inference.vmp.nodes.gaussian.GaussianGammaARDToGaussianWishart">[docs]</a><span class="k">class</span> <span class="nc">GaussianGammaARDToGaussianWishart</span><span class="p">(</span><span class="n">Deterministic</span><span class="p">):</span>
+    <span class="sd">r&quot;&quot;&quot;</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X_alpha</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="GaussianGammaARDToGaussianWishart.__init__"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.gaussian.GaussianGammaARDToGaussianWishart.__init__.html#bayespy.inference.vmp.nodes.gaussian.GaussianGammaARDToGaussianWishart.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X_alpha</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
 
-
+</div></div>
 <span class="n">GaussianGammaARDMoments</span><span class="o">.</span><span class="n">add_converter</span><span class="p">(</span><span class="n">GaussianWishartMoments</span><span class="p">,</span>
                                       <span class="n">GaussianGammaARDToGaussianWishart</span><span class="p">)</span>
 
@@ -2086,8 +2105,8 @@
 <span class="c">#</span>
 
 
-<span class="k">class</span> <span class="nc">WrapToGaussianGammaISO</span><span class="p">(</span><span class="n">Deterministic</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="WrapToGaussianGammaISO"><a class="viewcode-back" href="../../../../../dev_api/generated/bayespy.inference.vmp.nodes.gaussian.WrapToGaussianGammaISO.html#bayespy.inference.vmp.nodes.gaussian.WrapToGaussianGammaISO">[docs]</a><span class="k">class</span> <span class="nc">WrapToGaussianGammaISO</span><span class="p">(</span><span class="n">Deterministic</span><span class="p">):</span>
+    <span class="sd">r&quot;&quot;&quot;</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
 
@@ -2097,22 +2116,22 @@
     
 
     <span class="nd">@ensureparents</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="WrapToGaussianGammaISO.__init__"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.gaussian.WrapToGaussianGammaISO.__init__.html#bayespy.inference.vmp.nodes.gaussian.WrapToGaussianGammaISO.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">r&quot;&quot;&quot;</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">D</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">dims</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">dims</span> <span class="o">=</span> <span class="p">(</span> <span class="p">(</span><span class="n">D</span><span class="p">,),</span> <span class="p">(</span><span class="n">D</span><span class="p">,</span><span class="n">D</span><span class="p">),</span> <span class="p">(),</span> <span class="p">()</span> <span class="p">)</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">dims</span><span class="o">=</span><span class="n">dims</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
             
-
+</div>
     <span class="k">def</span> <span class="nf">_compute_moments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u_X</span><span class="p">,</span> <span class="n">u_alpha</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+        <span class="sd">r&quot;&quot;&quot;</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
     
 
     <span class="k">def</span> <span class="nf">_compute_message_to_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">m_child</span><span class="p">,</span> <span class="n">u_X</span><span class="p">,</span> <span class="n">u_alpha</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+        <span class="sd">r&quot;&quot;&quot;</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">index</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
@@ -2123,7 +2142,7 @@
 
 
     <span class="k">def</span> <span class="nf">_compute_mask_to_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">mask</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+        <span class="sd">r&quot;&quot;&quot;</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">index</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
@@ -2134,7 +2153,7 @@
 
 
     <span class="k">def</span> <span class="nf">_plates_to_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+        <span class="sd">r&quot;&quot;&quot;</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">index</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
@@ -2145,7 +2164,7 @@
 
 
     <span class="k">def</span> <span class="nf">_plates_from_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+        <span class="sd">r&quot;&quot;&quot;</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">index</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
@@ -2154,14 +2173,14 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Invalid parent index&quot;</span><span class="p">)</span>
 
-
-<span class="k">class</span> <span class="nc">WrapToGaussianGammaARD</span><span class="p">(</span><span class="n">Deterministic</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+</div>
+<div class="viewcode-block" id="WrapToGaussianGammaARD"><a class="viewcode-back" href="../../../../../dev_api/generated/bayespy.inference.vmp.nodes.gaussian.WrapToGaussianGammaARD.html#bayespy.inference.vmp.nodes.gaussian.WrapToGaussianGammaARD">[docs]</a><span class="k">class</span> <span class="nc">WrapToGaussianGammaARD</span><span class="p">(</span><span class="n">Deterministic</span><span class="p">):</span>
+    <span class="sd">r&quot;&quot;&quot;</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mu_alpha</span><span class="p">,</span> <span class="n">tau</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="WrapToGaussianGammaARD.__init__"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.gaussian.WrapToGaussianGammaARD.__init__.html#bayespy.inference.vmp.nodes.gaussian.WrapToGaussianGammaARD.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mu_alpha</span><span class="p">,</span> <span class="n">tau</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">r&quot;&quot;&quot;</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="c"># First, just in case mu_alpha is a numeric array, convert mu_alpha to</span>
@@ -2202,9 +2221,9 @@
         
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">mu_alpha</span><span class="p">,</span> <span class="n">tau</span><span class="p">,</span> <span class="n">dims</span><span class="o">=</span><span class="n">dims</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-
+</div>
     <span class="k">def</span> <span class="nf">_compute_moments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u_mu_alpha</span><span class="p">,</span> <span class="n">u_tau</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+        <span class="sd">r&quot;&quot;&quot;</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">mu_alpha</span> <span class="o">=</span> <span class="n">u_mu_alpha</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">mu2_alpha</span> <span class="o">=</span> <span class="n">u_mu_alpha</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
@@ -2224,7 +2243,7 @@
     
 
     <span class="k">def</span> <span class="nf">_compute_message_to_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">m_child</span><span class="p">,</span> <span class="n">u_mu_alpha</span><span class="p">,</span> <span class="n">u_tau</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+        <span class="sd">r&quot;&quot;&quot;</span>
 <span class="sd">        ...</span>
 <span class="sd">        </span>
 <span class="sd">        Message from the child is :math:`[m_0, m_1, m_2, m_3]`:</span>
@@ -2293,7 +2312,7 @@
 
 
     <span class="k">def</span> <span class="nf">_compute_mask_to_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">mask</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+        <span class="sd">r&quot;&quot;&quot;</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">index</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">mask</span>
@@ -2304,7 +2323,7 @@
 
 
     <span class="k">def</span> <span class="nf">_plates_to_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+        <span class="sd">r&quot;&quot;&quot;</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">index</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">plates</span>
@@ -2316,7 +2335,7 @@
 
 
     <span class="k">def</span> <span class="nf">_plates_from_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+        <span class="sd">r&quot;&quot;&quot;</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">index</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">parents</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plates</span>
@@ -2328,9 +2347,9 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Invalid parent index&quot;</span><span class="p">)</span>
 
-
-<span class="k">class</span> <span class="nc">WrapToGaussianWishart</span><span class="p">(</span><span class="n">Deterministic</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+</div>
+<div class="viewcode-block" id="WrapToGaussianWishart"><a class="viewcode-back" href="../../../../../dev_api/generated/bayespy.inference.vmp.nodes.gaussian.WrapToGaussianWishart.html#bayespy.inference.vmp.nodes.gaussian.WrapToGaussianWishart">[docs]</a><span class="k">class</span> <span class="nc">WrapToGaussianWishart</span><span class="p">(</span><span class="n">Deterministic</span><span class="p">):</span>
+    <span class="sd">r&quot;&quot;&quot;</span>
 <span class="sd">    Wraps Gaussian and Wishart nodes into a Gaussian-Wishart node.</span>
 
 <span class="sd">    The following node combinations can be wrapped:</span>
@@ -2343,8 +2362,8 @@
     <span class="n">_moments</span> <span class="o">=</span> <span class="n">GaussianWishartMoments</span><span class="p">()</span>
     
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">Lambda</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="WrapToGaussianWishart.__init__"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.gaussian.WrapToGaussianWishart.__init__.html#bayespy.inference.vmp.nodes.gaussian.WrapToGaussianWishart.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">Lambda</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">r&quot;&quot;&quot;</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="c"># Just in case X is an array, convert it to a Gaussian node first.</span>
@@ -2371,9 +2390,9 @@
         <span class="n">dims</span> <span class="o">=</span> <span class="p">(</span> <span class="p">(</span><span class="n">D</span><span class="p">,),</span> <span class="p">(),</span> <span class="p">(</span><span class="n">D</span><span class="p">,</span><span class="n">D</span><span class="p">),</span> <span class="p">()</span> <span class="p">)</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Lambda</span><span class="p">,</span> <span class="n">dims</span><span class="o">=</span><span class="n">dims</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
             
-
+</div>
     <span class="k">def</span> <span class="nf">_compute_moments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u_X_alpha</span><span class="p">,</span> <span class="n">u_Lambda</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+        <span class="sd">r&quot;&quot;&quot;</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">wishart</span><span class="p">:</span>
             <span class="n">alpha_x</span> <span class="o">=</span> <span class="n">u_X_alpha</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
@@ -2397,7 +2416,7 @@
     
 
     <span class="k">def</span> <span class="nf">_compute_message_to_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">m_child</span><span class="p">,</span> <span class="n">u_X_alpha</span><span class="p">,</span> <span class="n">u_Lambda</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+        <span class="sd">r&quot;&quot;&quot;</span>
 <span class="sd">        ...</span>
 
 <span class="sd">        Message from the child is :math:`[m_0, m_1, m_2, m_3]`:</span>
@@ -2464,9 +2483,9 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Invalid parent index&quot;</span><span class="p">)</span>
 
 
-
+</div>
 <span class="k">def</span> <span class="nf">reshape_gaussian_array</span><span class="p">(</span><span class="n">dims_from</span><span class="p">,</span> <span class="n">dims_to</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">x1</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+    <span class="sd">r&quot;&quot;&quot;</span>
 <span class="sd">    Reshape the moments Gaussian array variable.</span>
 
 <span class="sd">    The plates remain unaffected.</span>
@@ -2496,7 +2515,7 @@
     <span class="k">return</span> <span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">x1</span><span class="p">)</span>
 
 <span class="k">def</span> <span class="nf">transpose_covariance</span><span class="p">(</span><span class="n">Cov</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+    <span class="sd">r&quot;&quot;&quot;</span>
 <span class="sd">    Transpose the covariance array of Gaussian array variable.</span>
 
 <span class="sd">    That is, swap the last ndim axes with the ndim axes before them. This makes</span>
@@ -2508,7 +2527,7 @@
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="n">Cov</span><span class="p">,</span> <span class="n">axes_in</span><span class="p">,</span> <span class="n">axes_out</span><span class="p">)</span>
 
 <span class="k">def</span> <span class="nf">left_rotate_covariance</span><span class="p">(</span><span class="n">Cov</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+    <span class="sd">r&quot;&quot;&quot;</span>
 <span class="sd">    Rotate the covariance array of Gaussian array variable.</span>
 
 <span class="sd">    ndim is the number of axes for the Gaussian variable.</span>
@@ -2537,7 +2556,7 @@
     <span class="k">return</span> <span class="n">Cov</span>
     
 <span class="k">def</span> <span class="nf">right_rotate_covariance</span><span class="p">(</span><span class="n">Cov</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+    <span class="sd">r&quot;&quot;&quot;</span>
 <span class="sd">    Rotate the covariance array of Gaussian array variable.</span>
 
 <span class="sd">    ndim is the number of axes for the Gaussian variable.</span>
@@ -2566,7 +2585,7 @@
     <span class="k">return</span> <span class="n">Cov</span>
     
 <span class="k">def</span> <span class="nf">rotate_covariance</span><span class="p">(</span><span class="n">Cov</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+    <span class="sd">r&quot;&quot;&quot;</span>
 <span class="sd">    Rotate the covariance array of Gaussian array variable.</span>
 
 <span class="sd">    ndim is the number of axes for the Gaussian variable.</span>
@@ -2581,7 +2600,7 @@
     <span class="k">return</span> <span class="n">Cov</span>
 
 <span class="k">def</span> <span class="nf">rotate_mean</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+    <span class="sd">r&quot;&quot;&quot;</span>
 <span class="sd">    Rotate the mean array of Gaussian array variable.</span>
 
 <span class="sd">    ndim is the number of axes for the Gaussian variable.</span>
@@ -2675,8 +2694,12 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../../../../genindex.html" title="General Index"
              >index</a></li>
+        <li class="right" >
+          <a href="../../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
         <li><a href="../../../../../index.html">BayesPy v0.1 Documentation</a> &raquo;</li>
-          <li><a href="../../../../index.html" >Module code</a> &raquo;</li> 
+          <li><a href="../../../../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../../../inference.html" >bayespy.inference</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

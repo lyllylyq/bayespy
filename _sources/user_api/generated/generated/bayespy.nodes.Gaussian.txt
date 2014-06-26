@@ -6,48 +6,52 @@ bayespy.nodes.Gaussian
 .. autoclass:: Gaussian
 
    
-
-      .. rubric:: Methods
-
-      .. autosummary::
-         :toctree:
-      
-         ~Gaussian.add_plate_axis
-         ~Gaussian.delete
-         ~Gaussian.get_mask
-         ~Gaussian.get_moments
-         ~Gaussian.get_shape
-         ~Gaussian.has_plotter
-         ~Gaussian.initialize_from_parameters
-         ~Gaussian.initialize_from_prior
-         ~Gaussian.initialize_from_random
-         ~Gaussian.initialize_from_value
-         ~Gaussian.load
-         ~Gaussian.logpdf
-         ~Gaussian.lower_bound_contribution
-         ~Gaussian.lowerbound
-         ~Gaussian.move_plates
-         ~Gaussian.observe
-         ~Gaussian.pdf
-         ~Gaussian.plot
-         ~Gaussian.random
-         ~Gaussian.rotate
-         ~Gaussian.rotate_matrix
-         ~Gaussian.save
-         ~Gaussian.set_plotter
-         ~Gaussian.show
-         ~Gaussian.unobserve
-         ~Gaussian.update
-
-
+   .. automethod:: __init__
 
    
+   .. rubric:: Methods
 
-      .. rubric:: Attributes
+   .. autosummary::
+      :toctree: generated/
+   
+      ~Gaussian.__init__
+      ~Gaussian.add_plate_axis
+      ~Gaussian.delete
+      ~Gaussian.get_mask
+      ~Gaussian.get_moments
+      ~Gaussian.get_shape
+      ~Gaussian.has_plotter
+      ~Gaussian.initialize_from_parameters
+      ~Gaussian.initialize_from_prior
+      ~Gaussian.initialize_from_random
+      ~Gaussian.initialize_from_value
+      ~Gaussian.load
+      ~Gaussian.logpdf
+      ~Gaussian.lower_bound_contribution
+      ~Gaussian.lowerbound
+      ~Gaussian.move_plates
+      ~Gaussian.observe
+      ~Gaussian.pdf
+      ~Gaussian.plot
+      ~Gaussian.random
+      ~Gaussian.rotate
+      ~Gaussian.rotate_matrix
+      ~Gaussian.save
+      ~Gaussian.set_plotter
+      ~Gaussian.show
+      ~Gaussian.unobserve
+      ~Gaussian.update
+   
+   
 
-      .. autosummary::
-         :toctree:
-      
-         ~Gaussian.dims
-         ~Gaussian.plates
+   
+   
+   .. rubric:: Attributes
 
+   .. autosummary::
+      :toctree: generated/
+   
+      ~Gaussian.dims
+      ~Gaussian.plates
+   
+   

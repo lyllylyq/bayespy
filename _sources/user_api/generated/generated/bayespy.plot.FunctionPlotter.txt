@@ -6,15 +6,18 @@ bayespy.plot.FunctionPlotter
 .. autoclass:: FunctionPlotter
 
    
-
-      .. rubric:: Methods
-
-      .. autosummary::
-         :toctree:
-      
-         ~FunctionPlotter.__call__
-
-
+   .. automethod:: __init__
 
    
+   .. rubric:: Methods
 
+   .. autosummary::
+      :toctree: generated/
+   
+      ~FunctionPlotter.__init__
+   
+   
+
+   
+   
+   

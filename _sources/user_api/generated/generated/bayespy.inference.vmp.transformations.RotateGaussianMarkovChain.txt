@@ -6,19 +6,23 @@ bayespy.inference.vmp.transformations.RotateGaussianMarkovChain
 .. autoclass:: RotateGaussianMarkovChain
 
    
-
-      .. rubric:: Methods
-
-      .. autosummary::
-         :toctree:
-      
-         ~RotateGaussianMarkovChain.bound
-         ~RotateGaussianMarkovChain.get_bound_terms
-         ~RotateGaussianMarkovChain.nodes
-         ~RotateGaussianMarkovChain.rotate
-         ~RotateGaussianMarkovChain.setup
-
-
+   .. automethod:: __init__
 
    
+   .. rubric:: Methods
 
+   .. autosummary::
+      :toctree: generated/
+   
+      ~RotateGaussianMarkovChain.__init__
+      ~RotateGaussianMarkovChain.bound
+      ~RotateGaussianMarkovChain.get_bound_terms
+      ~RotateGaussianMarkovChain.nodes
+      ~RotateGaussianMarkovChain.rotate
+      ~RotateGaussianMarkovChain.setup
+   
+   
+
+   
+   
+   

@@ -79,7 +79,7 @@
 <span class="kn">from</span> <span class="nn">.node</span> <span class="kn">import</span> <span class="n">ensureparents</span>
 <span class="kn">from</span> <span class="nn">.stochastic</span> <span class="kn">import</span> <span class="n">Stochastic</span><span class="p">,</span> <span class="n">Distribution</span>
 
-<span class="k">class</span> <span class="nc">ExponentialFamilyDistribution</span><span class="p">(</span><span class="n">Distribution</span><span class="p">):</span>
+<div class="viewcode-block" id="ExponentialFamilyDistribution"><a class="viewcode-back" href="../../../../../dev_api/generated/bayespy.inference.vmp.nodes.expfamily.ExponentialFamilyDistribution.html#bayespy.inference.vmp.nodes.expfamily.ExponentialFamilyDistribution">[docs]</a><span class="k">class</span> <span class="nc">ExponentialFamilyDistribution</span><span class="p">(</span><span class="n">Distribution</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Sub-classes implement distribution specific computations.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -88,26 +88,26 @@
     <span class="c"># The following methods are for ExponentialFamily distributions</span>
     <span class="c">#</span>
 
-    <span class="k">def</span> <span class="nf">compute_message_to_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">u_self</span><span class="p">,</span> <span class="o">*</span><span class="n">u_parents</span><span class="p">):</span>
+<div class="viewcode-block" id="ExponentialFamilyDistribution.compute_message_to_parent"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.expfamily.ExponentialFamilyDistribution.compute_message_to_parent.html#bayespy.inference.vmp.nodes.expfamily.ExponentialFamilyDistribution.compute_message_to_parent">[docs]</a>    <span class="k">def</span> <span class="nf">compute_message_to_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">u_self</span><span class="p">,</span> <span class="o">*</span><span class="n">u_parents</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
-
-    <span class="k">def</span> <span class="nf">compute_phi_from_parents</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">u_parents</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+</div>
+<div class="viewcode-block" id="ExponentialFamilyDistribution.compute_phi_from_parents"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.expfamily.ExponentialFamilyDistribution.compute_phi_from_parents.html#bayespy.inference.vmp.nodes.expfamily.ExponentialFamilyDistribution.compute_phi_from_parents">[docs]</a>    <span class="k">def</span> <span class="nf">compute_phi_from_parents</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">u_parents</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
-
-    <span class="k">def</span> <span class="nf">compute_moments_and_cgf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">phi</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+</div>
+<div class="viewcode-block" id="ExponentialFamilyDistribution.compute_moments_and_cgf"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.expfamily.ExponentialFamilyDistribution.compute_moments_and_cgf.html#bayespy.inference.vmp.nodes.expfamily.ExponentialFamilyDistribution.compute_moments_and_cgf">[docs]</a>    <span class="k">def</span> <span class="nf">compute_moments_and_cgf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">phi</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
 
     <span class="c">#</span>
     <span class="c"># The following methods are for Mixture class</span>
     <span class="c">#</span>
-
-    <span class="k">def</span> <span class="nf">compute_cgf_from_parents</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">u_parents</span><span class="p">):</span>
+</div>
+<div class="viewcode-block" id="ExponentialFamilyDistribution.compute_cgf_from_parents"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.expfamily.ExponentialFamilyDistribution.compute_cgf_from_parents.html#bayespy.inference.vmp.nodes.expfamily.ExponentialFamilyDistribution.compute_cgf_from_parents">[docs]</a>    <span class="k">def</span> <span class="nf">compute_cgf_from_parents</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">u_parents</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
-        
-    <span class="k">def</span> <span class="nf">compute_fixed_moments_and_f</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+        </div>
+<div class="viewcode-block" id="ExponentialFamilyDistribution.compute_fixed_moments_and_f"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.expfamily.ExponentialFamilyDistribution.compute_fixed_moments_and_f.html#bayespy.inference.vmp.nodes.expfamily.ExponentialFamilyDistribution.compute_fixed_moments_and_f">[docs]</a>    <span class="k">def</span> <span class="nf">compute_fixed_moments_and_f</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
-
-    <span class="k">def</span> <span class="nf">compute_logpdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">phi</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">ndims</span><span class="p">):</span>
+</div>
+<div class="viewcode-block" id="ExponentialFamilyDistribution.compute_logpdf"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.expfamily.ExponentialFamilyDistribution.compute_logpdf.html#bayespy.inference.vmp.nodes.expfamily.ExponentialFamilyDistribution.compute_logpdf">[docs]</a>    <span class="k">def</span> <span class="nf">compute_logpdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">phi</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">ndims</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Compute E[log p(X)] given E[u], E[phi], E[g] and</span>
 <span class="sd">        E[f]. Does not sum over plates.&quot;&quot;&quot;</span>
 
@@ -122,7 +122,7 @@
             <span class="n">L</span> <span class="o">=</span> <span class="n">L</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">phi_i</span> <span class="o">*</span> <span class="n">u_i</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis_sum</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">L</span>
 
-
+</div></div>
 <span class="k">def</span> <span class="nf">useconstructor</span><span class="p">(</span><span class="n">__init__</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">constructor_decorator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dims</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">or</span>
@@ -170,7 +170,7 @@
     <span class="n">_distribution</span> <span class="o">=</span> <span class="bp">None</span>
 
     <span class="nd">@useconstructor</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">parents</span><span class="p">,</span> <span class="n">initialize</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="ExponentialFamily.__init__"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.expfamily.ExponentialFamily.__init__.html#bayespy.inference.vmp.nodes.expfamily.ExponentialFamily.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">parents</span><span class="p">,</span> <span class="n">initialize</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 
         <span class="c"># Terms for the lower bound (G for latent and F for observed)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">g</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
@@ -185,7 +185,7 @@
             <span class="n">axes</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">plates</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="p">,)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">phi</span> <span class="o">=</span> <span class="p">[</span><span class="n">misc</span><span class="o">.</span><span class="n">nans</span><span class="p">(</span><span class="n">axes</span><span class="o">+</span><span class="n">dim</span><span class="p">)</span> <span class="k">for</span> <span class="n">dim</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dims</span><span class="p">]</span>
 
-
+</div>
     <span class="nd">@classmethod</span>
     <span class="nd">@ensureparents</span>
     <span class="k">def</span> <span class="nf">_constructor</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">parents</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -227,18 +227,18 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_set_moments_and_cgf</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">mask</span><span class="p">)</span>
         
 
-<div class="viewcode-block" id="ExponentialFamily.initialize_from_prior"><a class="viewcode-back" href="../../../../../dev_api/generated/bayespy.inference.vmp.nodes.expfamily.ExponentialFamily.initialize_from_prior.html#bayespy.inference.vmp.nodes.expfamily.ExponentialFamily.initialize_from_prior">[docs]</a>    <span class="k">def</span> <span class="nf">initialize_from_prior</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="ExponentialFamily.initialize_from_prior"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.expfamily.ExponentialFamily.initialize_from_prior.html#bayespy.inference.vmp.nodes.expfamily.ExponentialFamily.initialize_from_prior">[docs]</a>    <span class="k">def</span> <span class="nf">initialize_from_prior</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">u_parents</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_message_from_parents</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_initialize_from_parent_moments</span><span class="p">(</span><span class="o">*</span><span class="n">u_parents</span><span class="p">)</span>
 
 </div>
-<div class="viewcode-block" id="ExponentialFamily.initialize_from_parameters"><a class="viewcode-back" href="../../../../../dev_api/generated/bayespy.inference.vmp.nodes.expfamily.ExponentialFamily.initialize_from_parameters.html#bayespy.inference.vmp.nodes.expfamily.ExponentialFamily.initialize_from_parameters">[docs]</a>    <span class="k">def</span> <span class="nf">initialize_from_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+<div class="viewcode-block" id="ExponentialFamily.initialize_from_parameters"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.expfamily.ExponentialFamily.initialize_from_parameters.html#bayespy.inference.vmp.nodes.expfamily.ExponentialFamily.initialize_from_parameters">[docs]</a>    <span class="k">def</span> <span class="nf">initialize_from_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
         <span class="n">u_parents</span> <span class="o">=</span> <span class="p">[</span><span class="n">p_mom</span><span class="o">.</span><span class="n">compute_fixed_moments</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> 
                      <span class="k">for</span> <span class="p">(</span><span class="n">p_mom</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_parent_moments</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_initialize_from_parent_moments</span><span class="p">(</span><span class="o">*</span><span class="n">u_parents</span><span class="p">)</span>
         
 </div>
-<div class="viewcode-block" id="ExponentialFamily.initialize_from_value"><a class="viewcode-back" href="../../../../../dev_api/generated/bayespy.inference.vmp.nodes.expfamily.ExponentialFamily.initialize_from_value.html#bayespy.inference.vmp.nodes.expfamily.ExponentialFamily.initialize_from_value">[docs]</a>    <span class="k">def</span> <span class="nf">initialize_from_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+<div class="viewcode-block" id="ExponentialFamily.initialize_from_value"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.expfamily.ExponentialFamily.initialize_from_value.html#bayespy.inference.vmp.nodes.expfamily.ExponentialFamily.initialize_from_value">[docs]</a>    <span class="k">def</span> <span class="nf">initialize_from_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
         <span class="c"># Update moments from value</span>
         <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_not</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">observed</span><span class="p">)</span>
         <span class="n">u</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_moments</span><span class="o">.</span><span class="n">compute_fixed_moments</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span>
@@ -251,7 +251,7 @@
                                      <span class="o">%</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">x</span><span class="p">)))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_set_moments_and_cgf</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">mask</span><span class="p">)</span>
 </div>
-<div class="viewcode-block" id="ExponentialFamily.initialize_from_random"><a class="viewcode-back" href="../../../../../dev_api/generated/bayespy.inference.vmp.nodes.expfamily.ExponentialFamily.initialize_from_random.html#bayespy.inference.vmp.nodes.expfamily.ExponentialFamily.initialize_from_random">[docs]</a>    <span class="k">def</span> <span class="nf">initialize_from_random</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="ExponentialFamily.initialize_from_random"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.expfamily.ExponentialFamily.initialize_from_random.html#bayespy.inference.vmp.nodes.expfamily.ExponentialFamily.initialize_from_random">[docs]</a>    <span class="k">def</span> <span class="nf">initialize_from_random</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set the variable to a random sample from the current distribution.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -321,7 +321,7 @@
         <span class="c"># ... and store them</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_set_moments_and_cgf</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">update_mask</span><span class="p">)</span>
             
-<div class="viewcode-block" id="ExponentialFamily.observe"><a class="viewcode-back" href="../../../../../dev_api/generated/bayespy.inference.vmp.nodes.expfamily.ExponentialFamily.observe.html#bayespy.inference.vmp.nodes.expfamily.ExponentialFamily.observe">[docs]</a>    <span class="k">def</span> <span class="nf">observe</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+<div class="viewcode-block" id="ExponentialFamily.observe"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.expfamily.ExponentialFamily.observe.html#bayespy.inference.vmp.nodes.expfamily.ExponentialFamily.observe">[docs]</a>    <span class="k">def</span> <span class="nf">observe</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Fix moments, compute f and propagate mask.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -352,7 +352,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">observed</span> <span class="o">=</span> <span class="n">mask</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_update_mask</span><span class="p">()</span>
 </div>
-<div class="viewcode-block" id="ExponentialFamily.lower_bound_contribution"><a class="viewcode-back" href="../../../../../dev_api/generated/bayespy.inference.vmp.nodes.expfamily.ExponentialFamily.lower_bound_contribution.html#bayespy.inference.vmp.nodes.expfamily.ExponentialFamily.lower_bound_contribution">[docs]</a>    <span class="k">def</span> <span class="nf">lower_bound_contribution</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gradient</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+<div class="viewcode-block" id="ExponentialFamily.lower_bound_contribution"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.expfamily.ExponentialFamily.lower_bound_contribution.html#bayespy.inference.vmp.nodes.expfamily.ExponentialFamily.lower_bound_contribution">[docs]</a>    <span class="k">def</span> <span class="nf">lower_bound_contribution</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gradient</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
         <span class="c"># Compute E[ log p(X|parents) - log q(X) ] over q(X)q(parents)</span>
         
         <span class="c"># Messages from parents</span>
@@ -391,7 +391,7 @@
                                          <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mask</span><span class="p">)))</span>
         <span class="c">#return L</span>
 </div>
-<div class="viewcode-block" id="ExponentialFamily.logpdf"><a class="viewcode-back" href="../../../../../dev_api/generated/bayespy.inference.vmp.nodes.expfamily.ExponentialFamily.logpdf.html#bayespy.inference.vmp.nodes.expfamily.ExponentialFamily.logpdf">[docs]</a>    <span class="k">def</span> <span class="nf">logpdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+<div class="viewcode-block" id="ExponentialFamily.logpdf"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.expfamily.ExponentialFamily.logpdf.html#bayespy.inference.vmp.nodes.expfamily.ExponentialFamily.logpdf">[docs]</a>    <span class="k">def</span> <span class="nf">logpdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Compute the log probability density function Q(X) of this node.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -411,14 +411,14 @@
         <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">g</span> <span class="o">+</span> <span class="n">f</span> <span class="o">+</span> <span class="n">Z</span><span class="p">)</span>
         
 </div>
-<div class="viewcode-block" id="ExponentialFamily.pdf"><a class="viewcode-back" href="../../../../../dev_api/generated/bayespy.inference.vmp.nodes.expfamily.ExponentialFamily.pdf.html#bayespy.inference.vmp.nodes.expfamily.ExponentialFamily.pdf">[docs]</a>    <span class="k">def</span> <span class="nf">pdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+<div class="viewcode-block" id="ExponentialFamily.pdf"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.expfamily.ExponentialFamily.pdf.html#bayespy.inference.vmp.nodes.expfamily.ExponentialFamily.pdf">[docs]</a>    <span class="k">def</span> <span class="nf">pdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Compute the probability density function of this node.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">logpdf</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">mask</span><span class="p">))</span>
         
 </div>
-<div class="viewcode-block" id="ExponentialFamily.save"><a class="viewcode-back" href="../../../../../dev_api/generated/bayespy.inference.vmp.nodes.expfamily.ExponentialFamily.save.html#bayespy.inference.vmp.nodes.expfamily.ExponentialFamily.save">[docs]</a>    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
+<div class="viewcode-block" id="ExponentialFamily.save"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.expfamily.ExponentialFamily.save.html#bayespy.inference.vmp.nodes.expfamily.ExponentialFamily.save">[docs]</a>    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Save the state of the node into a HDF5 file.</span>
 
@@ -434,7 +434,7 @@
         <span class="n">misc</span><span class="o">.</span><span class="n">write_to_hdf5</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">g</span><span class="p">,</span> <span class="s">&#39;g&#39;</span><span class="p">)</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>
     </div>
-<div class="viewcode-block" id="ExponentialFamily.load"><a class="viewcode-back" href="../../../../../dev_api/generated/bayespy.inference.vmp.nodes.expfamily.ExponentialFamily.load.html#bayespy.inference.vmp.nodes.expfamily.ExponentialFamily.load">[docs]</a>    <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
+<div class="viewcode-block" id="ExponentialFamily.load"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.expfamily.ExponentialFamily.load.html#bayespy.inference.vmp.nodes.expfamily.ExponentialFamily.load">[docs]</a>    <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Load the state of the node from a HDF5 file.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -448,7 +448,7 @@
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>
 
         </div>
-<div class="viewcode-block" id="ExponentialFamily.random"><a class="viewcode-back" href="../../../../../dev_api/generated/bayespy.inference.vmp.nodes.expfamily.ExponentialFamily.random.html#bayespy.inference.vmp.nodes.expfamily.ExponentialFamily.random">[docs]</a>    <span class="k">def</span> <span class="nf">random</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="ExponentialFamily.random"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.expfamily.ExponentialFamily.random.html#bayespy.inference.vmp.nodes.expfamily.ExponentialFamily.random">[docs]</a>    <span class="k">def</span> <span class="nf">random</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Draw a random sample from the distribution.</span>
 <span class="sd">        &quot;&quot;&quot;</span>

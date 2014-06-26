@@ -25,7 +25,7 @@
     <script type="text/javascript" src="../../../../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="top" title="BayesPy v0.1 Documentation" href="../../../../../index.html" />
-    <link rel="up" title="Module code" href="../../../../index.html" /> 
+    <link rel="up" title="bayespy.inference" href="../../../inference.html" /> 
   </head>
   <body>
     <div class="related">
@@ -34,8 +34,12 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../../../../genindex.html" title="General Index"
              accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
         <li><a href="../../../../../index.html">BayesPy v0.1 Documentation</a> &raquo;</li>
-          <li><a href="../../../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+          <li><a href="../../../../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../../../inference.html" accesskey="U">bayespy.inference</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -90,16 +94,16 @@
 <span class="kn">from</span> <span class="nn">.node</span> <span class="kn">import</span> <span class="n">Moments</span><span class="p">,</span> <span class="n">ensureparents</span>
 
 
-<span class="k">class</span> <span class="nc">GaussianMarkovChainMoments</span><span class="p">(</span><span class="n">Moments</span><span class="p">):</span>
+<div class="viewcode-block" id="GaussianMarkovChainMoments"><a class="viewcode-back" href="../../../../../dev_api/generated/bayespy.inference.vmp.nodes.gaussian_markov_chain.GaussianMarkovChainMoments.html#bayespy.inference.vmp.nodes.gaussian_markov_chain.GaussianMarkovChainMoments">[docs]</a><span class="k">class</span> <span class="nc">GaussianMarkovChainMoments</span><span class="p">(</span><span class="n">Moments</span><span class="p">):</span>
 
 
-    <span class="k">def</span> <span class="nf">compute_fixed_moments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+<div class="viewcode-block" id="GaussianMarkovChainMoments.compute_fixed_moments"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.gaussian_markov_chain.GaussianMarkovChainMoments.compute_fixed_moments.html#bayespy.inference.vmp.nodes.gaussian_markov_chain.GaussianMarkovChainMoments.compute_fixed_moments">[docs]</a>    <span class="k">def</span> <span class="nf">compute_fixed_moments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
         <span class="n">u0</span> <span class="o">=</span> <span class="n">x</span>
         <span class="n">u1</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="o">...</span><span class="p">,:,</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]</span> <span class="o">*</span> <span class="n">x</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,:]</span>
         <span class="n">u2</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="o">...</span><span class="p">,:</span><span class="o">-</span><span class="mi">1</span><span class="p">,:,</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]</span> <span class="o">*</span> <span class="n">x</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="mi">1</span><span class="p">:,</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,:]</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">u0</span><span class="p">,</span> <span class="n">u1</span><span class="p">,</span> <span class="n">u2</span><span class="p">]</span>
         
-    
+    </div></div>
 <span class="k">class</span> <span class="nc">TemplateGaussianMarkovChainDistribution</span><span class="p">(</span><span class="n">ExponentialFamilyDistribution</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Sub-classes implement distribution specific computations.</span>
@@ -280,13 +284,13 @@
 
     <span class="k">return</span> <span class="n">g0</span> <span class="o">+</span> <span class="n">g1</span>
     
-<span class="k">class</span> <span class="nc">GaussianMarkovChainDistribution</span><span class="p">(</span><span class="n">TemplateGaussianMarkovChainDistribution</span><span class="p">):</span>
+<div class="viewcode-block" id="GaussianMarkovChainDistribution"><a class="viewcode-back" href="../../../../../dev_api/generated/bayespy.inference.vmp.nodes.gaussian_markov_chain.GaussianMarkovChainDistribution.html#bayespy.inference.vmp.nodes.gaussian_markov_chain.GaussianMarkovChainDistribution">[docs]</a><span class="k">class</span> <span class="nc">GaussianMarkovChainDistribution</span><span class="p">(</span><span class="n">TemplateGaussianMarkovChainDistribution</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Sub-classes implement distribution specific computations.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
 
-    <span class="k">def</span> <span class="nf">compute_message_to_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">u_mu</span><span class="p">,</span> <span class="n">u_Lambda</span><span class="p">,</span> <span class="n">u_A</span><span class="p">,</span> <span class="n">u_v</span><span class="p">):</span>
+<div class="viewcode-block" id="GaussianMarkovChainDistribution.compute_message_to_parent"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.gaussian_markov_chain.GaussianMarkovChainDistribution.compute_message_to_parent.html#bayespy.inference.vmp.nodes.gaussian_markov_chain.GaussianMarkovChainDistribution.compute_message_to_parent">[docs]</a>    <span class="k">def</span> <span class="nf">compute_message_to_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">u_mu</span><span class="p">,</span> <span class="n">u_Lambda</span><span class="p">,</span> <span class="n">u_A</span><span class="p">,</span> <span class="n">u_v</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Compute a message to a parent.</span>
 
@@ -339,8 +343,8 @@
             <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
 
         <span class="k">return</span> <span class="p">[</span><span class="n">m0</span><span class="p">,</span> <span class="n">m1</span><span class="p">]</span>
-
-    <span class="k">def</span> <span class="nf">compute_mask_to_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">mask</span><span class="p">):</span>
+</div>
+<div class="viewcode-block" id="GaussianMarkovChainDistribution.compute_mask_to_parent"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.gaussian_markov_chain.GaussianMarkovChainDistribution.compute_mask_to_parent.html#bayespy.inference.vmp.nodes.gaussian_markov_chain.GaussianMarkovChainDistribution.compute_mask_to_parent">[docs]</a>    <span class="k">def</span> <span class="nf">compute_mask_to_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">mask</span><span class="p">):</span>
 
         <span class="k">if</span> <span class="n">index</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>   <span class="c"># mu</span>
             <span class="k">return</span> <span class="n">mask</span>
@@ -353,8 +357,8 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Index out of bounds&quot;</span><span class="p">)</span>
 
-
-    <span class="k">def</span> <span class="nf">compute_phi_from_parents</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u_mu</span><span class="p">,</span> <span class="n">u_Lambda</span><span class="p">,</span> <span class="n">u_A</span><span class="p">,</span> <span class="n">u_v</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+</div>
+<div class="viewcode-block" id="GaussianMarkovChainDistribution.compute_phi_from_parents"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.gaussian_markov_chain.GaussianMarkovChainDistribution.compute_phi_from_parents.html#bayespy.inference.vmp.nodes.gaussian_markov_chain.GaussianMarkovChainDistribution.compute_phi_from_parents">[docs]</a>    <span class="k">def</span> <span class="nf">compute_phi_from_parents</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u_mu</span><span class="p">,</span> <span class="n">u_Lambda</span><span class="p">,</span> <span class="n">u_A</span><span class="p">,</span> <span class="n">u_v</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Compute the natural parameters using parents&#39; moments.</span>
 
@@ -413,8 +417,8 @@
         <span class="n">phi2</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s">&#39;...ji,...j-&gt;...ij&#39;</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="p">(</span><span class="n">phi0</span><span class="p">,</span> <span class="n">phi1</span><span class="p">,</span> <span class="n">phi2</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">compute_cgf_from_parents</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u_mu</span><span class="p">,</span> <span class="n">u_Lambda</span><span class="p">,</span> <span class="n">u_A</span><span class="p">,</span> <span class="n">u_v</span><span class="p">):</span>
+</div>
+<div class="viewcode-block" id="GaussianMarkovChainDistribution.compute_cgf_from_parents"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.gaussian_markov_chain.GaussianMarkovChainDistribution.compute_cgf_from_parents.html#bayespy.inference.vmp.nodes.gaussian_markov_chain.GaussianMarkovChainDistribution.compute_cgf_from_parents">[docs]</a>    <span class="k">def</span> <span class="nf">compute_cgf_from_parents</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u_mu</span><span class="p">,</span> <span class="n">u_Lambda</span><span class="p">,</span> <span class="n">u_A</span><span class="p">,</span> <span class="n">u_v</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Compute CGF using the moments of the parents.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -423,8 +427,8 @@
                                                       <span class="n">u_Lambda</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
                                                       <span class="n">u_v</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
                                                       <span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">plates_to_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">plates</span><span class="p">):</span>
+</div>
+<div class="viewcode-block" id="GaussianMarkovChainDistribution.plates_to_parent"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.gaussian_markov_chain.GaussianMarkovChainDistribution.plates_to_parent.html#bayespy.inference.vmp.nodes.gaussian_markov_chain.GaussianMarkovChainDistribution.plates_to_parent">[docs]</a>    <span class="k">def</span> <span class="nf">plates_to_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">plates</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Computes the plates of this node with respect to a parent.</span>
 
@@ -452,8 +456,8 @@
             <span class="k">return</span> <span class="n">plates</span> <span class="o">+</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">D</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Invalid parent index.&quot;</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">plates_from_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">plates</span><span class="p">):</span>
+</div>
+<div class="viewcode-block" id="GaussianMarkovChainDistribution.plates_from_parent"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.gaussian_markov_chain.GaussianMarkovChainDistribution.plates_from_parent.html#bayespy.inference.vmp.nodes.gaussian_markov_chain.GaussianMarkovChainDistribution.plates_from_parent">[docs]</a>    <span class="k">def</span> <span class="nf">plates_from_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">plates</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Compute the plates using information of a parent node.</span>
 
@@ -481,8 +485,8 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Invalid parent index.&quot;</span><span class="p">)</span>
 
-
-<div class="viewcode-block" id="GaussianMarkovChain"><a class="viewcode-back" href="../../../../../generated.backup/bayespy.inference.vmp.nodes.gaussian_markov_chain.GaussianMarkovChain.html#bayespy.inference.vmp.nodes.gaussian_markov_chain.GaussianMarkovChain">[docs]</a><span class="k">class</span> <span class="nc">GaussianMarkovChain</span><span class="p">(</span><span class="n">_TemplateGaussianMarkovChain</span><span class="p">):</span>
+</div></div>
+<span class="k">class</span> <span class="nc">GaussianMarkovChain</span><span class="p">(</span><span class="n">_TemplateGaussianMarkovChain</span><span class="p">):</span>
     <span class="sd">r&quot;&quot;&quot;</span>
 <span class="sd">    Node for Gaussian Markov chain random variables.</span>
 
@@ -566,13 +570,13 @@
                        <span class="n">GammaMoments</span><span class="p">())</span>
 
 
-<div class="viewcode-block" id="GaussianMarkovChain.__init__"><a class="viewcode-back" href="../../../../../generated.backup/bayespy.inference.vmp.nodes.gaussian_markov_chain.GaussianMarkovChain.html#bayespy.inference.vmp.nodes.gaussian_markov_chain.GaussianMarkovChain.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">Lambda</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">nu</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">Lambda</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">nu</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create GaussianMarkovChain node.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span> <span class="n">Lambda</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">nu</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="n">n</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-</div>
+
     <span class="nd">@classmethod</span>
     <span class="nd">@ensureparents</span>
     <span class="k">def</span> <span class="nf">_constructor</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">Lambda</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -674,14 +678,14 @@
 
     
 
-</div>
-<span class="k">class</span> <span class="nc">VaryingGaussianMarkovChainDistribution</span><span class="p">(</span><span class="n">TemplateGaussianMarkovChainDistribution</span><span class="p">):</span>
+
+<div class="viewcode-block" id="VaryingGaussianMarkovChainDistribution"><a class="viewcode-back" href="../../../../../dev_api/generated/bayespy.inference.vmp.nodes.gaussian_markov_chain.VaryingGaussianMarkovChainDistribution.html#bayespy.inference.vmp.nodes.gaussian_markov_chain.VaryingGaussianMarkovChainDistribution">[docs]</a><span class="k">class</span> <span class="nc">VaryingGaussianMarkovChainDistribution</span><span class="p">(</span><span class="n">TemplateGaussianMarkovChainDistribution</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Sub-classes implement distribution specific computations.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
 
-    <span class="k">def</span> <span class="nf">compute_message_to_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">u_mu</span><span class="p">,</span> <span class="n">u_Lambda</span><span class="p">,</span> <span class="n">u_B</span><span class="p">,</span>
+<div class="viewcode-block" id="VaryingGaussianMarkovChainDistribution.compute_message_to_parent"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.gaussian_markov_chain.VaryingGaussianMarkovChainDistribution.compute_message_to_parent.html#bayespy.inference.vmp.nodes.gaussian_markov_chain.VaryingGaussianMarkovChainDistribution.compute_message_to_parent">[docs]</a>    <span class="k">def</span> <span class="nf">compute_message_to_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">u_mu</span><span class="p">,</span> <span class="n">u_Lambda</span><span class="p">,</span> <span class="n">u_B</span><span class="p">,</span>
                                    <span class="n">u_S</span><span class="p">,</span> <span class="n">u_v</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Compute a message to a parent.</span>
@@ -764,8 +768,8 @@
 
         <span class="k">return</span> <span class="p">[</span><span class="n">m0</span><span class="p">,</span> <span class="n">m1</span><span class="p">]</span>
 
-
-    <span class="k">def</span> <span class="nf">compute_mask_to_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">mask</span><span class="p">):</span>
+</div>
+<div class="viewcode-block" id="VaryingGaussianMarkovChainDistribution.compute_mask_to_parent"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.gaussian_markov_chain.VaryingGaussianMarkovChainDistribution.compute_mask_to_parent.html#bayespy.inference.vmp.nodes.gaussian_markov_chain.VaryingGaussianMarkovChainDistribution.compute_mask_to_parent">[docs]</a>    <span class="k">def</span> <span class="nf">compute_mask_to_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">mask</span><span class="p">):</span>
 
         <span class="k">if</span> <span class="n">index</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span> <span class="c"># mu</span>
             <span class="k">return</span> <span class="n">mask</span>
@@ -782,8 +786,8 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Invalid index&quot;</span><span class="p">)</span>
 
-
-    <span class="k">def</span> <span class="nf">compute_phi_from_parents</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u_mu</span><span class="p">,</span> <span class="n">u_Lambda</span><span class="p">,</span> <span class="n">u_B</span><span class="p">,</span> <span class="n">u_S</span><span class="p">,</span> <span class="n">u_v</span><span class="p">,</span>
+</div>
+<div class="viewcode-block" id="VaryingGaussianMarkovChainDistribution.compute_phi_from_parents"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.gaussian_markov_chain.VaryingGaussianMarkovChainDistribution.compute_phi_from_parents.html#bayespy.inference.vmp.nodes.gaussian_markov_chain.VaryingGaussianMarkovChainDistribution.compute_phi_from_parents">[docs]</a>    <span class="k">def</span> <span class="nf">compute_phi_from_parents</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u_mu</span><span class="p">,</span> <span class="n">u_Lambda</span><span class="p">,</span> <span class="n">u_B</span><span class="p">,</span> <span class="n">u_S</span><span class="p">,</span> <span class="n">u_v</span><span class="p">,</span>
                                  <span class="n">mask</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Compute the natural parameters using parents&#39; moments.</span>
@@ -868,8 +872,8 @@
         <span class="c">#phi2[..., :, :, :] = np.einsum(&#39;...ji,...j-&gt;...ij&#39;, A, v)</span>
 
         <span class="k">return</span> <span class="p">(</span><span class="n">phi0</span><span class="p">,</span> <span class="n">phi1</span><span class="p">,</span> <span class="n">phi2</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">compute_cgf_from_parents</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u_mu</span><span class="p">,</span> <span class="n">u_Lambda</span><span class="p">,</span> <span class="n">u_B</span><span class="p">,</span> <span class="n">u_S</span><span class="p">,</span> <span class="n">u_v</span><span class="p">):</span>
+</div>
+<div class="viewcode-block" id="VaryingGaussianMarkovChainDistribution.compute_cgf_from_parents"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.gaussian_markov_chain.VaryingGaussianMarkovChainDistribution.compute_cgf_from_parents.html#bayespy.inference.vmp.nodes.gaussian_markov_chain.VaryingGaussianMarkovChainDistribution.compute_cgf_from_parents">[docs]</a>    <span class="k">def</span> <span class="nf">compute_cgf_from_parents</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u_mu</span><span class="p">,</span> <span class="n">u_Lambda</span><span class="p">,</span> <span class="n">u_B</span><span class="p">,</span> <span class="n">u_S</span><span class="p">,</span> <span class="n">u_v</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Compute CGF using the moments of the parents.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -879,8 +883,8 @@
                                                       <span class="n">u_Lambda</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
                                                       <span class="n">u_v</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
                                                       <span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">plates_to_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">plates</span><span class="p">):</span>
+</div>
+<div class="viewcode-block" id="VaryingGaussianMarkovChainDistribution.plates_to_parent"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.gaussian_markov_chain.VaryingGaussianMarkovChainDistribution.plates_to_parent.html#bayespy.inference.vmp.nodes.gaussian_markov_chain.VaryingGaussianMarkovChainDistribution.plates_to_parent">[docs]</a>    <span class="k">def</span> <span class="nf">plates_to_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">plates</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Computes the plates of this node with respect to a parent.</span>
 
@@ -910,8 +914,8 @@
             <span class="k">return</span> <span class="n">plates</span> <span class="o">+</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">D</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Invalid parent index.&quot;</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">plates_from_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">plates</span><span class="p">):</span>
+</div>
+<div class="viewcode-block" id="VaryingGaussianMarkovChainDistribution.plates_from_parent"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.gaussian_markov_chain.VaryingGaussianMarkovChainDistribution.plates_from_parent.html#bayespy.inference.vmp.nodes.gaussian_markov_chain.VaryingGaussianMarkovChainDistribution.plates_from_parent">[docs]</a>    <span class="k">def</span> <span class="nf">plates_from_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">plates</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Compute the plates using information of a parent node.</span>
 
@@ -944,7 +948,7 @@
 
 
 
-
+</div></div>
 <span class="k">class</span> <span class="nc">VaryingGaussianMarkovChain</span><span class="p">(</span><span class="n">_TemplateGaussianMarkovChain</span><span class="p">):</span>
     <span class="sd">r&quot;&quot;&quot;</span>
 <span class="sd">    Node for Gaussian Markov chain random variables with time-varying dynamics.</span>
@@ -1190,17 +1194,17 @@
     
 
 
-<span class="k">class</span> <span class="nc">SwitchingGaussianMarkovChainDistribution</span><span class="p">(</span><span class="n">TemplateGaussianMarkovChainDistribution</span><span class="p">):</span>
+<div class="viewcode-block" id="SwitchingGaussianMarkovChainDistribution"><a class="viewcode-back" href="../../../../../dev_api/generated/bayespy.inference.vmp.nodes.gaussian_markov_chain.SwitchingGaussianMarkovChainDistribution.html#bayespy.inference.vmp.nodes.gaussian_markov_chain.SwitchingGaussianMarkovChainDistribution">[docs]</a><span class="k">class</span> <span class="nc">SwitchingGaussianMarkovChainDistribution</span><span class="p">(</span><span class="n">TemplateGaussianMarkovChainDistribution</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Sub-classes implement distribution specific computations.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">K</span><span class="p">):</span>
+<div class="viewcode-block" id="SwitchingGaussianMarkovChainDistribution.__init__"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.gaussian_markov_chain.SwitchingGaussianMarkovChainDistribution.__init__.html#bayespy.inference.vmp.nodes.gaussian_markov_chain.SwitchingGaussianMarkovChainDistribution.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">K</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">K</span> <span class="o">=</span> <span class="n">K</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="n">D</span><span class="p">)</span>
-        
-    <span class="k">def</span> <span class="nf">compute_message_to_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">u_mu</span><span class="p">,</span> <span class="n">u_Lambda</span><span class="p">,</span> <span class="n">u_B</span><span class="p">,</span>
+        </div>
+<div class="viewcode-block" id="SwitchingGaussianMarkovChainDistribution.compute_message_to_parent"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.gaussian_markov_chain.SwitchingGaussianMarkovChainDistribution.compute_message_to_parent.html#bayespy.inference.vmp.nodes.gaussian_markov_chain.SwitchingGaussianMarkovChainDistribution.compute_message_to_parent">[docs]</a>    <span class="k">def</span> <span class="nf">compute_message_to_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">u_mu</span><span class="p">,</span> <span class="n">u_Lambda</span><span class="p">,</span> <span class="n">u_B</span><span class="p">,</span>
                                    <span class="n">u_Z</span><span class="p">,</span> <span class="n">u_v</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Compute a message to a parent.</span>
@@ -1302,8 +1306,8 @@
             <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
 
 
-
-    <span class="k">def</span> <span class="nf">compute_mask_to_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">mask</span><span class="p">):</span>
+</div>
+<div class="viewcode-block" id="SwitchingGaussianMarkovChainDistribution.compute_mask_to_parent"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.gaussian_markov_chain.SwitchingGaussianMarkovChainDistribution.compute_mask_to_parent.html#bayespy.inference.vmp.nodes.gaussian_markov_chain.SwitchingGaussianMarkovChainDistribution.compute_mask_to_parent">[docs]</a>    <span class="k">def</span> <span class="nf">compute_mask_to_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">mask</span><span class="p">):</span>
 
         <span class="k">if</span> <span class="n">index</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span> <span class="c"># mu: (...)x(N,D) -&gt; (...)x(D)</span>
             <span class="k">return</span> <span class="n">mask</span>
@@ -1318,8 +1322,8 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Invalid index&quot;</span><span class="p">)</span>
 
-
-    <span class="k">def</span> <span class="nf">compute_phi_from_parents</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u_mu</span><span class="p">,</span> <span class="n">u_Lambda</span><span class="p">,</span> <span class="n">u_B</span><span class="p">,</span> <span class="n">u_Z</span><span class="p">,</span> <span class="n">u_v</span><span class="p">,</span>
+</div>
+<div class="viewcode-block" id="SwitchingGaussianMarkovChainDistribution.compute_phi_from_parents"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.gaussian_markov_chain.SwitchingGaussianMarkovChainDistribution.compute_phi_from_parents.html#bayespy.inference.vmp.nodes.gaussian_markov_chain.SwitchingGaussianMarkovChainDistribution.compute_phi_from_parents">[docs]</a>    <span class="k">def</span> <span class="nf">compute_phi_from_parents</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u_mu</span><span class="p">,</span> <span class="n">u_Lambda</span><span class="p">,</span> <span class="n">u_B</span><span class="p">,</span> <span class="n">u_Z</span><span class="p">,</span> <span class="n">u_v</span><span class="p">,</span>
                                  <span class="n">mask</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Compute the natural parameters using parents&#39; moments.</span>
@@ -1401,8 +1405,8 @@
                                        <span class="n">v</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="p">(</span><span class="n">phi0</span><span class="p">,</span> <span class="n">phi1</span><span class="p">,</span> <span class="n">phi2</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">compute_cgf_from_parents</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u_mu</span><span class="p">,</span> <span class="n">u_Lambda</span><span class="p">,</span> <span class="n">u_B</span><span class="p">,</span> <span class="n">u_Z</span><span class="p">,</span> <span class="n">u_v</span><span class="p">):</span>
+</div>
+<div class="viewcode-block" id="SwitchingGaussianMarkovChainDistribution.compute_cgf_from_parents"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.gaussian_markov_chain.SwitchingGaussianMarkovChainDistribution.compute_cgf_from_parents.html#bayespy.inference.vmp.nodes.gaussian_markov_chain.SwitchingGaussianMarkovChainDistribution.compute_cgf_from_parents">[docs]</a>    <span class="k">def</span> <span class="nf">compute_cgf_from_parents</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u_mu</span><span class="p">,</span> <span class="n">u_Lambda</span><span class="p">,</span> <span class="n">u_B</span><span class="p">,</span> <span class="n">u_Z</span><span class="p">,</span> <span class="n">u_v</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Compute CGF using the moments of the parents.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -1412,8 +1416,8 @@
                                                       <span class="n">u_Lambda</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
                                                       <span class="n">u_v</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
                                                       <span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">plates_to_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">plates</span><span class="p">):</span>
+</div>
+<div class="viewcode-block" id="SwitchingGaussianMarkovChainDistribution.plates_to_parent"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.gaussian_markov_chain.SwitchingGaussianMarkovChainDistribution.plates_to_parent.html#bayespy.inference.vmp.nodes.gaussian_markov_chain.SwitchingGaussianMarkovChainDistribution.plates_to_parent">[docs]</a>    <span class="k">def</span> <span class="nf">plates_to_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">plates</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Computes the plates of this node with respect to a parent.</span>
 
@@ -1444,8 +1448,8 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Invalid parent index.&quot;</span><span class="p">)</span>
         
-        
-    <span class="k">def</span> <span class="nf">plates_from_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">plates</span><span class="p">):</span>
+        </div>
+<div class="viewcode-block" id="SwitchingGaussianMarkovChainDistribution.plates_from_parent"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.gaussian_markov_chain.SwitchingGaussianMarkovChainDistribution.plates_from_parent.html#bayespy.inference.vmp.nodes.gaussian_markov_chain.SwitchingGaussianMarkovChainDistribution.plates_from_parent">[docs]</a>    <span class="k">def</span> <span class="nf">plates_from_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">plates</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Compute the plates using information of a parent node.</span>
 
@@ -1478,7 +1482,7 @@
 
 
 
-
+</div></div>
 <span class="k">class</span> <span class="nc">SwitchingGaussianMarkovChain</span><span class="p">(</span><span class="n">_TemplateGaussianMarkovChain</span><span class="p">):</span>
     <span class="sd">r&quot;&quot;&quot;</span>
 <span class="sd">    Node for Gaussian Markov chain random variables with switching dynamics.</span>
@@ -1866,8 +1870,12 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../../../../genindex.html" title="General Index"
              >index</a></li>
+        <li class="right" >
+          <a href="../../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
         <li><a href="../../../../../index.html">BayesPy v0.1 Documentation</a> &raquo;</li>
-          <li><a href="../../../../index.html" >Module code</a> &raquo;</li> 
+          <li><a href="../../../../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../../../inference.html" >bayespy.inference</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

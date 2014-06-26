@@ -25,9 +25,9 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="top" title="BayesPy v0.1 Documentation" href="../../index.html" />
-    <link rel="up" title="Nodes" href="../nodes.html" />
-    <link rel="next" title="bayespy.inference.vmp.nodes.node.Node.add_plate_axis" href="bayespy.inference.vmp.nodes.node.Node.add_plate_axis.html" />
-    <link rel="prev" title="bayespy.inference.vmp.nodes.constant.Constant.plates" href="bayespy.inference.vmp.nodes.constant.Constant.plates.html" /> 
+    <link rel="up" title="Developer nodes" href="../nodes.html" />
+    <link rel="next" title="bayespy.inference.vmp.nodes.node.Node.__init__" href="generated/bayespy.inference.vmp.nodes.node.Node.__init__.html" />
+    <link rel="prev" title="bayespy.inference.vmp.nodes.gaussian.WrapToGaussianWishart.plates" href="generated/bayespy.inference.vmp.nodes.gaussian.WrapToGaussianWishart.plates.html" /> 
   </head>
   <body>
     <div class="related">
@@ -40,14 +40,14 @@
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="bayespy.inference.vmp.nodes.node.Node.add_plate_axis.html" title="bayespy.inference.vmp.nodes.node.Node.add_plate_axis"
+          <a href="generated/bayespy.inference.vmp.nodes.node.Node.__init__.html" title="bayespy.inference.vmp.nodes.node.Node.__init__"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="bayespy.inference.vmp.nodes.constant.Constant.plates.html" title="bayespy.inference.vmp.nodes.constant.Constant.plates"
+          <a href="generated/bayespy.inference.vmp.nodes.gaussian.WrapToGaussianWishart.plates.html" title="bayespy.inference.vmp.nodes.gaussian.WrapToGaussianWishart.plates"
              accesskey="P">previous</a> |</li>
         <li><a href="../../index.html">BayesPy v0.1 Documentation</a> &raquo;</li>
           <li><a href="../dev_api.html" >Developer API</a> &raquo;</li>
-          <li><a href="../nodes.html" accesskey="U">Nodes</a> &raquo;</li> 
+          <li><a href="../nodes.html" accesskey="U">Developer nodes</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -82,6 +82,11 @@ _get_message_and_mask_to_parent(self, index)</li>
 <div>_compute_mask_to_parent(index, mask)
 _plates_to_parent(self, index)
 _plates_from_parent(self, index)</div></blockquote>
+<dl class="method">
+<dt id="bayespy.inference.vmp.nodes.node.Node.__init__">
+<tt class="descname">__init__</tt><big>(</big><em>*parents</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/bayespy/inference/vmp/nodes/node.html#Node.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bayespy.inference.vmp.nodes.node.Node.__init__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <p class="rubric">Methods</p>
 <table border="1" class="longtable docutils">
 <colgroup>
@@ -89,31 +94,34 @@ _plates_from_parent(self, index)</div></blockquote>
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="bayespy.inference.vmp.nodes.node.Node.add_plate_axis.html#bayespy.inference.vmp.nodes.node.Node.add_plate_axis" title="bayespy.inference.vmp.nodes.node.Node.add_plate_axis"><tt class="xref py py-obj docutils literal"><span class="pre">add_plate_axis</span></tt></a>(to_plate)</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.inference.vmp.nodes.node.Node.__init__.html#bayespy.inference.vmp.nodes.node.Node.__init__" title="bayespy.inference.vmp.nodes.node.Node.__init__"><tt class="xref py py-obj docutils literal"><span class="pre">__init__</span></tt></a>(*parents,&nbsp;**kwargs)</td>
 <td></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="bayespy.inference.vmp.nodes.node.Node.delete.html#bayespy.inference.vmp.nodes.node.Node.delete" title="bayespy.inference.vmp.nodes.node.Node.delete"><tt class="xref py py-obj docutils literal"><span class="pre">delete</span></tt></a>()</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.inference.vmp.nodes.node.Node.add_plate_axis.html#bayespy.inference.vmp.nodes.node.Node.add_plate_axis" title="bayespy.inference.vmp.nodes.node.Node.add_plate_axis"><tt class="xref py py-obj docutils literal"><span class="pre">add_plate_axis</span></tt></a>(to_plate)</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.inference.vmp.nodes.node.Node.delete.html#bayespy.inference.vmp.nodes.node.Node.delete" title="bayespy.inference.vmp.nodes.node.Node.delete"><tt class="xref py py-obj docutils literal"><span class="pre">delete</span></tt></a>()</td>
 <td>Delete this node and the children</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="bayespy.inference.vmp.nodes.node.Node.get_mask.html#bayespy.inference.vmp.nodes.node.Node.get_mask" title="bayespy.inference.vmp.nodes.node.Node.get_mask"><tt class="xref py py-obj docutils literal"><span class="pre">get_mask</span></tt></a>()</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.inference.vmp.nodes.node.Node.get_mask.html#bayespy.inference.vmp.nodes.node.Node.get_mask" title="bayespy.inference.vmp.nodes.node.Node.get_mask"><tt class="xref py py-obj docutils literal"><span class="pre">get_mask</span></tt></a>()</td>
 <td></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="bayespy.inference.vmp.nodes.node.Node.get_moments.html#bayespy.inference.vmp.nodes.node.Node.get_moments" title="bayespy.inference.vmp.nodes.node.Node.get_moments"><tt class="xref py py-obj docutils literal"><span class="pre">get_moments</span></tt></a>()</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.inference.vmp.nodes.node.Node.get_moments.html#bayespy.inference.vmp.nodes.node.Node.get_moments" title="bayespy.inference.vmp.nodes.node.Node.get_moments"><tt class="xref py py-obj docutils literal"><span class="pre">get_moments</span></tt></a>()</td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="bayespy.inference.vmp.nodes.node.Node.get_shape.html#bayespy.inference.vmp.nodes.node.Node.get_shape" title="bayespy.inference.vmp.nodes.node.Node.get_shape"><tt class="xref py py-obj docutils literal"><span class="pre">get_shape</span></tt></a>(ind)</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.inference.vmp.nodes.node.Node.get_shape.html#bayespy.inference.vmp.nodes.node.Node.get_shape" title="bayespy.inference.vmp.nodes.node.Node.get_shape"><tt class="xref py py-obj docutils literal"><span class="pre">get_shape</span></tt></a>(ind)</td>
 <td></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="bayespy.inference.vmp.nodes.node.Node.has_plotter.html#bayespy.inference.vmp.nodes.node.Node.has_plotter" title="bayespy.inference.vmp.nodes.node.Node.has_plotter"><tt class="xref py py-obj docutils literal"><span class="pre">has_plotter</span></tt></a>()</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.inference.vmp.nodes.node.Node.has_plotter.html#bayespy.inference.vmp.nodes.node.Node.has_plotter" title="bayespy.inference.vmp.nodes.node.Node.has_plotter"><tt class="xref py py-obj docutils literal"><span class="pre">has_plotter</span></tt></a>()</td>
 <td>Return True if the node has a plotter</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="bayespy.inference.vmp.nodes.node.Node.move_plates.html#bayespy.inference.vmp.nodes.node.Node.move_plates" title="bayespy.inference.vmp.nodes.node.Node.move_plates"><tt class="xref py py-obj docutils literal"><span class="pre">move_plates</span></tt></a>(from_plate,&nbsp;to_plate)</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.inference.vmp.nodes.node.Node.move_plates.html#bayespy.inference.vmp.nodes.node.Node.move_plates" title="bayespy.inference.vmp.nodes.node.Node.move_plates"><tt class="xref py py-obj docutils literal"><span class="pre">move_plates</span></tt></a>(from_plate,&nbsp;to_plate)</td>
 <td></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="bayespy.inference.vmp.nodes.node.Node.plot.html#bayespy.inference.vmp.nodes.node.Node.plot" title="bayespy.inference.vmp.nodes.node.Node.plot"><tt class="xref py py-obj docutils literal"><span class="pre">plot</span></tt></a>(**kwargs)</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.inference.vmp.nodes.node.Node.plot.html#bayespy.inference.vmp.nodes.node.Node.plot" title="bayespy.inference.vmp.nodes.node.Node.plot"><tt class="xref py py-obj docutils literal"><span class="pre">plot</span></tt></a>(**kwargs)</td>
 <td>Plot the node distribution using the plotter of the node</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="bayespy.inference.vmp.nodes.node.Node.set_plotter.html#bayespy.inference.vmp.nodes.node.Node.set_plotter" title="bayespy.inference.vmp.nodes.node.Node.set_plotter"><tt class="xref py py-obj docutils literal"><span class="pre">set_plotter</span></tt></a>(plotter)</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.inference.vmp.nodes.node.Node.set_plotter.html#bayespy.inference.vmp.nodes.node.Node.set_plotter" title="bayespy.inference.vmp.nodes.node.Node.set_plotter"><tt class="xref py py-obj docutils literal"><span class="pre">set_plotter</span></tt></a>(plotter)</td>
 <td></td>
 </tr>
 </tbody>
@@ -125,7 +133,7 @@ _plates_from_parent(self, index)</div></blockquote>
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="bayespy.inference.vmp.nodes.node.Node.plates.html#bayespy.inference.vmp.nodes.node.Node.plates" title="bayespy.inference.vmp.nodes.node.Node.plates"><tt class="xref py py-obj docutils literal"><span class="pre">plates</span></tt></a></td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.inference.vmp.nodes.node.Node.plates.html#bayespy.inference.vmp.nodes.node.Node.plates" title="bayespy.inference.vmp.nodes.node.Node.plates"><tt class="xref py py-obj docutils literal"><span class="pre">plates</span></tt></a></td>
 <td></td>
 </tr>
 </tbody>
@@ -141,11 +149,11 @@ _plates_from_parent(self, index)</div></blockquote>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
   <h4>Previous topic</h4>
-  <p class="topless"><a href="bayespy.inference.vmp.nodes.constant.Constant.plates.html"
-                        title="previous chapter">bayespy.inference.vmp.nodes.constant.Constant.plates</a></p>
+  <p class="topless"><a href="generated/bayespy.inference.vmp.nodes.gaussian.WrapToGaussianWishart.plates.html"
+                        title="previous chapter">bayespy.inference.vmp.nodes.gaussian.WrapToGaussianWishart.plates</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="bayespy.inference.vmp.nodes.node.Node.add_plate_axis.html"
-                        title="next chapter">bayespy.inference.vmp.nodes.node.Node.add_plate_axis</a></p>
+  <p class="topless"><a href="generated/bayespy.inference.vmp.nodes.node.Node.__init__.html"
+                        title="next chapter">bayespy.inference.vmp.nodes.node.Node.__init__</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../../_sources/dev_api/generated/bayespy.inference.vmp.nodes.node.Node.txt"
@@ -178,14 +186,14 @@ _plates_from_parent(self, index)</div></blockquote>
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="bayespy.inference.vmp.nodes.node.Node.add_plate_axis.html" title="bayespy.inference.vmp.nodes.node.Node.add_plate_axis"
+          <a href="generated/bayespy.inference.vmp.nodes.node.Node.__init__.html" title="bayespy.inference.vmp.nodes.node.Node.__init__"
              >next</a> |</li>
         <li class="right" >
-          <a href="bayespy.inference.vmp.nodes.constant.Constant.plates.html" title="bayespy.inference.vmp.nodes.constant.Constant.plates"
+          <a href="generated/bayespy.inference.vmp.nodes.gaussian.WrapToGaussianWishart.plates.html" title="bayespy.inference.vmp.nodes.gaussian.WrapToGaussianWishart.plates"
              >previous</a> |</li>
         <li><a href="../../index.html">BayesPy v0.1 Documentation</a> &raquo;</li>
           <li><a href="../dev_api.html" >Developer API</a> &raquo;</li>
-          <li><a href="../nodes.html" >Nodes</a> &raquo;</li> 
+          <li><a href="../nodes.html" >Developer nodes</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

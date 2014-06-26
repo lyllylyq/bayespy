@@ -6,15 +6,18 @@ bayespy.plot.HintonPlotter
 .. autoclass:: HintonPlotter
 
    
-
-      .. rubric:: Methods
-
-      .. autosummary::
-         :toctree:
-      
-         ~HintonPlotter.__call__
-
-
+   .. automethod:: __init__
 
    
+   .. rubric:: Methods
 
+   .. autosummary::
+      :toctree: generated/
+   
+      ~HintonPlotter.__init__
+   
+   
+
+   
+   
+   

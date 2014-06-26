@@ -6,15 +6,18 @@ bayespy.plot.CategoricalMarkovChainPlotter
 .. autoclass:: CategoricalMarkovChainPlotter
 
    
-
-      .. rubric:: Methods
-
-      .. autosummary::
-         :toctree:
-      
-         ~CategoricalMarkovChainPlotter.__call__
-
-
+   .. automethod:: __init__
 
    
+   .. rubric:: Methods
 
+   .. autosummary::
+      :toctree: generated/
+   
+      ~CategoricalMarkovChainPlotter.__init__
+   
+   
+
+   
+   
+   

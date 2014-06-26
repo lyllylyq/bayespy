@@ -1,0 +1,1335 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>bayespy.utils.misc &mdash; BayesPy v0.1 Documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="BayesPy v0.1 Documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">BayesPy v0.1 Documentation</a> &raquo;</li>
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for bayespy.utils.misc</h1><div class="highlight"><pre>
+<span class="c">######################################################################</span>
+<span class="c"># Copyright (C) 2011-2013 Jaakko Luttinen</span>
+<span class="c">#</span>
+<span class="c"># This file is licensed under Version 3.0 of the GNU General Public</span>
+<span class="c"># License. See LICENSE for a text of the license.</span>
+<span class="c">######################################################################</span>
+
+<span class="c">######################################################################</span>
+<span class="c"># This file is part of BayesPy.</span>
+<span class="c">#</span>
+<span class="c"># BayesPy is free software: you can redistribute it and/or modify it</span>
+<span class="c"># under the terms of the GNU General Public License version 3 as</span>
+<span class="c"># published by the Free Software Foundation.</span>
+<span class="c">#</span>
+<span class="c"># BayesPy is distributed in the hope that it will be useful, but</span>
+<span class="c"># WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="c"># MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU</span>
+<span class="c"># General Public License for more details.</span>
+<span class="c">#</span>
+<span class="c"># You should have received a copy of the GNU General Public License</span>
+<span class="c"># along with BayesPy.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
+<span class="c">######################################################################</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">General numerical functions and methods.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">functools</span>
+<span class="kn">import</span> <span class="nn">itertools</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">scipy</span> <span class="kn">as</span> <span class="nn">sp</span>
+<span class="kn">import</span> <span class="nn">scipy.linalg</span> <span class="kn">as</span> <span class="nn">linalg</span>
+<span class="kn">import</span> <span class="nn">scipy.special</span> <span class="kn">as</span> <span class="nn">special</span>
+<span class="kn">import</span> <span class="nn">scipy.optimize</span> <span class="kn">as</span> <span class="nn">optimize</span>
+<span class="kn">import</span> <span class="nn">scipy.sparse</span> <span class="kn">as</span> <span class="nn">sparse</span>
+
+<span class="kn">import</span> <span class="nn">tempfile</span> <span class="kn">as</span> <span class="nn">tmp</span>
+
+<span class="kn">import</span> <span class="nn">unittest</span>
+<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">testing</span>
+
+
+<div class="viewcode-block" id="composite_function"><a class="viewcode-back" href="../../../dev_api/generated/generated/bayespy.utils.misc.composite_function.html#bayespy.utils.misc.composite_function">[docs]</a><span class="k">def</span> <span class="nf">composite_function</span><span class="p">(</span><span class="n">function_list</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Construct a function composition from a list of functions.</span>
+
+<span class="sd">    Given a list of functions [f,g,h], constructs a function :math:`h \circ g</span>
+<span class="sd">    \circ f`.  That is, returns a function :math:`z`, for which :math:`z(x) =</span>
+<span class="sd">    h(g(f(x)))`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">composite</span><span class="p">(</span><span class="n">X</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">function</span> <span class="ow">in</span> <span class="n">function_list</span><span class="p">:</span>
+            <span class="n">X</span> <span class="o">=</span> <span class="n">function</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">X</span>
+    <span class="k">return</span> <span class="n">composite</span>
+
+    </div>
+<div class="viewcode-block" id="ceildiv"><a class="viewcode-back" href="../../../dev_api/generated/generated/bayespy.utils.misc.ceildiv.html#bayespy.utils.misc.ceildiv">[docs]</a><span class="k">def</span> <span class="nf">ceildiv</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Compute a divided by b and rounded up.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="o">-</span><span class="p">(</span><span class="o">-</span><span class="n">a</span> <span class="o">//</span> <span class="n">b</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="rmse"><a class="viewcode-back" href="../../../dev_api/generated/generated/bayespy.utils.misc.rmse.html#bayespy.utils.misc.rmse">[docs]</a><span class="k">def</span> <span class="nf">rmse</span><span class="p">(</span><span class="n">y1</span><span class="p">,</span> <span class="n">y2</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">((</span><span class="n">y1</span><span class="o">-</span><span class="n">y2</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">))</span>
+</div>
+<div class="viewcode-block" id="is_callable"><a class="viewcode-back" href="../../../dev_api/generated/generated/bayespy.utils.misc.is_callable.html#bayespy.utils.misc.is_callable">[docs]</a><span class="k">def</span> <span class="nf">is_callable</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="s">&#39;__call__&#39;</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="atleast_nd"><a class="viewcode-back" href="../../../dev_api/generated/generated/bayespy.utils.misc.atleast_nd.html#bayespy.utils.misc.atleast_nd">[docs]</a><span class="k">def</span> <span class="nf">atleast_nd</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">d</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">ndim</span><span class="p">(</span><span class="n">X</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">d</span><span class="p">:</span>
+        <span class="n">sh</span> <span class="o">=</span> <span class="p">(</span><span class="n">d</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">ndim</span><span class="p">(</span><span class="n">X</span><span class="p">))</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="p">,)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">sh</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">X</span>
+</div>
+<div class="viewcode-block" id="T"><a class="viewcode-back" href="../../../dev_api/generated/generated/bayespy.utils.misc.T.html#bayespy.utils.misc.T">[docs]</a><span class="k">def</span> <span class="nf">T</span><span class="p">(</span><span class="n">X</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Transpose the matrix.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">swapaxes</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="TestCase"><a class="viewcode-back" href="../../../dev_api/generated/generated/bayespy.utils.misc.TestCase.html#bayespy.utils.misc.TestCase">[docs]</a><span class="k">class</span> <span class="nc">TestCase</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Simple base class for unit testing.</span>
+
+<span class="sd">    Adds NumPy&#39;s features to Python&#39;s unittest.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="TestCase.assertAllClose"><a class="viewcode-back" href="../../../dev_api/generated/generated/generated/bayespy.utils.misc.TestCase.assertAllClose.html#bayespy.utils.misc.TestCase.assertAllClose">[docs]</a>    <span class="k">def</span> <span class="nf">assertAllClose</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> 
+                       <span class="n">msg</span><span class="o">=</span><span class="s">&quot;Arrays not almost equal&quot;</span><span class="p">,</span> 
+                       <span class="n">rtol</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">,</span>
+                       <span class="n">atol</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">A</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">B</span><span class="p">),</span> <span class="n">msg</span><span class="o">=</span><span class="n">msg</span><span class="p">)</span>
+        <span class="n">testing</span><span class="o">.</span><span class="n">assert_allclose</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">err_msg</span><span class="o">=</span><span class="n">msg</span><span class="p">,</span> <span class="n">rtol</span><span class="o">=</span><span class="n">rtol</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="n">atol</span><span class="p">)</span>
+        <span class="k">pass</span>
+</div>
+<div class="viewcode-block" id="TestCase.assertArrayEqual"><a class="viewcode-back" href="../../../dev_api/generated/generated/generated/bayespy.utils.misc.TestCase.assertArrayEqual.html#bayespy.utils.misc.TestCase.assertArrayEqual">[docs]</a>    <span class="k">def</span> <span class="nf">assertArrayEqual</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">msg</span><span class="o">=</span><span class="s">&quot;Arrays not equal&quot;</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">A</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">B</span><span class="p">),</span> <span class="n">msg</span><span class="o">=</span><span class="n">msg</span><span class="p">)</span>
+        <span class="n">testing</span><span class="o">.</span><span class="n">assert_array_equal</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">err_msg</span><span class="o">=</span><span class="n">msg</span><span class="p">)</span>
+        <span class="k">pass</span>
+</div>
+<div class="viewcode-block" id="TestCase.assertMessage"><a class="viewcode-back" href="../../../dev_api/generated/generated/generated/bayespy.utils.misc.TestCase.assertMessage.html#bayespy.utils.misc.TestCase.assertMessage">[docs]</a>    <span class="k">def</span> <span class="nf">assertMessage</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">M1</span><span class="p">,</span> <span class="n">M2</span><span class="p">):</span>
+        
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">M1</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">M2</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fail</span><span class="p">(</span><span class="s">&quot;Message lists have different lengths&quot;</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="p">(</span><span class="n">m1</span><span class="p">,</span> <span class="n">m2</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">M1</span><span class="p">,</span> <span class="n">M2</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">assertAllClose</span><span class="p">(</span><span class="n">m1</span><span class="p">,</span> <span class="n">m2</span><span class="p">)</span>
+
+        <span class="k">pass</span>
+</div>
+<div class="viewcode-block" id="TestCase.assertMessageToChild"><a class="viewcode-back" href="../../../dev_api/generated/generated/generated/bayespy.utils.misc.TestCase.assertMessageToChild.html#bayespy.utils.misc.TestCase.assertMessageToChild">[docs]</a>    <span class="k">def</span> <span class="nf">assertMessageToChild</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">u</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertMessage</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">_message_to_child</span><span class="p">(),</span> <span class="n">u</span><span class="p">)</span>
+        <span class="k">pass</span>
+</div></div>
+<div class="viewcode-block" id="symm"><a class="viewcode-back" href="../../../dev_api/generated/generated/bayespy.utils.misc.symm.html#bayespy.utils.misc.symm">[docs]</a><span class="k">def</span> <span class="nf">symm</span><span class="p">(</span><span class="n">X</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Make X symmetric.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">X</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">swapaxes</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">))</span>
+</div>
+<div class="viewcode-block" id="unique"><a class="viewcode-back" href="../../../dev_api/generated/generated/bayespy.utils.misc.unique.html#bayespy.utils.misc.unique">[docs]</a><span class="k">def</span> <span class="nf">unique</span><span class="p">(</span><span class="n">l</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Remove duplicate items from a list while preserving order.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">seen</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+    <span class="n">seen_add</span> <span class="o">=</span> <span class="n">seen</span><span class="o">.</span><span class="n">add</span>
+    <span class="k">return</span> <span class="p">[</span> <span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">l</span> <span class="k">if</span> <span class="n">x</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">seen</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">seen_add</span><span class="p">(</span><span class="n">x</span><span class="p">)]</span>    
+</div>
+<div class="viewcode-block" id="tempfile"><a class="viewcode-back" href="../../../dev_api/generated/generated/bayespy.utils.misc.tempfile.html#bayespy.utils.misc.tempfile">[docs]</a><span class="k">def</span> <span class="nf">tempfile</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">tmp</span><span class="o">.</span><span class="n">NamedTemporaryFile</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="n">prefix</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="n">suffix</span><span class="p">)</span><span class="o">.</span><span class="n">name</span>
+</div>
+<div class="viewcode-block" id="write_to_hdf5"><a class="viewcode-back" href="../../../dev_api/generated/generated/bayespy.utils.misc.write_to_hdf5.html#bayespy.utils.misc.write_to_hdf5">[docs]</a><span class="k">def</span> <span class="nf">write_to_hdf5</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Writes the given array into the HDF5 file.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c"># Try using compression. It doesn&#39;t work for scalars.</span>
+        <span class="n">group</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> 
+                             <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> 
+                             <span class="n">compression</span><span class="o">=</span><span class="s">&#39;gzip&#39;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+        <span class="n">group</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> 
+                             <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&#39;Could not write </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">data</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="nans"><a class="viewcode-back" href="../../../dev_api/generated/generated/bayespy.utils.misc.nans.html#bayespy.utils.misc.nans">[docs]</a><span class="k">def</span> <span class="nf">nans</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="p">()):</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="trues"><a class="viewcode-back" href="../../../dev_api/generated/generated/bayespy.utils.misc.trues.html#bayespy.utils.misc.trues">[docs]</a><span class="k">def</span> <span class="nf">trues</span><span class="p">(</span><span class="n">shape</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">bool</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="identity"><a class="viewcode-back" href="../../../dev_api/generated/generated/bayespy.utils.misc.identity.html#bayespy.utils.misc.identity">[docs]</a><span class="k">def</span> <span class="nf">identity</span><span class="p">(</span><span class="o">*</span><span class="n">shape</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">shape</span><span class="p">)),</span> <span class="n">shape</span><span class="o">+</span><span class="n">shape</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="array_to_scalar"><a class="viewcode-back" href="../../../dev_api/generated/generated/bayespy.utils.misc.array_to_scalar.html#bayespy.utils.misc.array_to_scalar">[docs]</a><span class="k">def</span> <span class="nf">array_to_scalar</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="c"># This transforms an N-dimensional array to a scalar. It&#39;s most</span>
+    <span class="c"># useful when you know that the array has only one element and you</span>
+    <span class="c"># want it out as a scalar.</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">ravel</span><span class="p">(</span><span class="n">x</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+<span class="c">#def diag(x):</span>
+</div>
+<div class="viewcode-block" id="grid"><a class="viewcode-back" href="../../../dev_api/generated/generated/bayespy.utils.misc.grid.html#bayespy.utils.misc.grid">[docs]</a><span class="k">def</span> <span class="nf">grid</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Returns meshgrid as a (M*N,2)-shape array. &quot;&quot;&quot;</span>
+    <span class="p">(</span><span class="n">X1</span><span class="p">,</span> <span class="n">X2</span><span class="p">)</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">((</span><span class="n">X1</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)),</span><span class="n">X2</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">))))</span>
+
+</div>
+<div class="viewcode-block" id="CholeskyDense"><a class="viewcode-back" href="../../../dev_api/generated/generated/bayespy.utils.misc.CholeskyDense.html#bayespy.utils.misc.CholeskyDense">[docs]</a><span class="k">class</span> <span class="nc">CholeskyDense</span><span class="p">():</span>
+    
+<div class="viewcode-block" id="CholeskyDense.__init__"><a class="viewcode-back" href="../../../dev_api/generated/generated/generated/bayespy.utils.misc.CholeskyDense.__init__.html#bayespy.utils.misc.CholeskyDense.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">K</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">U</span> <span class="o">=</span> <span class="n">linalg</span><span class="o">.</span><span class="n">cho_factor</span><span class="p">(</span><span class="n">K</span><span class="p">)</span>
+    </div>
+<div class="viewcode-block" id="CholeskyDense.solve"><a class="viewcode-back" href="../../../dev_api/generated/generated/generated/bayespy.utils.misc.CholeskyDense.solve.html#bayespy.utils.misc.CholeskyDense.solve">[docs]</a>    <span class="k">def</span> <span class="nf">solve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">sparse</span><span class="o">.</span><span class="n">issparse</span><span class="p">(</span><span class="n">b</span><span class="p">):</span>
+            <span class="n">b</span> <span class="o">=</span> <span class="n">b</span><span class="o">.</span><span class="n">toarray</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">linalg</span><span class="o">.</span><span class="n">cho_solve</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">U</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="CholeskyDense.logdet"><a class="viewcode-back" href="../../../dev_api/generated/generated/generated/bayespy.utils.misc.CholeskyDense.logdet.html#bayespy.utils.misc.CholeskyDense.logdet">[docs]</a>    <span class="k">def</span> <span class="nf">logdet</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">U</span><span class="p">[</span><span class="mi">0</span><span class="p">])))</span>
+</div>
+<div class="viewcode-block" id="CholeskyDense.trace_solve_gradient"><a class="viewcode-back" href="../../../dev_api/generated/generated/generated/bayespy.utils.misc.CholeskyDense.trace_solve_gradient.html#bayespy.utils.misc.CholeskyDense.trace_solve_gradient">[docs]</a>    <span class="k">def</span> <span class="nf">trace_solve_gradient</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dK</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">dK</span><span class="p">))</span>
+</div></div>
+<div class="viewcode-block" id="CholeskySparse"><a class="viewcode-back" href="../../../dev_api/generated/generated/bayespy.utils.misc.CholeskySparse.html#bayespy.utils.misc.CholeskySparse">[docs]</a><span class="k">class</span> <span class="nc">CholeskySparse</span><span class="p">():</span>
+    
+<div class="viewcode-block" id="CholeskySparse.__init__"><a class="viewcode-back" href="../../../dev_api/generated/generated/generated/bayespy.utils.misc.CholeskySparse.__init__.html#bayespy.utils.misc.CholeskySparse.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">K</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">LD</span> <span class="o">=</span> <span class="n">cholmod</span><span class="o">.</span><span class="n">cholesky</span><span class="p">(</span><span class="n">K</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="CholeskySparse.solve"><a class="viewcode-back" href="../../../dev_api/generated/generated/generated/bayespy.utils.misc.CholeskySparse.solve.html#bayespy.utils.misc.CholeskySparse.solve">[docs]</a>    <span class="k">def</span> <span class="nf">solve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">sparse</span><span class="o">.</span><span class="n">issparse</span><span class="p">(</span><span class="n">b</span><span class="p">):</span>
+            <span class="n">b</span> <span class="o">=</span> <span class="n">b</span><span class="o">.</span><span class="n">toarray</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">LD</span><span class="o">.</span><span class="n">solve_A</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="CholeskySparse.logdet"><a class="viewcode-back" href="../../../dev_api/generated/generated/generated/bayespy.utils.misc.CholeskySparse.logdet.html#bayespy.utils.misc.CholeskySparse.logdet">[docs]</a>    <span class="k">def</span> <span class="nf">logdet</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">LD</span><span class="o">.</span><span class="n">logdet</span><span class="p">()</span>
+        <span class="c">#np.sum(np.log(LD.D()))</span>
+</div>
+<div class="viewcode-block" id="CholeskySparse.trace_solve_gradient"><a class="viewcode-back" href="../../../dev_api/generated/generated/generated/bayespy.utils.misc.CholeskySparse.trace_solve_gradient.html#bayespy.utils.misc.CholeskySparse.trace_solve_gradient">[docs]</a>    <span class="k">def</span> <span class="nf">trace_solve_gradient</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dK</span><span class="p">):</span>
+        <span class="c"># WTF?! numpy.multiply doesn&#39;t work for two sparse</span>
+        <span class="c"># matrices.. It returns a result but it is incorrect!</span>
+        
+        <span class="c"># Use the identity trace(K\dK)=sum(inv(K).*dK) by computing</span>
+        <span class="c"># the sparse inverse (lower triangular part)</span>
+        <span class="n">iK</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">LD</span><span class="o">.</span><span class="n">spinv</span><span class="p">(</span><span class="n">form</span><span class="o">=</span><span class="s">&#39;lower&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">iK</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="n">dK</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+                <span class="o">-</span> <span class="n">iK</span><span class="o">.</span><span class="n">diagonal</span><span class="p">()</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">dK</span><span class="o">.</span><span class="n">diagonal</span><span class="p">()))</span>
+        <span class="c"># Multiply by two because of symmetry (remove diagonal once</span>
+        <span class="c"># because it was taken into account twice)</span>
+        <span class="c">#return np.multiply(self.LD.inv().todense(),dK.todense()).sum()</span>
+        <span class="c">#return self.LD.inv().multiply(dK).sum() # THIS WORKS</span>
+        <span class="c">#return np.multiply(self.LD.inv(),dK).sum() # THIS NOT WORK!! WTF??</span>
+        <span class="n">iK</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">LD</span><span class="o">.</span><span class="n">spinv</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">iK</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="n">dK</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+        <span class="c">#return (2*iK.multiply(dK).sum()</span>
+        <span class="c">#        - iK.diagonal().dot(dK.diagonal()))</span>
+        <span class="c">#return (2*np.multiply(iK, dK).sum()</span>
+        <span class="c">#        - iK.diagonal().dot(dK.diagonal())) # THIS NOT WORK!!</span>
+        <span class="c">#return np.trace(self.solve(dK))</span>
+    
+    </div></div>
+<div class="viewcode-block" id="cholesky"><a class="viewcode-back" href="../../../dev_api/generated/generated/bayespy.utils.misc.cholesky.html#bayespy.utils.misc.cholesky">[docs]</a><span class="k">def</span> <span class="nf">cholesky</span><span class="p">(</span><span class="n">K</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">K</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">CholeskyDense</span><span class="p">(</span><span class="n">K</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">sparse</span><span class="o">.</span><span class="n">issparse</span><span class="p">(</span><span class="n">K</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">CholeskySparse</span><span class="p">(</span><span class="n">K</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;Unsupported covariance matrix type&quot;</span><span class="p">)</span>
+    </div>
+<div class="viewcode-block" id="vb_optimize"><a class="viewcode-back" href="../../../dev_api/generated/generated/bayespy.utils.misc.vb_optimize.html#bayespy.utils.misc.vb_optimize">[docs]</a><span class="k">def</span> <span class="nf">vb_optimize</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">set_values</span><span class="p">,</span> <span class="n">lowerbound</span><span class="p">,</span> <span class="n">gradient</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="c"># Function for computing the lower bound</span>
+    <span class="k">def</span> <span class="nf">func</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+        <span class="c"># Set the value of the nodes</span>
+        <span class="n">set_values</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="c"># Compute lower bound (and gradient terms)</span>
+        <span class="k">return</span> <span class="o">-</span><span class="n">lowerbound</span><span class="p">()</span>
+        <span class="c">#return f</span>
+
+    <span class="c"># Function for computing the gradient of the lower bound</span>
+    <span class="k">def</span> <span class="nf">funcprime</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+        <span class="c"># Collect the gradients from the nodes</span>
+        <span class="n">set_values</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="c"># Compute lower bound (and gradient terms)</span>
+        <span class="c">#lowerbound()</span>
+        <span class="k">return</span> <span class="o">-</span><span class="n">gradient</span><span class="p">()</span>
+        <span class="c">#return df</span>
+
+    <span class="c"># Optimize</span>
+    <span class="k">if</span> <span class="n">gradient</span> <span class="o">!=</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">check_gradient</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">funcprime</span><span class="p">,</span> <span class="mf">1e-6</span><span class="p">)</span>
+
+        <span class="n">xopt</span> <span class="o">=</span> <span class="n">optimize</span><span class="o">.</span><span class="n">fmin_bfgs</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">fprime</span><span class="o">=</span><span class="n">funcprime</span><span class="p">,</span> <span class="n">maxiter</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+        <span class="c">#xopt = optimize.fmin_ncg(func, x0, fprime=funcprime, maxiter=50)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">xopt</span> <span class="o">=</span> <span class="n">optimize</span><span class="o">.</span><span class="n">fmin_bfgs</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">maxiter</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+        <span class="c">#xopt = optimize.fmin_ncg(func, x0, maxiter=50)</span>
+
+    <span class="c"># Set optimal values to the nodes</span>
+    <span class="n">set_values</span><span class="p">(</span><span class="n">xopt</span><span class="p">)</span>
+    
+
+<span class="c"># Optimizes the parameters of the given nodes.</span></div>
+<div class="viewcode-block" id="vb_optimize_nodes"><a class="viewcode-back" href="../../../dev_api/generated/generated/bayespy.utils.misc.vb_optimize_nodes.html#bayespy.utils.misc.vb_optimize_nodes">[docs]</a><span class="k">def</span> <span class="nf">vb_optimize_nodes</span><span class="p">(</span><span class="o">*</span><span class="n">nodes</span><span class="p">):</span>
+
+    <span class="c"># Get cost functions</span>
+    <span class="n">lbs</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">nodes</span><span class="p">:</span>
+        <span class="c"># Add node&#39;s cost function</span>
+        <span class="n">lbs</span> <span class="o">|=</span> <span class="n">node</span><span class="o">.</span><span class="n">get_all_vb_terms</span><span class="p">()</span>
+        <span class="c">#.lower_bound_contribution)</span>
+        <span class="c"># Add child nodes&#39; cost functions</span>
+        <span class="c">#for lb in node.get_children_vb_bound():</span>
+            <span class="c">#lbs.add(lb)</span>
+
+    <span class="c"># Uniqify nodes?</span>
+    <span class="n">nodes</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">nodes</span><span class="p">)</span>
+
+    <span class="c"># Get initial value and transformation/update function</span>
+    <span class="n">ind</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">ind_all</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+    <span class="n">transform_all</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+    <span class="n">gradient_all</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+    <span class="n">x0_all</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([])</span>
+    <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">nodes</span><span class="p">:</span>
+        <span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">transform</span><span class="p">,</span> <span class="n">gradient</span><span class="p">)</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">start_optimization</span><span class="p">()</span>
+        <span class="c"># Vector of initial values</span>
+        <span class="n">x0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">x0</span><span class="p">)</span>
+        <span class="n">x0_all</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">x0_all</span><span class="p">,</span> <span class="n">x0</span><span class="p">))</span>
+        <span class="c"># Indices of the vector elements that correspond to this node</span>
+        <span class="n">sz</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">x0</span><span class="p">)</span>
+        <span class="n">ind_all</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">ind</span><span class="p">,</span> <span class="n">ind</span><span class="o">+</span><span class="n">sz</span><span class="p">))</span>
+        <span class="n">ind</span> <span class="o">+=</span> <span class="n">sz</span>
+        <span class="c"># Function for setting the value of this node</span>
+        <span class="n">transform_all</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">transform</span><span class="p">)</span>
+        <span class="c"># Gradients</span>
+        <span class="n">gradient_all</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">gradient</span><span class="p">)</span>
+
+    <span class="c"># Function for changing the values of the nodes</span>
+    <span class="k">def</span> <span class="nf">set_value</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+        <span class="k">for</span> <span class="p">(</span><span class="n">ind</span><span class="p">,</span> <span class="n">transform</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">ind_all</span><span class="p">,</span> <span class="n">transform_all</span><span class="p">):</span>
+            <span class="c"># Transform/update variable</span>
+            <span class="n">transform</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">ind</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span><span class="n">ind</span><span class="p">[</span><span class="mi">1</span><span class="p">]])</span>
+
+    <span class="c"># Compute the lower bound (and the gradient)</span>
+    <span class="k">def</span> <span class="nf">lowerbound</span><span class="p">():</span>
+        <span class="n">l</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="c"># TODO: Put gradients to zero!</span>
+        <span class="k">for</span> <span class="n">lb</span> <span class="ow">in</span> <span class="n">lbs</span><span class="p">:</span>
+            <span class="n">l</span> <span class="o">+=</span> <span class="n">lb</span><span class="p">(</span><span class="n">gradient</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">l</span>
+
+    <span class="c"># Compute (or get) the gradient</span>
+    <span class="k">def</span> <span class="nf">gradient</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">lb</span> <span class="ow">in</span> <span class="n">lbs</span><span class="p">:</span>
+            <span class="n">lb</span><span class="p">(</span><span class="n">gradient</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="n">dl</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">x0_all</span><span class="p">))</span>
+        <span class="k">for</span> <span class="p">(</span><span class="n">ind</span><span class="p">,</span> <span class="n">gradient</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">ind_all</span><span class="p">,</span> <span class="n">gradient_all</span><span class="p">):</span>
+            <span class="n">dl</span><span class="p">[</span><span class="n">ind</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span><span class="n">ind</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span> <span class="o">=</span> <span class="n">gradient</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">dl</span>
+            
+    <span class="c">#vb_optimize(x0_all, set_value, lowerbound)</span>
+    <span class="n">vb_optimize</span><span class="p">(</span><span class="n">x0_all</span><span class="p">,</span> <span class="n">set_value</span><span class="p">,</span> <span class="n">lowerbound</span><span class="p">,</span> <span class="n">gradient</span><span class="o">=</span><span class="n">gradient</span><span class="p">)</span>
+        
+    <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">nodes</span><span class="p">:</span>
+        <span class="n">node</span><span class="o">.</span><span class="n">stop_optimization</span><span class="p">()</span>
+        
+<span class="c"># Computes log probability density function of the Gaussian</span>
+<span class="c"># distribution</span></div>
+<div class="viewcode-block" id="gaussian_logpdf"><a class="viewcode-back" href="../../../dev_api/generated/generated/bayespy.utils.misc.gaussian_logpdf.html#bayespy.utils.misc.gaussian_logpdf">[docs]</a><span class="k">def</span> <span class="nf">gaussian_logpdf</span><span class="p">(</span><span class="n">y_invcov_y</span><span class="p">,</span>
+                    <span class="n">y_invcov_mu</span><span class="p">,</span>
+                    <span class="n">mu_invcov_mu</span><span class="p">,</span>
+                    <span class="n">logdetcov</span><span class="p">,</span>
+                    <span class="n">D</span><span class="p">):</span>
+
+    <span class="k">return</span> <span class="p">(</span><span class="o">-</span><span class="mf">0.5</span><span class="o">*</span><span class="n">D</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
+            <span class="o">-</span><span class="mf">0.5</span><span class="o">*</span><span class="n">logdetcov</span>
+            <span class="o">-</span><span class="mf">0.5</span><span class="o">*</span><span class="n">y_invcov_y</span>
+            <span class="o">+</span><span class="n">y_invcov_mu</span>
+            <span class="o">-</span><span class="mf">0.5</span><span class="o">*</span><span class="n">mu_invcov_mu</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="check_gradient"><a class="viewcode-back" href="../../../dev_api/generated/generated/bayespy.utils.misc.check_gradient.html#bayespy.utils.misc.check_gradient">[docs]</a><span class="k">def</span> <span class="nf">check_gradient</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">eps</span><span class="p">):</span>
+    <span class="c">#f0 = f(x0)</span>
+    <span class="n">grad</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">x0</span><span class="p">))</span>
+    
+    <span class="k">for</span> <span class="n">ind</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x0</span><span class="p">)):</span>
+        <span class="n">xmin</span> <span class="o">=</span> <span class="n">x0</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">xmax</span> <span class="o">=</span> <span class="n">x0</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">xmin</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span> <span class="o">-=</span> <span class="n">eps</span>
+        <span class="n">xmax</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span> <span class="o">+=</span> <span class="n">eps</span>
+        
+        <span class="n">fmin</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="n">xmin</span><span class="p">)</span>
+        <span class="n">fmax</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="n">xmax</span><span class="p">)</span>
+
+        <span class="n">grad</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">fmax</span><span class="o">-</span><span class="n">fmin</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">eps</span><span class="p">)</span>
+
+    <span class="k">print</span><span class="p">(</span><span class="s">&#39;x: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">x0</span><span class="p">))</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&#39;Numerical gradient: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">grad</span><span class="p">))</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&#39;Exact gradient: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">df</span><span class="p">(</span><span class="n">x0</span><span class="p">)))</span>
+</div>
+<div class="viewcode-block" id="zipper_merge"><a class="viewcode-back" href="../../../dev_api/generated/generated/bayespy.utils.misc.zipper_merge.html#bayespy.utils.misc.zipper_merge">[docs]</a><span class="k">def</span> <span class="nf">zipper_merge</span><span class="p">(</span><span class="o">*</span><span class="n">lists</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Combines lists by alternating elements from them.</span>
+
+<span class="sd">    Combining lists [1,2,3], [&#39;a&#39;,&#39;b&#39;,&#39;c&#39;] and [42,666,99] results in</span>
+<span class="sd">    [1,&#39;a&#39;,42,2,&#39;b&#39;,666,3,&#39;c&#39;,99]</span>
+
+<span class="sd">    The lists should have equal length or they are assumed to have the length of</span>
+<span class="sd">    the shortest list.</span>
+
+<span class="sd">    This is known as alternating merge or zipper merge.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">lists</span><span class="p">),</span> <span class="p">()))</span>
+</div>
+<div class="viewcode-block" id="remove_whitespace"><a class="viewcode-back" href="../../../dev_api/generated/generated/bayespy.utils.misc.remove_whitespace.html#bayespy.utils.misc.remove_whitespace">[docs]</a><span class="k">def</span> <span class="nf">remove_whitespace</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+    <span class="k">return</span> <span class="s">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
+    </div>
+<div class="viewcode-block" id="is_numeric"><a class="viewcode-back" href="../../../dev_api/generated/generated/bayespy.utils.misc.is_numeric.html#bayespy.utils.misc.is_numeric">[docs]</a><span class="k">def</span> <span class="nf">is_numeric</span><span class="p">(</span><span class="n">a</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isscalar</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="ow">or</span>
+            <span class="nb">isinstance</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">or</span>
+            <span class="nb">isinstance</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">))</span>
+</div>
+<div class="viewcode-block" id="isinteger"><a class="viewcode-back" href="../../../dev_api/generated/generated/bayespy.utils.misc.isinteger.html#bayespy.utils.misc.isinteger">[docs]</a><span class="k">def</span> <span class="nf">isinteger</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asanyarray</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">type</span>
+    <span class="k">return</span> <span class="p">(</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">integer</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">bool_</span><span class="p">)</span> <span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="is_string"><a class="viewcode-back" href="../../../dev_api/generated/generated/bayespy.utils.misc.is_string.html#bayespy.utils.misc.is_string">[docs]</a><span class="k">def</span> <span class="nf">is_string</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="multiply_shapes"><a class="viewcode-back" href="../../../dev_api/generated/generated/bayespy.utils.misc.multiply_shapes.html#bayespy.utils.misc.multiply_shapes">[docs]</a><span class="k">def</span> <span class="nf">multiply_shapes</span><span class="p">(</span><span class="o">*</span><span class="n">shapes</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Compute element-wise product of lists/tuples.</span>
+
+<span class="sd">    Shorter lists are concatenated with leading 1s in order to get lists with</span>
+<span class="sd">    the same length.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c"># Make the shapes equal length</span>
+    <span class="n">shapes</span> <span class="o">=</span> <span class="n">make_equal_length</span><span class="p">(</span><span class="o">*</span><span class="n">shapes</span><span class="p">)</span>
+
+    <span class="c"># Compute element-wise product</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">:</span> <span class="p">(</span><span class="n">x</span><span class="o">*</span><span class="n">y</span> <span class="k">for</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">))</span>
+    <span class="n">shape</span> <span class="o">=</span> <span class="n">functools</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">shapes</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="make_equal_length"><a class="viewcode-back" href="../../../dev_api/generated/generated/bayespy.utils.misc.make_equal_length.html#bayespy.utils.misc.make_equal_length">[docs]</a><span class="k">def</span> <span class="nf">make_equal_length</span><span class="p">(</span><span class="o">*</span><span class="n">shapes</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Make tuples equal length.</span>
+
+<span class="sd">    Add leading 1s to shorter tuples.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="c"># Get maximum length</span>
+    <span class="n">max_len</span> <span class="o">=</span> <span class="nb">max</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span> <span class="k">for</span> <span class="n">shape</span> <span class="ow">in</span> <span class="n">shapes</span><span class="p">))</span>
+
+    <span class="c"># Make the shapes equal length</span>
+    <span class="n">shapes</span> <span class="o">=</span> <span class="p">((</span><span class="mi">1</span><span class="p">,)</span><span class="o">*</span><span class="p">(</span><span class="n">max_len</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="n">shape</span><span class="p">))</span> <span class="o">+</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span> <span class="k">for</span> <span class="n">shape</span> <span class="ow">in</span> <span class="n">shapes</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">shapes</span>
+
+</div>
+<div class="viewcode-block" id="make_equal_ndim"><a class="viewcode-back" href="../../../dev_api/generated/generated/bayespy.utils.misc.make_equal_ndim.html#bayespy.utils.misc.make_equal_ndim">[docs]</a><span class="k">def</span> <span class="nf">make_equal_ndim</span><span class="p">(</span><span class="o">*</span><span class="n">arrays</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Add trailing unit axes so that arrays have equal ndim</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">shapes</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">array</span><span class="p">)</span> <span class="k">for</span> <span class="n">array</span> <span class="ow">in</span> <span class="n">arrays</span><span class="p">]</span>
+    <span class="n">shapes</span> <span class="o">=</span> <span class="n">make_equal_length</span><span class="p">(</span><span class="o">*</span><span class="n">shapes</span><span class="p">)</span>
+    <span class="n">arrays</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">shape</span><span class="p">)</span>
+              <span class="k">for</span> <span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">shape</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">arrays</span><span class="p">,</span> <span class="n">shapes</span><span class="p">)]</span>
+    <span class="k">return</span> <span class="n">arrays</span>
+
+</div>
+<div class="viewcode-block" id="sum_to_dim"><a class="viewcode-back" href="../../../dev_api/generated/generated/bayespy.utils.misc.sum_to_dim.html#bayespy.utils.misc.sum_to_dim">[docs]</a><span class="k">def</span> <span class="nf">sum_to_dim</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">dim</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Sum leading axes of A such that A has dim dimensions.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">dimdiff</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ndim</span><span class="p">(</span><span class="n">A</span><span class="p">)</span> <span class="o">-</span> <span class="n">dim</span>
+    <span class="k">if</span> <span class="n">dimdiff</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">axes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">dimdiff</span><span class="p">)</span>
+        <span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axes</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">A</span>
+</div>
+<div class="viewcode-block" id="sum_multiply"><a class="viewcode-back" href="../../../dev_api/generated/generated/bayespy.utils.misc.sum_multiply.html#bayespy.utils.misc.sum_multiply">[docs]</a><span class="k">def</span> <span class="nf">sum_multiply</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">sumaxis</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+
+    <span class="c"># Computes sum(arg[0]*arg[1]*arg[2]*..., axis=axes_to_sum) without</span>
+    <span class="c"># explicitly computing the intermediate product</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;You must give at least one input array&quot;</span><span class="p">)</span>
+
+    <span class="c"># Dimensionality of the result</span>
+    <span class="n">max_dim</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)):</span>
+        <span class="n">max_dim</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">max_dim</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndim</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="n">k</span><span class="p">]))</span>
+
+    <span class="k">if</span> <span class="n">sumaxis</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">axis</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="c"># Sum all axes</span>
+            <span class="n">axes</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isscalar</span><span class="p">(</span><span class="n">axis</span><span class="p">):</span>
+                <span class="n">axis</span> <span class="o">=</span> <span class="p">[</span><span class="n">axis</span><span class="p">]</span>
+            <span class="n">axes</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span>
+                    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">max_dim</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">i</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">axis</span> <span class="ow">and</span> <span class="p">(</span><span class="o">-</span><span class="n">max_dim</span><span class="o">+</span><span class="n">i</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">axis</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">axis</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="c"># Keep all axes</span>
+            <span class="n">axes</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="n">max_dim</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c"># Find axes that are kept</span>
+            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isscalar</span><span class="p">(</span><span class="n">axis</span><span class="p">):</span>
+                <span class="n">axes</span> <span class="o">=</span> <span class="p">[</span><span class="n">axis</span><span class="p">]</span>
+            <span class="n">axes</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;=</span> <span class="mi">0</span>
+                    <span class="k">else</span> <span class="n">i</span><span class="o">+</span><span class="n">max_dim</span>
+                    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">axis</span><span class="p">]</span>
+            <span class="n">axes</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">axes</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">axes</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">axes</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="nb">max</span><span class="p">(</span><span class="n">axes</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">max_dim</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Axis index out of bounds&quot;</span><span class="p">)</span>
+
+    <span class="c"># Form a list of pairs: the array in the product and its axes</span>
+    <span class="n">pairs</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)):</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">a_dim</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ndim</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+        <span class="n">pairs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+        <span class="n">pairs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">max_dim</span><span class="o">-</span><span class="n">a_dim</span><span class="p">,</span> <span class="n">max_dim</span><span class="p">))</span>
+
+    <span class="c"># Output axes are those which are not summed</span>
+    <span class="n">pairs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">axes</span><span class="p">)</span>
+
+    <span class="c"># Compute the sum-product</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="o">*</span><span class="n">pairs</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">err</span><span class="p">)</span> <span class="o">==</span> <span class="p">(</span><span class="s">&quot;If &#39;op_axes&#39; or &#39;itershape&#39; is not NULL in &quot;</span>
+                        <span class="s">&quot;theiterator constructor, &#39;oa_ndim&#39; must be greater &quot;</span>
+                        <span class="s">&quot;than zero&quot;</span><span class="p">):</span>
+            <span class="c"># TODO/FIXME: Handle a bug in NumPy. If all arguments to einsum are</span>
+            <span class="c"># scalars, it raises an error. For scalars we can just use multiply</span>
+            <span class="c"># and forget about summing. Hopefully, in the future, einsum handles</span>
+            <span class="c"># scalars properly and this try-except becomes unnecessary.</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="n">functools</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">multiply</span><span class="p">,</span> <span class="n">args</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">err</span>
+
+    <span class="c"># Restore summed axes as singleton axes</span>
+    <span class="k">if</span> <span class="n">keepdims</span><span class="p">:</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="p">()</span>
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">max_dim</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">axes</span><span class="p">:</span>
+                <span class="c"># Axis not summed</span>
+                <span class="n">s</span> <span class="o">=</span> <span class="n">s</span> <span class="o">+</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">y</span><span class="p">)[</span><span class="n">d</span><span class="p">],)</span>
+                <span class="n">d</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c"># Axis was summed</span>
+                <span class="n">s</span> <span class="o">=</span> <span class="n">s</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span><span class="p">,)</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">y</span>
+</div>
+<div class="viewcode-block" id="sum_product"><a class="viewcode-back" href="../../../dev_api/generated/generated/bayespy.utils.misc.sum_product.html#bayespy.utils.misc.sum_product">[docs]</a><span class="k">def</span> <span class="nf">sum_product</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">axes_to_keep</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">axes_to_sum</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">axes_to_keep</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">sum_multiply</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> 
+                            <span class="n">axis</span><span class="o">=</span><span class="n">axes_to_keep</span><span class="p">,</span> 
+                            <span class="n">sumaxis</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                            <span class="n">keepdims</span><span class="o">=</span><span class="n">keepdims</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">sum_multiply</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> 
+                            <span class="n">axis</span><span class="o">=</span><span class="n">axes_to_sum</span><span class="p">,</span> 
+                            <span class="n">sumaxis</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+                            <span class="n">keepdims</span><span class="o">=</span><span class="n">keepdims</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="moveaxis"><a class="viewcode-back" href="../../../dev_api/generated/generated/bayespy.utils.misc.moveaxis.html#bayespy.utils.misc.moveaxis">[docs]</a><span class="k">def</span> <span class="nf">moveaxis</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">axis_from</span><span class="p">,</span> <span class="n">axis_to</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Move the axis `axis_from` to position `axis_to`. </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="p">((</span><span class="n">axis_from</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="nb">abs</span><span class="p">(</span><span class="n">axis_from</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndim</span><span class="p">(</span><span class="n">A</span><span class="p">))</span> <span class="ow">or</span>
+        <span class="p">(</span><span class="n">axis_from</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">axis_from</span> <span class="o">&gt;=</span> <span class="n">np</span><span class="o">.</span><span class="n">ndim</span><span class="p">(</span><span class="n">A</span><span class="p">))</span> <span class="ow">or</span>
+        <span class="p">(</span><span class="n">axis_to</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="nb">abs</span><span class="p">(</span><span class="n">axis_to</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndim</span><span class="p">(</span><span class="n">A</span><span class="p">))</span> <span class="ow">or</span>
+        <span class="p">(</span><span class="n">axis_to</span> <span class="o">&gt;=</span> <span class="mi">0</span>  <span class="ow">and</span> <span class="n">axis_to</span> <span class="o">&gt;=</span> <span class="n">np</span><span class="o">.</span><span class="n">ndim</span><span class="p">(</span><span class="n">A</span><span class="p">))):</span>
+
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Can&#39;t move axis </span><span class="si">%d</span><span class="s"> to position </span><span class="si">%d</span><span class="s">. Axis index out of &quot;</span>
+                         <span class="s">&quot;bounds for array with shape </span><span class="si">%s</span><span class="s">&quot;</span>
+                         <span class="o">%</span> <span class="p">(</span><span class="n">axis_from</span><span class="p">,</span>
+                            <span class="n">axis_to</span><span class="p">,</span>
+                            <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">A</span><span class="p">)))</span>
+                            
+    <span class="n">axes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ndim</span><span class="p">(</span><span class="n">A</span><span class="p">))</span>
+    <span class="n">axes</span><span class="p">[</span><span class="n">axis_from</span><span class="p">:</span><span class="n">axis_to</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="n">axes</span><span class="p">[</span><span class="n">axis_from</span><span class="p">:</span><span class="n">axis_to</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">-=</span> <span class="mi">1</span>
+    <span class="n">axes</span><span class="p">[</span><span class="n">axis_to</span><span class="p">]</span> <span class="o">=</span> <span class="n">axis_from</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="n">axes</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="broadcasted_shape"><a class="viewcode-back" href="../../../dev_api/generated/generated/bayespy.utils.misc.broadcasted_shape.html#bayespy.utils.misc.broadcasted_shape">[docs]</a><span class="k">def</span> <span class="nf">broadcasted_shape</span><span class="p">(</span><span class="o">*</span><span class="n">shapes</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Computes the resulting broadcasted shape for a given set of shapes.</span>
+
+<span class="sd">    Uses the broadcasting rules of NumPy.  Raises an exception if the shapes do</span>
+<span class="sd">    not broadcast.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">dim</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">shapes</span><span class="p">:</span>
+        <span class="n">dim</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">dim</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="p">))</span>
+    <span class="n">S</span> <span class="o">=</span> <span class="p">()</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="o">-</span><span class="n">dim</span><span class="p">,</span><span class="mi">0</span><span class="p">):</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">shapes</span><span class="p">:</span>
+            <span class="k">if</span> <span class="o">-</span><span class="n">i</span> <span class="o">&lt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">s</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">s</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                <span class="k">elif</span> <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">!=</span> <span class="n">s</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Shapes </span><span class="si">%s</span><span class="s"> do not broadcast&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">shapes</span><span class="p">,))</span>
+        <span class="n">S</span> <span class="o">=</span> <span class="n">S</span> <span class="o">+</span> <span class="p">(</span><span class="n">s</span><span class="p">,)</span>
+    <span class="k">return</span> <span class="n">S</span>
+</div>
+<div class="viewcode-block" id="broadcasted_shape_from_arrays"><a class="viewcode-back" href="../../../dev_api/generated/generated/bayespy.utils.misc.broadcasted_shape_from_arrays.html#bayespy.utils.misc.broadcasted_shape_from_arrays">[docs]</a><span class="k">def</span> <span class="nf">broadcasted_shape_from_arrays</span><span class="p">(</span><span class="o">*</span><span class="n">arrays</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Computes the resulting broadcasted shape for a given set of arrays.</span>
+
+<span class="sd">    Raises an exception if the shapes do not broadcast.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">shapes</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">array</span><span class="p">)</span> <span class="k">for</span> <span class="n">array</span> <span class="ow">in</span> <span class="n">arrays</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">broadcasted_shape</span><span class="p">(</span><span class="o">*</span><span class="n">shapes</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="is_shape_subset"><a class="viewcode-back" href="../../../dev_api/generated/generated/bayespy.utils.misc.is_shape_subset.html#bayespy.utils.misc.is_shape_subset">[docs]</a><span class="k">def</span> <span class="nf">is_shape_subset</span><span class="p">(</span><span class="n">sub_shape</span><span class="p">,</span> <span class="n">full_shape</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sub_shape</span><span class="p">)</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">full_shape</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">False</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">sub_shape</span><span class="p">)):</span>
+        <span class="n">ind</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span> <span class="o">-</span> <span class="n">i</span>
+        <span class="k">if</span> <span class="n">sub_shape</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">sub_shape</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span> <span class="o">!=</span> <span class="n">full_shape</span><span class="p">[</span><span class="n">ind</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="bp">False</span>
+    <span class="k">return</span> <span class="bp">True</span>
+
+</div>
+<div class="viewcode-block" id="add_axes"><a class="viewcode-back" href="../../../dev_api/generated/generated/bayespy.utils.misc.add_axes.html#bayespy.utils.misc.add_axes">[docs]</a><span class="k">def</span> <span class="nf">add_axes</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num</span><span class="p">):</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">X</span>
+    <span class="n">shape</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">X</span><span class="p">)[:</span><span class="n">axis</span><span class="p">]</span> <span class="o">+</span> <span class="n">num</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="p">,)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">X</span><span class="p">)[</span><span class="n">axis</span><span class="p">:]</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">shape</span><span class="p">)</span>
+
+    </div>
+<div class="viewcode-block" id="add_leading_axes"><a class="viewcode-back" href="../../../dev_api/generated/generated/bayespy.utils.misc.add_leading_axes.html#bayespy.utils.misc.add_leading_axes">[docs]</a><span class="k">def</span> <span class="nf">add_leading_axes</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">add_axes</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="n">n</span><span class="p">)</span>
+    
+</div>
+<div class="viewcode-block" id="add_trailing_axes"><a class="viewcode-back" href="../../../dev_api/generated/generated/bayespy.utils.misc.add_trailing_axes.html#bayespy.utils.misc.add_trailing_axes">[docs]</a><span class="k">def</span> <span class="nf">add_trailing_axes</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">add_axes</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="n">n</span><span class="p">)</span>
+
+
+<span class="c">## def add_axes(x, lead, trail):</span>
+<span class="c">##     shape = (1,)*lead + np.shape(x) + (1,)*trail</span>
+<span class="c">##     return np.reshape(x, shape)</span>
+    
+    
+</div>
+<div class="viewcode-block" id="nested_iterator"><a class="viewcode-back" href="../../../dev_api/generated/generated/bayespy.utils.misc.nested_iterator.html#bayespy.utils.misc.nested_iterator">[docs]</a><span class="k">def</span> <span class="nf">nested_iterator</span><span class="p">(</span><span class="n">max_inds</span><span class="p">):</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">max_inds</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">itertools</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="o">*</span><span class="n">s</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="first"><a class="viewcode-back" href="../../../dev_api/generated/generated/bayespy.utils.misc.first.html#bayespy.utils.misc.first">[docs]</a><span class="k">def</span> <span class="nf">first</span><span class="p">(</span><span class="n">L</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="n">l</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">L</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">l</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">n</span>
+    <span class="k">return</span> <span class="bp">None</span>
+</div>
+<div class="viewcode-block" id="squeeze"><a class="viewcode-back" href="../../../dev_api/generated/generated/bayespy.utils.misc.squeeze.html#bayespy.utils.misc.squeeze">[docs]</a><span class="k">def</span> <span class="nf">squeeze</span><span class="p">(</span><span class="n">X</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Remove leading axes that have unit length.</span>
+
+<span class="sd">    For instance, a shape (1,1,4,1,3) will be reshaped to (4,1,3).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">shape</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">X</span><span class="p">))</span>
+    <span class="n">inds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nonzero</span><span class="p">(</span><span class="n">shape</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">inds</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">shape</span> <span class="o">=</span> <span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">shape</span> <span class="o">=</span> <span class="n">shape</span><span class="p">[</span><span class="n">inds</span><span class="p">[</span><span class="mi">0</span><span class="p">]:]</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">shape</span><span class="p">)</span>
+    </div>
+<div class="viewcode-block" id="squeeze_to_dim"><a class="viewcode-back" href="../../../dev_api/generated/generated/bayespy.utils.misc.squeeze_to_dim.html#bayespy.utils.misc.squeeze_to_dim">[docs]</a><span class="k">def</span> <span class="nf">squeeze_to_dim</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">dim</span><span class="p">):</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ndim</span><span class="p">(</span><span class="n">X</span><span class="p">)</span><span class="o">-</span><span class="n">dim</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">s</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="axes_to_collapse"><a class="viewcode-back" href="../../../dev_api/generated/generated/bayespy.utils.misc.axes_to_collapse.html#bayespy.utils.misc.axes_to_collapse">[docs]</a><span class="k">def</span> <span class="nf">axes_to_collapse</span><span class="p">(</span><span class="n">shape_x</span><span class="p">,</span> <span class="n">shape_to</span><span class="p">):</span>
+    <span class="c"># Solves which axes of shape shape_x need to be collapsed in order</span>
+    <span class="c"># to get the shape shape_to</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="p">()</span>
+    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="n">shape_x</span><span class="p">),</span> <span class="mi">0</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">shape_x</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">if</span> <span class="o">-</span><span class="n">j</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">shape_to</span><span class="p">)</span> <span class="ow">or</span> <span class="n">shape_to</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">s</span> <span class="o">+=</span> <span class="p">(</span><span class="n">j</span><span class="p">,)</span>
+            <span class="k">elif</span> <span class="n">shape_to</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">!=</span> <span class="n">shape_x</span><span class="p">[</span><span class="n">j</span><span class="p">]:</span>
+                <span class="k">print</span><span class="p">(</span><span class="s">&#39;Shape from: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">shape_x</span><span class="p">))</span>
+                <span class="k">print</span><span class="p">(</span><span class="s">&#39;Shape to: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">shape_to</span><span class="p">))</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&#39;Incompatible shape to squeeze&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="sum_to_shape"><a class="viewcode-back" href="../../../dev_api/generated/generated/bayespy.utils.misc.sum_to_shape.html#bayespy.utils.misc.sum_to_shape">[docs]</a><span class="k">def</span> <span class="nf">sum_to_shape</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Sum axes of the array such that the resulting shape is as given.</span>
+
+<span class="sd">    Thus, the shape of the result will be s or an error is raised.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c"># First, sum and remove axes that are not in s</span>
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">ndim</span><span class="p">(</span><span class="n">X</span><span class="p">)</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+        <span class="n">axes</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">ndim</span><span class="p">(</span><span class="n">X</span><span class="p">),</span> <span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">)))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">axes</span> <span class="o">=</span> <span class="p">()</span>
+    <span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axes</span><span class="p">)</span>
+
+    <span class="c"># Second, sum axes that are 1 in s but keep the axes</span>
+    <span class="n">axes</span> <span class="o">=</span> <span class="p">()</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">ndim</span><span class="p">(</span><span class="n">Y</span><span class="p">),</span> <span class="mi">0</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">Y</span><span class="p">)[</span><span class="n">i</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">axes</span> <span class="o">=</span> <span class="n">axes</span> <span class="o">+</span> <span class="p">(</span><span class="n">i</span><span class="p">,)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">Y</span><span class="p">)[</span><span class="n">i</span><span class="p">]</span> <span class="o">!=</span> <span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Shape </span><span class="si">%s</span><span class="s"> can&#39;t be summed to shape </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span>
+                                 <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">X</span><span class="p">),</span> <span class="n">s</span><span class="p">))</span>
+    <span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axes</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">Y</span>
+</div>
+<div class="viewcode-block" id="repeat_to_shape"><a class="viewcode-back" href="../../../dev_api/generated/generated/bayespy.utils.misc.repeat_to_shape.html#bayespy.utils.misc.repeat_to_shape">[docs]</a><span class="k">def</span> <span class="nf">repeat_to_shape</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
+    <span class="c"># Current shape</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;Can&#39;t repeat to a smaller shape&quot;</span><span class="p">)</span>
+    <span class="c"># Add extra axis</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">([</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">)</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="p">)))</span> <span class="o">+</span> <span class="n">t</span>
+    <span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="n">t</span><span class="p">)</span>
+    <span class="c"># Repeat</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">))):</span>
+        <span class="k">if</span> <span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">!=</span> <span class="n">t</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="n">t</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;Can&#39;t repeat non-singular dimensions&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="n">i</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">A</span>
+
+<span class="c">#def spinv_chol(L):</span>
+    
+</div>
+<div class="viewcode-block" id="chol"><a class="viewcode-back" href="../../../dev_api/generated/generated/bayespy.utils.misc.chol.html#bayespy.utils.misc.chol">[docs]</a><span class="k">def</span> <span class="nf">chol</span><span class="p">(</span><span class="n">C</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">sparse</span><span class="o">.</span><span class="n">issparse</span><span class="p">(</span><span class="n">C</span><span class="p">):</span>
+        <span class="c"># Sparse Cholesky decomposition (returns a Factor object)</span>
+        <span class="k">return</span> <span class="n">cholmod</span><span class="o">.</span><span class="n">cholesky</span><span class="p">(</span><span class="n">C</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c"># Dense Cholesky decomposition</span>
+        <span class="k">return</span> <span class="n">linalg</span><span class="o">.</span><span class="n">cho_factor</span><span class="p">(</span><span class="n">C</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+</div>
+<div class="viewcode-block" id="chol_solve"><a class="viewcode-back" href="../../../dev_api/generated/generated/bayespy.utils.misc.chol_solve.html#bayespy.utils.misc.chol_solve">[docs]</a><span class="k">def</span> <span class="nf">chol_solve</span><span class="p">(</span><span class="n">U</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">U</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">sparse</span><span class="o">.</span><span class="n">issparse</span><span class="p">(</span><span class="n">b</span><span class="p">):</span>
+            <span class="n">b</span> <span class="o">=</span> <span class="n">b</span><span class="o">.</span><span class="n">toarray</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">linalg</span><span class="o">.</span><span class="n">cho_solve</span><span class="p">((</span><span class="n">U</span><span class="p">,</span> <span class="bp">False</span><span class="p">),</span> <span class="n">b</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">U</span><span class="p">,</span> <span class="n">cholmod</span><span class="o">.</span><span class="n">Factor</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">sparse</span><span class="o">.</span><span class="n">issparse</span><span class="p">(</span><span class="n">b</span><span class="p">):</span>
+            <span class="n">b</span> <span class="o">=</span> <span class="n">b</span><span class="o">.</span><span class="n">toarray</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">U</span><span class="o">.</span><span class="n">solve_A</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Unknown type of Cholesky factor&quot;</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="chol_inv"><a class="viewcode-back" href="../../../dev_api/generated/generated/bayespy.utils.misc.chol_inv.html#bayespy.utils.misc.chol_inv">[docs]</a><span class="k">def</span> <span class="nf">chol_inv</span><span class="p">(</span><span class="n">U</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">U</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+        <span class="n">I</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">U</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">linalg</span><span class="o">.</span><span class="n">cho_solve</span><span class="p">((</span><span class="n">U</span><span class="p">,</span> <span class="bp">False</span><span class="p">),</span> <span class="n">I</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">U</span><span class="p">,</span> <span class="n">cholmod</span><span class="o">.</span><span class="n">Factor</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+        <span class="c">## if sparse.issparse(b):</span>
+        <span class="c">##     b = b.toarray()</span>
+        <span class="c">## return U.solve_A(b)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Unknown type of Cholesky factor&quot;</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="chol_logdet"><a class="viewcode-back" href="../../../dev_api/generated/generated/bayespy.utils.misc.chol_logdet.html#bayespy.utils.misc.chol_logdet">[docs]</a><span class="k">def</span> <span class="nf">chol_logdet</span><span class="p">(</span><span class="n">U</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">U</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+        <span class="k">return</span> <span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">U</span><span class="p">)))</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">U</span><span class="p">,</span> <span class="n">cholmod</span><span class="o">.</span><span class="n">Factor</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">U</span><span class="o">.</span><span class="n">D</span><span class="p">()))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Unknown type of Cholesky factor&quot;</span><span class="p">)</span>
+    </div>
+<div class="viewcode-block" id="logdet_chol"><a class="viewcode-back" href="../../../dev_api/generated/generated/bayespy.utils.misc.logdet_chol.html#bayespy.utils.misc.logdet_chol">[docs]</a><span class="k">def</span> <span class="nf">logdet_chol</span><span class="p">(</span><span class="n">U</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">U</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+        <span class="k">return</span> <span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">U</span><span class="p">)))</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">U</span><span class="p">,</span> <span class="n">cholmod</span><span class="o">.</span><span class="n">Factor</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">U</span><span class="o">.</span><span class="n">D</span><span class="p">()))</span>
+</div>
+<div class="viewcode-block" id="m_solve_triangular"><a class="viewcode-back" href="../../../dev_api/generated/generated/bayespy.utils.misc.m_solve_triangular.html#bayespy.utils.misc.m_solve_triangular">[docs]</a><span class="k">def</span> <span class="nf">m_solve_triangular</span><span class="p">(</span><span class="n">U</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="c"># Allocate memory</span>
+    <span class="n">U</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_2d</span><span class="p">(</span><span class="n">U</span><span class="p">)</span>
+    <span class="n">B</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">B</span><span class="p">)</span>
+    <span class="n">sh_u</span> <span class="o">=</span> <span class="n">U</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
+    <span class="n">sh_b</span> <span class="o">=</span> <span class="n">B</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">l_u</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">sh_u</span><span class="p">)</span>
+    <span class="n">l_b</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">sh_b</span><span class="p">)</span>
+
+    <span class="c"># Check which axis are iterated over with B along with U</span>
+    <span class="n">ind_b</span> <span class="o">=</span> <span class="p">[</span><span class="bp">Ellipsis</span><span class="p">]</span> <span class="o">*</span> <span class="n">l_b</span>
+    <span class="n">l_min</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">l_u</span><span class="p">,</span> <span class="n">l_b</span><span class="p">)</span>
+    <span class="n">jnd_b</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="o">-</span><span class="n">l_min</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span> <span class="k">if</span> <span class="n">sh_b</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">==</span><span class="n">sh_u</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+
+    <span class="c"># Shape of the result (broadcasting rules)</span>
+    <span class="n">sh</span> <span class="o">=</span> <span class="n">broadcasted_shape</span><span class="p">(</span><span class="n">sh_u</span><span class="p">,</span> <span class="n">sh_b</span><span class="p">)</span>
+    <span class="c">#out = np.zeros(np.shape(B))</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">sh</span> <span class="o">+</span> <span class="n">B</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">:])</span>
+    <span class="c">## if out == None:</span>
+    <span class="c">##     # Shape of the result (broadcasting rules)</span>
+    <span class="c">##     sh = broadcasted_shape(sh_u, sh_b)</span>
+    <span class="c">##     #out = np.zeros(np.shape(B))</span>
+    <span class="c">##     out = np.zeros(sh + B.shape[-1:])</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">nested_iterator</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">U</span><span class="p">)[:</span><span class="o">-</span><span class="mi">2</span><span class="p">]):</span>
+
+        <span class="c"># The goal is to run triangular solver once for all vectors of</span>
+        <span class="c"># B for which the matrices of U are the same (according to the</span>
+        <span class="c"># broadcasting rules). Thus, we collect all the axes of B for</span>
+        <span class="c"># which U is singleton and form them as a 2-D matrix and then</span>
+        <span class="c"># run the solver once.</span>
+        
+        <span class="c"># Select those axes of B for which U and B are not singleton</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">jnd_b</span><span class="p">:</span>
+            <span class="n">ind_b</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+            
+        <span class="c"># Collect all the axes for which U is singleton</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="n">B</span><span class="p">[</span><span class="nb">tuple</span><span class="p">(</span><span class="n">ind_b</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="bp">Ellipsis</span><span class="p">,)]</span>
+
+        <span class="c"># Reshape it to a 2-D (or 1-D) array</span>
+        <span class="n">orig_shape</span> <span class="o">=</span> <span class="n">b</span><span class="o">.</span><span class="n">shape</span>
+        <span class="k">if</span> <span class="n">b</span><span class="o">.</span><span class="n">ndim</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">b</span> <span class="o">=</span> <span class="n">b</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">b</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
+
+        <span class="c"># Ellipsis to all preceeding axes and ellipsis for the last</span>
+        <span class="c"># axis:</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ind_b</span><span class="p">)</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">sh</span><span class="p">):</span>
+            <span class="n">ind_out</span> <span class="o">=</span> <span class="p">(</span><span class="bp">Ellipsis</span><span class="p">,)</span> <span class="o">+</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">ind_b</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="bp">Ellipsis</span><span class="p">,)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ind_out</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">ind_b</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="bp">Ellipsis</span><span class="p">,)</span>
+
+        <span class="c">#print(&#39;utils.m_solve_triangular&#39;, np.shape(U[i]), np.shape(b))</span>
+        <span class="n">out</span><span class="p">[</span><span class="n">ind_out</span><span class="p">]</span> <span class="o">=</span> <span class="n">linalg</span><span class="o">.</span><span class="n">solve_triangular</span><span class="p">(</span><span class="n">U</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+                                               <span class="n">b</span><span class="o">.</span><span class="n">T</span><span class="p">,</span>
+                                               <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">orig_shape</span><span class="p">)</span>
+        <span class="c">#out[ind_out] = out[ind_out].T.reshape(orig_shape)</span>
+
+        
+    <span class="k">return</span> <span class="n">out</span>
+    
+    </div>
+<div class="viewcode-block" id="m_chol"><a class="viewcode-back" href="../../../dev_api/generated/generated/bayespy.utils.misc.m_chol.html#bayespy.utils.misc.m_chol">[docs]</a><span class="k">def</span> <span class="nf">m_chol</span><span class="p">(</span><span class="n">C</span><span class="p">):</span>
+    <span class="c"># Computes Cholesky decomposition for a collection of matrices.</span>
+    <span class="c"># The last two axes of C are considered as the matrix.</span>
+    <span class="n">C</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_2d</span><span class="p">(</span><span class="n">C</span><span class="p">)</span>
+    <span class="n">U</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">C</span><span class="p">))</span>
+    <span class="c">#print(&#39;m_chol&#39;, C)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">nested_iterator</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">U</span><span class="p">)[:</span><span class="o">-</span><span class="mi">2</span><span class="p">]):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">U</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">linalg</span><span class="o">.</span><span class="n">cho_factor</span><span class="p">(</span><span class="n">C</span><span class="p">[</span><span class="n">i</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">except</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">LinAlgError</span><span class="p">:</span>
+            <span class="k">print</span><span class="p">(</span><span class="n">C</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;Matrix not positive definite&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">U</span>
+
+</div>
+<div class="viewcode-block" id="m_chol_solve"><a class="viewcode-back" href="../../../dev_api/generated/generated/bayespy.utils.misc.m_chol_solve.html#bayespy.utils.misc.m_chol_solve">[docs]</a><span class="k">def</span> <span class="nf">m_chol_solve</span><span class="p">(</span><span class="n">U</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+
+    
+    <span class="c"># Allocate memory</span>
+    <span class="n">U</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_2d</span><span class="p">(</span><span class="n">U</span><span class="p">)</span>
+    <span class="n">B</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">B</span><span class="p">)</span>
+    <span class="n">sh_u</span> <span class="o">=</span> <span class="n">U</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
+    <span class="n">sh_b</span> <span class="o">=</span> <span class="n">B</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">l_u</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">sh_u</span><span class="p">)</span>
+    <span class="n">l_b</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">sh_b</span><span class="p">)</span>
+
+    <span class="c"># Check which axis are iterated over with B along with U</span>
+    <span class="n">ind_b</span> <span class="o">=</span> <span class="p">[</span><span class="bp">Ellipsis</span><span class="p">]</span> <span class="o">*</span> <span class="n">l_b</span>
+    <span class="n">l_min</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">l_u</span><span class="p">,</span> <span class="n">l_b</span><span class="p">)</span>
+    <span class="n">jnd_b</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="o">-</span><span class="n">l_min</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span> <span class="k">if</span> <span class="n">sh_b</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">==</span><span class="n">sh_u</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+
+    <span class="k">if</span> <span class="n">out</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="c"># Shape of the result (broadcasting rules)</span>
+        <span class="n">sh</span> <span class="o">=</span> <span class="n">broadcasted_shape</span><span class="p">(</span><span class="n">sh_u</span><span class="p">,</span> <span class="n">sh_b</span><span class="p">)</span>
+        <span class="c">#out = np.zeros(np.shape(B))</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">sh</span> <span class="o">+</span> <span class="n">B</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">:])</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">nested_iterator</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">U</span><span class="p">)[:</span><span class="o">-</span><span class="mi">2</span><span class="p">]):</span>
+
+        <span class="c"># The goal is to run Cholesky solver once for all vectors of B</span>
+        <span class="c"># for which the matrices of U are the same (according to the</span>
+        <span class="c"># broadcasting rules). Thus, we collect all the axes of B for</span>
+        <span class="c"># which U is singleton and form them as a 2-D matrix and then</span>
+        <span class="c"># run the solver once.</span>
+        
+        <span class="c"># Select those axes of B for which U and B are not singleton</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">jnd_b</span><span class="p">:</span>
+            <span class="n">ind_b</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+            
+        <span class="c"># Collect all the axes for which U is singleton</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="n">B</span><span class="p">[</span><span class="nb">tuple</span><span class="p">(</span><span class="n">ind_b</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="bp">Ellipsis</span><span class="p">,)]</span>
+
+        <span class="c"># Reshape it to a 2-D (or 1-D) array</span>
+        <span class="n">orig_shape</span> <span class="o">=</span> <span class="n">b</span><span class="o">.</span><span class="n">shape</span>
+        <span class="k">if</span> <span class="n">b</span><span class="o">.</span><span class="n">ndim</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">b</span> <span class="o">=</span> <span class="n">b</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">b</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
+
+        <span class="c"># Ellipsis to all preceeding axes and ellipsis for the last</span>
+        <span class="c"># axis:</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ind_b</span><span class="p">)</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">sh</span><span class="p">):</span>
+            <span class="n">ind_out</span> <span class="o">=</span> <span class="p">(</span><span class="bp">Ellipsis</span><span class="p">,)</span> <span class="o">+</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">ind_b</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="bp">Ellipsis</span><span class="p">,)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ind_out</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">ind_b</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="bp">Ellipsis</span><span class="p">,)</span>
+
+        <span class="n">out</span><span class="p">[</span><span class="n">ind_out</span><span class="p">]</span> <span class="o">=</span> <span class="n">linalg</span><span class="o">.</span><span class="n">cho_solve</span><span class="p">((</span><span class="n">U</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="bp">False</span><span class="p">),</span>
+                                        <span class="n">b</span><span class="o">.</span><span class="n">T</span><span class="p">)</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">orig_shape</span><span class="p">)</span>
+
+        
+    <span class="k">return</span> <span class="n">out</span>
+    
+</div>
+<div class="viewcode-block" id="m_chol_inv"><a class="viewcode-back" href="../../../dev_api/generated/generated/bayespy.utils.misc.m_chol_inv.html#bayespy.utils.misc.m_chol_inv">[docs]</a><span class="k">def</span> <span class="nf">m_chol_inv</span><span class="p">(</span><span class="n">U</span><span class="p">):</span>
+    <span class="c"># Allocate memory</span>
+    <span class="n">V</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">U</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]),</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">U</span><span class="p">)[:</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span><span class="o">+</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">nested_iterator</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">U</span><span class="p">)[:</span><span class="o">-</span><span class="mi">2</span><span class="p">]):</span>
+        <span class="n">V</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">linalg</span><span class="o">.</span><span class="n">cho_solve</span><span class="p">((</span><span class="n">U</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="bp">False</span><span class="p">),</span>
+                                <span class="n">V</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+                                <span class="n">overwrite_b</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span> <span class="c"># This would need Fortran order</span>
+        
+    <span class="k">return</span> <span class="n">V</span>
+    
+</div>
+<div class="viewcode-block" id="m_chol_logdet"><a class="viewcode-back" href="../../../dev_api/generated/generated/bayespy.utils.misc.m_chol_logdet.html#bayespy.utils.misc.m_chol_logdet">[docs]</a><span class="k">def</span> <span class="nf">m_chol_logdet</span><span class="p">(</span><span class="n">U</span><span class="p">):</span>
+    <span class="c"># Computes Cholesky decomposition for a collection of matrices.</span>
+    <span class="k">return</span> <span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s">&#39;...ii-&gt;...i&#39;</span><span class="p">,</span> <span class="n">U</span><span class="p">)),</span> <span class="n">axis</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,))</span>
+
+</div>
+<div class="viewcode-block" id="m_digamma"><a class="viewcode-back" href="../../../dev_api/generated/generated/bayespy.utils.misc.m_digamma.html#bayespy.utils.misc.m_digamma">[docs]</a><span class="k">def</span> <span class="nf">m_digamma</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">d</span><span class="p">):</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">d</span><span class="p">):</span>
+        <span class="n">y</span> <span class="o">+=</span> <span class="n">special</span><span class="o">.</span><span class="n">digamma</span><span class="p">(</span><span class="n">a</span> <span class="o">+</span> <span class="mf">0.5</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">i</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">y</span>
+</div>
+<div class="viewcode-block" id="m_outer"><a class="viewcode-back" href="../../../dev_api/generated/generated/bayespy.utils.misc.m_outer.html#bayespy.utils.misc.m_outer">[docs]</a><span class="k">def</span> <span class="nf">m_outer</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="n">B</span><span class="p">):</span>
+    <span class="c"># Computes outer product over the last axes of A and B. The other</span>
+    <span class="c"># axes are broadcasted. Thus, if A has shape (..., N) and B has</span>
+    <span class="c"># shape (..., M), then the result has shape (..., N, M)</span>
+    <span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asanyarray</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
+    <span class="n">B</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asanyarray</span><span class="p">(</span><span class="n">B</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">A</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]</span><span class="o">*</span><span class="n">B</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,:]</span>
+</div>
+<div class="viewcode-block" id="diagonal"><a class="viewcode-back" href="../../../dev_api/generated/generated/bayespy.utils.misc.diagonal.html#bayespy.utils.misc.diagonal">[docs]</a><span class="k">def</span> <span class="nf">diagonal</span><span class="p">(</span><span class="n">A</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">diagonal</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">axis1</span><span class="o">=-</span><span class="mi">2</span><span class="p">,</span> <span class="n">axis2</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="get_diag"><a class="viewcode-back" href="../../../dev_api/generated/generated/bayespy.utils.misc.get_diag.html#bayespy.utils.misc.get_diag">[docs]</a><span class="k">def</span> <span class="nf">get_diag</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get the diagonal of an array.</span>
+
+<span class="sd">    If ndim&gt;1, take the diagonal of the last 2*ndim axes.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">ndim</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">X</span>
+
+    <span class="k">if</span> <span class="n">ndim</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Parameter ndim must be non-negative integer&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">ndim</span><span class="p">(</span><span class="n">X</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="o">*</span><span class="n">ndim</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;The array does not have enough axes&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">X</span><span class="p">)[</span><span class="o">-</span><span class="n">ndim</span><span class="p">:]</span> <span class="o">!=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">X</span><span class="p">)[</span><span class="o">-</span><span class="mi">2</span><span class="o">*</span><span class="n">ndim</span><span class="p">:</span><span class="o">-</span><span class="n">ndim</span><span class="p">]:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;The array X is not square&quot;</span><span class="p">)</span>
+
+    <span class="n">axes_out</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ndim</span><span class="p">(</span><span class="n">X</span><span class="p">)</span><span class="o">-</span><span class="n">ndim</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+    <span class="n">axes_dim</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">ndim</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">axes_out</span><span class="o">+</span><span class="n">axes_dim</span><span class="p">,</span> <span class="n">axes_out</span><span class="p">)</span>
+    
+</div>
+<div class="viewcode-block" id="diag"><a class="viewcode-back" href="../../../dev_api/generated/generated/bayespy.utils.misc.diag.html#bayespy.utils.misc.diag">[docs]</a><span class="k">def</span> <span class="nf">diag</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create a diagonal array given the diagonal elements.</span>
+
+<span class="sd">    The diagonal array can be multi-dimensional. By default, the last axis is</span>
+<span class="sd">    transformed to two axes (diagonal matrix) but this can be changed using ndim</span>
+<span class="sd">    keyword. For instance, an array with shape (K,L,M,N) can be transformed to a</span>
+<span class="sd">    set of diagonal 4-D tensors with shape (K,L,M,N,M,N) by giving ndim=2. If</span>
+<span class="sd">    ndim=3, the result has shape (K,L,M,N,L,M,N), and so on.</span>
+
+<span class="sd">    Diagonality means that for the resulting array Y holds:</span>
+<span class="sd">    Y[...,i_1,i_2,..,i_ndim,j_1,j_2,..,j_ndim] is zero if i_n!=j_n for any n.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="n">atleast_nd</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">ndim</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">ndim</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">I</span> <span class="o">=</span> <span class="n">identity</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">X</span><span class="p">)[</span><span class="o">-</span><span class="n">ndim</span><span class="p">:]))</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="n">add_axes</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">ndim</span><span class="p">(</span><span class="n">X</span><span class="p">),</span> <span class="n">num</span><span class="o">=</span><span class="n">ndim</span><span class="p">)</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="n">I</span> <span class="o">*</span> <span class="n">X</span>
+    <span class="k">return</span> <span class="n">X</span>
+</div>
+<div class="viewcode-block" id="m_dot"><a class="viewcode-back" href="../../../dev_api/generated/generated/bayespy.utils.misc.m_dot.html#bayespy.utils.misc.m_dot">[docs]</a><span class="k">def</span> <span class="nf">m_dot</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="n">b</span><span class="p">):</span>
+    <span class="c"># Compute matrix-vector product over the last two axes of A and</span>
+    <span class="c"># the last axes of b.  Other axes are broadcasted. If A has shape</span>
+    <span class="c"># (..., M, N) and b has shape (..., N), then the result has shape</span>
+    <span class="c"># (..., M)</span>
+    
+    <span class="c">#b = reshape(b, shape(b)[:-1] + (1,) + shape(b)[-1:])</span>
+    <span class="c">#return np.dot(A, b)</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s">&#39;...ik,...k-&gt;...i&#39;</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+    <span class="c"># TODO: Use einsum!!</span>
+    <span class="c">#return np.sum(A*b[...,np.newaxis,:], axis=(-1,))</span>
+
+</div>
+<div class="viewcode-block" id="block_banded"><a class="viewcode-back" href="../../../dev_api/generated/generated/bayespy.utils.misc.block_banded.html#bayespy.utils.misc.block_banded">[docs]</a><span class="k">def</span> <span class="nf">block_banded</span><span class="p">(</span><span class="n">D</span><span class="p">,</span> <span class="n">B</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Construct a symmetric block-banded matrix.</span>
+
+<span class="sd">    `D` contains square diagonal blocks.</span>
+<span class="sd">    `B` contains super-diagonal blocks.</span>
+
+<span class="sd">    The resulting matrix is:</span>
+
+<span class="sd">    D[0],   B[0],   0,    0,    ..., 0,        0,        0</span>
+<span class="sd">    B[0].T, D[1],   B[1], 0,    ..., 0,        0,        0</span>
+<span class="sd">    0,      B[1].T, D[2], B[2], ..., ...,      ...,      ...</span>
+<span class="sd">    ...     ...     ...   ...   ..., B[N-2].T, D[N-1],   B[N-1]</span>
+<span class="sd">    0,      0,      0,    0,    ..., 0,        B[N-1].T, D[N]</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">D</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">atleast_2d</span><span class="p">(</span><span class="n">d</span><span class="p">)</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">D</span><span class="p">]</span>
+    <span class="n">B</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">atleast_2d</span><span class="p">(</span><span class="n">b</span><span class="p">)</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">B</span><span class="p">]</span>
+
+    <span class="c"># Number of diagonal blocks</span>
+    <span class="n">N</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">D</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">B</span><span class="p">)</span> <span class="o">!=</span> <span class="n">N</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;The number of super-diagonal blocks must contain &quot;</span>
+                         <span class="s">&quot;exactly one block less than the number of diagonal &quot;</span>
+                         <span class="s">&quot;blocks&quot;</span><span class="p">)</span>
+
+    <span class="c"># Compute the size of the full matrix</span>
+    <span class="n">M</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">ndim</span><span class="p">(</span><span class="n">D</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Blocks must be 2 dimensional arrays&quot;</span><span class="p">)</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">D</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">d</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">d</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Diagonal blocks must be square&quot;</span><span class="p">)</span>
+        <span class="n">M</span> <span class="o">+=</span> <span class="n">d</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">ndim</span><span class="p">(</span><span class="n">B</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Blocks must be 2 dimensional arrays&quot;</span><span class="p">)</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">B</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">b</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">D</span><span class="p">[</span><span class="n">i</span><span class="p">])[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">or</span> <span class="n">b</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">D</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">])[</span><span class="mi">0</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Shapes of the super-diagonal blocks do not match &quot;</span>
+                             <span class="s">&quot;the shapes of the diagonal blocks&quot;</span><span class="p">)</span>
+
+    <span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">M</span><span class="p">,</span><span class="n">M</span><span class="p">))</span>
+    <span class="n">k</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+        <span class="p">(</span><span class="n">d0</span><span class="p">,</span> <span class="n">d1</span><span class="p">)</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">B</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="c"># Diagonal block</span>
+        <span class="n">A</span><span class="p">[</span><span class="n">k</span><span class="p">:</span><span class="n">k</span><span class="o">+</span><span class="n">d0</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span><span class="n">k</span><span class="o">+</span><span class="n">d0</span><span class="p">]</span> <span class="o">=</span> <span class="n">D</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="c"># Super-diagonal block</span>
+        <span class="n">A</span><span class="p">[</span><span class="n">k</span><span class="p">:</span><span class="n">k</span><span class="o">+</span><span class="n">d0</span><span class="p">,</span> <span class="n">k</span><span class="o">+</span><span class="n">d0</span><span class="p">:</span><span class="n">k</span><span class="o">+</span><span class="n">d0</span><span class="o">+</span><span class="n">d1</span><span class="p">]</span> <span class="o">=</span> <span class="n">B</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="c"># Sub-diagonal block</span>
+        <span class="n">A</span><span class="p">[</span><span class="n">k</span><span class="o">+</span><span class="n">d0</span><span class="p">:</span><span class="n">k</span><span class="o">+</span><span class="n">d0</span><span class="o">+</span><span class="n">d1</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span><span class="n">k</span><span class="o">+</span><span class="n">d0</span><span class="p">]</span> <span class="o">=</span> <span class="n">B</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">T</span>
+
+        <span class="n">k</span> <span class="o">+=</span> <span class="n">d0</span>
+    <span class="n">A</span><span class="p">[</span><span class="n">k</span><span class="p">:,</span><span class="n">k</span><span class="p">:]</span> <span class="o">=</span> <span class="n">D</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">A</span>
+    
+
+</div>
+<div class="viewcode-block" id="kalman_filter"><a class="viewcode-back" href="../../../dev_api/generated/generated/bayespy.utils.misc.kalman_filter.html#bayespy.utils.misc.kalman_filter">[docs]</a><span class="k">def</span> <span class="nf">kalman_filter</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">U</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">V</span><span class="p">,</span> <span class="n">mu0</span><span class="p">,</span> <span class="n">Cov0</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Perform Kalman filtering to obtain filtered mean and covariance.</span>
+<span class="sd">    </span>
+<span class="sd">    The parameters of the process may vary in time, thus they are</span>
+<span class="sd">    given as iterators instead of fixed values.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    y : (N,D) array</span>
+<span class="sd">        &quot;Normalized&quot; noisy observations of the states, that is, the</span>
+<span class="sd">        observations multiplied by the precision matrix U (and possibly</span>
+<span class="sd">        other transformation matrices).</span>
+<span class="sd">    U : (N,D,D) array or N-list of (D,D) arrays</span>
+<span class="sd">        Precision matrix (i.e., inverse covariance matrix) of the observation </span>
+<span class="sd">        noise for each time instance.</span>
+<span class="sd">    A : (N-1,D,D) array or (N-1)-list of (D,D) arrays</span>
+<span class="sd">        Dynamic matrix for each time instance.</span>
+<span class="sd">    V : (N-1,D,D) array or (N-1)-list of (D,D) arrays</span>
+<span class="sd">        Covariance matrix of the innovation noise for each time instance.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    mu : array</span>
+<span class="sd">        Filtered mean of the states.</span>
+<span class="sd">    Cov : array</span>
+<span class="sd">        Filtered covariance of the states.</span>
+
+<span class="sd">    See also</span>
+<span class="sd">    --------</span>
+<span class="sd">    rts_smoother</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">mu</span> <span class="o">=</span> <span class="n">mu0</span>
+    <span class="n">Cov</span> <span class="o">=</span> <span class="n">Cov0</span>
+
+    <span class="c"># Allocate memory for the results</span>
+    <span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="n">D</span><span class="p">)</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">N</span><span class="p">,</span><span class="n">D</span><span class="p">))</span>
+    <span class="n">CovX</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">N</span><span class="p">,</span><span class="n">D</span><span class="p">,</span><span class="n">D</span><span class="p">))</span>
+    
+    <span class="c"># Update step for t=0</span>
+    <span class="n">M</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">Cov</span><span class="p">,</span> <span class="n">U</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">Cov</span><span class="p">)</span> <span class="o">+</span> <span class="n">Cov</span>
+    <span class="n">L</span> <span class="o">=</span> <span class="n">chol</span><span class="p">(</span><span class="n">M</span><span class="p">)</span>
+    <span class="n">mu</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">Cov</span><span class="p">,</span> <span class="n">chol_solve</span><span class="p">(</span><span class="n">L</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">Cov</span><span class="p">,</span><span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">+</span> <span class="n">mu</span><span class="p">))</span>
+    <span class="n">Cov</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">Cov</span><span class="p">,</span> <span class="n">chol_solve</span><span class="p">(</span><span class="n">L</span><span class="p">,</span> <span class="n">Cov</span><span class="p">))</span>
+    <span class="n">X</span><span class="p">[</span><span class="mi">0</span><span class="p">,:]</span> <span class="o">=</span> <span class="n">mu</span>
+    <span class="n">CovX</span><span class="p">[</span><span class="mi">0</span><span class="p">,:,:]</span> <span class="o">=</span> <span class="n">Cov</span>
+    
+    <span class="c">#for (yn, Un, An, Vn) in zip(y, U, A, V):</span>
+    <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span> <span class="c">#(yn, Un, An, Vn) in zip(y, U, A, V):</span>
+        <span class="c"># Prediction step</span>
+        <span class="n">mu</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">A</span><span class="p">[</span><span class="n">n</span><span class="p">],</span> <span class="n">mu</span><span class="p">)</span>
+        <span class="n">Cov</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">A</span><span class="p">[</span><span class="n">n</span><span class="p">],</span> <span class="n">Cov</span><span class="p">),</span> <span class="n">A</span><span class="p">[</span><span class="n">n</span><span class="p">]</span><span class="o">.</span><span class="n">T</span><span class="p">)</span> <span class="o">+</span> <span class="n">V</span><span class="p">[</span><span class="n">n</span><span class="p">]</span>
+        <span class="c"># Update step</span>
+        <span class="n">M</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">Cov</span><span class="p">,</span> <span class="n">U</span><span class="p">[</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">]),</span> <span class="n">Cov</span><span class="p">)</span> <span class="o">+</span> <span class="n">Cov</span>
+        <span class="n">L</span> <span class="o">=</span> <span class="n">chol</span><span class="p">(</span><span class="n">M</span><span class="p">)</span>
+        <span class="n">mu</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">Cov</span><span class="p">,</span> <span class="n">chol_solve</span><span class="p">(</span><span class="n">L</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">Cov</span><span class="p">,</span><span class="n">y</span><span class="p">[</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">])</span> <span class="o">+</span> <span class="n">mu</span><span class="p">))</span>
+        <span class="n">Cov</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">Cov</span><span class="p">,</span> <span class="n">chol_solve</span><span class="p">(</span><span class="n">L</span><span class="p">,</span> <span class="n">Cov</span><span class="p">))</span>
+
+        <span class="c"># Force symmetric covariance (for numeric inaccuracy)</span>
+        <span class="n">Cov</span> <span class="o">=</span> <span class="mf">0.5</span><span class="o">*</span><span class="n">Cov</span> <span class="o">+</span> <span class="mf">0.5</span><span class="o">*</span><span class="n">Cov</span><span class="o">.</span><span class="n">T</span>
+
+        <span class="c"># Store results</span>
+        <span class="n">X</span><span class="p">[</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">,:]</span> <span class="o">=</span> <span class="n">mu</span>
+        <span class="n">CovX</span><span class="p">[</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">,:,:]</span> <span class="o">=</span> <span class="n">Cov</span>
+
+    <span class="k">return</span> <span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">CovX</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="rts_smoother"><a class="viewcode-back" href="../../../dev_api/generated/generated/bayespy.utils.misc.rts_smoother.html#bayespy.utils.misc.rts_smoother">[docs]</a><span class="k">def</span> <span class="nf">rts_smoother</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span> <span class="n">Cov</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">V</span><span class="p">,</span> <span class="n">removethis</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Perform Rauch-Tung-Striebel smoothing to obtain the posterior.</span>
+
+<span class="sd">    The function returns the posterior mean and covariance of each</span>
+<span class="sd">    state. The parameters of the process may vary in time, thus they</span>
+<span class="sd">    are given as iterators instead of fixed values.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    mu : (N,D) array</span>
+<span class="sd">        Mean of the states from Kalman filter.</span>
+<span class="sd">    Cov : (N,D,D) array</span>
+<span class="sd">        Covariance of the states from Kalman filter. </span>
+<span class="sd">    A : (N-1,D,D) array or (N-1)-list of (D,D) arrays</span>
+<span class="sd">        Dynamic matrix for each time instance.</span>
+<span class="sd">    V : (N-1,D,D) array or (N-1)-list of (D,D) arrays</span>
+<span class="sd">        Covariance matrix of the innovation noise for each time instance.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    mu : array</span>
+<span class="sd">        Posterior mean of the states.</span>
+<span class="sd">    Cov : array</span>
+<span class="sd">        Posterior covariance of the states.</span>
+
+<span class="sd">    See also</span>
+<span class="sd">    --------</span>
+<span class="sd">    kalman_filter</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">N</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">mu</span><span class="p">)</span>
+    <span class="c">#n = N-1</span>
+
+    <span class="c"># Start from the last time instance and smoothen backwards</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">mu</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,:]</span>
+    <span class="n">Covx</span> <span class="o">=</span> <span class="n">Cov</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,:,:]</span>
+    
+    <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="o">-</span><span class="mi">1</span><span class="p">)):</span><span class="c">#(An, Vn) in zip(reversed(A), reversed(V)):</span>
+
+        <span class="c">#n = n - 1</span>
+        <span class="c">#if n &lt;= 0:</span>
+        <span class="c">#    break</span>
+
+        <span class="c"># The predicted value of n</span>
+        <span class="n">x_p</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">A</span><span class="p">[</span><span class="n">n</span><span class="p">],</span> <span class="n">mu</span><span class="p">[</span><span class="n">n</span><span class="p">,:])</span>
+        <span class="n">Cov_p</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">A</span><span class="p">[</span><span class="n">n</span><span class="p">],</span> <span class="n">Cov</span><span class="p">[</span><span class="n">n</span><span class="p">,:,:]),</span> <span class="n">A</span><span class="p">[</span><span class="n">n</span><span class="p">]</span><span class="o">.</span><span class="n">T</span><span class="p">)</span> <span class="o">+</span> <span class="n">V</span><span class="p">[</span><span class="n">n</span><span class="p">]</span>
+
+        <span class="c"># Temporary variable</span>
+        <span class="n">S</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">Cov_p</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">A</span><span class="p">[</span><span class="n">n</span><span class="p">],</span> <span class="n">Cov</span><span class="p">[</span><span class="n">n</span><span class="p">,:,:]))</span>
+
+        <span class="c"># Smoothed value of n</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">mu</span><span class="p">[</span><span class="n">n</span><span class="p">,:]</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">S</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">x</span><span class="o">-</span><span class="n">x_p</span><span class="p">)</span>
+        <span class="n">Covx</span> <span class="o">=</span> <span class="n">Cov</span><span class="p">[</span><span class="n">n</span><span class="p">,:,:]</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">S</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">Covx</span><span class="o">-</span><span class="n">Cov_p</span><span class="p">),</span> <span class="n">S</span><span class="p">)</span>
+
+        <span class="c"># Force symmetric covariance (for numeric inaccuracy)</span>
+        <span class="n">Covx</span> <span class="o">=</span> <span class="mf">0.5</span><span class="o">*</span><span class="n">Covx</span> <span class="o">+</span> <span class="mf">0.5</span><span class="o">*</span><span class="n">Covx</span><span class="o">.</span><span class="n">T</span>
+
+        <span class="c"># Store results</span>
+        <span class="n">mu</span><span class="p">[</span><span class="n">n</span><span class="p">,:]</span> <span class="o">=</span> <span class="n">x</span>
+        <span class="n">Cov</span><span class="p">[</span><span class="n">n</span><span class="p">,:]</span> <span class="o">=</span> <span class="n">Covx</span>
+
+
+    <span class="k">return</span> <span class="p">(</span><span class="n">mu</span><span class="p">,</span> <span class="n">Cov</span><span class="p">)</span>
+        
+    </div>
+<div class="viewcode-block" id="dist_haversine"><a class="viewcode-back" href="../../../dev_api/generated/generated/bayespy.utils.misc.dist_haversine.html#bayespy.utils.misc.dist_haversine">[docs]</a><span class="k">def</span> <span class="nf">dist_haversine</span><span class="p">(</span><span class="n">c1</span><span class="p">,</span> <span class="n">c2</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="mi">6372795</span><span class="p">):</span>
+
+    <span class="c"># Convert coordinates to radians</span>
+    <span class="n">lat1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">c1</span><span class="p">[</span><span class="mi">0</span><span class="p">])[</span><span class="o">...</span><span class="p">,:,</span><span class="bp">None</span><span class="p">]</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">180</span>
+    <span class="n">lon1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">c1</span><span class="p">[</span><span class="mi">1</span><span class="p">])[</span><span class="o">...</span><span class="p">,:,</span><span class="bp">None</span><span class="p">]</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">180</span>
+    <span class="n">lat2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">c2</span><span class="p">[</span><span class="mi">0</span><span class="p">])[</span><span class="o">...</span><span class="p">,</span><span class="bp">None</span><span class="p">,:]</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">180</span>
+    <span class="n">lon2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">c2</span><span class="p">[</span><span class="mi">1</span><span class="p">])[</span><span class="o">...</span><span class="p">,</span><span class="bp">None</span><span class="p">,:]</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">180</span>
+
+    <span class="n">dlat</span> <span class="o">=</span> <span class="n">lat2</span> <span class="o">-</span> <span class="n">lat1</span>
+    <span class="n">dlon</span> <span class="o">=</span> <span class="n">lon2</span> <span class="o">-</span> <span class="n">lon1</span>
+
+    <span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">dlat</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">lat1</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">lat2</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">dlon</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">C</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">arctan2</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">A</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">A</span><span class="p">))</span>
+    
+    <span class="k">return</span> <span class="n">radius</span> <span class="o">*</span> <span class="n">C</span>
+</div>
+<div class="viewcode-block" id="logsumexp"><a class="viewcode-back" href="../../../dev_api/generated/generated/bayespy.utils.misc.logsumexp.html#bayespy.utils.misc.logsumexp">[docs]</a><span class="k">def</span> <span class="nf">logsumexp</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Compute log(sum(exp(X)) in a numerically stable way</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asanyarray</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+    
+    <span class="n">maxX</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">amax</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">ndim</span><span class="p">(</span><span class="n">maxX</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">maxX</span><span class="p">[</span><span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">maxX</span><span class="p">)]</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">elif</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">maxX</span><span class="p">):</span>
+        <span class="n">maxX</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="n">X</span> <span class="o">=</span> <span class="n">X</span> <span class="o">-</span> <span class="n">maxX</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">keepdims</span><span class="p">:</span>
+        <span class="n">maxX</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="n">maxX</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">X</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="n">keepdims</span><span class="p">))</span> <span class="o">+</span> <span class="n">maxX</span>
+</div>
+<div class="viewcode-block" id="mean"><a class="viewcode-back" href="../../../dev_api/generated/generated/bayespy.utils.misc.mean.html#bayespy.utils.misc.mean">[docs]</a><span class="k">def</span> <span class="nf">mean</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Compute the mean, ignoring NaNs.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">ndim</span><span class="p">(</span><span class="n">X</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">axis</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Axis out of bounds&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">X</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asanyarray</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+    <span class="n">nans</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="n">X</span><span class="p">[</span><span class="n">nans</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="n">keepdims</span><span class="p">)</span> <span class="o">/</span> 
+         <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="o">~</span><span class="n">nans</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="n">keepdims</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">m</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">BayesPy v0.1 Documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011-2014, Jaakko Luttinen, GPLv3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

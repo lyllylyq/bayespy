@@ -1,0 +1,531 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>bayespy.inference.vmp.nodes.categorical_markov_chain &mdash; BayesPy v0.1 Documentation</title>
+    
+    <link rel="stylesheet" href="../../../../../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../../../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="BayesPy v0.1 Documentation" href="../../../../../index.html" />
+    <link rel="up" title="bayespy.inference" href="../../../inference.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../../../index.html">BayesPy v0.1 Documentation</a> &raquo;</li>
+          <li><a href="../../../../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../../../inference.html" accesskey="U">bayespy.inference</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for bayespy.inference.vmp.nodes.categorical_markov_chain</h1><div class="highlight"><pre>
+<span class="c">######################################################################</span>
+<span class="c"># Copyright (C) 2014 Jaakko Luttinen</span>
+<span class="c">#</span>
+<span class="c"># This file is licensed under Version 3.0 of the GNU General Public</span>
+<span class="c"># License. See LICENSE for a text of the license.</span>
+<span class="c">######################################################################</span>
+
+<span class="c">######################################################################</span>
+<span class="c"># This file is part of BayesPy.</span>
+<span class="c">#</span>
+<span class="c"># BayesPy is free software: you can redistribute it and/or modify it</span>
+<span class="c"># under the terms of the GNU General Public License version 3 as</span>
+<span class="c"># published by the Free Software Foundation.</span>
+<span class="c">#</span>
+<span class="c"># BayesPy is distributed in the hope that it will be useful, but</span>
+<span class="c"># WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="c"># MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU</span>
+<span class="c"># General Public License for more details.</span>
+<span class="c">#</span>
+<span class="c"># You should have received a copy of the GNU General Public License</span>
+<span class="c"># along with BayesPy.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
+<span class="c">######################################################################</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Module for the categorical Markov chain node.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">.deterministic</span> <span class="kn">import</span> <span class="n">Deterministic</span>
+<span class="kn">from</span> <span class="nn">.expfamily</span> <span class="kn">import</span> <span class="p">(</span><span class="n">ExponentialFamily</span><span class="p">,</span>
+                        <span class="n">ExponentialFamilyDistribution</span><span class="p">,</span>
+                        <span class="n">useconstructor</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">.node</span> <span class="kn">import</span> <span class="p">(</span><span class="n">Moments</span><span class="p">,</span>
+                   <span class="n">ensureparents</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">.categorical</span> <span class="kn">import</span> <span class="n">CategoricalMoments</span>
+<span class="kn">from</span> <span class="nn">.dirichlet</span> <span class="kn">import</span> <span class="p">(</span><span class="n">Dirichlet</span><span class="p">,</span>
+                        <span class="n">DirichletMoments</span><span class="p">)</span>
+
+<span class="kn">from</span> <span class="nn">bayespy.utils</span> <span class="kn">import</span> <span class="n">misc</span><span class="p">,</span> <span class="n">random</span>
+
+<div class="viewcode-block" id="CategoricalMarkovChainMoments"><a class="viewcode-back" href="../../../../../dev_api/generated/bayespy.inference.vmp.nodes.categorical_markov_chain.CategoricalMarkovChainMoments.html#bayespy.inference.vmp.nodes.categorical_markov_chain.CategoricalMarkovChainMoments">[docs]</a><span class="k">class</span> <span class="nc">CategoricalMarkovChainMoments</span><span class="p">(</span><span class="n">Moments</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Class for the moments of categorical Markov chain variables.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+
+<div class="viewcode-block" id="CategoricalMarkovChainMoments.__init__"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.categorical_markov_chain.CategoricalMarkovChainMoments.__init__.html#bayespy.inference.vmp.nodes.categorical_markov_chain.CategoricalMarkovChainMoments.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">categories</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create moments object for categorical Markov chain variables.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">D</span> <span class="o">=</span> <span class="n">categories</span>
+
+</div>
+<div class="viewcode-block" id="CategoricalMarkovChainMoments.compute_fixed_moments"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.categorical_markov_chain.CategoricalMarkovChainMoments.compute_fixed_moments.html#bayespy.inference.vmp.nodes.categorical_markov_chain.CategoricalMarkovChainMoments.compute_fixed_moments">[docs]</a>    <span class="k">def</span> <span class="nf">compute_fixed_moments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute the moments for a fixed value</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s">&quot;compute_fixed_moments not implemented for &quot;</span>
+                                  <span class="s">&quot;</span><span class="si">%s</span><span class="s">&quot;</span> 
+                                  <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">))</span>
+
+    </div>
+<div class="viewcode-block" id="CategoricalMarkovChainMoments.compute_dims_from_values"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.categorical_markov_chain.CategoricalMarkovChainMoments.compute_dims_from_values.html#bayespy.inference.vmp.nodes.categorical_markov_chain.CategoricalMarkovChainMoments.compute_dims_from_values">[docs]</a>    <span class="k">def</span> <span class="nf">compute_dims_from_values</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the shape of the moments for a fixed value.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s">&quot;compute_dims_from_values not implemented &quot;</span>
+                                  <span class="s">&quot;for </span><span class="si">%s</span><span class="s">&quot;</span>
+                                  <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">))</span>
+
+</div></div>
+<div class="viewcode-block" id="CategoricalMarkovChainDistribution"><a class="viewcode-back" href="../../../../../dev_api/generated/bayespy.inference.vmp.nodes.categorical_markov_chain.CategoricalMarkovChainDistribution.html#bayespy.inference.vmp.nodes.categorical_markov_chain.CategoricalMarkovChainDistribution">[docs]</a><span class="k">class</span> <span class="nc">CategoricalMarkovChainDistribution</span><span class="p">(</span><span class="n">ExponentialFamilyDistribution</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Class for the VMP formulas of categorical Markov chain variables.</span>
+<span class="sd">    &quot;&quot;&quot;</span>    
+
+
+<div class="viewcode-block" id="CategoricalMarkovChainDistribution.__init__"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.categorical_markov_chain.CategoricalMarkovChainDistribution.__init__.html#bayespy.inference.vmp.nodes.categorical_markov_chain.CategoricalMarkovChainDistribution.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">categories</span><span class="p">,</span> <span class="n">states</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create VMP formula node for a categorical variable</span>
+
+<span class="sd">        `categories` is the total number of categories.</span>
+<span class="sd">        `states` is the length of the chain.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">K</span> <span class="o">=</span> <span class="n">categories</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="o">=</span> <span class="n">states</span>
+</div>
+<div class="viewcode-block" id="CategoricalMarkovChainDistribution.compute_message_to_parent"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.categorical_markov_chain.CategoricalMarkovChainDistribution.compute_message_to_parent.html#bayespy.inference.vmp.nodes.categorical_markov_chain.CategoricalMarkovChainDistribution.compute_message_to_parent">[docs]</a>    <span class="k">def</span> <span class="nf">compute_message_to_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">u_p0</span><span class="p">,</span> <span class="n">u_P</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute the message to a parent node.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">index</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[</span> <span class="n">u</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="p">]</span>
+        <span class="k">elif</span> <span class="n">index</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[</span> <span class="n">u</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Parent index out of bounds&quot;</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="CategoricalMarkovChainDistribution.compute_mask_to_parent"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.categorical_markov_chain.CategoricalMarkovChainDistribution.compute_mask_to_parent.html#bayespy.inference.vmp.nodes.categorical_markov_chain.CategoricalMarkovChainDistribution.compute_mask_to_parent">[docs]</a>    <span class="k">def</span> <span class="nf">compute_mask_to_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">mask</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Maps the mask to the plates of a parent.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">index</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">mask</span>
+        <span class="k">elif</span> <span class="n">index</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="c"># Add plate axis for the time axis and row axis of the transition</span>
+            <span class="c"># matrix</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">asanyarray</span><span class="p">(</span><span class="n">mask</span><span class="p">)[</span><span class="o">...</span><span class="p">,</span><span class="bp">None</span><span class="p">,</span><span class="bp">None</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Parent index out of bounds&quot;</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="CategoricalMarkovChainDistribution.compute_phi_from_parents"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.categorical_markov_chain.CategoricalMarkovChainDistribution.compute_phi_from_parents.html#bayespy.inference.vmp.nodes.categorical_markov_chain.CategoricalMarkovChainDistribution.compute_phi_from_parents">[docs]</a>    <span class="k">def</span> <span class="nf">compute_phi_from_parents</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u_p0</span><span class="p">,</span> <span class="n">u_P</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute the natural parameter vector given parent moments.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">phi0</span> <span class="o">=</span> <span class="n">u_p0</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">phi1</span> <span class="o">=</span> <span class="n">u_P</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">K</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">K</span><span class="p">))</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">phi0</span><span class="p">,</span> <span class="n">phi1</span><span class="p">]</span>
+</div>
+<div class="viewcode-block" id="CategoricalMarkovChainDistribution.compute_moments_and_cgf"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.categorical_markov_chain.CategoricalMarkovChainDistribution.compute_moments_and_cgf.html#bayespy.inference.vmp.nodes.categorical_markov_chain.CategoricalMarkovChainDistribution.compute_moments_and_cgf">[docs]</a>    <span class="k">def</span> <span class="nf">compute_moments_and_cgf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">phi</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute the moments and :math:`g(\phi)`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">logp0</span> <span class="o">=</span> <span class="n">phi</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">logP</span> <span class="o">=</span> <span class="n">phi</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="p">(</span><span class="n">z0</span><span class="p">,</span> <span class="n">zz</span><span class="p">,</span> <span class="n">cgf</span><span class="p">)</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">alpha_beta_recursion</span><span class="p">(</span><span class="n">logp0</span><span class="p">,</span> <span class="n">logP</span><span class="p">)</span>
+        <span class="n">u</span> <span class="o">=</span> <span class="p">[</span><span class="n">z0</span><span class="p">,</span> <span class="n">zz</span><span class="p">]</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">cgf</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="CategoricalMarkovChainDistribution.compute_cgf_from_parents"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.categorical_markov_chain.CategoricalMarkovChainDistribution.compute_cgf_from_parents.html#bayespy.inference.vmp.nodes.categorical_markov_chain.CategoricalMarkovChainDistribution.compute_cgf_from_parents">[docs]</a>    <span class="k">def</span> <span class="nf">compute_cgf_from_parents</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u_p0</span><span class="p">,</span> <span class="n">u_P</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute :math:`\mathrm{E}_{q(p)}[g(p)]`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="mi">0</span>
+        </div>
+<div class="viewcode-block" id="CategoricalMarkovChainDistribution.compute_fixed_moments_and_f"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.categorical_markov_chain.CategoricalMarkovChainDistribution.compute_fixed_moments_and_f.html#bayespy.inference.vmp.nodes.categorical_markov_chain.CategoricalMarkovChainDistribution.compute_fixed_moments_and_f">[docs]</a>    <span class="k">def</span> <span class="nf">compute_fixed_moments_and_f</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute the moments and :math:`f(x)` for a fixed value.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="CategoricalMarkovChainDistribution.plates_to_parent"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.categorical_markov_chain.CategoricalMarkovChainDistribution.plates_to_parent.html#bayespy.inference.vmp.nodes.categorical_markov_chain.CategoricalMarkovChainDistribution.plates_to_parent">[docs]</a>    <span class="k">def</span> <span class="nf">plates_to_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">plates</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Resolves the plate mapping to a parent.</span>
+
+<span class="sd">        Given the plates of the node&#39;s moments, this method returns the plates</span>
+<span class="sd">        that the message to a parent has for the parent&#39;s distribution.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">index</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">plates</span>
+        <span class="k">elif</span> <span class="n">index</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">plates</span> <span class="o">+</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">K</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Parent index out of bounds&quot;</span><span class="p">)</span>
+        </div>
+<div class="viewcode-block" id="CategoricalMarkovChainDistribution.plates_from_parent"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.categorical_markov_chain.CategoricalMarkovChainDistribution.plates_from_parent.html#bayespy.inference.vmp.nodes.categorical_markov_chain.CategoricalMarkovChainDistribution.plates_from_parent">[docs]</a>    <span class="k">def</span> <span class="nf">plates_from_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">plates</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Resolve the plate mapping from a parent.</span>
+<span class="sd">        </span>
+<span class="sd">        Given the plates of a parent&#39;s moments, this method returns the plates</span>
+<span class="sd">        that the moments has for this distribution.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">index</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">plates</span>
+        <span class="k">elif</span> <span class="n">index</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">plates</span><span class="p">[:</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Parent index out of bounds&quot;</span><span class="p">)</span>
+
+        </div>
+<div class="viewcode-block" id="CategoricalMarkovChainDistribution.random"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.categorical_markov_chain.CategoricalMarkovChainDistribution.random.html#bayespy.inference.vmp.nodes.categorical_markov_chain.CategoricalMarkovChainDistribution.random">[docs]</a>    <span class="k">def</span> <span class="nf">random</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">phi</span><span class="p">,</span> <span class="n">plates</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Draw a random sample from the distribution.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c"># Convert natural parameters to transition probabilities</span>
+        <span class="n">p0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">phi</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">misc</span><span class="o">.</span><span class="n">logsumexp</span><span class="p">(</span><span class="n">phi</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> 
+                                            <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span>
+                                            <span class="n">keepdims</span><span class="o">=</span><span class="bp">True</span><span class="p">))</span>
+        <span class="n">P</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">phi</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">misc</span><span class="o">.</span><span class="n">logsumexp</span><span class="p">(</span><span class="n">phi</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                                           <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span>
+                                           <span class="n">keepdims</span><span class="o">=</span><span class="bp">True</span><span class="p">))</span>
+        <span class="c"># Explicit broadcasting</span>
+        <span class="n">P</span> <span class="o">=</span> <span class="n">P</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">plates</span><span class="p">)[</span><span class="o">...</span><span class="p">,</span><span class="bp">None</span><span class="p">,</span><span class="bp">None</span><span class="p">,</span><span class="bp">None</span><span class="p">]</span>
+        <span class="c"># Allocate memory</span>
+        <span class="n">Z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">plates</span> <span class="o">+</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">)</span>
+        <span class="c"># Draw initial state</span>
+        <span class="n">Z</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">categorical</span><span class="p">(</span><span class="n">p0</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">plates</span><span class="p">)</span>
+        <span class="c"># Create [0,1,2,...,len(plate_axis)] indices for each plate axis and</span>
+        <span class="c"># make them broadcast properly</span>
+        <span class="n">nplates</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">plates</span><span class="p">)</span>
+        <span class="n">plates_ind</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">plate</span><span class="p">)[(</span><span class="bp">Ellipsis</span><span class="p">,)</span><span class="o">+</span><span class="p">(</span><span class="n">nplates</span><span class="o">-</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="bp">None</span><span class="p">,)]</span>
+                      <span class="k">for</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">plate</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">plates</span><span class="p">)]</span>
+        <span class="n">plates_ind</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">plates_ind</span><span class="p">)</span>
+        <span class="c"># Draw next states iteratively</span>
+        <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+            <span class="c"># Select the transition probabilities for the current state but take</span>
+            <span class="c"># into account the plates.  This leads to complex NumPy</span>
+            <span class="c"># indexing.. :)</span>
+            <span class="n">time_ind</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">P</span><span class="p">)[</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">ind</span> <span class="o">=</span> <span class="n">plates_ind</span> <span class="o">+</span> <span class="p">(</span><span class="n">time_ind</span><span class="p">,</span> <span class="n">Z</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="n">n</span><span class="p">],</span> <span class="bp">Ellipsis</span><span class="p">)</span>
+            <span class="n">p</span> <span class="o">=</span> <span class="n">P</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span>
+            <span class="c"># Draw next state</span>
+            <span class="n">z</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">categorical</span><span class="p">(</span><span class="n">P</span><span class="p">[</span><span class="n">ind</span><span class="p">])</span>
+            <span class="n">Z</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">z</span>
+            
+        <span class="k">return</span> <span class="n">Z</span>
+
+    </div></div>
+<span class="k">class</span> <span class="nc">CategoricalMarkovChain</span><span class="p">(</span><span class="n">ExponentialFamily</span><span class="p">):</span>
+    <span class="sd">r&quot;&quot;&quot;</span>
+<span class="sd">    Node for categorical Markov chain random variables.</span>
+<span class="sd">    </span>
+<span class="sd">    The node models a Markov chain which has a discrete set of K possible states</span>
+<span class="sd">    and the next state depends only on the previous state and the state</span>
+<span class="sd">    transition probabilities.  The graphical model is shown below:</span>
+
+<span class="sd">    .. bayesnet::</span>
+
+<span class="sd">       \tikzstyle{latent} += [minimum size=30pt];</span>
+<span class="sd">       </span>
+<span class="sd">       \node[latent] (x0) {$x_0$};</span>
+<span class="sd">       \node[latent, right=of x0] (x1) {$x_1$};</span>
+<span class="sd">       \node[right=of x1] (dots) {$\cdots$};</span>
+<span class="sd">       \node[latent, right=of dots] (xn) {$x_{N-1}$};</span>
+<span class="sd">       \edge {x0}{x1};</span>
+<span class="sd">       \edge {x1}{dots};</span>
+<span class="sd">       \edge {dots}{xn};</span>
+
+<span class="sd">       \node[latent, above=of x0] (pi) {$\boldsymbol{\pi}$};</span>
+<span class="sd">       \node[latent, above=of dots] (A) {$\mathbf{A}$};</span>
+<span class="sd">       \edge {pi} {x0};</span>
+<span class="sd">       \edge {A} {x1,dots,xn};</span>
+
+<span class="sd">    where :math:`\boldsymbol{\pi}` contains the probabilities for the initial</span>
+<span class="sd">    state and :math:`\mathbf{A}` is the state transition probability matrix.  It</span>
+<span class="sd">    is possible to have :math:`\mathbf{A}` varying in time.</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">        p(x_0, \ldots, x_{N-1}) &amp;= p(x_0) \prod^{N-1}_{n=1} p(x_n|x_{n-1}),</span>
+
+<span class="sd">    where</span>
+<span class="sd">    </span>
+<span class="sd">    .. math::</span>
+
+<span class="sd">        p(x_0=k) &amp;= \pi_k, \quad \text{for } k \in \{0,\ldots,K-1\},</span>
+<span class="sd">        \\</span>
+<span class="sd">        p(x_n=j|x_{n-1}=i) &amp;= a_{ij}^{(n-1)} \quad \text{for } n=1,\ldots,N-1,\,</span>
+<span class="sd">        i\in\{1,\ldots,K-1\},\, j\in\{1,\ldots,K-1\}</span>
+<span class="sd">        \\</span>
+<span class="sd">        a_{ij}^{(n)} &amp;= [\mathbf{A}_n]_{ij}</span>
+
+<span class="sd">    This node can be used to construct hidden Markov models by using</span>
+<span class="sd">    :class:`Mixture` for the emission distribution.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    pi : Dirichlet-like node or (...,K)-array</span>
+<span class="sd">    </span>
+<span class="sd">        :math:`\boldsymbol{\pi}`, probabilities for the first</span>
+<span class="sd">        state. :math:`K`-dimensional Dirichlet.</span>
+<span class="sd">        </span>
+<span class="sd">    A : Dirichlet-like node or (K,K)-array or (...,1,K,K)-array or (...,N-1,K,K)-array</span>
+<span class="sd">    </span>
+<span class="sd">        :math:`\mathbf{A}`, probabilities for state</span>
+<span class="sd">        transitions. :math:`K`-dimensional Dirichlet with plates (K,) or</span>
+<span class="sd">        (...,1,K) or (...,N-1,K).</span>
+<span class="sd">        </span>
+<span class="sd">    states : int, optional</span>
+<span class="sd">    </span>
+<span class="sd">        :math:`N`, the length of the chain.</span>
+
+<span class="sd">    See also</span>
+<span class="sd">    --------</span>
+<span class="sd">    </span>
+<span class="sd">    Categorical, Dirichlet, GaussianMarkovChain, Mixture,</span>
+<span class="sd">    SwitchingGaussianMarkovChain</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    
+    <span class="n">_parent_moments</span> <span class="o">=</span> <span class="p">(</span><span class="n">DirichletMoments</span><span class="p">(),</span>
+                       <span class="n">DirichletMoments</span><span class="p">())</span>
+
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pi</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">states</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create categorical Markov chain</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">pi</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">states</span><span class="o">=</span><span class="n">states</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+
+    <span class="nd">@classmethod</span>
+    <span class="nd">@ensureparents</span>
+    <span class="k">def</span> <span class="nf">_constructor</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">p0</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">states</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Constructs distribution and moments objects.</span>
+
+<span class="sd">        This method is called if useconstructor decorator is used for __init__.</span>
+<span class="sd">        </span>
+<span class="sd">        Becase the distribution and moments object depend on the number of</span>
+<span class="sd">        categories, that is, they depend on the parent node, this method can be</span>
+<span class="sd">        used to construct those objects.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c"># Number of categories</span>
+        <span class="n">D</span> <span class="o">=</span> <span class="n">p0</span><span class="o">.</span><span class="n">dims</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="c"># Number of states</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">P</span><span class="o">.</span><span class="n">plates</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">states</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Could not infer the length of the Markov &quot;</span>
+                                 <span class="s">&quot;chain&quot;</span><span class="p">)</span>
+            <span class="n">N</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">states</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">P</span><span class="o">.</span><span class="n">plates</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">states</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+                    <span class="n">N</span> <span class="o">=</span> <span class="mi">2</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">N</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">states</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">states</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">P</span><span class="o">.</span><span class="n">plates</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span> <span class="o">!=</span> <span class="n">states</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Given length of the Markov chain is &quot;</span>
+                                     <span class="s">&quot;inconsistent with the transition &quot;</span>
+                                     <span class="s">&quot;probability matrix&quot;</span><span class="p">)</span>
+                <span class="n">N</span> <span class="o">=</span> <span class="n">P</span><span class="o">.</span><span class="n">plates</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
+
+        <span class="k">if</span> <span class="n">p0</span><span class="o">.</span><span class="n">dims</span> <span class="o">!=</span> <span class="n">P</span><span class="o">.</span><span class="n">dims</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Initial state probability vector and state &quot;</span>
+                             <span class="s">&quot;transition probability matrix have different &quot;</span>
+                             <span class="s">&quot;size&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">P</span><span class="o">.</span><span class="n">plates</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">P</span><span class="o">.</span><span class="n">plates</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="n">D</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Transition probability matrix is not square&quot;</span><span class="p">)</span>
+
+        <span class="n">dims</span> <span class="o">=</span> <span class="p">(</span> <span class="p">(</span><span class="n">D</span><span class="p">,),</span> <span class="p">(</span><span class="n">N</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="n">D</span><span class="p">,</span><span class="n">D</span><span class="p">)</span> <span class="p">)</span>
+
+        <span class="n">parents</span> <span class="o">=</span> <span class="p">[</span><span class="n">p0</span><span class="p">,</span> <span class="n">P</span><span class="p">]</span>
+        <span class="n">distribution</span> <span class="o">=</span> <span class="n">CategoricalMarkovChainDistribution</span><span class="p">(</span><span class="n">D</span><span class="p">,</span> <span class="n">N</span><span class="p">)</span>
+        <span class="n">moments</span> <span class="o">=</span> <span class="n">CategoricalMarkovChainMoments</span><span class="p">(</span><span class="n">D</span><span class="p">)</span>
+        <span class="n">parent_moments</span> <span class="o">=</span> <span class="n">cls</span><span class="o">.</span><span class="n">_parent_moments</span>
+
+        <span class="k">return</span> <span class="p">(</span><span class="n">parents</span><span class="p">,</span>
+                <span class="n">kwargs</span><span class="p">,</span>
+                <span class="n">dims</span><span class="p">,</span> 
+                <span class="n">cls</span><span class="o">.</span><span class="n">_total_plates</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;plates&#39;</span><span class="p">),</span>
+                                  <span class="n">distribution</span><span class="o">.</span><span class="n">plates_from_parent</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">p0</span><span class="o">.</span><span class="n">plates</span><span class="p">),</span>
+                                  <span class="n">distribution</span><span class="o">.</span><span class="n">plates_from_parent</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">P</span><span class="o">.</span><span class="n">plates</span><span class="p">)),</span>
+                <span class="n">distribution</span><span class="p">,</span> 
+                <span class="n">moments</span><span class="p">,</span> 
+                <span class="n">parent_moments</span><span class="p">)</span>
+
+        
+    <span class="k">def</span> <span class="nf">show</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Print the distribution using standard parameterization.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
+
+
+<span class="k">class</span> <span class="nc">CategoricalMarkovChainToCategorical</span><span class="p">(</span><span class="n">Deterministic</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A node for converting categorical MC moments to categorical moments.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Z</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create a categorical MC moments to categorical moments conversion node.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c"># Convert parent to proper type. Z must be a node.</span>
+        <span class="n">Z</span> <span class="o">=</span> <span class="n">Z</span><span class="o">.</span><span class="n">_convert</span><span class="p">(</span><span class="n">CategoricalMarkovChainMoments</span><span class="p">)</span>
+        <span class="n">K</span> <span class="o">=</span> <span class="n">Z</span><span class="o">.</span><span class="n">dims</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">dims</span> <span class="o">=</span> <span class="p">(</span> <span class="p">(</span><span class="n">K</span><span class="p">,),</span> <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_moments</span> <span class="o">=</span> <span class="n">CategoricalMoments</span><span class="p">(</span><span class="n">K</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_parent_moments</span> <span class="o">=</span> <span class="p">(</span><span class="n">CategoricalMarkovChainMoments</span><span class="p">(</span><span class="n">K</span><span class="p">),)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">Z</span><span class="p">,</span> <span class="n">dims</span><span class="o">=</span><span class="n">dims</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        
+    <span class="k">def</span> <span class="nf">_compute_moments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u_Z</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute the moments given the moments of the parents.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c"># Add time axis to p0</span>
+        <span class="n">p0</span> <span class="o">=</span> <span class="n">u_Z</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="o">...</span><span class="p">,</span><span class="bp">None</span><span class="p">,:]</span>
+        <span class="c"># Sum joint probability arrays to marginal probability vectors</span>
+        <span class="n">zz</span> <span class="o">=</span> <span class="n">u_Z</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">zz</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">2</span><span class="p">)</span>
+
+        <span class="c"># Broadcast p0 and p to same shape, except the time axis</span>
+        <span class="n">plates_p0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">p0</span><span class="p">)[:</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
+        <span class="n">plates_p</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">p</span><span class="p">)[:</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
+        <span class="n">shape</span> <span class="o">=</span> <span class="n">misc</span><span class="o">.</span><span class="n">broadcasted_shape</span><span class="p">(</span><span class="n">plates_p0</span><span class="p">,</span> <span class="n">plates_p</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">p0</span> <span class="o">=</span> <span class="n">p0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">p</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
+
+        <span class="c"># Concatenate</span>
+        <span class="n">P</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">p0</span><span class="p">,</span><span class="n">p</span><span class="p">),</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">2</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="p">[</span><span class="n">P</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">_compute_message_to_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">u_Z</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute the message to a parent.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">m0</span> <span class="o">=</span> <span class="n">m</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="o">...</span><span class="p">,</span><span class="mi">0</span><span class="p">,:]</span>
+        <span class="n">m1</span> <span class="o">=</span> <span class="n">m</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="o">...</span><span class="p">,</span><span class="mi">1</span><span class="p">:,</span><span class="bp">None</span><span class="p">,:]</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">m0</span><span class="p">,</span> <span class="n">m1</span><span class="p">]</span>
+    
+    <span class="k">def</span> <span class="nf">_compute_mask_to_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">mask</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute the mask used for messages sent to a parent.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">index</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c"># &quot;Sum&quot; over the last axis</span>
+            <span class="c"># TODO/FIXME: Check this. BUG I THINK.</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Parent index out of bounds&quot;</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">_plates_to_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">index</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">plates</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Parent index out of bounds&quot;</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">_plates_from_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">index</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">N</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parents</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">dims</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">parents</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plates</span> <span class="o">+</span> <span class="p">(</span><span class="n">N</span><span class="o">+</span><span class="mi">1</span><span class="p">,)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Parent index out of bounds&quot;</span><span class="p">)</span>
+
+
+<span class="c"># Make use of the conversion node</span>
+<span class="n">CategoricalMarkovChainMoments</span><span class="o">.</span><span class="n">add_converter</span><span class="p">(</span><span class="n">CategoricalMoments</span><span class="p">,</span>
+                                            <span class="n">CategoricalMarkovChainToCategorical</span><span class="p">)</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../../../index.html">BayesPy v0.1 Documentation</a> &raquo;</li>
+          <li><a href="../../../../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../../../inference.html" >bayespy.inference</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011-2014, Jaakko Luttinen, GPLv3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

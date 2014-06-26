@@ -1,0 +1,188 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Distributions &mdash; BayesPy v0.1 Documentation</title>
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="BayesPy v0.1 Documentation" href="../index.html" />
+    <link rel="up" title="Developer API" href="dev_api.html" />
+    <link rel="next" title="bayespy.inference.vmp.nodes.stochastic.Distribution" href="generated/bayespy.inference.vmp.nodes.stochastic.Distribution.html" />
+    <link rel="prev" title="bayespy.inference.vmp.nodes.poisson.PoissonMoments.get_converter" href="generated/generated/bayespy.inference.vmp.nodes.poisson.PoissonMoments.get_converter.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="generated/bayespy.inference.vmp.nodes.stochastic.Distribution.html" title="bayespy.inference.vmp.nodes.stochastic.Distribution"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="generated/generated/bayespy.inference.vmp.nodes.poisson.PoissonMoments.get_converter.html" title="bayespy.inference.vmp.nodes.poisson.PoissonMoments.get_converter"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">BayesPy v0.1 Documentation</a> &raquo;</li>
+          <li><a href="dev_api.html" accesskey="U">Developer API</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="distributions">
+<h1>Distributions<a class="headerlink" href="#distributions" title="Permalink to this headline">¶</a></h1>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.inference.vmp.nodes.stochastic.Distribution.html#bayespy.inference.vmp.nodes.stochastic.Distribution" title="bayespy.inference.vmp.nodes.stochastic.Distribution"><tt class="xref py py-obj docutils literal"><span class="pre">stochastic.Distribution</span></tt></a></td>
+<td>A base class for the VMP formulas of variables.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.inference.vmp.nodes.expfamily.ExponentialFamilyDistribution.html#bayespy.inference.vmp.nodes.expfamily.ExponentialFamilyDistribution" title="bayespy.inference.vmp.nodes.expfamily.ExponentialFamilyDistribution"><tt class="xref py py-obj docutils literal"><span class="pre">expfamily.ExponentialFamilyDistribution</span></tt></a></td>
+<td>Sub-classes implement distribution specific computations.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.html#bayespy.inference.vmp.nodes.gaussian.GaussianDistribution" title="bayespy.inference.vmp.nodes.gaussian.GaussianDistribution"><tt class="xref py py-obj docutils literal"><span class="pre">gaussian.GaussianDistribution</span></tt></a></td>
+<td>Class for the VMP formulas of Gaussian variables.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.inference.vmp.nodes.gaussian.GaussianARDDistribution.html#bayespy.inference.vmp.nodes.gaussian.GaussianARDDistribution" title="bayespy.inference.vmp.nodes.gaussian.GaussianARDDistribution"><tt class="xref py py-obj docutils literal"><span class="pre">gaussian.GaussianARDDistribution</span></tt></a>(shape,&nbsp;ndim_mu)</td>
+<td>...</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.inference.vmp.nodes.gaussian.GaussianGammaISODistribution.html#bayespy.inference.vmp.nodes.gaussian.GaussianGammaISODistribution" title="bayespy.inference.vmp.nodes.gaussian.GaussianGammaISODistribution"><tt class="xref py py-obj docutils literal"><span class="pre">gaussian.GaussianGammaISODistribution</span></tt></a></td>
+<td>Class for the VMP formulas of Gaussian-Gamma-ISO variables.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.inference.vmp.nodes.gaussian.GaussianGammaARDDistribution.html#bayespy.inference.vmp.nodes.gaussian.GaussianGammaARDDistribution" title="bayespy.inference.vmp.nodes.gaussian.GaussianGammaARDDistribution"><tt class="xref py py-obj docutils literal"><span class="pre">gaussian.GaussianGammaARDDistribution</span></tt></a>()</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.inference.vmp.nodes.gaussian.GaussianWishartDistribution.html#bayespy.inference.vmp.nodes.gaussian.GaussianWishartDistribution" title="bayespy.inference.vmp.nodes.gaussian.GaussianWishartDistribution"><tt class="xref py py-obj docutils literal"><span class="pre">gaussian.GaussianWishartDistribution</span></tt></a></td>
+<td>Class for the VMP formulas of Gaussian-Wishart variables.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.inference.vmp.nodes.gaussian_markov_chain.GaussianMarkovChainDistribution.html#bayespy.inference.vmp.nodes.gaussian_markov_chain.GaussianMarkovChainDistribution" title="bayespy.inference.vmp.nodes.gaussian_markov_chain.GaussianMarkovChainDistribution"><tt class="xref py py-obj docutils literal"><span class="pre">gaussian_markov_chain.GaussianMarkovChainDistribution</span></tt></a>(N,&nbsp;D)</td>
+<td>Sub-classes implement distribution specific computations.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.inference.vmp.nodes.gaussian_markov_chain.SwitchingGaussianMarkovChainDistribution.html#bayespy.inference.vmp.nodes.gaussian_markov_chain.SwitchingGaussianMarkovChainDistribution" title="bayespy.inference.vmp.nodes.gaussian_markov_chain.SwitchingGaussianMarkovChainDistribution"><tt class="xref py py-obj docutils literal"><span class="pre">gaussian_markov_chain.SwitchingGaussianMarkovChainDistribution</span></tt></a>(N,&nbsp;D,&nbsp;K)</td>
+<td>Sub-classes implement distribution specific computations.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.inference.vmp.nodes.gaussian_markov_chain.VaryingGaussianMarkovChainDistribution.html#bayespy.inference.vmp.nodes.gaussian_markov_chain.VaryingGaussianMarkovChainDistribution" title="bayespy.inference.vmp.nodes.gaussian_markov_chain.VaryingGaussianMarkovChainDistribution"><tt class="xref py py-obj docutils literal"><span class="pre">gaussian_markov_chain.VaryingGaussianMarkovChainDistribution</span></tt></a>(N,&nbsp;D)</td>
+<td>Sub-classes implement distribution specific computations.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.inference.vmp.nodes.gamma.GammaDistribution.html#bayespy.inference.vmp.nodes.gamma.GammaDistribution" title="bayespy.inference.vmp.nodes.gamma.GammaDistribution"><tt class="xref py py-obj docutils literal"><span class="pre">gamma.GammaDistribution</span></tt></a></td>
+<td>Class for the VMP formulas of gamma variables.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.inference.vmp.nodes.wishart.WishartDistribution.html#bayespy.inference.vmp.nodes.wishart.WishartDistribution" title="bayespy.inference.vmp.nodes.wishart.WishartDistribution"><tt class="xref py py-obj docutils literal"><span class="pre">wishart.WishartDistribution</span></tt></a></td>
+<td>Sub-classes implement distribution specific computations.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.inference.vmp.nodes.beta.BetaDistribution.html#bayespy.inference.vmp.nodes.beta.BetaDistribution" title="bayespy.inference.vmp.nodes.beta.BetaDistribution"><tt class="xref py py-obj docutils literal"><span class="pre">beta.BetaDistribution</span></tt></a></td>
+<td>Class for the VMP formulas of beta variables.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.inference.vmp.nodes.dirichlet.DirichletDistribution.html#bayespy.inference.vmp.nodes.dirichlet.DirichletDistribution" title="bayespy.inference.vmp.nodes.dirichlet.DirichletDistribution"><tt class="xref py py-obj docutils literal"><span class="pre">dirichlet.DirichletDistribution</span></tt></a></td>
+<td>Class for the VMP formulas of Dirichlet variables.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.inference.vmp.nodes.bernoulli.BernoulliDistribution.html#bayespy.inference.vmp.nodes.bernoulli.BernoulliDistribution" title="bayespy.inference.vmp.nodes.bernoulli.BernoulliDistribution"><tt class="xref py py-obj docutils literal"><span class="pre">bernoulli.BernoulliDistribution</span></tt></a>()</td>
+<td>Class for the VMP formulas of Bernoulli variables.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.inference.vmp.nodes.binomial.BinomialDistribution.html#bayespy.inference.vmp.nodes.binomial.BinomialDistribution" title="bayespy.inference.vmp.nodes.binomial.BinomialDistribution"><tt class="xref py py-obj docutils literal"><span class="pre">binomial.BinomialDistribution</span></tt></a>(N)</td>
+<td>Class for the VMP formulas of binomial variables.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.inference.vmp.nodes.categorical.CategoricalDistribution.html#bayespy.inference.vmp.nodes.categorical.CategoricalDistribution" title="bayespy.inference.vmp.nodes.categorical.CategoricalDistribution"><tt class="xref py py-obj docutils literal"><span class="pre">categorical.CategoricalDistribution</span></tt></a>(categories)</td>
+<td>Class for the VMP formulas of categorical variables.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.inference.vmp.nodes.categorical_markov_chain.CategoricalMarkovChainDistribution.html#bayespy.inference.vmp.nodes.categorical_markov_chain.CategoricalMarkovChainDistribution" title="bayespy.inference.vmp.nodes.categorical_markov_chain.CategoricalMarkovChainDistribution"><tt class="xref py py-obj docutils literal"><span class="pre">categorical_markov_chain.CategoricalMarkovChainDistribution</span></tt></a>(...)</td>
+<td>Class for the VMP formulas of categorical Markov chain variables.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.inference.vmp.nodes.multinomial.MultinomialDistribution.html#bayespy.inference.vmp.nodes.multinomial.MultinomialDistribution" title="bayespy.inference.vmp.nodes.multinomial.MultinomialDistribution"><tt class="xref py py-obj docutils literal"><span class="pre">multinomial.MultinomialDistribution</span></tt></a>(trials)</td>
+<td>Class for the VMP formulas of multinomial variables.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.inference.vmp.nodes.poisson.PoissonDistribution.html#bayespy.inference.vmp.nodes.poisson.PoissonDistribution" title="bayespy.inference.vmp.nodes.poisson.PoissonDistribution"><tt class="xref py py-obj docutils literal"><span class="pre">poisson.PoissonDistribution</span></tt></a></td>
+<td>Class for the VMP formulas of Poisson variables.</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="generated/generated/bayespy.inference.vmp.nodes.poisson.PoissonMoments.get_converter.html"
+                        title="previous chapter">bayespy.inference.vmp.nodes.poisson.PoissonMoments.get_converter</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="generated/bayespy.inference.vmp.nodes.stochastic.Distribution.html"
+                        title="next chapter">bayespy.inference.vmp.nodes.stochastic.Distribution</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/dev_api/distributions.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="generated/bayespy.inference.vmp.nodes.stochastic.Distribution.html" title="bayespy.inference.vmp.nodes.stochastic.Distribution"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="generated/generated/bayespy.inference.vmp.nodes.poisson.PoissonMoments.get_converter.html" title="bayespy.inference.vmp.nodes.poisson.PoissonMoments.get_converter"
+             >previous</a> |</li>
+        <li><a href="../index.html">BayesPy v0.1 Documentation</a> &raquo;</li>
+          <li><a href="dev_api.html" >Developer API</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011-2014, Jaakko Luttinen, GPLv3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

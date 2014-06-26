@@ -6,47 +6,51 @@ bayespy.nodes.Gamma
 .. autoclass:: Gamma
 
    
-
-      .. rubric:: Methods
-
-      .. autosummary::
-         :toctree:
-      
-         ~Gamma.add_plate_axis
-         ~Gamma.as_diagonal_wishart
-         ~Gamma.delete
-         ~Gamma.get_mask
-         ~Gamma.get_moments
-         ~Gamma.get_shape
-         ~Gamma.has_plotter
-         ~Gamma.initialize_from_parameters
-         ~Gamma.initialize_from_prior
-         ~Gamma.initialize_from_random
-         ~Gamma.initialize_from_value
-         ~Gamma.load
-         ~Gamma.logpdf
-         ~Gamma.lower_bound_contribution
-         ~Gamma.lowerbound
-         ~Gamma.move_plates
-         ~Gamma.observe
-         ~Gamma.pdf
-         ~Gamma.plot
-         ~Gamma.random
-         ~Gamma.save
-         ~Gamma.set_plotter
-         ~Gamma.show
-         ~Gamma.unobserve
-         ~Gamma.update
-
-
+   .. automethod:: __init__
 
    
+   .. rubric:: Methods
 
-      .. rubric:: Attributes
+   .. autosummary::
+      :toctree: generated/
+   
+      ~Gamma.__init__
+      ~Gamma.add_plate_axis
+      ~Gamma.as_diagonal_wishart
+      ~Gamma.delete
+      ~Gamma.get_mask
+      ~Gamma.get_moments
+      ~Gamma.get_shape
+      ~Gamma.has_plotter
+      ~Gamma.initialize_from_parameters
+      ~Gamma.initialize_from_prior
+      ~Gamma.initialize_from_random
+      ~Gamma.initialize_from_value
+      ~Gamma.load
+      ~Gamma.logpdf
+      ~Gamma.lower_bound_contribution
+      ~Gamma.lowerbound
+      ~Gamma.move_plates
+      ~Gamma.observe
+      ~Gamma.pdf
+      ~Gamma.plot
+      ~Gamma.random
+      ~Gamma.save
+      ~Gamma.set_plotter
+      ~Gamma.show
+      ~Gamma.unobserve
+      ~Gamma.update
+   
+   
 
-      .. autosummary::
-         :toctree:
-      
-         ~Gamma.dims
-         ~Gamma.plates
+   
+   
+   .. rubric:: Attributes
 
+   .. autosummary::
+      :toctree: generated/
+   
+      ~Gamma.dims
+      ~Gamma.plates
+   
+   

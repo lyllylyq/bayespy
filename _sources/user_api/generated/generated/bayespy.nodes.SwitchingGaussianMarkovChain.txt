@@ -6,47 +6,51 @@ bayespy.nodes.SwitchingGaussianMarkovChain
 .. autoclass:: SwitchingGaussianMarkovChain
 
    
-
-      .. rubric:: Methods
-
-      .. autosummary::
-         :toctree:
-      
-         ~SwitchingGaussianMarkovChain.add_plate_axis
-         ~SwitchingGaussianMarkovChain.delete
-         ~SwitchingGaussianMarkovChain.get_mask
-         ~SwitchingGaussianMarkovChain.get_moments
-         ~SwitchingGaussianMarkovChain.get_shape
-         ~SwitchingGaussianMarkovChain.has_plotter
-         ~SwitchingGaussianMarkovChain.initialize_from_parameters
-         ~SwitchingGaussianMarkovChain.initialize_from_prior
-         ~SwitchingGaussianMarkovChain.initialize_from_random
-         ~SwitchingGaussianMarkovChain.initialize_from_value
-         ~SwitchingGaussianMarkovChain.load
-         ~SwitchingGaussianMarkovChain.logpdf
-         ~SwitchingGaussianMarkovChain.lower_bound_contribution
-         ~SwitchingGaussianMarkovChain.lowerbound
-         ~SwitchingGaussianMarkovChain.move_plates
-         ~SwitchingGaussianMarkovChain.observe
-         ~SwitchingGaussianMarkovChain.pdf
-         ~SwitchingGaussianMarkovChain.plot
-         ~SwitchingGaussianMarkovChain.random
-         ~SwitchingGaussianMarkovChain.rotate
-         ~SwitchingGaussianMarkovChain.save
-         ~SwitchingGaussianMarkovChain.set_plotter
-         ~SwitchingGaussianMarkovChain.show
-         ~SwitchingGaussianMarkovChain.unobserve
-         ~SwitchingGaussianMarkovChain.update
-
-
+   .. automethod:: __init__
 
    
+   .. rubric:: Methods
 
-      .. rubric:: Attributes
+   .. autosummary::
+      :toctree: generated/
+   
+      ~SwitchingGaussianMarkovChain.__init__
+      ~SwitchingGaussianMarkovChain.add_plate_axis
+      ~SwitchingGaussianMarkovChain.delete
+      ~SwitchingGaussianMarkovChain.get_mask
+      ~SwitchingGaussianMarkovChain.get_moments
+      ~SwitchingGaussianMarkovChain.get_shape
+      ~SwitchingGaussianMarkovChain.has_plotter
+      ~SwitchingGaussianMarkovChain.initialize_from_parameters
+      ~SwitchingGaussianMarkovChain.initialize_from_prior
+      ~SwitchingGaussianMarkovChain.initialize_from_random
+      ~SwitchingGaussianMarkovChain.initialize_from_value
+      ~SwitchingGaussianMarkovChain.load
+      ~SwitchingGaussianMarkovChain.logpdf
+      ~SwitchingGaussianMarkovChain.lower_bound_contribution
+      ~SwitchingGaussianMarkovChain.lowerbound
+      ~SwitchingGaussianMarkovChain.move_plates
+      ~SwitchingGaussianMarkovChain.observe
+      ~SwitchingGaussianMarkovChain.pdf
+      ~SwitchingGaussianMarkovChain.plot
+      ~SwitchingGaussianMarkovChain.random
+      ~SwitchingGaussianMarkovChain.rotate
+      ~SwitchingGaussianMarkovChain.save
+      ~SwitchingGaussianMarkovChain.set_plotter
+      ~SwitchingGaussianMarkovChain.show
+      ~SwitchingGaussianMarkovChain.unobserve
+      ~SwitchingGaussianMarkovChain.update
+   
+   
 
-      .. autosummary::
-         :toctree:
-      
-         ~SwitchingGaussianMarkovChain.dims
-         ~SwitchingGaussianMarkovChain.plates
+   
+   
+   .. rubric:: Attributes
 
+   .. autosummary::
+      :toctree: generated/
+   
+      ~SwitchingGaussianMarkovChain.dims
+      ~SwitchingGaussianMarkovChain.plates
+   
+   

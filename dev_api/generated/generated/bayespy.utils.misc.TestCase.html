@@ -1,0 +1,361 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>bayespy.utils.misc.TestCase &mdash; BayesPy v0.1 Documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="BayesPy v0.1 Documentation" href="../../../index.html" />
+    <link rel="up" title="bayespy.utils.misc" href="../bayespy.utils.misc.html" />
+    <link rel="next" title="bayespy.utils.misc.TestCase.__init__" href="generated/bayespy.utils.misc.TestCase.__init__.html" />
+    <link rel="prev" title="bayespy.utils.misc.CholeskySparse.trace_solve_gradient" href="generated/bayespy.utils.misc.CholeskySparse.trace_solve_gradient.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="generated/bayespy.utils.misc.TestCase.__init__.html" title="bayespy.utils.misc.TestCase.__init__"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="generated/bayespy.utils.misc.CholeskySparse.trace_solve_gradient.html" title="bayespy.utils.misc.CholeskySparse.trace_solve_gradient"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../../index.html">BayesPy v0.1 Documentation</a> &raquo;</li>
+          <li><a href="../../dev_api.html" >Developer API</a> &raquo;</li>
+          <li><a href="../../utils.html" >Utility functions</a> &raquo;</li>
+          <li><a href="../bayespy.utils.misc.html" accesskey="U">bayespy.utils.misc</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="bayespy-utils-misc-testcase">
+<h1>bayespy.utils.misc.TestCase<a class="headerlink" href="#bayespy-utils-misc-testcase" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="bayespy.utils.misc.TestCase">
+<em class="property">class </em><tt class="descclassname">bayespy.utils.misc.</tt><tt class="descname">TestCase</tt><big>(</big><em>methodName='runTest'</em><big>)</big><a class="reference internal" href="../../../_modules/bayespy/utils/misc.html#TestCase"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bayespy.utils.misc.TestCase" title="Permalink to this definition">¶</a></dt>
+<dd><p>Simple base class for unit testing.</p>
+<p>Adds NumPy&#8217;s features to Python&#8217;s unittest.</p>
+<dl class="method">
+<dt id="bayespy.utils.misc.TestCase.__init__">
+<tt class="descname">__init__</tt><big>(</big><em>methodName='runTest'</em><big>)</big><a class="headerlink" href="#bayespy.utils.misc.TestCase.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create an instance of the class that will use the named test
+method when executed. Raises a ValueError if the instance does
+not have a method with the specified name.</p>
+</dd></dl>
+
+<p class="rubric">Methods</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.utils.misc.TestCase.__init__.html#bayespy.utils.misc.TestCase.__init__" title="bayespy.utils.misc.TestCase.__init__"><tt class="xref py py-obj docutils literal"><span class="pre">__init__</span></tt></a>([methodName])</td>
+<td>Create an instance of the class that will use the named test method when executed.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.utils.misc.TestCase.addCleanup.html#bayespy.utils.misc.TestCase.addCleanup" title="bayespy.utils.misc.TestCase.addCleanup"><tt class="xref py py-obj docutils literal"><span class="pre">addCleanup</span></tt></a>(function,&nbsp;*args,&nbsp;**kwargs)</td>
+<td>Add a function, with arguments, to be called when the test is completed.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.utils.misc.TestCase.addTypeEqualityFunc.html#bayespy.utils.misc.TestCase.addTypeEqualityFunc" title="bayespy.utils.misc.TestCase.addTypeEqualityFunc"><tt class="xref py py-obj docutils literal"><span class="pre">addTypeEqualityFunc</span></tt></a>(typeobj,&nbsp;function)</td>
+<td>Add a type specific assertEqual style function to compare a type.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.utils.misc.TestCase.assertAllClose.html#bayespy.utils.misc.TestCase.assertAllClose" title="bayespy.utils.misc.TestCase.assertAllClose"><tt class="xref py py-obj docutils literal"><span class="pre">assertAllClose</span></tt></a>(A,&nbsp;B[,&nbsp;msg,&nbsp;rtol,&nbsp;atol])</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.utils.misc.TestCase.assertAlmostEqual.html#bayespy.utils.misc.TestCase.assertAlmostEqual" title="bayespy.utils.misc.TestCase.assertAlmostEqual"><tt class="xref py py-obj docutils literal"><span class="pre">assertAlmostEqual</span></tt></a>(first,&nbsp;second[,&nbsp;places,&nbsp;...])</td>
+<td>Fail if the two objects are unequal as determined by their difference rounded to the given number of decimal places (default 7) and comparing to zero, or by comparing that the between the two objects is more than the given delta.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.utils.misc.TestCase.assertAlmostEquals.html#bayespy.utils.misc.TestCase.assertAlmostEquals" title="bayespy.utils.misc.TestCase.assertAlmostEquals"><tt class="xref py py-obj docutils literal"><span class="pre">assertAlmostEquals</span></tt></a>(*args,&nbsp;**kwargs)</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.utils.misc.TestCase.assertArrayEqual.html#bayespy.utils.misc.TestCase.assertArrayEqual" title="bayespy.utils.misc.TestCase.assertArrayEqual"><tt class="xref py py-obj docutils literal"><span class="pre">assertArrayEqual</span></tt></a>(A,&nbsp;B[,&nbsp;msg])</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.utils.misc.TestCase.assertCountEqual.html#bayespy.utils.misc.TestCase.assertCountEqual" title="bayespy.utils.misc.TestCase.assertCountEqual"><tt class="xref py py-obj docutils literal"><span class="pre">assertCountEqual</span></tt></a>(first,&nbsp;second[,&nbsp;msg])</td>
+<td>An unordered sequence comparison asserting that the same elements, regardless of order.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.utils.misc.TestCase.assertDictContainsSubset.html#bayespy.utils.misc.TestCase.assertDictContainsSubset" title="bayespy.utils.misc.TestCase.assertDictContainsSubset"><tt class="xref py py-obj docutils literal"><span class="pre">assertDictContainsSubset</span></tt></a>(subset,&nbsp;dictionary)</td>
+<td>Checks whether dictionary is a superset of subset.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.utils.misc.TestCase.assertDictEqual.html#bayespy.utils.misc.TestCase.assertDictEqual" title="bayespy.utils.misc.TestCase.assertDictEqual"><tt class="xref py py-obj docutils literal"><span class="pre">assertDictEqual</span></tt></a>(d1,&nbsp;d2[,&nbsp;msg])</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.utils.misc.TestCase.assertEqual.html#bayespy.utils.misc.TestCase.assertEqual" title="bayespy.utils.misc.TestCase.assertEqual"><tt class="xref py py-obj docutils literal"><span class="pre">assertEqual</span></tt></a>(first,&nbsp;second[,&nbsp;msg])</td>
+<td>Fail if the two objects are unequal as determined by the &#8216;==&#8217; operator.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.utils.misc.TestCase.assertEquals.html#bayespy.utils.misc.TestCase.assertEquals" title="bayespy.utils.misc.TestCase.assertEquals"><tt class="xref py py-obj docutils literal"><span class="pre">assertEquals</span></tt></a>(*args,&nbsp;**kwargs)</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.utils.misc.TestCase.assertFalse.html#bayespy.utils.misc.TestCase.assertFalse" title="bayespy.utils.misc.TestCase.assertFalse"><tt class="xref py py-obj docutils literal"><span class="pre">assertFalse</span></tt></a>(expr[,&nbsp;msg])</td>
+<td>Check that the expression is false.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.utils.misc.TestCase.assertGreater.html#bayespy.utils.misc.TestCase.assertGreater" title="bayespy.utils.misc.TestCase.assertGreater"><tt class="xref py py-obj docutils literal"><span class="pre">assertGreater</span></tt></a>(a,&nbsp;b[,&nbsp;msg])</td>
+<td>Just like self.assertTrue(a &gt; b), but with a nicer default message.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.utils.misc.TestCase.assertGreaterEqual.html#bayespy.utils.misc.TestCase.assertGreaterEqual" title="bayespy.utils.misc.TestCase.assertGreaterEqual"><tt class="xref py py-obj docutils literal"><span class="pre">assertGreaterEqual</span></tt></a>(a,&nbsp;b[,&nbsp;msg])</td>
+<td>Just like self.assertTrue(a &gt;= b), but with a nicer default message.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.utils.misc.TestCase.assertIn.html#bayespy.utils.misc.TestCase.assertIn" title="bayespy.utils.misc.TestCase.assertIn"><tt class="xref py py-obj docutils literal"><span class="pre">assertIn</span></tt></a>(member,&nbsp;container[,&nbsp;msg])</td>
+<td>Just like self.assertTrue(a in b), but with a nicer default message.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.utils.misc.TestCase.assertIs.html#bayespy.utils.misc.TestCase.assertIs" title="bayespy.utils.misc.TestCase.assertIs"><tt class="xref py py-obj docutils literal"><span class="pre">assertIs</span></tt></a>(expr1,&nbsp;expr2[,&nbsp;msg])</td>
+<td>Just like self.assertTrue(a is b), but with a nicer default message.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.utils.misc.TestCase.assertIsInstance.html#bayespy.utils.misc.TestCase.assertIsInstance" title="bayespy.utils.misc.TestCase.assertIsInstance"><tt class="xref py py-obj docutils literal"><span class="pre">assertIsInstance</span></tt></a>(obj,&nbsp;cls[,&nbsp;msg])</td>
+<td>Same as self.assertTrue(isinstance(obj, cls)), with a nicer default message.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.utils.misc.TestCase.assertIsNone.html#bayespy.utils.misc.TestCase.assertIsNone" title="bayespy.utils.misc.TestCase.assertIsNone"><tt class="xref py py-obj docutils literal"><span class="pre">assertIsNone</span></tt></a>(obj[,&nbsp;msg])</td>
+<td>Same as self.assertTrue(obj is None), with a nicer default message.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.utils.misc.TestCase.assertIsNot.html#bayespy.utils.misc.TestCase.assertIsNot" title="bayespy.utils.misc.TestCase.assertIsNot"><tt class="xref py py-obj docutils literal"><span class="pre">assertIsNot</span></tt></a>(expr1,&nbsp;expr2[,&nbsp;msg])</td>
+<td>Just like self.assertTrue(a is not b), but with a nicer default message.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.utils.misc.TestCase.assertIsNotNone.html#bayespy.utils.misc.TestCase.assertIsNotNone" title="bayespy.utils.misc.TestCase.assertIsNotNone"><tt class="xref py py-obj docutils literal"><span class="pre">assertIsNotNone</span></tt></a>(obj[,&nbsp;msg])</td>
+<td>Included for symmetry with assertIsNone.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.utils.misc.TestCase.assertLess.html#bayespy.utils.misc.TestCase.assertLess" title="bayespy.utils.misc.TestCase.assertLess"><tt class="xref py py-obj docutils literal"><span class="pre">assertLess</span></tt></a>(a,&nbsp;b[,&nbsp;msg])</td>
+<td>Just like self.assertTrue(a &lt; b), but with a nicer default message.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.utils.misc.TestCase.assertLessEqual.html#bayespy.utils.misc.TestCase.assertLessEqual" title="bayespy.utils.misc.TestCase.assertLessEqual"><tt class="xref py py-obj docutils literal"><span class="pre">assertLessEqual</span></tt></a>(a,&nbsp;b[,&nbsp;msg])</td>
+<td>Just like self.assertTrue(a &lt;= b), but with a nicer default message.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.utils.misc.TestCase.assertListEqual.html#bayespy.utils.misc.TestCase.assertListEqual" title="bayespy.utils.misc.TestCase.assertListEqual"><tt class="xref py py-obj docutils literal"><span class="pre">assertListEqual</span></tt></a>(list1,&nbsp;list2[,&nbsp;msg])</td>
+<td>A list-specific equality assertion.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.utils.misc.TestCase.assertMessage.html#bayespy.utils.misc.TestCase.assertMessage" title="bayespy.utils.misc.TestCase.assertMessage"><tt class="xref py py-obj docutils literal"><span class="pre">assertMessage</span></tt></a>(M1,&nbsp;M2)</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.utils.misc.TestCase.assertMessageToChild.html#bayespy.utils.misc.TestCase.assertMessageToChild" title="bayespy.utils.misc.TestCase.assertMessageToChild"><tt class="xref py py-obj docutils literal"><span class="pre">assertMessageToChild</span></tt></a>(X,&nbsp;u)</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.utils.misc.TestCase.assertMultiLineEqual.html#bayespy.utils.misc.TestCase.assertMultiLineEqual" title="bayespy.utils.misc.TestCase.assertMultiLineEqual"><tt class="xref py py-obj docutils literal"><span class="pre">assertMultiLineEqual</span></tt></a>(first,&nbsp;second[,&nbsp;msg])</td>
+<td>Assert that two multi-line strings are equal.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.utils.misc.TestCase.assertNotAlmostEqual.html#bayespy.utils.misc.TestCase.assertNotAlmostEqual" title="bayespy.utils.misc.TestCase.assertNotAlmostEqual"><tt class="xref py py-obj docutils literal"><span class="pre">assertNotAlmostEqual</span></tt></a>(first,&nbsp;second[,&nbsp;...])</td>
+<td>Fail if the two objects are equal as determined by their difference rounded to the given number of decimal places (default 7) and comparing to zero, or by comparing that the between the two objects is less than the given delta.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.utils.misc.TestCase.assertNotAlmostEquals.html#bayespy.utils.misc.TestCase.assertNotAlmostEquals" title="bayespy.utils.misc.TestCase.assertNotAlmostEquals"><tt class="xref py py-obj docutils literal"><span class="pre">assertNotAlmostEquals</span></tt></a>(*args,&nbsp;**kwargs)</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.utils.misc.TestCase.assertNotEqual.html#bayespy.utils.misc.TestCase.assertNotEqual" title="bayespy.utils.misc.TestCase.assertNotEqual"><tt class="xref py py-obj docutils literal"><span class="pre">assertNotEqual</span></tt></a>(first,&nbsp;second[,&nbsp;msg])</td>
+<td>Fail if the two objects are equal as determined by the &#8216;!=&#8217; operator.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.utils.misc.TestCase.assertNotEquals.html#bayespy.utils.misc.TestCase.assertNotEquals" title="bayespy.utils.misc.TestCase.assertNotEquals"><tt class="xref py py-obj docutils literal"><span class="pre">assertNotEquals</span></tt></a>(*args,&nbsp;**kwargs)</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.utils.misc.TestCase.assertNotIn.html#bayespy.utils.misc.TestCase.assertNotIn" title="bayespy.utils.misc.TestCase.assertNotIn"><tt class="xref py py-obj docutils literal"><span class="pre">assertNotIn</span></tt></a>(member,&nbsp;container[,&nbsp;msg])</td>
+<td>Just like self.assertTrue(a not in b), but with a nicer default message.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.utils.misc.TestCase.assertNotIsInstance.html#bayespy.utils.misc.TestCase.assertNotIsInstance" title="bayespy.utils.misc.TestCase.assertNotIsInstance"><tt class="xref py py-obj docutils literal"><span class="pre">assertNotIsInstance</span></tt></a>(obj,&nbsp;cls[,&nbsp;msg])</td>
+<td>Included for symmetry with assertIsInstance.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.utils.misc.TestCase.assertNotRegex.html#bayespy.utils.misc.TestCase.assertNotRegex" title="bayespy.utils.misc.TestCase.assertNotRegex"><tt class="xref py py-obj docutils literal"><span class="pre">assertNotRegex</span></tt></a>(text,&nbsp;unexpected_regex[,&nbsp;msg])</td>
+<td>Fail the test if the text matches the regular expression.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.utils.misc.TestCase.assertRaises.html#bayespy.utils.misc.TestCase.assertRaises" title="bayespy.utils.misc.TestCase.assertRaises"><tt class="xref py py-obj docutils literal"><span class="pre">assertRaises</span></tt></a>(excClass[,&nbsp;callableObj])</td>
+<td>Fail unless an exception of class excClass is raised by callableObj when invoked with arguments args and keyword arguments kwargs.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.utils.misc.TestCase.assertRaisesRegex.html#bayespy.utils.misc.TestCase.assertRaisesRegex" title="bayespy.utils.misc.TestCase.assertRaisesRegex"><tt class="xref py py-obj docutils literal"><span class="pre">assertRaisesRegex</span></tt></a>(expected_exception,&nbsp;...[,&nbsp;...])</td>
+<td>Asserts that the message in a raised exception matches a regex.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.utils.misc.TestCase.assertRaisesRegexp.html#bayespy.utils.misc.TestCase.assertRaisesRegexp" title="bayespy.utils.misc.TestCase.assertRaisesRegexp"><tt class="xref py py-obj docutils literal"><span class="pre">assertRaisesRegexp</span></tt></a>(*args,&nbsp;**kwargs)</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.utils.misc.TestCase.assertRegex.html#bayespy.utils.misc.TestCase.assertRegex" title="bayespy.utils.misc.TestCase.assertRegex"><tt class="xref py py-obj docutils literal"><span class="pre">assertRegex</span></tt></a>(text,&nbsp;expected_regex[,&nbsp;msg])</td>
+<td>Fail the test unless the text matches the regular expression.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.utils.misc.TestCase.assertRegexpMatches.html#bayespy.utils.misc.TestCase.assertRegexpMatches" title="bayespy.utils.misc.TestCase.assertRegexpMatches"><tt class="xref py py-obj docutils literal"><span class="pre">assertRegexpMatches</span></tt></a>(*args,&nbsp;**kwargs)</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.utils.misc.TestCase.assertSequenceEqual.html#bayespy.utils.misc.TestCase.assertSequenceEqual" title="bayespy.utils.misc.TestCase.assertSequenceEqual"><tt class="xref py py-obj docutils literal"><span class="pre">assertSequenceEqual</span></tt></a>(seq1,&nbsp;seq2[,&nbsp;msg,&nbsp;seq_type])</td>
+<td>An equality assertion for ordered sequences (like lists and tuples).</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.utils.misc.TestCase.assertSetEqual.html#bayespy.utils.misc.TestCase.assertSetEqual" title="bayespy.utils.misc.TestCase.assertSetEqual"><tt class="xref py py-obj docutils literal"><span class="pre">assertSetEqual</span></tt></a>(set1,&nbsp;set2[,&nbsp;msg])</td>
+<td>A set-specific equality assertion.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.utils.misc.TestCase.assertTrue.html#bayespy.utils.misc.TestCase.assertTrue" title="bayespy.utils.misc.TestCase.assertTrue"><tt class="xref py py-obj docutils literal"><span class="pre">assertTrue</span></tt></a>(expr[,&nbsp;msg])</td>
+<td>Check that the expression is true.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.utils.misc.TestCase.assertTupleEqual.html#bayespy.utils.misc.TestCase.assertTupleEqual" title="bayespy.utils.misc.TestCase.assertTupleEqual"><tt class="xref py py-obj docutils literal"><span class="pre">assertTupleEqual</span></tt></a>(tuple1,&nbsp;tuple2[,&nbsp;msg])</td>
+<td>A tuple-specific equality assertion.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.utils.misc.TestCase.assertWarns.html#bayespy.utils.misc.TestCase.assertWarns" title="bayespy.utils.misc.TestCase.assertWarns"><tt class="xref py py-obj docutils literal"><span class="pre">assertWarns</span></tt></a>(expected_warning[,&nbsp;callable_obj])</td>
+<td>Fail unless a warning of class warnClass is triggered by callable_obj when invoked with arguments args and keyword arguments kwargs.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.utils.misc.TestCase.assertWarnsRegex.html#bayespy.utils.misc.TestCase.assertWarnsRegex" title="bayespy.utils.misc.TestCase.assertWarnsRegex"><tt class="xref py py-obj docutils literal"><span class="pre">assertWarnsRegex</span></tt></a>(expected_warning,&nbsp;...[,&nbsp;...])</td>
+<td>Asserts that the message in a triggered warning matches a regexp.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.utils.misc.TestCase.assert_.html#bayespy.utils.misc.TestCase.assert_" title="bayespy.utils.misc.TestCase.assert_"><tt class="xref py py-obj docutils literal"><span class="pre">assert_</span></tt></a>(*args,&nbsp;**kwargs)</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.utils.misc.TestCase.countTestCases.html#bayespy.utils.misc.TestCase.countTestCases" title="bayespy.utils.misc.TestCase.countTestCases"><tt class="xref py py-obj docutils literal"><span class="pre">countTestCases</span></tt></a>()</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.utils.misc.TestCase.debug.html#bayespy.utils.misc.TestCase.debug" title="bayespy.utils.misc.TestCase.debug"><tt class="xref py py-obj docutils literal"><span class="pre">debug</span></tt></a>()</td>
+<td>Run the test without collecting errors in a TestResult</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.utils.misc.TestCase.defaultTestResult.html#bayespy.utils.misc.TestCase.defaultTestResult" title="bayespy.utils.misc.TestCase.defaultTestResult"><tt class="xref py py-obj docutils literal"><span class="pre">defaultTestResult</span></tt></a>()</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.utils.misc.TestCase.doCleanups.html#bayespy.utils.misc.TestCase.doCleanups" title="bayespy.utils.misc.TestCase.doCleanups"><tt class="xref py py-obj docutils literal"><span class="pre">doCleanups</span></tt></a>()</td>
+<td>Execute all cleanup functions.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.utils.misc.TestCase.fail.html#bayespy.utils.misc.TestCase.fail" title="bayespy.utils.misc.TestCase.fail"><tt class="xref py py-obj docutils literal"><span class="pre">fail</span></tt></a>([msg])</td>
+<td>Fail immediately, with the given message.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.utils.misc.TestCase.failIf.html#bayespy.utils.misc.TestCase.failIf" title="bayespy.utils.misc.TestCase.failIf"><tt class="xref py py-obj docutils literal"><span class="pre">failIf</span></tt></a>(*args,&nbsp;**kwargs)</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.utils.misc.TestCase.failIfAlmostEqual.html#bayespy.utils.misc.TestCase.failIfAlmostEqual" title="bayespy.utils.misc.TestCase.failIfAlmostEqual"><tt class="xref py py-obj docutils literal"><span class="pre">failIfAlmostEqual</span></tt></a>(*args,&nbsp;**kwargs)</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.utils.misc.TestCase.failIfEqual.html#bayespy.utils.misc.TestCase.failIfEqual" title="bayespy.utils.misc.TestCase.failIfEqual"><tt class="xref py py-obj docutils literal"><span class="pre">failIfEqual</span></tt></a>(*args,&nbsp;**kwargs)</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.utils.misc.TestCase.failUnless.html#bayespy.utils.misc.TestCase.failUnless" title="bayespy.utils.misc.TestCase.failUnless"><tt class="xref py py-obj docutils literal"><span class="pre">failUnless</span></tt></a>(*args,&nbsp;**kwargs)</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.utils.misc.TestCase.failUnlessAlmostEqual.html#bayespy.utils.misc.TestCase.failUnlessAlmostEqual" title="bayespy.utils.misc.TestCase.failUnlessAlmostEqual"><tt class="xref py py-obj docutils literal"><span class="pre">failUnlessAlmostEqual</span></tt></a>(*args,&nbsp;**kwargs)</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.utils.misc.TestCase.failUnlessEqual.html#bayespy.utils.misc.TestCase.failUnlessEqual" title="bayespy.utils.misc.TestCase.failUnlessEqual"><tt class="xref py py-obj docutils literal"><span class="pre">failUnlessEqual</span></tt></a>(*args,&nbsp;**kwargs)</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.utils.misc.TestCase.failUnlessRaises.html#bayespy.utils.misc.TestCase.failUnlessRaises" title="bayespy.utils.misc.TestCase.failUnlessRaises"><tt class="xref py py-obj docutils literal"><span class="pre">failUnlessRaises</span></tt></a>(*args,&nbsp;**kwargs)</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.utils.misc.TestCase.id.html#bayespy.utils.misc.TestCase.id" title="bayespy.utils.misc.TestCase.id"><tt class="xref py py-obj docutils literal"><span class="pre">id</span></tt></a>()</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.utils.misc.TestCase.run.html#bayespy.utils.misc.TestCase.run" title="bayespy.utils.misc.TestCase.run"><tt class="xref py py-obj docutils literal"><span class="pre">run</span></tt></a>([result])</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.utils.misc.TestCase.setUp.html#bayespy.utils.misc.TestCase.setUp" title="bayespy.utils.misc.TestCase.setUp"><tt class="xref py py-obj docutils literal"><span class="pre">setUp</span></tt></a>()</td>
+<td>Hook method for setting up the test fixture before exercising it.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.utils.misc.TestCase.setUpClass.html#bayespy.utils.misc.TestCase.setUpClass" title="bayespy.utils.misc.TestCase.setUpClass"><tt class="xref py py-obj docutils literal"><span class="pre">setUpClass</span></tt></a>()</td>
+<td>Hook method for setting up class fixture before running tests in the class.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.utils.misc.TestCase.shortDescription.html#bayespy.utils.misc.TestCase.shortDescription" title="bayespy.utils.misc.TestCase.shortDescription"><tt class="xref py py-obj docutils literal"><span class="pre">shortDescription</span></tt></a>()</td>
+<td>Returns a one-line description of the test, or None if no description has been provided.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.utils.misc.TestCase.skipTest.html#bayespy.utils.misc.TestCase.skipTest" title="bayespy.utils.misc.TestCase.skipTest"><tt class="xref py py-obj docutils literal"><span class="pre">skipTest</span></tt></a>(reason)</td>
+<td>Skip this test.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.utils.misc.TestCase.tearDown.html#bayespy.utils.misc.TestCase.tearDown" title="bayespy.utils.misc.TestCase.tearDown"><tt class="xref py py-obj docutils literal"><span class="pre">tearDown</span></tt></a>()</td>
+<td>Hook method for deconstructing the test fixture after testing it.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.utils.misc.TestCase.tearDownClass.html#bayespy.utils.misc.TestCase.tearDownClass" title="bayespy.utils.misc.TestCase.tearDownClass"><tt class="xref py py-obj docutils literal"><span class="pre">tearDownClass</span></tt></a>()</td>
+<td>Hook method for deconstructing the class fixture after running all tests in the class.</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Attributes</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.utils.misc.TestCase.longMessage.html#bayespy.utils.misc.TestCase.longMessage" title="bayespy.utils.misc.TestCase.longMessage"><tt class="xref py py-obj docutils literal"><span class="pre">longMessage</span></tt></a></td>
+<td>bool(x) -&gt; bool</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.utils.misc.TestCase.maxDiff.html#bayespy.utils.misc.TestCase.maxDiff" title="bayespy.utils.misc.TestCase.maxDiff"><tt class="xref py py-obj docutils literal"><span class="pre">maxDiff</span></tt></a></td>
+<td>int(x=0) -&gt; integer</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="generated/bayespy.utils.misc.CholeskySparse.trace_solve_gradient.html"
+                        title="previous chapter">bayespy.utils.misc.CholeskySparse.trace_solve_gradient</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="generated/bayespy.utils.misc.TestCase.__init__.html"
+                        title="next chapter">bayespy.utils.misc.TestCase.__init__</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../../_sources/dev_api/generated/generated/bayespy.utils.misc.TestCase.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="generated/bayespy.utils.misc.TestCase.__init__.html" title="bayespy.utils.misc.TestCase.__init__"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="generated/bayespy.utils.misc.CholeskySparse.trace_solve_gradient.html" title="bayespy.utils.misc.CholeskySparse.trace_solve_gradient"
+             >previous</a> |</li>
+        <li><a href="../../../index.html">BayesPy v0.1 Documentation</a> &raquo;</li>
+          <li><a href="../../dev_api.html" >Developer API</a> &raquo;</li>
+          <li><a href="../../utils.html" >Utility functions</a> &raquo;</li>
+          <li><a href="../bayespy.utils.misc.html" >bayespy.utils.misc</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011-2014, Jaakko Luttinen, GPLv3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>
