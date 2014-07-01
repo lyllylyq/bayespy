@@ -63,11 +63,11 @@
 <em class="property">class </em><tt class="descclassname">bayespy.nodes.</tt><tt class="descname">VaryingGaussianMarkovChain</tt><big>(</big><em>mu</em>, <em>Lambda</em>, <em>B</em>, <em>S</em>, <em>nu</em>, <em>n=None</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#bayespy.nodes.VaryingGaussianMarkovChain" title="Permalink to this definition">¶</a></dt>
 <dd><p>Node for Gaussian Markov chain random variables with time-varying dynamics.</p>
 <p>The node models a sequence of Gaussian variables
-:math:<a href="#id1"><span class="problematic" id="id2">`</span></a>mathbf{x}_0,ldots,mathbf{x}_{N-1}$ with linear Markovian dynamics.
+<span class="math">\(\mathbf{x}_0,\ldots,\mathbf{x}_{N-1}\)</span> with linear Markovian dynamics.
 The time variability of the dynamics is obtained by modelling the state
 dynamics matrix as a linear combination of a set of matrices with
-time-varying linear combination weights <a class="reference internal" href="#r6" id="id3">[R6]</a>.  The graphical model can be
-presented as:</p>
+time-varying linear combination weights.  The
+graphical model can be presented as:</p>
 <div class="figure">
 <p><img src="../../../_images/tikz-7082c3096b56e95730068649a962f6838ff6aacf.png" alt="% tikzlibrary.code.tex
 %
@@ -309,13 +309,7 @@ However, that approach is not very efficient for large datasets because it
 does not utilize the structure of <span class="math">\(\mathbf{A}_n\)</span>, thus it explicitly
 computes huge moment arrays.</p>
 <p class="rubric">References</p>
-<table class="docutils citation" frame="void" id="r6" rules="none">
-<colgroup><col class="label" /><col /></colgroup>
-<tbody valign="top">
-<tr><td class="label">[R6]</td><td><em>(<a class="fn-backref" href="#id3">1</a>, <a class="fn-backref" href="#id4">2</a>)</em> J. Luttinen, T. Raiko, A. Ilin, &#8220;Linear State-Space Model with
-Time-Varying Dynamics,&#8221; submitted to ECML 2014.</td></tr>
-</tbody>
-</table>
+<p><a class="reference internal" href="../../../references.html#luttinen-2014" id="id1">[3]</a></p>
 <dl class="method">
 <dt id="bayespy.nodes.VaryingGaussianMarkovChain.__init__">
 <tt class="descname">__init__</tt><big>(</big><em>mu</em>, <em>Lambda</em>, <em>B</em>, <em>S</em>, <em>nu</em>, <em>n=None</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#bayespy.nodes.VaryingGaussianMarkovChain.__init__" title="Permalink to this definition">¶</a></dt>

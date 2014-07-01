@@ -57,284 +57,285 @@
             
   <div class="section" id="linear-state-space-model">
 <h1>Linear state-space model<a class="headerlink" href="#linear-state-space-model" title="Permalink to this headline">¶</a></h1>
-<p>This example is also available as <a class="reference external" href="lssm.ipynb">an IPython notebook</a>
-or <a class="reference external" href="lssm.py">a Python script</a>.</p>
-<p>In linear state-space models a sequence of <span class="math">\(M\)</span>-dimensional
-observations <span class="math">\(\mathbf{Y}=(\mathbf{y}_1,\ldots,\mathbf{y}_N)\)</span> is
-assumed to be generated from latent <span class="math">\(D\)</span>-dimensional states
-<span class="math">\(\mathbf{X}=(\mathbf{x}_1,\ldots,\mathbf{x}_N)\)</span> which follow a
-first-order Markov process:</p>
+<div class="section" id="model">
+<h2>Model<a class="headerlink" href="#model" title="Permalink to this headline">¶</a></h2>
+<p>In linear state-space models a sequence of <span class="math">\(M\)</span>-dimensional observations
+<span class="math">\(\mathbf{Y}=(\mathbf{y}_1,\ldots,\mathbf{y}_N)\)</span> is assumed to be generated
+from latent <span class="math">\(D\)</span>-dimensional states
+<span class="math">\(\mathbf{X}=(\mathbf{x}_1,\ldots,\mathbf{x}_N)\)</span> which follow a first-order
+Markov process:</p>
 <div class="math">
 \[\begin{split}\begin{aligned}
 \mathbf{x}_{n} &amp;= \mathbf{A}\mathbf{x}_{n-1} + \text{noise} \,,
 \\
 \mathbf{y}_{n} &amp;= \mathbf{C}\mathbf{x}_{n} + \text{noise} \,,
 \end{aligned}\end{split}\]</div>
-<p>where the noise is Gaussian, <span class="math">\(\mathbf{A}\)</span> is the <span class="math">\(D\times D\)</span>
-state dynamics matrix and <span class="math">\(\mathbf{C}\)</span> is the <span class="math">\(M\times D\)</span>
-loading matrix. Usually, the latent space dimensionality <span class="math">\(D\)</span> is
-assumed to be much smaller than the observation space dimensionality
-<span class="math">\(M\)</span> in order to model the dependencies of high-dimensional
-observations efficiently.</p>
-<p>First, let us generate some toy data:</p>
-<div class="code python highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
-
-<span class="n">M</span> <span class="o">=</span> <span class="mi">30</span>
-<span class="n">N</span> <span class="o">=</span> <span class="mi">400</span>
-
-<span class="n">w</span> <span class="o">=</span> <span class="mf">0.3</span>
-<span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">w</span><span class="p">),</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">w</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
-              <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">w</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">w</span><span class="p">),</span>  <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
-              <span class="p">[</span><span class="mi">0</span><span class="p">,</span>         <span class="mi">0</span><span class="p">,</span>          <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
-              <span class="p">[</span><span class="mi">0</span><span class="p">,</span>         <span class="mi">0</span><span class="p">,</span>          <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]])</span>
-<span class="n">c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">M</span><span class="p">,</span><span class="mi">4</span><span class="p">)</span>
-<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">N</span><span class="p">,</span><span class="mi">4</span><span class="p">))</span>
-<span class="n">f</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">M</span><span class="p">,</span><span class="n">N</span><span class="p">))</span>
-<span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">M</span><span class="p">,</span><span class="n">N</span><span class="p">))</span>
-<span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">10</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
-<span class="n">f</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">c</span><span class="p">,</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-<span class="n">y</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">f</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">3</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">M</span><span class="p">)</span>
-<span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
-    <span class="n">x</span><span class="p">[</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">x</span><span class="p">[</span><span class="n">n</span><span class="p">])</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
-    <span class="n">f</span><span class="p">[:,</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">c</span><span class="p">,</span><span class="n">x</span><span class="p">[</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">])</span>
-    <span class="n">y</span><span class="p">[:,</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">f</span><span class="p">[:,</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">3</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">M</span><span class="p">)</span>
+<p>where the noise is Gaussian, <span class="math">\(\mathbf{A}\)</span> is the <span class="math">\(D\times D\)</span> state
+dynamics matrix and <span class="math">\(\mathbf{C}\)</span> is the <span class="math">\(M\times D\)</span> loading
+matrix. Usually, the latent space dimensionality <span class="math">\(D\)</span> is assumed to be much
+smaller than the observation space dimensionality <span class="math">\(M\)</span> in order to model
+the dependencies of high-dimensional observations efficiently.</p>
+<p>In order to construct the model in BayesPy, first import relevant nodes:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">bayespy.nodes</span> <span class="kn">import</span> <span class="n">GaussianARD</span><span class="p">,</span> <span class="n">GaussianMarkovChain</span><span class="p">,</span> <span class="n">Gamma</span><span class="p">,</span> <span class="n">Dot</span>
 </pre></div>
 </div>
-<p>The linear state-space model can be constructed as follows:</p>
-<div class="code python highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">bayespy.inference.vmp.nodes.gaussian_markov_chain</span> <span class="kn">import</span> <span class="n">GaussianMarkovChain</span>
-<span class="kn">from</span> <span class="nn">bayespy.inference.vmp.nodes.gaussian</span> <span class="kn">import</span> <span class="n">GaussianARD</span>
-<span class="kn">from</span> <span class="nn">bayespy.inference.vmp.nodes.gamma</span> <span class="kn">import</span> <span class="n">Gamma</span>
-<span class="kn">from</span> <span class="nn">bayespy.inference.vmp.nodes.dot</span> <span class="kn">import</span> <span class="n">SumMultiply</span>
-
-<span class="n">D</span> <span class="o">=</span> <span class="mi">10</span>
-
-<span class="c"># Dynamics matrix with ARD</span>
-<span class="n">alpha</span> <span class="o">=</span> <span class="n">Gamma</span><span class="p">(</span><span class="mf">1e-5</span><span class="p">,</span>
-              <span class="mf">1e-5</span><span class="p">,</span>
-              <span class="n">plates</span><span class="o">=</span><span class="p">(</span><span class="n">D</span><span class="p">,),</span>
-              <span class="n">name</span><span class="o">=</span><span class="s">&#39;alpha&#39;</span><span class="p">)</span>
-<span class="n">A</span> <span class="o">=</span> <span class="n">GaussianARD</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span>
-                <span class="n">alpha</span><span class="p">,</span>
-                <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">D</span><span class="p">,),</span>
-                <span class="n">plates</span><span class="o">=</span><span class="p">(</span><span class="n">D</span><span class="p">,),</span>
-                <span class="n">name</span><span class="o">=</span><span class="s">&#39;A&#39;</span><span class="p">)</span>
-
-<span class="c"># Latent states with dynamics</span>
-<span class="n">X</span> <span class="o">=</span> <span class="n">GaussianMarkovChain</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">D</span><span class="p">),</span>         <span class="c"># mean of x0</span>
-                        <span class="mf">1e-3</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="n">D</span><span class="p">),</span> <span class="c"># prec of x0</span>
-                        <span class="n">A</span><span class="p">,</span>                   <span class="c"># dynamics</span>
-                        <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">D</span><span class="p">),</span>          <span class="c"># innovation</span>
-                        <span class="n">n</span><span class="o">=</span><span class="n">N</span><span class="p">,</span>                 <span class="c"># time instances</span>
-                        <span class="n">name</span><span class="o">=</span><span class="s">&#39;X&#39;</span><span class="p">,</span>
-                        <span class="n">initialize</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
-<span class="n">X</span><span class="o">.</span><span class="n">initialize_from_value</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">N</span><span class="p">,</span><span class="n">D</span><span class="p">)))</span> <span class="c"># just some empty values, X is</span>
-                                         <span class="c"># updated first anyway</span>
-
-<span class="c"># Mixing matrix from latent space to observation space using ARD</span>
-<span class="n">gamma</span> <span class="o">=</span> <span class="n">Gamma</span><span class="p">(</span><span class="mf">1e-5</span><span class="p">,</span>
-              <span class="mf">1e-5</span><span class="p">,</span>
-              <span class="n">plates</span><span class="o">=</span><span class="p">(</span><span class="n">D</span><span class="p">,),</span>
-              <span class="n">name</span><span class="o">=</span><span class="s">&#39;gamma&#39;</span><span class="p">)</span>
-<span class="n">C</span> <span class="o">=</span> <span class="n">GaussianARD</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span>
-                <span class="n">gamma</span><span class="p">,</span>
-                <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">D</span><span class="p">,),</span>
-                <span class="n">plates</span><span class="o">=</span><span class="p">(</span><span class="n">M</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span>
-                <span class="n">name</span><span class="o">=</span><span class="s">&#39;C&#39;</span><span class="p">)</span>
-<span class="c"># Initialize nodes (must use some randomness for C, and update X before C)</span>
-<span class="n">C</span><span class="o">.</span><span class="n">initialize_from_random</span><span class="p">()</span>
-
-<span class="c"># Observation noise</span>
-<span class="n">tau</span> <span class="o">=</span> <span class="n">Gamma</span><span class="p">(</span><span class="mf">1e-5</span><span class="p">,</span>
-            <span class="mf">1e-5</span><span class="p">,</span>
-            <span class="n">name</span><span class="o">=</span><span class="s">&#39;tau&#39;</span><span class="p">)</span>
-
-<span class="c"># Observations</span>
-<span class="n">F</span> <span class="o">=</span> <span class="n">SumMultiply</span><span class="p">(</span><span class="s">&#39;i,i&#39;</span><span class="p">,</span>
-                <span class="n">C</span><span class="p">,</span>
-                <span class="n">X</span><span class="p">,</span>
-                <span class="n">name</span><span class="o">=</span><span class="s">&#39;F&#39;</span><span class="p">)</span>
-<span class="n">Y</span> <span class="o">=</span> <span class="n">GaussianARD</span><span class="p">(</span><span class="n">F</span><span class="p">,</span>
-                <span class="n">tau</span><span class="p">,</span>
-                <span class="n">name</span><span class="o">=</span><span class="s">&#39;Y&#39;</span><span class="p">)</span>
+<p>The data vectors will be 30-dimensional:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">M</span> <span class="o">=</span> <span class="mi">30</span>
 </pre></div>
 </div>
-<p>An inference machine using variational Bayesian inference with
-variational message passing is then construced as</p>
-<div class="code python highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">bayespy.inference.vmp.vmp</span> <span class="kn">import</span> <span class="n">VB</span>
-<span class="n">Q</span> <span class="o">=</span> <span class="n">VB</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">gamma</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">tau</span><span class="p">,</span> <span class="n">Y</span><span class="p">)</span>
+<p>There will be 400 data vectors:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">N</span> <span class="o">=</span> <span class="mi">400</span>
 </pre></div>
 </div>
-<p>Observe the data partially (80% is marked missing):</p>
-<div class="code python highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">bayespy.utils</span> <span class="kn">import</span> <span class="n">random</span>
-
-<span class="c"># Add missing values randomly (keep only 20%)</span>
-<span class="n">mask</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">mask</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
-<span class="n">Y</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">mask</span><span class="p">)</span>
+<p>Let us use 10-dimensional latent space:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">D</span> <span class="o">=</span> <span class="mi">10</span>
 </pre></div>
 </div>
-<p>Then inference (100 iterations) can be run simply as</p>
-<div class="code python highlight-python"><div class="highlight"><pre><span class="n">Q</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">repeat</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<p>The state dynamics matrix <span class="math">\(\mathbf{A}\)</span> has ARD prior:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">alpha</span> <span class="o">=</span> <span class="n">Gamma</span><span class="p">(</span><span class="mf">1e-5</span><span class="p">,</span>
+<span class="gp">... </span>              <span class="mf">1e-5</span><span class="p">,</span>
+<span class="gp">... </span>              <span class="n">plates</span><span class="o">=</span><span class="p">(</span><span class="n">D</span><span class="p">,),</span>
+<span class="gp">... </span>              <span class="n">name</span><span class="o">=</span><span class="s">&#39;alpha&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">A</span> <span class="o">=</span> <span class="n">GaussianARD</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span>
+<span class="gp">... </span>                <span class="n">alpha</span><span class="p">,</span>
+<span class="gp">... </span>                <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">D</span><span class="p">,),</span>
+<span class="gp">... </span>                <span class="n">plates</span><span class="o">=</span><span class="p">(</span><span class="n">D</span><span class="p">,),</span>
+<span class="gp">... </span>                <span class="n">name</span><span class="o">=</span><span class="s">&#39;A&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre>Iteration 1: loglike=-3.118644e+04 (0.210 seconds)
-Iteration 2: loglike=-1.129540e+04 (0.210 seconds)
-Iteration 3: loglike=-9.139376e+03 (0.210 seconds)
-Iteration 4: loglike=-8.704676e+03 (0.220 seconds)
-Iteration 5: loglike=-8.531889e+03 (0.200 seconds)
-Iteration 6: loglike=-8.386198e+03 (0.210 seconds)
-Iteration 7: loglike=-8.255826e+03 (0.210 seconds)
-Iteration 8: loglike=-8.176274e+03 (0.210 seconds)
-Iteration 9: loglike=-8.139579e+03 (0.210 seconds)
-Iteration 10: loglike=-8.117779e+03 (0.210 seconds)
+<p>Note that <span class="math">\(\mathbf{A}\)</span> is a <span class="math">\(D\times{}D\)</span>-dimensional matrix.
+However, in BayesPy it is modelled as a collection (<tt class="docutils literal"><span class="pre">plates=(D,)</span></tt>) of
+<span class="math">\(D\)</span>-dimensional vectors (<tt class="docutils literal"><span class="pre">shape=(D,)</span></tt>) because this is how the variables
+factorize in the posterior approximation of the state dynamics matrix in
+<a class="reference internal" href="../user_api/generated/generated/bayespy.nodes.GaussianMarkovChain.html#bayespy.nodes.GaussianMarkovChain" title="bayespy.nodes.GaussianMarkovChain"><tt class="xref py py-class docutils literal"><span class="pre">GaussianMarkovChain</span></tt></a>.  The latent states are constructed as</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">X</span> <span class="o">=</span> <span class="n">GaussianMarkovChain</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">D</span><span class="p">),</span>
+<span class="gp">... </span>                        <span class="mf">1e-3</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="n">D</span><span class="p">),</span>
+<span class="gp">... </span>                        <span class="n">A</span><span class="p">,</span>
+<span class="gp">... </span>                        <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">D</span><span class="p">),</span>
+<span class="gp">... </span>                        <span class="n">n</span><span class="o">=</span><span class="n">N</span><span class="p">,</span>
+<span class="gp">... </span>                        <span class="n">name</span><span class="o">=</span><span class="s">&#39;X&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="section" id="speeding-up-with-parameter-expansion">
-<h2>Speeding up with parameter expansion<a class="headerlink" href="#speeding-up-with-parameter-expansion" title="Permalink to this headline">¶</a></h2>
-<p>VB inference can converge extremely slowly if the variables are strongly
-coupled. Because VMP updates one variable at a time, it may lead to slow
-zigzagging. This can be solved by using parameter expansion which
-reduces the coupling. In state-space models, the states
-<span class="math">\(\mathbf{x}_n\)</span> and the loadings <span class="math">\(\mathbf{C}\)</span> are coupled
-through a dot product <span class="math">\(\mathbf{Cx}_n\)</span>, which is unaltered if the
-latent space is rotated arbitrarily:</p>
+<p>where the first two arguments are the mean and precision matrix of the initial
+state, the third argument is the state dynamics matrix and the fourth argument
+is the diagonal elements of the precision matrix of the innovation noise.  The
+node also needs the length of the chain given as the keyword argument <tt class="docutils literal"><span class="pre">n=N</span></tt>.
+Thus, the shape of this node is <tt class="docutils literal"><span class="pre">(N,D)</span></tt>.</p>
+<p>The linear mapping from the latent space to the observation space is modelled
+with the loading matrix which has ARD prior:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">gamma</span> <span class="o">=</span> <span class="n">Gamma</span><span class="p">(</span><span class="mf">1e-5</span><span class="p">,</span>
+<span class="gp">... </span>              <span class="mf">1e-5</span><span class="p">,</span>
+<span class="gp">... </span>              <span class="n">plates</span><span class="o">=</span><span class="p">(</span><span class="n">D</span><span class="p">,),</span>
+<span class="gp">... </span>              <span class="n">name</span><span class="o">=</span><span class="s">&#39;gamma&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">C</span> <span class="o">=</span> <span class="n">GaussianARD</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span>
+<span class="gp">... </span>                <span class="n">gamma</span><span class="p">,</span>
+<span class="gp">... </span>                <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">D</span><span class="p">,),</span>
+<span class="gp">... </span>                <span class="n">plates</span><span class="o">=</span><span class="p">(</span><span class="n">M</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span>
+<span class="gp">... </span>                <span class="n">name</span><span class="o">=</span><span class="s">&#39;C&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Note that the plates for <tt class="docutils literal"><span class="pre">C</span></tt> are <tt class="docutils literal"><span class="pre">(M,1)</span></tt>, thus the full shape of the node is
+<tt class="docutils literal"><span class="pre">(M,1,D)</span></tt>.  The unit plate axis is added so that <tt class="docutils literal"><span class="pre">C</span></tt> broadcasts with <tt class="docutils literal"><span class="pre">X</span></tt>
+when computing the dot product:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">F</span> <span class="o">=</span> <span class="n">Dot</span><span class="p">(</span><span class="n">C</span><span class="p">,</span>
+<span class="gp">... </span>        <span class="n">X</span><span class="p">,</span>
+<span class="gp">... </span>        <span class="n">name</span><span class="o">=</span><span class="s">&#39;F&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This dot product is computed over the <span class="math">\(D\)</span>-dimensional latent space, thus
+the result is a <span class="math">\(M\times{}N\)</span>-dimensional matrix which is now represented
+with plates <tt class="docutils literal"><span class="pre">(M,N)</span></tt> in BayesPy:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">F</span><span class="o">.</span><span class="n">plates</span>
+<span class="go">(30, 400)</span>
+</pre></div>
+</div>
+<p>We also need to use random initialization either for <tt class="docutils literal"><span class="pre">C</span></tt> or <tt class="docutils literal"><span class="pre">X</span></tt> in order to
+find non-zero latent space because by default both <tt class="docutils literal"><span class="pre">C</span></tt> and <tt class="docutils literal"><span class="pre">X</span></tt> are
+initialized to zero because of their prior distributions.  We use random
+initialization for <tt class="docutils literal"><span class="pre">C</span></tt> and then we must update <tt class="docutils literal"><span class="pre">X</span></tt> the first time before
+updating <tt class="docutils literal"><span class="pre">C</span></tt>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">C</span><span class="o">.</span><span class="n">initialize_from_random</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>The precision of the observation noise is given gamma prior:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">tau</span> <span class="o">=</span> <span class="n">Gamma</span><span class="p">(</span><span class="mf">1e-5</span><span class="p">,</span>
+<span class="gp">... </span>            <span class="mf">1e-5</span><span class="p">,</span>
+<span class="gp">... </span>            <span class="n">name</span><span class="o">=</span><span class="s">&#39;tau&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The observations are noisy versions of the dot products:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Y</span> <span class="o">=</span> <span class="n">GaussianARD</span><span class="p">(</span><span class="n">F</span><span class="p">,</span>
+<span class="gp">... </span>                <span class="n">tau</span><span class="p">,</span>
+<span class="gp">... </span>                <span class="n">name</span><span class="o">=</span><span class="s">&#39;Y&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The variational Bayesian inference engine is then construced as:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">bayespy.inference</span> <span class="kn">import</span> <span class="n">VB</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Q</span> <span class="o">=</span> <span class="n">VB</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">gamma</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">tau</span><span class="p">,</span> <span class="n">Y</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Note that <tt class="docutils literal"><span class="pre">X</span></tt> is given before <tt class="docutils literal"><span class="pre">C</span></tt>, thus <tt class="docutils literal"><span class="pre">X</span></tt> is updated before <tt class="docutils literal"><span class="pre">C</span></tt> by
+default.</p>
+</div>
+<div class="section" id="data">
+<h2>Data<a class="headerlink" href="#data" title="Permalink to this headline">¶</a></h2>
+<p>Now, let us generate some toy data for our model.  Our true latent space is four
+dimensional with two noisy oscillator components, one random walk component and
+one white noise component.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">w</span> <span class="o">=</span> <span class="mf">0.3</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">w</span><span class="p">),</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">w</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+<span class="gp">... </span>              <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">w</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">w</span><span class="p">),</span>  <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+<span class="gp">... </span>              <span class="p">[</span><span class="mi">0</span><span class="p">,</span>         <span class="mi">0</span><span class="p">,</span>          <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+<span class="gp">... </span>              <span class="p">[</span><span class="mi">0</span><span class="p">,</span>         <span class="mi">0</span><span class="p">,</span>          <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]])</span>
+</pre></div>
+</div>
+<p>The true linear mapping is just random:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">M</span><span class="p">,</span><span class="mi">4</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Then, generate the latent states and the observations using the model equations:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">N</span><span class="p">,</span><span class="mi">4</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">f</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">M</span><span class="p">,</span><span class="n">N</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">M</span><span class="p">,</span><span class="n">N</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">10</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">f</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">c</span><span class="p">,</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">f</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">3</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">M</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="n">x</span><span class="p">[</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">x</span><span class="p">[</span><span class="n">n</span><span class="p">])</span> <span class="o">+</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">10</span><span class="p">]</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+<span class="gp">... </span>    <span class="n">f</span><span class="p">[:,</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">c</span><span class="p">,</span><span class="n">x</span><span class="p">[</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">])</span>
+<span class="gp">... </span>    <span class="n">y</span><span class="p">[:,</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">f</span><span class="p">[:,</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">3</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">M</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>We want to simulate missing values, thus we create a mask which randomly removes
+80% of the data:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">bayespy.utils</span> <span class="kn">import</span> <span class="n">random</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mask</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">mask</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Y</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">mask</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="inference">
+<h2>Inference<a class="headerlink" href="#inference" title="Permalink to this headline">¶</a></h2>
+<p>As we did not define plotters for our nodes when creating the model, it is done
+now for some of the nodes:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">bayespy.plot</span> <span class="kn">as</span> <span class="nn">bpplt</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">X</span><span class="o">.</span><span class="n">set_plotter</span><span class="p">(</span><span class="n">bpplt</span><span class="o">.</span><span class="n">FunctionPlotter</span><span class="p">(</span><span class="n">center</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">2</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">A</span><span class="o">.</span><span class="n">set_plotter</span><span class="p">(</span><span class="n">bpplt</span><span class="o">.</span><span class="n">HintonPlotter</span><span class="p">())</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">C</span><span class="o">.</span><span class="n">set_plotter</span><span class="p">(</span><span class="n">bpplt</span><span class="o">.</span><span class="n">HintonPlotter</span><span class="p">())</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tau</span><span class="o">.</span><span class="n">set_plotter</span><span class="p">(</span><span class="n">bpplt</span><span class="o">.</span><span class="n">PDFPlotter</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.02</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="mi">1000</span><span class="p">)))</span>
+</pre></div>
+</div>
+<p>This enables plotting of the approximate posterior distributions during VB
+learning.  The inference engine can be run using <tt class="xref py py-func docutils literal"><span class="pre">VB.update()</span></tt> method:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Q</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">repeat</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<span class="go">Iteration 1: loglike=-1.439704e+05 (... seconds)</span>
+<span class="gp">...</span>
+<span class="go">Iteration 10: loglike=-1.051441e+04 (... seconds)</span>
+</pre></div>
+</div>
+<p>The iteration progresses a bit slowly, thus we&#8217;ll consider parameter expansion
+to speed it up.</p>
+<div class="section" id="parameter-expansion">
+<h3>Parameter expansion<a class="headerlink" href="#parameter-expansion" title="Permalink to this headline">¶</a></h3>
+<p>Section <a class="reference internal" href="../user_guide/inference.html#sec-parameter-expansion"><em>Parameter expansion</em></a> discusses parameter expansion for
+state-space models to speed up inference.  It is based on a rotating the latent
+space such that the posterior in the observation space is not affected:</p>
 <div class="math">
-\[\mathbf{y}_n = \mathbf{C}\mathbf{x}_n = \mathbf{C}\mathbf{R}^{-1}\mathbf{R}\mathbf{x}_n \,.\]</div>
-<p>Thus, one intuitive transformation would be
+\[\mathbf{y}_n = \mathbf{C}\mathbf{x}_n =
+(\mathbf{C}\mathbf{R}^{-1}) (\mathbf{R}\mathbf{x}_n) \,.\]</div>
+<p>Thus, the transformation is
 <span class="math">\(\mathbf{C}\rightarrow\mathbf{C}\mathbf{R}^{-1}\)</span> and
-<span class="math">\(\mathbf{X}\rightarrow\mathbf{R}\mathbf{X}\)</span>. In order to keep the
-dynamics of the latent states unaffected by the transformation, the
-state dynamics matrix <span class="math">\(\mathbf{A}\)</span> must be transformed
-accordingly:</p>
+<span class="math">\(\mathbf{X}\rightarrow\mathbf{R}\mathbf{X}\)</span>.  In order to keep the
+dynamics of the latent states unaffected by the transformation, the state
+dynamics matrix <span class="math">\(\mathbf{A}\)</span> must be transformed accordingly:</p>
 <div class="math">
-\[\mathbf{R}\mathbf{x}_n = \mathbf{R}\mathbf{A}\mathbf{R}^{-1} \mathbf{R}\mathbf{x}_{n-1} \,,\]</div>
+\[\mathbf{R}\mathbf{x}_n = \mathbf{R}\mathbf{A}\mathbf{R}^{-1}
+\mathbf{R}\mathbf{x}_{n-1} \,,\]</div>
 <p>resulting in a transformation
-<span class="math">\(\mathbf{A}\rightarrow\mathbf{R}\mathbf{A}\mathbf{R}^{-1}\)</span>. For
-more details, refer to *Fast Variational Bayesian Linear State-Space
-Model (Luttinen, 2013).</p>
-<p>In BayesPy, the transformations can be used as follows:</p>
-<div class="code python highlight-python"><div class="highlight"><pre><span class="c"># Import the parameter expansion module</span>
-<span class="kn">from</span> <span class="nn">bayespy.inference.vmp</span> <span class="kn">import</span> <span class="n">transformations</span>
-
-<span class="c"># Rotator of the state dynamics matrix</span>
-<span class="n">rotA</span> <span class="o">=</span> <span class="n">transformations</span><span class="o">.</span><span class="n">RotateGaussianARD</span><span class="p">(</span><span class="n">Q</span><span class="p">[</span><span class="s">&#39;A&#39;</span><span class="p">],</span> <span class="n">Q</span><span class="p">[</span><span class="s">&#39;alpha&#39;</span><span class="p">])</span>
-<span class="c"># Rotator of the states (includes rotation of the state dynamics matrix)</span>
-<span class="n">rotX</span> <span class="o">=</span> <span class="n">transformations</span><span class="o">.</span><span class="n">RotateGaussianMarkovChain</span><span class="p">(</span><span class="n">Q</span><span class="p">[</span><span class="s">&#39;X&#39;</span><span class="p">],</span> <span class="n">rotA</span><span class="p">)</span>
-<span class="c"># Rotator of the loading matrix</span>
-<span class="n">rotC</span> <span class="o">=</span> <span class="n">transformations</span><span class="o">.</span><span class="n">RotateGaussianARD</span><span class="p">(</span><span class="n">Q</span><span class="p">[</span><span class="s">&#39;C&#39;</span><span class="p">],</span> <span class="n">Q</span><span class="p">[</span><span class="s">&#39;gamma&#39;</span><span class="p">])</span>
-<span class="c"># Rotation optimizer</span>
-<span class="n">R</span> <span class="o">=</span> <span class="n">transformations</span><span class="o">.</span><span class="n">RotationOptimizer</span><span class="p">(</span><span class="n">rotX</span><span class="p">,</span> <span class="n">rotC</span><span class="p">,</span> <span class="n">D</span><span class="p">)</span>
+<span class="math">\(\mathbf{A}\rightarrow\mathbf{R}\mathbf{A}\mathbf{R}^{-1}\)</span>.  For more
+details, refer to <a class="reference internal" href="../references.html#luttinen-2013" id="id1">[1]</a> and <a class="reference internal" href="../references.html#luttinen-2010" id="id2">[2]</a>.  In BayesPy,
+the transformations are available in
+<tt class="xref py py-mod docutils literal"><span class="pre">bayespy.inference.vmp.transformations</span></tt>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">bayespy.inference.vmp</span> <span class="kn">import</span> <span class="n">transformations</span>
 </pre></div>
 </div>
-<p>Note that it is crucial to select the correct rotation class which
-corresponds to the particular model block exactly. The rotation can be
-performed after each full VB update:</p>
-<div class="code python highlight-python"><div class="highlight"><pre><span class="k">for</span> <span class="n">ind</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
-    <span class="n">Q</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
-    <span class="n">R</span><span class="o">.</span><span class="n">rotate</span><span class="p">()</span>
+<p>The rotation of the loading matrix along with the ARD parameters is defined as:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">rotC</span> <span class="o">=</span> <span class="n">transformations</span><span class="o">.</span><span class="n">RotateGaussianARD</span><span class="p">(</span><span class="n">C</span><span class="p">,</span> <span class="n">gamma</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre>Iteration 11: loglike=-8.100983e+03 (0.210 seconds)
-Iteration 12: loglike=-7.622913e+03 (0.210 seconds)
-Iteration 13: loglike=-7.452057e+03 (0.200 seconds)
-Iteration 14: loglike=-7.385975e+03 (0.200 seconds)
-Iteration 15: loglike=-7.351449e+03 (0.210 seconds)
-Iteration 16: loglike=-7.331026e+03 (0.210 seconds)
-Iteration 17: loglike=-7.317997e+03 (0.200 seconds)
-Iteration 18: loglike=-7.309212e+03 (0.200 seconds)
-Iteration 19: loglike=-7.303074e+03 (0.210 seconds)
-Iteration 20: loglike=-7.298661e+03 (0.210 seconds)
+<p>For rotating <tt class="docutils literal"><span class="pre">X</span></tt>, we first need to define the rotation of the state dynamics
+matrix:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">rotA</span> <span class="o">=</span> <span class="n">transformations</span><span class="o">.</span><span class="n">RotateGaussianARD</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">alpha</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>If you want to implement your own rotations or check the existing ones,
-you may use debugging utilities:</p>
-<div class="code python highlight-python"><div class="highlight"><pre><span class="k">for</span> <span class="n">ind</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
-    <span class="n">Q</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
-    <span class="n">R</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="n">check_bound</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
-             <span class="n">check_gradient</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<p>Now we can define the rotation of the latent states:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">rotX</span> <span class="o">=</span> <span class="n">transformations</span><span class="o">.</span><span class="n">RotateGaussianMarkovChain</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">rotA</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre>Iteration 21: loglike=-7.295401e+03 (0.210 seconds)
-Norm of numerical gradient: 3905.05
-Norm of function gradient:  3905.05
-Gradient relative error = 6.39002e-05 and absolute error = 0.249533
-Iteration 22: loglike=-7.292861e+03 (0.210 seconds)
-Norm of numerical gradient: 6245.37
+<p>The optimal rotation for all these variables is found using rotation optimizer:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">R</span> <span class="o">=</span> <span class="n">transformations</span><span class="o">.</span><span class="n">RotationOptimizer</span><span class="p">(</span><span class="n">rotX</span><span class="p">,</span> <span class="n">rotC</span><span class="p">,</span> <span class="n">D</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre>/home/jluttine/workspace/bayespy/bayespy/inference/vmp/transformations.py:142: UserWarning: Rotation gradient has relative error 6.39002e-05
-  warnings.warn(&quot;Rotation gradient has relative error %g&quot; % err)
-/home/jluttine/workspace/bayespy/bayespy/inference/vmp/transformations.py:142: UserWarning: Rotation gradient has relative error 7.56396e-05
-  warnings.warn(&quot;Rotation gradient has relative error %g&quot; % err)
+<p>Set the parameter expansion to be applied after each iteration:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Q</span><span class="o">.</span><span class="n">callback</span> <span class="o">=</span> <span class="n">R</span><span class="o">.</span><span class="n">rotate</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre>Norm of function gradient:  6245.43
-Gradient relative error = 7.56396e-05 and absolute error = 0.472397
-Iteration 23: loglike=-7.290841e+03 (0.210 seconds)
-Norm of numerical gradient: 3984.43
-Norm of function gradient:  3984.43
-Gradient relative error = 6.78117e-05 and absolute error = 0.270191
-Iteration 24: loglike=-7.289243e+03 (0.210 seconds)
-Norm of numerical gradient: 13053.7
+<p>Now, run iterations until convergence:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Q</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">repeat</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
+<span class="go">Iteration 11: loglike=-1.010806e+04 (... seconds)</span>
+<span class="gp">...</span>
+<span class="go">Iteration 60: loglike=-8.906295e+03 (... seconds)</span>
+<span class="go">Converged at iteration 60.</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre>/home/jluttine/workspace/bayespy/bayespy/inference/vmp/transformations.py:142: UserWarning: Rotation gradient has relative error 6.78117e-05
-  warnings.warn(&quot;Rotation gradient has relative error %g&quot; % err)
-/home/jluttine/workspace/bayespy/bayespy/inference/vmp/transformations.py:142: UserWarning: Rotation gradient has relative error 2.65118e-05
-  warnings.warn(&quot;Rotation gradient has relative error %g&quot; % err)
+</div>
+</div>
+<div class="section" id="results">
+<h2>Results<a class="headerlink" href="#results" title="Permalink to this headline">¶</a></h2>
+<p>Because we have set the plotters, we can plot those nodes as:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Q</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">tau</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre>Norm of function gradient:  13053.8
-Gradient relative error = 2.65118e-05 and absolute error = 0.346078
-Iteration 25: loglike=-7.287794e+03 (0.200 seconds)
-Norm of numerical gradient: 4144.61
-Norm of function gradient:  4144.59
-Gradient relative error = 7.02612e-05 and absolute error = 0.291205
-Iteration 26: loglike=-7.286531e+03 (0.210 seconds)
-Norm of numerical gradient: 5821.72
+<p>(<a class="reference external" href="../examples/lssm-1.py">Source code</a>)</p>
+<div class="figure">
+<img alt="../_images/lssm-1_00.png" src="../_images/lssm-1_00.png" />
+<p class="caption">(<a class="reference external" href="../examples/lssm-1_00.png">png</a>, <a class="reference external" href="../examples/lssm-1_00.hires.png">hires.png</a>, <a class="reference external" href="../examples/lssm-1_00.pdf">pdf</a>)</p>
+</div>
+<div class="figure">
+<img alt="../_images/lssm-1_01.png" src="../_images/lssm-1_01.png" />
+<p class="caption">(<a class="reference external" href="../examples/lssm-1_01.png">png</a>, <a class="reference external" href="../examples/lssm-1_01.hires.png">hires.png</a>, <a class="reference external" href="../examples/lssm-1_01.pdf">pdf</a>)</p>
+</div>
+<div class="figure">
+<img alt="../_images/lssm-1_02.png" src="../_images/lssm-1_02.png" />
+<p class="caption">(<a class="reference external" href="../examples/lssm-1_02.png">png</a>, <a class="reference external" href="../examples/lssm-1_02.hires.png">hires.png</a>, <a class="reference external" href="../examples/lssm-1_02.pdf">pdf</a>)</p>
+</div>
+<div class="figure">
+<img alt="../_images/lssm-1_03.png" src="../_images/lssm-1_03.png" />
+<p class="caption">(<a class="reference external" href="../examples/lssm-1_03.png">png</a>, <a class="reference external" href="../examples/lssm-1_03.hires.png">hires.png</a>, <a class="reference external" href="../examples/lssm-1_03.pdf">pdf</a>)</p>
+</div>
+<p>There are clearly four effective components in <tt class="docutils literal"><span class="pre">X</span></tt>: random walk (component
+number 1), random oscillation (7 and 10), and white noise (9).  These dynamics
+are also visible in the state dynamics matrix Hinton diagram.  Note that the
+white noise component does not have any dynamics.  Also <tt class="docutils literal"><span class="pre">C</span></tt> shows only four
+effective components.  The posterior of <tt class="docutils literal"><span class="pre">tau</span></tt> captures the true value
+<span class="math">\(3^{-2}\approx0.111\)</span> accurately.  We can also plot predictions in the
+observation space:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">bpplt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">F</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre>/home/jluttine/workspace/bayespy/bayespy/inference/vmp/transformations.py:142: UserWarning: Rotation gradient has relative error 7.02612e-05
-  warnings.warn(&quot;Rotation gradient has relative error %g&quot; % err)
-/home/jluttine/workspace/bayespy/bayespy/inference/vmp/transformations.py:142: UserWarning: Rotation gradient has relative error 4.57892e-05
-  warnings.warn(&quot;Rotation gradient has relative error %g&quot; % err)
+<p>(<a class="reference external" href="../examples/lssm-2.py">Source code</a>, <a class="reference external" href="../examples/lssm-2.png">png</a>, <a class="reference external" href="../examples/lssm-2.hires.png">hires.png</a>, <a class="reference external" href="../examples/lssm-2.pdf">pdf</a>)</p>
+<div class="figure">
+<img alt="../_images/lssm-2.png" src="../_images/lssm-2.png" />
+</div>
+<p>We can also measure the performance numerically by computing root-mean-square
+error (RMSE) of the missing values:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">bayespy.utils</span> <span class="kn">import</span> <span class="n">misc</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">misc</span><span class="o">.</span><span class="n">rmse</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="o">~</span><span class="n">mask</span><span class="p">],</span> <span class="n">F</span><span class="o">.</span><span class="n">get_moments</span><span class="p">()[</span><span class="mi">0</span><span class="p">][</span><span class="o">~</span><span class="n">mask</span><span class="p">])</span>
+<span class="go">5.1822394809385948</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre>Norm of function gradient:  5821.73
-Gradient relative error = 4.57892e-05 and absolute error = 0.266572
-Iteration 27: loglike=-7.285469e+03 (0.210 seconds)
-Norm of numerical gradient: 15766.4
-Norm of function gradient:  15766.4
-Gradient relative error = 3.5184e-05 and absolute error = 0.554724
-Iteration 28: loglike=-7.284584e+03 (0.200 seconds)
-Norm of numerical gradient: 5782.51
-</pre></div>
-</div>
-<div class="highlight-python"><div class="highlight"><pre>/home/jluttine/workspace/bayespy/bayespy/inference/vmp/transformations.py:142: UserWarning: Rotation gradient has relative error 3.5184e-05
-  warnings.warn(&quot;Rotation gradient has relative error %g&quot; % err)
-/home/jluttine/workspace/bayespy/bayespy/inference/vmp/transformations.py:142: UserWarning: Rotation gradient has relative error 5.61705e-05
-  warnings.warn(&quot;Rotation gradient has relative error %g&quot; % err)
-</pre></div>
-</div>
-<div class="highlight-python"><div class="highlight"><pre>Norm of function gradient:  5782.51
-Gradient relative error = 5.61705e-05 and absolute error = 0.324807
-Iteration 29: loglike=-7.283818e+03 (0.210 seconds)
-Norm of numerical gradient: 9067.22
-Norm of function gradient:  9067.21
-Gradient relative error = 2.4973e-05 and absolute error = 0.226435
-Iteration 30: loglike=-7.283121e+03 (0.200 seconds)
-Norm of numerical gradient: 9594.54
-</pre></div>
-</div>
-<div class="highlight-python"><div class="highlight"><pre>/home/jluttine/workspace/bayespy/bayespy/inference/vmp/transformations.py:142: UserWarning: Rotation gradient has relative error 2.4973e-05
-  warnings.warn(&quot;Rotation gradient has relative error %g&quot; % err)
-/home/jluttine/workspace/bayespy/bayespy/inference/vmp/transformations.py:142: UserWarning: Rotation gradient has relative error 5.43175e-05
-  warnings.warn(&quot;Rotation gradient has relative error %g&quot; % err)
-</pre></div>
-</div>
-<div class="highlight-python"><div class="highlight"><pre>Norm of function gradient:  9594.62
-Gradient relative error = 5.43175e-05 and absolute error = 0.521151
-</pre></div>
-</div>
+<p>This is relatively close to the standard deviation of the noise (3), so the
+predictions are quite good considering that only 20% of the data was used.</p>
 </div>
 </div>
 
@@ -347,7 +348,13 @@ Gradient relative error = 5.43175e-05 and absolute error = 0.521151
   <h3><a href="../index.html">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">Linear state-space model</a><ul>
-<li><a class="reference internal" href="#speeding-up-with-parameter-expansion">Speeding up with parameter expansion</a></li>
+<li><a class="reference internal" href="#model">Model</a></li>
+<li><a class="reference internal" href="#data">Data</a></li>
+<li><a class="reference internal" href="#inference">Inference</a><ul>
+<li><a class="reference internal" href="#parameter-expansion">Parameter expansion</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#results">Results</a></li>
 </ul>
 </li>
 </ul>

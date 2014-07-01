@@ -136,7 +136,7 @@ source files are readable as such in reStructuredText format in <tt class="docut
 directory.  It is possible to compile the documentation into HTML or PDF
 yourself.  In order to compile the documentation, Sphinx is required and a few
 extensions for it. Those can be installed as:</p>
-<div class="highlight-console"><div class="highlight"><pre><span class="go">pip install sphinx sphinxcontrib-tikz sphinxcontrib-bayesnet</span>
+<div class="highlight-console"><div class="highlight"><pre><span class="go">pip install sphinx sphinxcontrib-tikz sphinxcontrib-bayesnet sphinxcontrib-bibtex</span>
 </pre></div>
 </div>
 <p>In addition, the <tt class="docutils literal"><span class="pre">numpydoc</span></tt> extension for Sphinx is required.  However, the
@@ -156,45 +156,6 @@ commands in the <tt class="docutils literal"><span class="pre">doc</span></tt> d
 <span class="go">make latexpdf</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="converting-notebooks">
-<h2>Converting notebooks<a class="headerlink" href="#converting-notebooks" title="Permalink to this headline">¶</a></h2>
-<p>The documentation uses IPython notebooks for the examples. This is a convenient
-format for sharing Python examples with comments.  The notebooks can be
-converted, for instance, to documentation files or Python scripts. BayesPy
-repository contains those notebook files (.ipynb) and their conversions to RST
-format for the documentation.  If you want to convert the notebooks into RST
-files, Python scripts or some other format yourself, follow these
-instructions. First, the following packages are required:</p>
-<div class="highlight-console"><div class="highlight"><pre><span class="go">pip install ipython pyzmq</span>
-</pre></div>
-</div>
-<p>You need quite a recent IPython.  You may also need to install Pandoc.  In
-Ubuntu, this can be done as:</p>
-<div class="highlight-console"><div class="highlight"><pre><span class="go">sudo aptitude install pandoc</span>
-</pre></div>
-</div>
-<p>Now, the notebooks can be converted to RST for the documentation by running the
-following command in the <tt class="docutils literal"><span class="pre">doc</span></tt> directory:</p>
-<div class="highlight-console"><div class="highlight"><pre><span class="go">make notebooks</span>
-</pre></div>
-</div>
-<p>Or you can convert the notebooks to RST or Python (or something else) for your
-own use:</p>
-<div class="highlight-console"><div class="highlight"><pre><span class="go">ipython nbconvert --to rst doc/source/_notebooks/*.ipynb</span>
-<span class="go">ipython nbconvert --to python doc/source/_notebooks/*.ipynb</span>
-</pre></div>
-</div>
-<p>The Python scripts can be used to run the examples as such. There are also more
-formats available in case you want the examples in HTML, LaTeX, or some other
-format.</p>
-<p>You can also open the notebooks interactively in a web browser by going to the
-notebooks directory and running the IPython notebook:</p>
-<div class="highlight-console"><div class="highlight"><pre><span class="go">cd doc/source/_notebooks</span>
-<span class="go">ipython notebook</span>
-</pre></div>
-</div>
-<p>This should run a simple server and open a web browser.</p>
 <p>You can also run doctest to test code snippets in the documentation:</p>
 <div class="highlight-console"><div class="highlight"><pre><span class="go">make doctest</span>
 </pre></div>
@@ -218,7 +179,6 @@ notebooks directory and running the IPython notebook:</p>
 <li><a class="reference internal" href="#installing-requirements">Installing requirements</a></li>
 <li><a class="reference internal" href="#installing-bayespy">Installing BayesPy</a></li>
 <li><a class="reference internal" href="#compiling-documentation">Compiling documentation</a></li>
-<li><a class="reference internal" href="#converting-notebooks">Converting notebooks</a></li>
 </ul>
 </li>
 </ul>
