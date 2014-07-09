@@ -57,16 +57,126 @@
             
   <div class="section" id="gaussian-mixture-model">
 <h1>Gaussian mixture model<a class="headerlink" href="#gaussian-mixture-model" title="Permalink to this headline">¶</a></h1>
-<p>Do some stuff:</p>
-<div class="code python highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">bayespy.nodes</span> <span class="kn">import</span> <span class="n">Dirichlet</span>
-<span class="n">alpha</span> <span class="o">=</span> <span class="n">Dirichlet</span><span class="p">([</span><span class="mf">1e-3</span><span class="p">,</span> <span class="mf">1e-3</span><span class="p">,</span> <span class="mf">1e-3</span><span class="p">])</span>
-<span class="k">print</span><span class="p">(</span><span class="n">alpha</span><span class="o">.</span><span class="n">_message_to_child</span><span class="p">())</span>
+<p>This example demonstrates the use of Gaussian mixture model for flexible density
+estimation, clustering or classification.</p>
+<div class="section" id="data">
+<h2>Data<a class="headerlink" href="#data" title="Permalink to this headline">¶</a></h2>
+<p>First, let us generate some artificial data for the analysis.  The data are
+two-dimensional vectors from one of the four different Gaussian distributions:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">multivariate_normal</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">]],</span> <span class="n">size</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">multivariate_normal</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">]],</span> <span class="n">size</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">multivariate_normal</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[[</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.5</span><span class="p">],</span> <span class="p">[</span><span class="o">-</span><span class="mf">1.5</span><span class="p">,</span> <span class="mi">2</span><span class="p">]],</span> <span class="n">size</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y3</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">multivariate_normal</span><span class="p">([</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">],</span> <span class="p">[[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">]],</span> <span class="n">size</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">y0</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">y2</span><span class="p">,</span> <span class="n">y3</span><span class="p">])</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span class="p">[</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mf">666.66994695</span><span class="p">,</span> <span class="o">-</span><span class="mf">666.66994695</span><span class="p">,</span> <span class="o">-</span><span class="mf">666.66994695</span><span class="p">])]</span>
+<p>Thus, there are 200 data vectors in total.  The data looks as follows:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">bayespy.plot</span> <span class="kn">as</span> <span class="nn">bpplt</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">bpplt</span><span class="o">.</span><span class="n">pyplot</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">y</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span> <span class="n">y</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span> <span class="s">&#39;rx&#39;</span><span class="p">)</span>
+<span class="go">[&lt;matplotlib.lines.Line2D object at 0x...&gt;]</span>
 </pre></div>
 </div>
-<p>Nice!</p>
+<p>(<a class="reference external" href="../examples/gmm-1.py">Source code</a>, <a class="reference external" href="../examples/gmm-1.png">png</a>, <a class="reference external" href="../examples/gmm-1.hires.png">hires.png</a>, <a class="reference external" href="../examples/gmm-1.pdf">pdf</a>)</p>
+<div class="figure">
+<img alt="../_images/gmm-1.png" src="../_images/gmm-1.png" />
+</div>
+</div>
+<div class="section" id="model">
+<h2>Model<a class="headerlink" href="#model" title="Permalink to this headline">¶</a></h2>
+<p>For clarity, let us denote the number of the data vectors with <tt class="docutils literal"><span class="pre">N</span></tt></p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">N</span> <span class="o">=</span> <span class="mi">200</span>
+</pre></div>
+</div>
+<p>and the dimensionality of the data vectors with <tt class="docutils literal"><span class="pre">D</span></tt>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">D</span> <span class="o">=</span> <span class="mi">2</span>
+</pre></div>
+</div>
+<p>We will use a &#8220;large enough&#8221; number of Gaussian clusters in our model:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">K</span> <span class="o">=</span> <span class="mi">10</span>
+</pre></div>
+</div>
+<p>Cluster assignments <tt class="docutils literal"><span class="pre">Z</span></tt> and the prior for the cluster assignment probabilities
+<tt class="docutils literal"><span class="pre">alpha</span></tt>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">bayespy.nodes</span> <span class="kn">import</span> <span class="n">Dirichlet</span><span class="p">,</span> <span class="n">Categorical</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">alpha</span> <span class="o">=</span> <span class="n">Dirichlet</span><span class="p">(</span><span class="mf">1e-5</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">K</span><span class="p">),</span>
+<span class="gp">... </span>                  <span class="n">name</span><span class="o">=</span><span class="s">&#39;alpha&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Z</span> <span class="o">=</span> <span class="n">Categorical</span><span class="p">(</span><span class="n">alpha</span><span class="p">,</span>
+<span class="gp">... </span>                <span class="n">plates</span><span class="o">=</span><span class="p">(</span><span class="n">N</span><span class="p">,),</span>
+<span class="gp">... </span>                <span class="n">name</span><span class="o">=</span><span class="s">&#39;z&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The mean vectors and the precision matrices of the clusters:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">bayespy.nodes</span> <span class="kn">import</span> <span class="n">Gaussian</span><span class="p">,</span> <span class="n">Wishart</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mu</span> <span class="o">=</span> <span class="n">Gaussian</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">D</span><span class="p">),</span> <span class="mf">1e-5</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="n">D</span><span class="p">),</span>
+<span class="gp">... </span>              <span class="n">plates</span><span class="o">=</span><span class="p">(</span><span class="n">K</span><span class="p">,),</span>
+<span class="gp">... </span>              <span class="n">name</span><span class="o">=</span><span class="s">&#39;mu&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Lambda</span> <span class="o">=</span> <span class="n">Wishart</span><span class="p">(</span><span class="n">D</span><span class="p">,</span> <span class="mf">1e-5</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="n">D</span><span class="p">),</span>
+<span class="gp">... </span>                 <span class="n">plates</span><span class="o">=</span><span class="p">(</span><span class="n">K</span><span class="p">,),</span>
+<span class="gp">... </span>                 <span class="n">name</span><span class="o">=</span><span class="s">&#39;Lambda&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>If either the mean or precision should be shared between clusters, then that
+node should not have plates, that is, <tt class="docutils literal"><span class="pre">plates=()</span></tt>.  The data vectors are from
+a Gaussian mixture with cluster assignments <tt class="docutils literal"><span class="pre">Z</span></tt> and Gaussian component
+parameters <tt class="docutils literal"><span class="pre">mu</span></tt> and <tt class="docutils literal"><span class="pre">Lambda</span></tt>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">bayespy.nodes</span> <span class="kn">import</span> <span class="n">Mixture</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Y</span> <span class="o">=</span> <span class="n">Mixture</span><span class="p">(</span><span class="n">Z</span><span class="p">,</span> <span class="n">Gaussian</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">Lambda</span><span class="p">,</span>
+<span class="gp">... </span>            <span class="n">name</span><span class="o">=</span><span class="s">&#39;Y&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Z</span><span class="o">.</span><span class="n">initialize_from_random</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">bayespy.inference</span> <span class="kn">import</span> <span class="n">VB</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Q</span> <span class="o">=</span> <span class="n">VB</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">Lambda</span><span class="p">,</span> <span class="n">Z</span><span class="p">,</span> <span class="n">alpha</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="inference">
+<h2>Inference<a class="headerlink" href="#inference" title="Permalink to this headline">¶</a></h2>
+<p>Before running the inference algorithm, we provide the data:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Y</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Then, run VB iteration until convergence:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Q</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">repeat</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
+<span class="go">Iteration 1: loglike=-1.401968e+03 (... seconds)</span>
+<span class="gp">...</span>
+<span class="go">Iteration 48: loglike=-1.017893e+03 (... seconds)</span>
+<span class="go">Converged at iteration 48.</span>
+</pre></div>
+</div>
+<p>The algorithm converges very quickly.  Note that the default update order of the
+nodes was such that <tt class="docutils literal"><span class="pre">mu</span></tt> and <tt class="docutils literal"><span class="pre">Lambda</span></tt> were updated before <tt class="docutils literal"><span class="pre">Z</span></tt>, which is
+what we wanted because <tt class="docutils literal"><span class="pre">Z</span></tt> was initialized randomly.</p>
+</div>
+<div class="section" id="results">
+<h2>Results<a class="headerlink" href="#results" title="Permalink to this headline">¶</a></h2>
+<p>For two-dimensional Gaussian mixtures, the mixture components can be plotted
+using <a class="reference internal" href="../user_api/generated/generated/bayespy.plot.gaussian_mixture.html#bayespy.plot.gaussian_mixture" title="bayespy.plot.gaussian_mixture"><tt class="xref py py-func docutils literal"><span class="pre">gaussian_mixture()</span></tt></a>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">bpplt</span><span class="o">.</span><span class="n">gaussian_mixture</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>(<a class="reference external" href="../examples/gmm-2.py">Source code</a>, <a class="reference external" href="../examples/gmm-2.png">png</a>, <a class="reference external" href="../examples/gmm-2.hires.png">hires.png</a>, <a class="reference external" href="../examples/gmm-2.pdf">pdf</a>)</p>
+<div class="figure">
+<img alt="../_images/gmm-2.png" src="../_images/gmm-2.png" />
+</div>
+<p>The function is called with <tt class="docutils literal"><span class="pre">scale=2</span></tt> which means that each ellipse shows two
+standard deviations.  From the ten cluster components, the model uses
+effectively the correct number of clusters (4).  These clusters capture the true
+density accurately.</p>
+</div>
+<div class="section" id="next-steps">
+<h2>Next steps<a class="headerlink" href="#next-steps" title="Permalink to this headline">¶</a></h2>
+<p>The next step for improving the results could be to use <a class="reference internal" href="../user_api/generated/generated/bayespy.nodes.GaussianWishart.html#bayespy.nodes.GaussianWishart" title="bayespy.nodes.GaussianWishart"><tt class="xref py py-class docutils literal"><span class="pre">GaussianWishart</span></tt></a>
+node for modelling the mean vectors <tt class="docutils literal"><span class="pre">mu</span></tt> and precision matrices <tt class="docutils literal"><span class="pre">Lambda</span></tt>
+jointly without factorization.  This should improve the accuracy of the
+posterior approximation and the speed of the VB estimation.  However, the
+implementation is a bit more complex.</p>
+<p>In addition to clustering and density estimation, this model could also be used
+for classification by setting the known class assignments as observed.</p>
+</div>
 </div>
 
 
@@ -75,6 +185,18 @@
       </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Gaussian mixture model</a><ul>
+<li><a class="reference internal" href="#data">Data</a></li>
+<li><a class="reference internal" href="#model">Model</a></li>
+<li><a class="reference internal" href="#inference">Inference</a></li>
+<li><a class="reference internal" href="#results">Results</a></li>
+<li><a class="reference internal" href="#next-steps">Next steps</a></li>
+</ul>
+</li>
+</ul>
+
   <h4>Previous topic</h4>
   <p class="topless"><a href="regression.html"
                         title="previous chapter">Regression</a></p>

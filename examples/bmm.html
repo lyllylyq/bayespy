@@ -57,73 +57,153 @@
             
   <div class="section" id="bernoulli-mixture-model">
 <h1>Bernoulli mixture model<a class="headerlink" href="#bernoulli-mixture-model" title="Permalink to this headline">¶</a></h1>
-<p>blaa blaa blaa</p>
-<div class="code python highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
-<span class="n">D</span> <span class="o">=</span> <span class="mi">10</span>
-<span class="n">p0</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">]</span>
-<span class="n">p1</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]</span>
-<span class="n">p2</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">]</span>
-<span class="n">p</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">p0</span><span class="p">,</span> <span class="n">p1</span><span class="p">,</span> <span class="n">p2</span><span class="p">])</span>
-<span class="kn">from</span> <span class="nn">bayespy.utils</span> <span class="kn">import</span> <span class="n">random</span>
-<span class="n">N</span> <span class="o">=</span> <span class="mi">100</span>
-<span class="n">z</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">categorical</span><span class="p">([</span><span class="mi">1</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="mi">3</span><span class="p">],</span> <span class="n">size</span><span class="o">=</span><span class="n">N</span><span class="p">)</span>
-<span class="n">x</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">bernoulli</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="n">z</span><span class="p">])</span>
+<p>This example considers data generated from a Bernoulli mixture model.  One
+simple example process could be a questionnaire for election candidates.  We
+observe a set of binary vectors, where each vector represents a candidate in the
+election and each element in these vectors correspond to a candidate&#8217;s answer to
+a yes-or-no question.  The goal is to find groups of similar candidates and
+analyze the answer patterns of these groups.</p>
+<div class="section" id="data">
+<h2>Data<a class="headerlink" href="#data" title="Permalink to this headline">¶</a></h2>
+<p>First, we generate artificial data to analyze.  Let us assume that the
+questionnaire contains ten yes-or-no questions.  We assume that there are three
+groups with similar opinions.  These groups could represent parties.  These
+groups have the following answering patterns, which are represented by vectors
+with probabilities of a candidate answering yes to the questions:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">p0</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p1</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p2</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">]</span>
 </pre></div>
 </div>
-<div class="code python highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">bayespy.nodes</span> <span class="kn">import</span> <span class="n">Categorical</span><span class="p">,</span> <span class="n">Dirichlet</span>
-<span class="n">K</span> <span class="o">=</span> <span class="mi">5</span>
-<span class="n">R</span> <span class="o">=</span> <span class="n">Dirichlet</span><span class="p">(</span><span class="n">K</span><span class="o">*</span><span class="p">[</span><span class="mf">1e-3</span><span class="p">],</span>
-              <span class="n">name</span><span class="o">=</span><span class="s">&#39;R&#39;</span><span class="p">)</span>
-<span class="n">Z</span> <span class="o">=</span> <span class="n">Categorical</span><span class="p">(</span><span class="n">R</span><span class="p">,</span>
-                <span class="n">plates</span><span class="o">=</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span>
-                <span class="n">name</span><span class="o">=</span><span class="s">&#39;Z&#39;</span><span class="p">)</span>
-
-<span class="kn">from</span> <span class="nn">bayespy.nodes</span> <span class="kn">import</span> <span class="n">Mixture</span><span class="p">,</span> <span class="n">Bernoulli</span><span class="p">,</span> <span class="n">Beta</span>
-<span class="n">P</span> <span class="o">=</span> <span class="n">Beta</span><span class="p">([</span><span class="mf">1e-1</span><span class="p">,</span> <span class="mf">1e-1</span><span class="p">],</span>
-         <span class="n">plates</span><span class="o">=</span><span class="p">(</span><span class="n">D</span><span class="p">,</span><span class="n">K</span><span class="p">),</span>
-         <span class="n">name</span><span class="o">=</span><span class="s">&#39;P&#39;</span><span class="p">)</span>
-<span class="n">X</span> <span class="o">=</span> <span class="n">Mixture</span><span class="p">(</span><span class="n">Z</span><span class="p">,</span> <span class="n">Bernoulli</span><span class="p">,</span> <span class="n">P</span><span class="p">)</span>
-
-<span class="n">X</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-
-<span class="kn">from</span> <span class="nn">bayespy.inference</span> <span class="kn">import</span> <span class="n">VB</span>
-<span class="n">Q</span> <span class="o">=</span> <span class="n">VB</span><span class="p">(</span><span class="n">Z</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">P</span><span class="p">)</span>
-<span class="n">P</span><span class="o">.</span><span class="n">initialize_from_random</span><span class="p">()</span>
-
-<span class="n">Q</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">repeat</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<p>Thus, the candidates in the first group are likely to answer no to questions 1,
+3, 5, 7 and 9, and yes to questions 2, 4, 6, 8, 10.  The candidates in the
+second group are likely to answer yes to the last five questions, whereas the
+candidates in the third group are likely to answer yes to the first five
+questions.  For convenience, we form a NumPy array of these vectors:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">p0</span><span class="p">,</span> <span class="n">p1</span><span class="p">,</span> <span class="n">p2</span><span class="p">])</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre>Iteration 1: loglike=nan (0.005 seconds)
-Iteration 2: loglike=nan (0.003 seconds)
-Iteration 3: loglike=nan (0.003 seconds)
-Iteration 4: loglike=nan (0.003 seconds)
-Iteration 5: loglike=nan (0.003 seconds)
-Iteration 6: loglike=nan (0.003 seconds)
-Iteration 7: loglike=nan (0.003 seconds)
-Iteration 8: loglike=nan (0.003 seconds)
-Iteration 9: loglike=nan (0.003 seconds)
-Iteration 10: loglike=nan (0.003 seconds)
+<p>Next, we generate a hundred candidates.  First, we randomly select the group for
+each candidate:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">bayespy.utils</span> <span class="kn">import</span> <span class="n">random</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">z</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">categorical</span><span class="p">([</span><span class="mi">1</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="mi">3</span><span class="p">],</span> <span class="n">size</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre>/home/jluttine/workspace/bayespy/bayespy/inference/vmp/nodes/dirichlet.py:91: RuntimeWarning: divide by zero encountered in log
-  logp = np.log(p)
-/home/jluttine/workspace/bayespy/bayespy/inference/vmp/nodes/expfamily.py:71: RuntimeWarning: invalid value encountered in multiply
-  L = L + np.sum(phi_i * u_i, axis=axis_sum)
-/home/jluttine/workspace/bayespy/bayespy/inference/vmp/nodes/expfamily.py:71: RuntimeWarning: invalid value encountered in add
-  L = L + np.sum(phi_i * u_i, axis=axis_sum)
-/home/jluttine/workspace/bayespy/bayespy/inference/vmp/nodes/mixture.py:229: UserWarning: The natural parameters of mixture distribution contain nans. This may happen if you use fixed parameters in your model. Technically, one possible reason is that the cluster assignment probability for some element is zero (p=0) and the natural parameter of that cluster is -inf, thus 0*(-inf)=nan. Solution: Use parameters that assign non-zero probabilities for the whole domain.
-  warnings.warn(&quot;The natural parameters of mixture distribution &quot;
+<p>Using the group patterns, we generate yes-or-no answers for the candidates:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">bernoulli</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="n">z</span><span class="p">])</span>
 </pre></div>
 </div>
-<div class="code python highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">bayespy.plot.plotting</span> <span class="kn">as</span> <span class="nn">bpplt</span>
-<span class="n">bpplt</span><span class="o">.</span><span class="n">beta_hinton</span><span class="p">(</span><span class="n">P</span><span class="p">)</span>
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<p>This is our simulated data to be analyzed.</p>
+</div>
+<div class="section" id="model">
+<h2>Model<a class="headerlink" href="#model" title="Permalink to this headline">¶</a></h2>
+<p>Now, we construct a model for learning the structure in the data.  We have a
+dataset of hundred 10-dimensional binary vectors:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">N</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">D</span> <span class="o">=</span> <span class="mi">10</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre>/home/jluttine/workspace/bayespy/bayespy/plot/plotting.py:204: RuntimeWarning: invalid value encountered in absolute
-  _w = np.abs(w)
+<p>We will create a Bernoulli mixture model.  We assume that the true number of
+groups is unknown to us, so we use a large enough number of clusters:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">K</span> <span class="o">=</span> <span class="mi">10</span>
 </pre></div>
+</div>
+<p>We use the categorical distribution for the group assignments and give the group
+assignment probabilities an uninformative Dirichlet prior:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">bayespy.nodes</span> <span class="kn">import</span> <span class="n">Categorical</span><span class="p">,</span> <span class="n">Dirichlet</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">R</span> <span class="o">=</span> <span class="n">Dirichlet</span><span class="p">(</span><span class="n">K</span><span class="o">*</span><span class="p">[</span><span class="mf">1e-5</span><span class="p">],</span>
+<span class="gp">... </span>              <span class="n">name</span><span class="o">=</span><span class="s">&#39;R&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Z</span> <span class="o">=</span> <span class="n">Categorical</span><span class="p">(</span><span class="n">R</span><span class="p">,</span>
+<span class="gp">... </span>                <span class="n">plates</span><span class="o">=</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span>
+<span class="gp">... </span>                <span class="n">name</span><span class="o">=</span><span class="s">&#39;Z&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Each group has a probability of a yes answer for each question.  These
+probabilities are given beta priors:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">bayespy.nodes</span> <span class="kn">import</span> <span class="n">Beta</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">P</span> <span class="o">=</span> <span class="n">Beta</span><span class="p">([</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">],</span>
+<span class="gp">... </span>         <span class="n">plates</span><span class="o">=</span><span class="p">(</span><span class="n">D</span><span class="p">,</span><span class="n">K</span><span class="p">),</span>
+<span class="gp">... </span>         <span class="n">name</span><span class="o">=</span><span class="s">&#39;P&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The answers of the candidates are modelled with the Bernoulli distribution:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">bayespy.nodes</span> <span class="kn">import</span> <span class="n">Mixture</span><span class="p">,</span> <span class="n">Bernoulli</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">X</span> <span class="o">=</span> <span class="n">Mixture</span><span class="p">(</span><span class="n">Z</span><span class="p">,</span> <span class="n">Bernoulli</span><span class="p">,</span> <span class="n">P</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Here, <tt class="docutils literal"><span class="pre">Z</span></tt> defines the group assignments and <tt class="docutils literal"><span class="pre">P</span></tt> the answering probability
+patterns for each group.  Note how the plates of the nodes are matched: <tt class="docutils literal"><span class="pre">Z</span></tt>
+has plates <tt class="docutils literal"><span class="pre">(N,1)</span></tt> and <tt class="docutils literal"><span class="pre">P</span></tt> has plates <tt class="docutils literal"><span class="pre">(D,K)</span></tt>, but in the mixture node the
+last plate axis of <tt class="docutils literal"><span class="pre">P</span></tt> is discarded and thus the node broadcasts plates
+<tt class="docutils literal"><span class="pre">(N,1)</span></tt> and <tt class="docutils literal"><span class="pre">(D,)</span></tt> resulting in plates <tt class="docutils literal"><span class="pre">(N,D)</span></tt> for <tt class="docutils literal"><span class="pre">X</span></tt>.</p>
+</div>
+<div class="section" id="inference">
+<h2>Inference<a class="headerlink" href="#inference" title="Permalink to this headline">¶</a></h2>
+<p>In order to infer the variables in our model, we construct a variational
+Bayesian inference engine:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">bayespy.inference</span> <span class="kn">import</span> <span class="n">VB</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Q</span> <span class="o">=</span> <span class="n">VB</span><span class="p">(</span><span class="n">Z</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">P</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This also gives the default update order of the nodes.  In order to find
+different groups, they must be initialized differently, thus we use random
+initialization for the group probability patterns:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">P</span><span class="o">.</span><span class="n">initialize_from_random</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>We provide our simulated data:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">X</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Now, we can run inference:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Q</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">repeat</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
+<span class="go">Iteration 1: loglike=-6.872145e+02 (... seconds)</span>
+<span class="gp">...</span>
+<span class="go">Iteration 17: loglike=-5.236921e+02 (... seconds)</span>
+<span class="go">Converged at iteration 17.</span>
+</pre></div>
+</div>
+<p>The algorithm converges in 17 iterations.</p>
+</div>
+<div class="section" id="results">
+<h2>Results<a class="headerlink" href="#results" title="Permalink to this headline">¶</a></h2>
+<p>Now we can examine the approximate posterior distribution.  First, let us plot
+the group assignment probabilities:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">bayespy.plot</span> <span class="kn">as</span> <span class="nn">bpplt</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">bpplt</span><span class="o">.</span><span class="n">hinton</span><span class="p">(</span><span class="n">R</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>(<a class="reference external" href="../examples/bmm-1.py">Source code</a>, <a class="reference external" href="../examples/bmm-1.png">png</a>, <a class="reference external" href="../examples/bmm-1.hires.png">hires.png</a>, <a class="reference external" href="../examples/bmm-1.pdf">pdf</a>)</p>
+<div class="figure">
+<img alt="../_images/bmm-1.png" src="../_images/bmm-1.png" />
+</div>
+<p>This plot shows that there are three dominant groups, which is equal to the true
+number of groups used to generate the data.  However, there are still two
+smaller groups as the data does not give enough evidence to prune them out.  The
+yes-or-no answer probability patterns for the groups can be plotted as:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">bpplt</span><span class="o">.</span><span class="n">hinton</span><span class="p">(</span><span class="n">P</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>(<a class="reference external" href="../examples/bmm-2.py">Source code</a>, <a class="reference external" href="../examples/bmm-2.png">png</a>, <a class="reference external" href="../examples/bmm-2.hires.png">hires.png</a>, <a class="reference external" href="../examples/bmm-2.pdf">pdf</a>)</p>
+<div class="figure">
+<img alt="../_images/bmm-2.png" src="../_images/bmm-2.png" />
+</div>
+<p>The three dominant groups have found the true patterns accurately.  The patterns
+of the two minor groups some kind of mixtures of the three groups and they exist
+because the generated data happened to contain a few samples giving evidence for
+these groups.  Finally, we can plot the group assignment probabilities for the
+candidates:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">bpplt</span><span class="o">.</span><span class="n">hinton</span><span class="p">(</span><span class="n">Z</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>(<a class="reference external" href="../examples/bmm-3.py">Source code</a>, <a class="reference external" href="../examples/bmm-3.png">png</a>, <a class="reference external" href="../examples/bmm-3.hires.png">hires.png</a>, <a class="reference external" href="../examples/bmm-3.pdf">pdf</a>)</p>
+<div class="figure">
+<img alt="../_images/bmm-3.png" src="../_images/bmm-3.png" />
+</div>
+<p>This plot shows the clustering of the candidates.  It is possible to use
+<a class="reference internal" href="../user_api/generated/generated/bayespy.plot.HintonPlotter.html#bayespy.plot.HintonPlotter" title="bayespy.plot.HintonPlotter"><tt class="xref py py-class docutils literal"><span class="pre">HintonPlotter</span></tt></a> to enable monitoring during the VB iteration by providing
+<tt class="docutils literal"><span class="pre">plotter=HintonPlotter()</span></tt> for <tt class="docutils literal"><span class="pre">Z</span></tt>, <tt class="docutils literal"><span class="pre">P</span></tt> and <tt class="docutils literal"><span class="pre">R</span></tt> when creating the nodes.</p>
 </div>
 </div>
 
@@ -133,6 +213,17 @@ Iteration 10: loglike=nan (0.003 seconds)
       </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Bernoulli mixture model</a><ul>
+<li><a class="reference internal" href="#data">Data</a></li>
+<li><a class="reference internal" href="#model">Model</a></li>
+<li><a class="reference internal" href="#inference">Inference</a></li>
+<li><a class="reference internal" href="#results">Results</a></li>
+</ul>
+</li>
+</ul>
+
   <h4>Previous topic</h4>
   <p class="topless"><a href="gmm.html"
                         title="previous chapter">Gaussian mixture model</a></p>
