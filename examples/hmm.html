@@ -27,7 +27,7 @@
     <link rel="top" title="BayesPy v0.1 Documentation" href="../index.html" />
     <link rel="up" title="Examples" href="examples.html" />
     <link rel="next" title="Principal component analysis" href="pca.html" />
-    <link rel="prev" title="Discrete hidden Markov model" href="hmm_discrete.html" /> 
+    <link rel="prev" title="Bernoulli mixture model" href="bmm.html" /> 
   </head>
   <body>
     <div class="related">
@@ -43,7 +43,7 @@
           <a href="pca.html" title="Principal component analysis"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="hmm_discrete.html" title="Discrete hidden Markov model"
+          <a href="bmm.html" title="Bernoulli mixture model"
              accesskey="P">previous</a> |</li>
         <li><a href="../index.html">BayesPy v0.1 Documentation</a> &raquo;</li>
           <li><a href="examples.html" accesskey="U">Examples</a> &raquo;</li> 
@@ -57,7 +57,247 @@
             
   <div class="section" id="hidden-markov-model">
 <h1>Hidden Markov model<a class="headerlink" href="#hidden-markov-model" title="Permalink to this headline">¶</a></h1>
-<p>blaa blaa</p>
+<p>In this example, we will demonstrate the use of hidden Markov model in the case
+of known and unknown parameters.  We will also use two different emission
+distributions to demonstrate the flexibility of the model construction.</p>
+<div class="section" id="known-parameters">
+<h2>Known parameters<a class="headerlink" href="#known-parameters" title="Permalink to this headline">¶</a></h2>
+<p>This example follows the one presented in <a class="reference external" href="http://en.wikipedia.org/wiki/Hidden_Markov_model#A_concrete_example">Wikipedia</a>.</p>
+<div class="section" id="model">
+<h3>Model<a class="headerlink" href="#model" title="Permalink to this headline">¶</a></h3>
+<p>Each day, the state of the weather is either &#8216;rainy&#8217; or &#8216;sunny&#8217;. The weather
+follows a first-order discrete Markov process.  It has the following initial
+state probabilities</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">a0</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">]</span> <span class="c"># p(rainy)=0.6, p(sunny)=0.4</span>
+</pre></div>
+</div>
+<p>and state transition probabilities:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">A</span> <span class="o">=</span> <span class="p">[[</span><span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">],</span> <span class="c"># p(rainy-&gt;rainy)=0.7, p(rainy-&gt;sunny)=0.3</span>
+<span class="gp">... </span>     <span class="p">[</span><span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">]]</span> <span class="c"># p(sunny-&gt;rainy)=0.4, p(sunny-&gt;sunny)=0.6</span>
+</pre></div>
+</div>
+<p>We will be observing one hundred samples:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">N</span> <span class="o">=</span> <span class="mi">100</span>
+</pre></div>
+</div>
+<p>The discrete first-order Markov chain is constructed as:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">bayespy.nodes</span> <span class="kn">import</span> <span class="n">CategoricalMarkovChain</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Z</span> <span class="o">=</span> <span class="n">CategoricalMarkovChain</span><span class="p">(</span><span class="n">a0</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">states</span><span class="o">=</span><span class="n">N</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>However, instead of observing this process directly, we observe whether Bob is
+&#8216;walking&#8217;, &#8216;shopping&#8217; or &#8216;cleaning&#8217;. The probability of each activity depends on
+the current weather as follows:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">P</span> <span class="o">=</span> <span class="p">[[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">],</span>
+<span class="gp">... </span>     <span class="p">[</span><span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">]]</span>
+</pre></div>
+</div>
+<p>where the first row contains activity probabilities on a rainy weather and the
+second row contains activity probabilities on a sunny weather.  Using these
+emission probabilities, the observed process is constructed as:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">bayespy.nodes</span> <span class="kn">import</span> <span class="n">Categorical</span><span class="p">,</span> <span class="n">Mixture</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Y</span> <span class="o">=</span> <span class="n">Mixture</span><span class="p">(</span><span class="n">Z</span><span class="p">,</span> <span class="n">Categorical</span><span class="p">,</span> <span class="n">P</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="data">
+<h3>Data<a class="headerlink" href="#data" title="Permalink to this headline">¶</a></h3>
+<p>In order to test our method, we&#8217;ll generate artificial data from the model
+itself.  First, draw realization of the weather process:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">weather</span> <span class="o">=</span> <span class="n">Z</span><span class="o">.</span><span class="n">random</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Then, using this weather, draw realizations of the activities:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">activity</span> <span class="o">=</span> <span class="n">Mixture</span><span class="p">(</span><span class="n">weather</span><span class="p">,</span> <span class="n">Categorical</span><span class="p">,</span> <span class="n">P</span><span class="p">)</span><span class="o">.</span><span class="n">random</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="inference">
+<h3>Inference<a class="headerlink" href="#inference" title="Permalink to this headline">¶</a></h3>
+<p>Now, using this data, we set our variable <span class="math">\(Y\)</span> to be observed:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Y</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">activity</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>In order to run inference, we construct variational Bayesian inference engine:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">bayespy.inference</span> <span class="kn">import</span> <span class="n">VB</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Q</span> <span class="o">=</span> <span class="n">VB</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span> <span class="n">Z</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Note that we need to give all random variables to <tt class="docutils literal"><span class="pre">VB</span></tt>. In this case, the only
+random variables were <tt class="docutils literal"><span class="pre">Y</span></tt> and <tt class="docutils literal"><span class="pre">Z</span></tt>. Next we run the inference, that is,
+compute our posterior distribution:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Q</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+<span class="go">Iteration 1: loglike=-1.095883e+02 (... seconds)</span>
+</pre></div>
+</div>
+<p>In this case, because there is only one unobserved random variable, we
+recover the exact posterior distribution and there is no need to iterate
+more than one step.</p>
+</div>
+<div class="section" id="results">
+<h3>Results<a class="headerlink" href="#results" title="Permalink to this headline">¶</a></h3>
+<p>One way to plot the categorical timeseries is to use the Hinton diagram:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">bayespy.plot</span> <span class="kn">as</span> <span class="nn">bpplt</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">bpplt</span><span class="o">.</span><span class="n">hinton</span><span class="p">(</span><span class="n">Z</span><span class="p">,</span> <span class="n">square</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>(<a class="reference external" href="../examples/hmm-1.py">Source code</a>, <a class="reference external" href="../examples/hmm-1.png">png</a>, <a class="reference external" href="../examples/hmm-1.hires.png">hires.png</a>, <a class="reference external" href="../examples/hmm-1.pdf">pdf</a>)</p>
+<div class="figure">
+<img alt="../_images/hmm-1.png" src="../_images/hmm-1.png" />
+</div>
+<p>Non-square blocks are squeezed to fit appropriately in the plot.  Time axis is
+vertical and the two states are side by side.  The wider the white bar, the more
+probable the state at that time is.</p>
+</div>
+</div>
+<div class="section" id="unknown-parameters">
+<h2>Unknown parameters<a class="headerlink" href="#unknown-parameters" title="Permalink to this headline">¶</a></h2>
+<p>In this example, we consider unknown parameters for the Markov process and
+different emission distribution.</p>
+<div class="section" id="id1">
+<h3>Data<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<p>We generate data from three 2-dimensional Gaussian distributions with different
+mean vectors and common standard deviation:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mu</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">std</span> <span class="o">=</span> <span class="mf">2.0</span>
+</pre></div>
+</div>
+<p>Thus, the number of clusters is three:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">K</span> <span class="o">=</span> <span class="mi">3</span>
+</pre></div>
+</div>
+<p>And the number of samples is 200:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">N</span> <span class="o">=</span> <span class="mi">200</span>
+</pre></div>
+</div>
+<p>Each initial state is equally probable:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">p0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">K</span><span class="p">)</span> <span class="o">/</span> <span class="n">K</span>
+</pre></div>
+</div>
+<p>State transition matrix is such that with probability 0.9 the process stays in
+the same state.  The probability to move one of the other two states is 0.05 for
+both of those states.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">q</span> <span class="o">=</span> <span class="mf">0.9</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">r</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">q</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">K</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">P</span> <span class="o">=</span> <span class="n">q</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="n">K</span><span class="p">)</span> <span class="o">+</span> <span class="n">r</span><span class="o">*</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>Simulate the data:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">N</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">state</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">K</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="n">p0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="n">z</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">state</span>
+<span class="gp">... </span>    <span class="n">y</span><span class="p">[</span><span class="n">n</span><span class="p">,:]</span> <span class="o">=</span> <span class="n">std</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="n">mu</span><span class="p">[</span><span class="n">state</span><span class="p">]</span>
+<span class="gp">... </span>    <span class="n">state</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">K</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="n">P</span><span class="p">[</span><span class="n">state</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>Then, let us visualize the data:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">bpplt</span><span class="o">.</span><span class="n">pyplot</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+<span class="go">&lt;matplotlib.figure.Figure object at 0x...&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">bpplt</span><span class="o">.</span><span class="n">pyplot</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s">&#39;equal&#39;</span><span class="p">)</span>
+<span class="go">(...)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">colors</span> <span class="o">=</span> <span class="p">[</span> <span class="p">[[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]][</span><span class="nb">int</span><span class="p">(</span><span class="n">state</span><span class="p">)]</span> <span class="k">for</span> <span class="n">state</span> <span class="ow">in</span> <span class="n">z</span> <span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">bpplt</span><span class="o">.</span><span class="n">pyplot</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">y</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span> <span class="n">y</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span> <span class="s">&#39;k-&#39;</span><span class="p">,</span> <span class="n">zorder</span><span class="o">=-</span><span class="mi">10</span><span class="p">)</span>
+<span class="go">[&lt;matplotlib.lines.Line2D object at 0x...&gt;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">bpplt</span><span class="o">.</span><span class="n">pyplot</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">y</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span> <span class="n">y</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span> <span class="n">c</span><span class="o">=</span><span class="n">colors</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">40</span><span class="p">)</span>
+<span class="go">&lt;matplotlib.collections.PathCollection object at 0x...&gt;</span>
+</pre></div>
+</div>
+<p>(<a class="reference external" href="../examples/hmm-2.py">Source code</a>, <a class="reference external" href="../examples/hmm-2.png">png</a>, <a class="reference external" href="../examples/hmm-2.hires.png">hires.png</a>, <a class="reference external" href="../examples/hmm-2.pdf">pdf</a>)</p>
+<div class="figure">
+<img alt="../_images/hmm-2.png" src="../_images/hmm-2.png" />
+</div>
+<p>Consecutive states are connected by a solid black line and the dot color shows
+the true class.</p>
+</div>
+<div class="section" id="id2">
+<h3>Model<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<p>Now, assume that we do not know the parameters of the process (initial state
+probability and state transition probabilities). We give these parameters quite
+non-informative priors, but it is possible to provide more informative priors if
+such information is available:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">bayespy.nodes</span> <span class="kn">import</span> <span class="n">Dirichlet</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a0</span> <span class="o">=</span> <span class="n">Dirichlet</span><span class="p">(</span><span class="mf">1e-3</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">K</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">A</span> <span class="o">=</span> <span class="n">Dirichlet</span><span class="p">(</span><span class="mf">1e-3</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">K</span><span class="p">,</span><span class="n">K</span><span class="p">)))</span>
+</pre></div>
+</div>
+<p>The discrete Markov chain is constructed as:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Z</span> <span class="o">=</span> <span class="n">CategoricalMarkovChain</span><span class="p">(</span><span class="n">a0</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">states</span><span class="o">=</span><span class="n">N</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Now, instead of using categorical emission distribution as before, we&#8217;ll use
+Gaussian distribution.  For simplicity, we use the true parameters of the
+Gaussian distributions instead of giving priors and estimating them.  The known
+standard deviation can be converted to a precision matrix as:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Lambda</span> <span class="o">=</span> <span class="n">std</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Thus, the observed process is a Gaussian mixture with cluster assignments from
+the hidden Markov process <tt class="docutils literal"><span class="pre">Z</span></tt>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">bayespy.nodes</span> <span class="kn">import</span> <span class="n">Gaussian</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Y</span> <span class="o">=</span> <span class="n">Mixture</span><span class="p">(</span><span class="n">Z</span><span class="p">,</span> <span class="n">Gaussian</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">Lambda</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Note that <tt class="docutils literal"><span class="pre">Lambda</span></tt> does not have cluster plate axis because it is shared
+between the clusters.</p>
+</div>
+<div class="section" id="id3">
+<h3>Inference<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
+<p>Let us use the simulated data:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Y</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Because <tt class="docutils literal"><span class="pre">VB</span></tt> takes all the random variables, we need to provide <tt class="docutils literal"><span class="pre">A</span></tt> and
+<tt class="docutils literal"><span class="pre">a0</span></tt> also:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Q</span> <span class="o">=</span> <span class="n">VB</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span> <span class="n">Z</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">a0</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Then, run VB iteration until convergence:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Q</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">repeat</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
+<span class="go">Iteration 1: loglike=-9.963054e+02 (... seconds)</span>
+<span class="gp">...</span>
+<span class="go">Iteration 8: loglike=-9.235053e+02 (... seconds)</span>
+<span class="go">Converged at iteration 8.</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id4">
+<h3>Results<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
+<p>Plot the classification of the data similarly as the data:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">bpplt</span><span class="o">.</span><span class="n">pyplot</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+<span class="go">&lt;matplotlib.figure.Figure object at 0x...&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">bpplt</span><span class="o">.</span><span class="n">pyplot</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s">&#39;equal&#39;</span><span class="p">)</span>
+<span class="go">(...)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">colors</span> <span class="o">=</span> <span class="n">Y</span><span class="o">.</span><span class="n">parents</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get_moments</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">bpplt</span><span class="o">.</span><span class="n">pyplot</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">y</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span> <span class="n">y</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span> <span class="s">&#39;k-&#39;</span><span class="p">,</span> <span class="n">zorder</span><span class="o">=-</span><span class="mi">10</span><span class="p">)</span>
+<span class="go">[&lt;matplotlib.lines.Line2D object at 0x...&gt;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">bpplt</span><span class="o">.</span><span class="n">pyplot</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">y</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span> <span class="n">y</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span> <span class="n">c</span><span class="o">=</span><span class="n">colors</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">40</span><span class="p">)</span>
+<span class="go">&lt;matplotlib.collections.PathCollection object at 0x...&gt;</span>
+</pre></div>
+</div>
+<p>(<a class="reference external" href="../examples/hmm-3.py">Source code</a>, <a class="reference external" href="../examples/hmm-3.png">png</a>, <a class="reference external" href="../examples/hmm-3.hires.png">hires.png</a>, <a class="reference external" href="../examples/hmm-3.pdf">pdf</a>)</p>
+<div class="figure">
+<img alt="../_images/hmm-3.png" src="../_images/hmm-3.png" />
+</div>
+<p>The data has been classified quite correctly.  Even samples that are more in the
+region of another cluster are classified correctly if the previous and next
+sample provide enough evidence for the correct class.  We can also plot the
+state transition matrix:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">bpplt</span><span class="o">.</span><span class="n">hinton</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>(<a class="reference external" href="../examples/hmm-4.py">Source code</a>, <a class="reference external" href="../examples/hmm-4.png">png</a>, <a class="reference external" href="../examples/hmm-4.hires.png">hires.png</a>, <a class="reference external" href="../examples/hmm-4.pdf">pdf</a>)</p>
+<div class="figure">
+<img alt="../_images/hmm-4.png" src="../_images/hmm-4.png" />
+</div>
+<p>Clearly, the learned state transition matrix is close to the true matrix.  The
+models described above could also be used for classification by providing the
+known class assignments as observed data to <tt class="docutils literal"><span class="pre">Z</span></tt> and the unknown class
+assignments as missing data.</p>
+</div>
+</div>
 </div>
 
 
@@ -66,9 +306,30 @@
       </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Hidden Markov model</a><ul>
+<li><a class="reference internal" href="#known-parameters">Known parameters</a><ul>
+<li><a class="reference internal" href="#model">Model</a></li>
+<li><a class="reference internal" href="#data">Data</a></li>
+<li><a class="reference internal" href="#inference">Inference</a></li>
+<li><a class="reference internal" href="#results">Results</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#unknown-parameters">Unknown parameters</a><ul>
+<li><a class="reference internal" href="#id1">Data</a></li>
+<li><a class="reference internal" href="#id2">Model</a></li>
+<li><a class="reference internal" href="#id3">Inference</a></li>
+<li><a class="reference internal" href="#id4">Results</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
   <h4>Previous topic</h4>
-  <p class="topless"><a href="hmm_discrete.html"
-                        title="previous chapter">Discrete hidden Markov model</a></p>
+  <p class="topless"><a href="bmm.html"
+                        title="previous chapter">Bernoulli mixture model</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="pca.html"
                         title="next chapter">Principal component analysis</a></p>
@@ -107,7 +368,7 @@
           <a href="pca.html" title="Principal component analysis"
              >next</a> |</li>
         <li class="right" >
-          <a href="hmm_discrete.html" title="Discrete hidden Markov model"
+          <a href="bmm.html" title="Bernoulli mixture model"
              >previous</a> |</li>
         <li><a href="../index.html">BayesPy v0.1 Documentation</a> &raquo;</li>
           <li><a href="examples.html" >Examples</a> &raquo;</li> 
