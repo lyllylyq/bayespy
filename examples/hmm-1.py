@@ -17,5 +17,6 @@ from bayespy.inference import VB
 Q = VB(Y, Z)
 Q.update()
 import bayespy.plot as bpplt
-bpplt.hinton(Z, square=False)
+bpplt.plot(Z)
+bpplt.plot(1-weather, color='r', marker='x')
 bpplt.pyplot.show()

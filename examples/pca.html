@@ -57,167 +57,139 @@
             
   <div class="section" id="principal-component-analysis">
 <h1>Principal component analysis<a class="headerlink" href="#principal-component-analysis" title="Permalink to this headline">¶</a></h1>
-<p>Yeah.</p>
-<div class="figure">
-<p><img src="../_images/tikz-899e60c2099be1800352b858508ce9a731e784cb.png" alt="% tikzlibrary.code.tex
-%
-% Copyright 2010-2011 by Laura Dietz
-% Copyright 2012 by Jaakko Luttinen
-%
-% This file may be distributed and/or modified
-%
-% 1. under the LaTeX Project Public License and/or
-% 2. under the GNU General Public License.
-%
-% See the files LICENSE_LPPL and LICENSE_GPL for more details.
-
-% Load other libraries
-\usetikzlibrary{shapes}
-\usetikzlibrary{fit}
-\usetikzlibrary{chains}
-\usetikzlibrary{arrows}
-
-% Latent node
-\tikzstyle{latent} = [circle,fill=white,draw=black,inner sep=1pt,
-minimum size=20pt, font=\fontsize{10}{10}\selectfont, node distance=1]
-% Observed node
-\tikzstyle{obs} = [latent,fill=gray!25]
-% Constant node
-\tikzstyle{const} = [rectangle, inner sep=0pt, node distance=1]
-% Factor node
-\tikzstyle{factor} = [rectangle, fill=black,minimum size=5pt, inner
-sep=0pt, node distance=0.4]
-% Deterministic node
-\tikzstyle{det} = [latent, diamond]
-
-% Plate node
-\tikzstyle{plate} = [draw, rectangle, rounded corners, fit=#1]
-% Invisible wrapper node
-\tikzstyle{wrap} = [inner sep=0pt, fit=#1]
-% Gate
-\tikzstyle{gate} = [draw, rectangle, dashed, fit=#1]
-
-% Caption node
-\tikzstyle{caption} = [font=\footnotesize, node distance=0] %
-\tikzstyle{plate caption} = [caption, node distance=0, inner sep=0pt,
-below left=5pt and 0pt of #1.south east] %
-\tikzstyle{factor caption} = [caption] %
-\tikzstyle{every label} += [caption] %
-
-\tikzset{&gt;={triangle 45}}
-
-%\pgfdeclarelayer{b}
-%\pgfdeclarelayer{f}
-%\pgfsetlayers{b,main,f}
-
-% \factoredge [options] {inputs} {factors} {outputs}
-\newcommand{\factoredge}[4][]{ %
-  % Connect all nodes #2 to all nodes #4 via all factors #3.
-  \foreach \f in {#3} { %
-    \foreach \x in {#2} { %
-      \draw[-,#1] (\x) edge[-] (\f) ; %
-    } ;
-    \foreach \y in {#4} { %
-      \draw[-&gt;,#1] (\f) -- (\y) ; %
-    } ;
-  } ;
-}
-
-% \edge [options] {inputs} {outputs}
-\newcommand{\edge}[3][]{ %
-  % Connect all nodes #2 to all nodes #3.
-  \foreach \x in {#2} { %
-    \foreach \y in {#3} { %
-      \draw[-&gt;,#1] (\x) -- (\y) ;%
-    } ;
-  } ;
-}
-
-% \factor [options] {name} {caption} {inputs} {outputs}
-\newcommand{\factor}[5][]{ %
-  % Draw the factor node. Use alias to allow empty names.
-  \node[factor, label={[name=#2-caption]#3}, name=#2, #1,
-  alias=#2-alias] {} ; %
-  % Connect all inputs to outputs via this factor
-  \factoredge {#4} {#2-alias} {#5} ; %
-}
-
-% \plate [options] {name} {fitlist} {caption}
-\newcommand{\plate}[4][]{ %
-  \node[wrap=#3] (#2-wrap) {}; %
-  \node[plate caption=#2-wrap] (#2-caption) {#4}; %
-  \node[plate=(#2-wrap)(#2-caption), #1] (#2) {}; %
-}
-
-% \gate [options] {name} {fitlist} {inputs}
-\newcommand{\gate}[4][]{ %
-  \node[gate=#3, name=#2, #1, alias=#2-alias] {}; %
-  \foreach \x in {#4} { %
-    \draw [-*,thick] (\x) -- (#2-alias); %
-  } ;%
-}
-
-% \vgate {name} {fitlist-left} {caption-left} {fitlist-right}
-% {caption-right} {inputs}
-\newcommand{\vgate}[6]{ %
-  % Wrap the left and right parts
-  \node[wrap=#2] (#1-left) {}; %
-  \node[wrap=#4] (#1-right) {}; %
-  % Draw the gate
-  \node[gate=(#1-left)(#1-right)] (#1) {}; %
-  % Add captions
-  \node[caption, below left=of #1.north ] (#1-left-caption)
-  {#3}; %
-  \node[caption, below right=of #1.north ] (#1-right-caption)
-  {#5}; %
-  % Draw middle separation
-  \draw [-, dashed] (#1.north) -- (#1.south); %
-  % Draw inputs
-  \foreach \x in {#6} { %
-    \draw [-*,thick] (\x) -- (#1); %
-  } ;%
-}
-
-% \hgate {name} {fitlist-top} {caption-top} {fitlist-bottom}
-% {caption-bottom} {inputs}
-\newcommand{\hgate}[6]{ %
-  % Wrap the left and right parts
-  \node[wrap=#2] (#1-top) {}; %
-  \node[wrap=#4] (#1-bottom) {}; %
-  % Draw the gate
-  \node[gate=(#1-top)(#1-bottom)] (#1) {}; %
-  % Add captions
-  \node[caption, above right=of #1.west ] (#1-top-caption)
-  {#3}; %
-  \node[caption, below right=of #1.west ] (#1-bottom-caption)
-  {#5}; %
-  % Draw middle separation
-  \draw [-, dashed] (#1.west) -- (#1.east); %
-  % Draw inputs
-  \foreach \x in {#6} { %
-    \draw [-*,thick] (\x) -- (#1); %
-  } ;%
-}
-
-\node[obs]                                  (y)     {$y$} ;
-\node[latent, above left=1.5 and 0.5 of y]  (mu)    {$\mu$} ;
-\node[latent, above right=1.5 and 0.5 of y] (tau)   {$\tau$} ;
-\node[const, above=of mu, xshift=-0.5cm]    (mumu)  {$0$} ;
-\node[const, above=of mu, xshift=0.5cm]     (taumu) {$10^{-3}$} ;
-\node[const, above=of tau, xshift=-0.5cm]   (atau)  {$10^{-3}$} ;
-\node[const, above=of tau, xshift=0.5cm]    (btau)  {$10^{-3}$} ;
-
-\factor[above=of y] {y-f} {left:$\mathcal{N}$} {mu,tau}     {y};
-\factor[above=of mu] {} {left:$\mathcal{N}$}   {mumu,taumu} {mu};
-\factor[above=of tau] {} {left:$\mathcal{G}$}  {atau,btau}  {tau};
-
-\plate {} {(y)(y-f)(y-f-caption)} {10} ;" /></p>
-<p class="caption">Directed factor graph of the example model.</p></div><div class="code python highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">bayespy.nodes</span> <span class="kn">import</span> <span class="n">GaussianARD</span>
-<span class="n">GaussianARD</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<p>This example uses a simple principal component analysis to find a
+two-dimensional latent subspace in a higher dimensional dataset.</p>
+<div class="section" id="data">
+<h2>Data<a class="headerlink" href="#data" title="Permalink to this headline">¶</a></h2>
+<p>Let us create a Gaussian dataset with latent space dimensionality two and some
+observation noise:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">M</span> <span class="o">=</span> <span class="mi">20</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">N</span> <span class="o">=</span> <span class="mi">100</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre>&lt;bayespy.inference.vmp.nodes.gaussian.GaussianARD at 0x7fa3343bce90&gt;
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">f</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s">&#39;ik,jk-&gt;ij&#39;</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">f</span> <span class="o">+</span> <span class="mf">0.1</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">N</span><span class="p">)</span>
 </pre></div>
+</div>
+</div>
+<div class="section" id="model">
+<h2>Model<a class="headerlink" href="#model" title="Permalink to this headline">¶</a></h2>
+<p>We will use 10-dimensional latent space in our model and let it learn the true
+dimensionality:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">D</span> <span class="o">=</span> <span class="mi">10</span>
+</pre></div>
+</div>
+<p>Import relevant nodes:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">bayespy.nodes</span> <span class="kn">import</span> <span class="n">GaussianARD</span><span class="p">,</span> <span class="n">Gamma</span><span class="p">,</span> <span class="n">SumMultiply</span>
+</pre></div>
+</div>
+<p>The latent states:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">X</span> <span class="o">=</span> <span class="n">GaussianARD</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">plates</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">N</span><span class="p">),</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">D</span><span class="p">,))</span>
+</pre></div>
+</div>
+<p>The loading matrix with automatic relevance determination (ARD) prior:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">alpha</span> <span class="o">=</span> <span class="n">Gamma</span><span class="p">(</span><span class="mf">1e-5</span><span class="p">,</span> <span class="mf">1e-5</span><span class="p">,</span> <span class="n">plates</span><span class="o">=</span><span class="p">(</span><span class="n">D</span><span class="p">,))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">C</span> <span class="o">=</span> <span class="n">GaussianARD</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">plates</span><span class="o">=</span><span class="p">(</span><span class="n">M</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">D</span><span class="p">,))</span>
+</pre></div>
+</div>
+<p>Compute the dot product of the latent states and the loading matrix:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">F</span> <span class="o">=</span> <span class="n">SumMultiply</span><span class="p">(</span><span class="s">&#39;d,d-&gt;&#39;</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">C</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The observation noise:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">tau</span> <span class="o">=</span> <span class="n">Gamma</span><span class="p">(</span><span class="mf">1e-5</span><span class="p">,</span> <span class="mf">1e-5</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The observed variable:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Y</span> <span class="o">=</span> <span class="n">GaussianARD</span><span class="p">(</span><span class="n">F</span><span class="p">,</span> <span class="n">tau</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="inference">
+<h2>Inference<a class="headerlink" href="#inference" title="Permalink to this headline">¶</a></h2>
+<p>Observe the data:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Y</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>We do not have missing data now, but they could be easily handled with <tt class="docutils literal"><span class="pre">mask</span></tt>
+keyword argument.  Construct variational Bayesian (VB) inference engine:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">bayespy.inference</span> <span class="kn">import</span> <span class="n">VB</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Q</span> <span class="o">=</span> <span class="n">VB</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">tau</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Initialize the latent subspace randomly, otherwise both <tt class="docutils literal"><span class="pre">X</span></tt> and <tt class="docutils literal"><span class="pre">C</span></tt> would
+converge to zero:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">C</span><span class="o">.</span><span class="n">initialize_from_random</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Now we could use <a class="reference internal" href="../user_api/generated/generated/generated/bayespy.inference.VB.update.html#bayespy.inference.VB.update" title="bayespy.inference.VB.update"><tt class="xref py py-func docutils literal"><span class="pre">VB.update()</span></tt></a> to run the inference.  However, let us first
+create a parameter expansion to speed up the inference.  The expansion is based
+on rotating the latent subspace optimally.  This is optional but will usually
+improve the speed of the inference significantly, especially in high-dimensional
+problems:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">bayespy.inference.vmp.transformations</span> <span class="kn">import</span> <span class="n">RotateGaussianARD</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rot_X</span> <span class="o">=</span> <span class="n">RotateGaussianARD</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rot_C</span> <span class="o">=</span> <span class="n">RotateGaussianARD</span><span class="p">(</span><span class="n">C</span><span class="p">,</span> <span class="n">alpha</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>By giving <tt class="docutils literal"><span class="pre">alpha</span></tt> for <tt class="docutils literal"><span class="pre">rot_C</span></tt>, the rotation will also optimize <tt class="docutils literal"><span class="pre">alpha</span></tt>
+jointly with <tt class="docutils literal"><span class="pre">C</span></tt>.  Now that we have defined the rotations for our variables,
+we need to construct an optimizer:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">bayespy.inference.vmp.transformations</span> <span class="kn">import</span> <span class="n">RotationOptimizer</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">R</span> <span class="o">=</span> <span class="n">RotationOptimizer</span><span class="p">(</span><span class="n">rot_X</span><span class="p">,</span> <span class="n">rot_C</span><span class="p">,</span> <span class="n">D</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>In order to use the rotations automatically, we need to set it as a callback
+function:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Q</span><span class="o">.</span><span class="n">set_callback</span><span class="p">(</span><span class="n">R</span><span class="o">.</span><span class="n">rotate</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>For more information about the rotation parameter expansion, see
+<a class="reference internal" href="../references.html#luttinen-2010" id="id1">[2]</a> and <a class="reference internal" href="../references.html#luttinen-2013" id="id2">[1]</a>.  Now we can run the actual
+inference until convergence:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Q</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">repeat</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
+<span class="go">Iteration 1: loglike=-2.339710e+03 (... seconds)</span>
+<span class="gp">...</span>
+<span class="go">Iteration 23: loglike=6.500608e+02 (... seconds)</span>
+<span class="go">Converged at iteration 23.</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="results">
+<h2>Results<a class="headerlink" href="#results" title="Permalink to this headline">¶</a></h2>
+<p>The results can be visualized, for instance, by plotting the Hinton diagram of
+the loading matrix:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">bayespy.plot</span> <span class="kn">as</span> <span class="nn">bpplt</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">bpplt</span><span class="o">.</span><span class="n">pyplot</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+<span class="go">&lt;matplotlib.figure.Figure object at 0x...&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">bpplt</span><span class="o">.</span><span class="n">hinton</span><span class="p">(</span><span class="n">C</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>(<a class="reference external" href="../examples/pca-1.py">Source code</a>, <a class="reference external" href="../examples/pca-1.png">png</a>, <a class="reference external" href="../examples/pca-1.hires.png">hires.png</a>, <a class="reference external" href="../examples/pca-1.pdf">pdf</a>)</p>
+<div class="figure">
+<img alt="../_images/pca-1.png" src="../_images/pca-1.png" />
+</div>
+<p>The method has been able to prune out unnecessary latent dimensions and keep two
+components, which is the true number of components.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">bpplt</span><span class="o">.</span><span class="n">pyplot</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+<span class="go">&lt;matplotlib.figure.Figure object at 0x...&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">bpplt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">F</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">bpplt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s">&#39;r&#39;</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s">&#39;x&#39;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s">&#39;None&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>(<a class="reference external" href="../examples/pca-2.py">Source code</a>, <a class="reference external" href="../examples/pca-2.png">png</a>, <a class="reference external" href="../examples/pca-2.hires.png">hires.png</a>, <a class="reference external" href="../examples/pca-2.pdf">pdf</a>)</p>
+<div class="figure">
+<img alt="../_images/pca-2.png" src="../_images/pca-2.png" />
+</div>
+<p>The reconstruction of the noiseless function values are practically perfect in
+this simple example.  Larger noise variance, more latent space dimensions and
+missing values would make this problem more difficult.  The model construction
+could also be improved by having, for instance, <tt class="docutils literal"><span class="pre">C</span></tt> and <tt class="docutils literal"><span class="pre">tau</span></tt> in the same
+node without factorizing between them in the posterior approximation.  This can
+be achieved by using <a class="reference internal" href="../user_api/generated/generated/bayespy.nodes.GaussianGammaISO.html#bayespy.nodes.GaussianGammaISO" title="bayespy.nodes.GaussianGammaISO"><tt class="xref py py-class docutils literal"><span class="pre">GaussianGammaISO</span></tt></a> node.</p>
 </div>
 </div>
 
@@ -227,6 +199,17 @@ below left=5pt and 0pt of #1.south east] %
       </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Principal component analysis</a><ul>
+<li><a class="reference internal" href="#data">Data</a></li>
+<li><a class="reference internal" href="#model">Model</a></li>
+<li><a class="reference internal" href="#inference">Inference</a></li>
+<li><a class="reference internal" href="#results">Results</a></li>
+</ul>
+</li>
+</ul>
+
   <h4>Previous topic</h4>
   <p class="topless"><a href="hmm.html"
                         title="previous chapter">Hidden Markov model</a></p>
