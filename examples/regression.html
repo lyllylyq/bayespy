@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Regression &mdash; BayesPy v0.1 Documentation</title>
+    <title>Linear regression &mdash; BayesPy v0.1 Documentation</title>
     
     <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -55,159 +55,181 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <div class="section" id="regression">
-<h1>Regression<a class="headerlink" href="#regression" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="linear-regression">
-<h2>Linear regression<a class="headerlink" href="#linear-regression" title="Permalink to this headline">¶</a></h2>
-<div class="code python highlight-python"><div class="highlight"><pre>import numpy as np
-k = 2
-c = 5
-s = 2
-
-x = np.arange(10)
-y = k*x + c + s*np.random.randn(10)
-
-from bayespy.nodes import GaussianARD
-B = GaussianARD(0, 1e-6, shape=(2,))
-
-X = np.vstack([x, np.ones(len(x))]).T
-
-from bayespy.nodes import SumMultiply
-F = SumMultiply(&#39;i,i&#39;, B, X)
-
-from bayespy.nodes import Gamma
-tau = Gamma(1e-3, 1e-3)
-
-Y = GaussianARD(F, tau)
-Y.observe(y)
-
-from bayespy.inference import VB
-Q = VB(Y, B, tau)
-
-Q.update(repeat=100)
-
-import bayespy.plot as bpplt
-# These two lines are needed to enable inline plotting IPython Notebooks
-%matplotlib inline
-bpplt.pyplot.plot([])
-
-xh = np.linspace(-5, 15, 100)
-Xh = np.vstack([xh, np.ones(len(xh))]).T
-Fh = SumMultiply(&#39;i,i&#39;, B, Xh)
-bpplt.plot(Fh, x=xh, scale=2)
-bpplt.plot(y, x=x, color=&#39;r&#39;, marker=&#39;x&#39;, linestyle=&#39;None&#39;)
-bpplt.plot(k*xh+c, x=xh, color=&#39;r&#39;);
+  <div class="section" id="linear-regression">
+<h1>Linear regression<a class="headerlink" href="#linear-regression" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="data">
+<h2>Data<a class="headerlink" href="#data" title="Permalink to this headline">¶</a></h2>
+<p>The true parameters of the linear regression:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">k</span> <span class="o">=</span> <span class="mi">2</span> <span class="c"># slope</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">=</span> <span class="mi">5</span> <span class="c"># bias</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">s</span> <span class="o">=</span> <span class="mi">2</span> <span class="c"># noise standard deviation</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre>Iteration 1: loglike=-4.515537e+01 (0.000 seconds)
-Iteration 2: loglike=-4.429472e+01 (0.010 seconds)
-Iteration 3: loglike=-4.428241e+01 (0.000 seconds)
-Iteration 4: loglike=-4.428197e+01 (0.000 seconds)
-Iteration 5: loglike=-4.428195e+01 (0.010 seconds)
-Converged.
+<p>Generate data:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">k</span><span class="o">*</span><span class="n">x</span> <span class="o">+</span> <span class="n">c</span> <span class="o">+</span> <span class="n">s</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="code python highlight-python"><div class="highlight"><pre><span class="n">bpplt</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">tau</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">1e-6</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">100</span><span class="p">),</span> <span class="n">color</span><span class="o">=</span><span class="s">&#39;k&#39;</span><span class="p">)</span>
-<span class="n">bpplt</span><span class="o">.</span><span class="n">pyplot</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">s</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">),</span> <span class="n">color</span><span class="o">=</span><span class="s">&#39;r&#39;</span><span class="p">)</span>
-<span class="c"># Add labels</span>
-<span class="n">bpplt</span><span class="o">.</span><span class="n">pyplot</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s">r&#39;$q(\tau)$&#39;</span><span class="p">)</span>
-<span class="n">bpplt</span><span class="o">.</span><span class="n">pyplot</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s">r&#39;$\tau$&#39;</span><span class="p">);</span>
+</div>
+<div class="section" id="model">
+<h2>Model<a class="headerlink" href="#model" title="Permalink to this headline">¶</a></h2>
+<p>The regressors, that is, the input data:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">x</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">))])</span><span class="o">.</span><span class="n">T</span>
 </pre></div>
 </div>
-<div class="code python highlight-python"><div class="highlight"><pre><span class="n">bpplt</span><span class="o">.</span><span class="n">contour</span><span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">1000</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">9</span><span class="p">,</span><span class="mi">1000</span><span class="p">),</span> <span class="n">n</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="s">&#39;k&#39;</span><span class="p">)</span>
-<span class="n">bpplt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">k</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s">&#39;r&#39;</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s">&#39;x&#39;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s">&#39;None&#39;</span><span class="p">,</span> <span class="n">markersize</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">markeredgewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-<span class="c"># Add labels</span>
-<span class="n">bpplt</span><span class="o">.</span><span class="n">pyplot</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s">r&#39;$q(k,c)$&#39;</span><span class="p">)</span>
-<span class="n">bpplt</span><span class="o">.</span><span class="n">pyplot</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s">r&#39;$k$&#39;</span><span class="p">)</span>
-<span class="n">bpplt</span><span class="o">.</span><span class="n">pyplot</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s">r&#39;$c$&#39;</span><span class="p">);</span>
+<p>Note that we added a column of ones to the regressor matrix for the bias term.
+We model the slope and the bias term in the same node so we do not factorize
+between them:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">bayespy.nodes</span> <span class="kn">import</span> <span class="n">GaussianARD</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">B</span> <span class="o">=</span> <span class="n">GaussianARD</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">1e-6</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,))</span>
 </pre></div>
 </div>
+<p>The first element is the slope which multiplies <tt class="docutils literal"><span class="pre">x</span></tt> and the second element is
+the bias term which multiplies the constant ones.  Now we compute the dot
+product of <tt class="docutils literal"><span class="pre">X</span></tt> and <tt class="docutils literal"><span class="pre">B</span></tt>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">bayespy.nodes</span> <span class="kn">import</span> <span class="n">SumMultiply</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">F</span> <span class="o">=</span> <span class="n">SumMultiply</span><span class="p">(</span><span class="s">&#39;i,i&#39;</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The noise parameter:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">bayespy.nodes</span> <span class="kn">import</span> <span class="n">Gamma</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tau</span> <span class="o">=</span> <span class="n">Gamma</span><span class="p">(</span><span class="mf">1e-3</span><span class="p">,</span> <span class="mf">1e-3</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The noisy observations:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Y</span> <span class="o">=</span> <span class="n">GaussianARD</span><span class="p">(</span><span class="n">F</span><span class="p">,</span> <span class="n">tau</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="inference">
+<h2>Inference<a class="headerlink" href="#inference" title="Permalink to this headline">¶</a></h2>
+<p>Observe the data:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Y</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Construct the variational Bayesian (VB) inference engine by giving all
+stochastic nodes:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">bayespy.inference</span> <span class="kn">import</span> <span class="n">VB</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Q</span> <span class="o">=</span> <span class="n">VB</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">tau</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Iterate until convergence:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Q</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">repeat</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
+<span class="go">Iteration 1: loglike=-4.595948e+01 (... seconds)</span>
+<span class="gp">...</span>
+<span class="go">Iteration 5: loglike=-4.495017e+01 (... seconds)</span>
+<span class="go">Converged at iteration 5.</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="results">
+<h2>Results<a class="headerlink" href="#results" title="Permalink to this headline">¶</a></h2>
+<p>Create a simple predictive model for new inputs:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">xh</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Xh</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">xh</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">xh</span><span class="p">))])</span><span class="o">.</span><span class="n">T</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Fh</span> <span class="o">=</span> <span class="n">SumMultiply</span><span class="p">(</span><span class="s">&#39;i,i&#39;</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">Xh</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Note that we use the learned node <tt class="docutils literal"><span class="pre">B</span></tt> but create a new regressor array for
+predictions.  Plot the predictive distribution of noiseless function values:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">bayespy.plot</span> <span class="kn">as</span> <span class="nn">bpplt</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">bpplt</span><span class="o">.</span><span class="n">pyplot</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+<span class="go">&lt;matplotlib.figure.Figure object at 0x...&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">bpplt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">Fh</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">xh</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">bpplt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s">&#39;r&#39;</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s">&#39;x&#39;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s">&#39;None&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">bpplt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">k</span><span class="o">*</span><span class="n">xh</span><span class="o">+</span><span class="n">c</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">xh</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s">&#39;r&#39;</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>(<a class="reference external" href="../examples/regression-1.py">Source code</a>, <a class="reference external" href="../examples/regression-1.png">png</a>, <a class="reference external" href="../examples/regression-1.hires.png">hires.png</a>, <a class="reference external" href="../examples/regression-1.pdf">pdf</a>)</p>
+<div class="figure">
+<img alt="../_images/regression-1.png" src="../_images/regression-1.png" />
+</div>
+<p>Note that the above plot shows two standard deviation of the posterior of the
+noiseless function, thus the data points may lie well outside this range.  The
+red line shows the true linear function.  Next, plot the distribution of the
+noise parameter and the true value, <span class="math">\(2^{-2}=0.25\)</span>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">bpplt</span><span class="o">.</span><span class="n">pyplot</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+<span class="go">&lt;matplotlib.figure.Figure object at 0x...&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">bpplt</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">tau</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">1e-6</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">100</span><span class="p">),</span> <span class="n">color</span><span class="o">=</span><span class="s">&#39;k&#39;</span><span class="p">)</span>
+<span class="go">[&lt;matplotlib.lines.Line2D object at 0x...&gt;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">bpplt</span><span class="o">.</span><span class="n">pyplot</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">s</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">),</span> <span class="n">color</span><span class="o">=</span><span class="s">&#39;r&#39;</span><span class="p">)</span>
+<span class="go">&lt;matplotlib.lines.Line2D object at 0x...&gt;</span>
+</pre></div>
+</div>
+<p>(<a class="reference external" href="../examples/regression-2.py">Source code</a>, <a class="reference external" href="../examples/regression-2.png">png</a>, <a class="reference external" href="../examples/regression-2.hires.png">hires.png</a>, <a class="reference external" href="../examples/regression-2.pdf">pdf</a>)</p>
+<div class="figure">
+<img alt="../_images/regression-2.png" src="../_images/regression-2.png" />
+</div>
+<p>The noise level is captured quite well, although the posterior has more mass on
+larger noise levels (smaller precision parameter values).  Finally, plot the
+distribution of the regression parameters and mark the true value:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">bpplt</span><span class="o">.</span><span class="n">pyplot</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+<span class="go">&lt;matplotlib.figure.Figure object at 0x...&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">bpplt</span><span class="o">.</span><span class="n">contour</span><span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">1000</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">9</span><span class="p">,</span><span class="mi">1000</span><span class="p">),</span>
+<span class="gp">... </span>              <span class="n">n</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="s">&#39;k&#39;</span><span class="p">)</span>
+<span class="go">&lt;matplotlib.contour.QuadContourSet object at 0x...&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">bpplt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">k</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s">&#39;r&#39;</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s">&#39;x&#39;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s">&#39;None&#39;</span><span class="p">,</span>
+<span class="gp">... </span>           <span class="n">markersize</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">markeredgewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">bpplt</span><span class="o">.</span><span class="n">pyplot</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s">r&#39;$k$&#39;</span><span class="p">)</span>
+<span class="go">&lt;matplotlib.text.Text object at 0x...&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">bpplt</span><span class="o">.</span><span class="n">pyplot</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s">r&#39;$c$&#39;</span><span class="p">);</span>
+<span class="go">&lt;matplotlib.text.Text object at 0x...&gt;</span>
+</pre></div>
+</div>
+<p>(<a class="reference external" href="../examples/regression-3.py">Source code</a>, <a class="reference external" href="../examples/regression-3.png">png</a>, <a class="reference external" href="../examples/regression-3.hires.png">hires.png</a>, <a class="reference external" href="../examples/regression-3.pdf">pdf</a>)</p>
+<div class="figure">
+<img alt="../_images/regression-3.png" src="../_images/regression-3.png" />
+</div>
+<p>In this case, the true parameters are captured well by the posterior
+distribution.</p>
 </div>
 <div class="section" id="improving-accuracy">
 <h2>Improving accuracy<a class="headerlink" href="#improving-accuracy" title="Permalink to this headline">¶</a></h2>
-<div class="code python highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">bayespy.nodes</span> <span class="kn">import</span> <span class="n">GaussianGammaISO</span>
-<span class="n">B_tau</span> <span class="o">=</span> <span class="n">GaussianGammaISO</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="mf">1e-6</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="mf">1e-3</span><span class="p">,</span> <span class="mf">1e-3</span><span class="p">)</span>
-
-<span class="n">F_tau</span> <span class="o">=</span> <span class="n">SumMultiply</span><span class="p">(</span><span class="s">&#39;i,i&#39;</span><span class="p">,</span> <span class="n">B_tau</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span>
-
-<span class="n">Y</span> <span class="o">=</span> <span class="n">GaussianARD</span><span class="p">(</span><span class="n">F_tau</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-<span class="n">Y</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
-
-<span class="kn">from</span> <span class="nn">bayespy.inference</span> <span class="kn">import</span> <span class="n">VB</span>
-<span class="n">Q</span> <span class="o">=</span> <span class="n">VB</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span> <span class="n">B_tau</span><span class="p">)</span>
-
-<span class="n">Q</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">repeat</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<p>The model can be improved by not factorizing between <tt class="docutils literal"><span class="pre">B</span></tt> and <tt class="docutils literal"><span class="pre">tau</span></tt> but
+learning their joint posterior distribution.  This requires a slight
+modification to the model by using <a class="reference internal" href="../user_api/generated/generated/bayespy.nodes.GaussianGammaISO.html#bayespy.nodes.GaussianGammaISO" title="bayespy.nodes.GaussianGammaISO"><tt class="xref py py-class docutils literal"><span class="pre">GaussianGammaISO</span></tt></a> node:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">bayespy.nodes</span> <span class="kn">import</span> <span class="n">GaussianGammaISO</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">B_tau</span> <span class="o">=</span> <span class="n">GaussianGammaISO</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="mf">1e-6</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="mf">1e-3</span><span class="p">,</span> <span class="mf">1e-3</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre>Iteration 1: loglike=-4.594957e+01 (0.000 seconds)
-Iteration 2: loglike=-4.594957e+01 (0.000 seconds)
-Converged.
+<p>This node contains both the regression parameter vector and the noise parameter.
+We compute the dot product similarly as before:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">F_tau</span> <span class="o">=</span> <span class="n">SumMultiply</span><span class="p">(</span><span class="s">&#39;i,i&#39;</span><span class="p">,</span> <span class="n">B_tau</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="code python highlight-python"><div class="highlight"><pre><span class="n">bpplt</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">B_tau</span><span class="o">.</span><span class="n">get_marginal_logpdf</span><span class="p">(</span><span class="n">gaussian</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="bp">True</span><span class="p">),</span>
-          <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">1e-6</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">100</span><span class="p">),</span> <span class="n">color</span><span class="o">=</span><span class="s">&#39;k&#39;</span><span class="p">)</span>
-<span class="n">bpplt</span><span class="o">.</span><span class="n">pyplot</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">s</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">),</span> <span class="n">color</span><span class="o">=</span><span class="s">&#39;r&#39;</span><span class="p">)</span>
-<span class="c"># Add labels</span>
-<span class="n">bpplt</span><span class="o">.</span><span class="n">pyplot</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s">r&#39;$q(\tau)$&#39;</span><span class="p">)</span>
-<span class="n">bpplt</span><span class="o">.</span><span class="n">pyplot</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s">r&#39;$\tau$&#39;</span><span class="p">);</span>
+<p>However, <tt class="docutils literal"><span class="pre">Y</span></tt> is constructed as follows:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Y</span> <span class="o">=</span> <span class="n">GaussianARD</span><span class="p">(</span><span class="n">F_tau</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="code python highlight-python"><div class="highlight"><pre><span class="n">bpplt</span><span class="o">.</span><span class="n">contour</span><span class="p">(</span><span class="n">B_tau</span><span class="o">.</span><span class="n">get_marginal_logpdf</span><span class="p">(</span><span class="n">gaussian</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span> <span class="n">gamma</span><span class="o">=</span><span class="bp">False</span><span class="p">),</span>
-              <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">100</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">9</span><span class="p">,</span><span class="mi">100</span><span class="p">),</span>
-              <span class="n">n</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="s">&#39;k&#39;</span><span class="p">)</span>
-<span class="c"># Plot the true value</span>
-<span class="n">bpplt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">k</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s">&#39;r&#39;</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s">&#39;x&#39;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s">&#39;None&#39;</span><span class="p">,</span> <span class="n">markersize</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">markeredgewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-<span class="c"># Add labels</span>
-<span class="n">bpplt</span><span class="o">.</span><span class="n">pyplot</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s">r&#39;$q(k,c)$&#39;</span><span class="p">)</span>
-<span class="n">bpplt</span><span class="o">.</span><span class="n">pyplot</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s">r&#39;$k$&#39;</span><span class="p">)</span>
-<span class="n">bpplt</span><span class="o">.</span><span class="n">pyplot</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s">r&#39;$c$&#39;</span><span class="p">);</span>
+<p>Because the noise parameter is already in <tt class="docutils literal"><span class="pre">F_tau</span></tt> we can give a constant one
+as the second argument.  The total noise parameter for <tt class="docutils literal"><span class="pre">Y</span></tt> is the product of
+the noise parameter in <tt class="docutils literal"><span class="pre">F_tau</span></tt> and one.  Now, inference is run similarly as
+before:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Y</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Q</span> <span class="o">=</span> <span class="n">VB</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span> <span class="n">B_tau</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Q</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">repeat</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
+<span class="go">Iteration 1: loglike=-4.678478e+01 (... seconds)</span>
+<span class="go">Iteration 2: loglike=-4.678478e+01 (... seconds)</span>
+<span class="go">Converged at iteration 2.</span>
 </pre></div>
 </div>
-<div class="code python highlight-python"><div class="highlight"><pre><span class="n">bpplt</span><span class="o">.</span><span class="n">contour</span><span class="p">(</span><span class="n">B_tau</span><span class="o">.</span><span class="n">get_marginal_logpdf</span><span class="p">(</span><span class="n">gaussian</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">gamma</span><span class="o">=</span><span class="bp">True</span><span class="p">),</span>
-              <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">100</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">1e-6</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">100</span><span class="p">),</span>
-              <span class="n">n</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="s">&#39;k&#39;</span><span class="p">)</span>
-<span class="n">bpplt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">s</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">),</span> <span class="n">x</span><span class="o">=</span><span class="n">k</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s">&#39;r&#39;</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s">&#39;x&#39;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s">&#39;None&#39;</span><span class="p">,</span> <span class="n">markersize</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">markeredgewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-<span class="n">bpplt</span><span class="o">.</span><span class="n">pyplot</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s">r&#39;$q(k,\tau)$&#39;</span><span class="p">)</span>
-<span class="n">bpplt</span><span class="o">.</span><span class="n">pyplot</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s">r&#39;$k$&#39;</span><span class="p">)</span>
-<span class="n">bpplt</span><span class="o">.</span><span class="n">pyplot</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s">r&#39;$\tau$&#39;</span><span class="p">);</span>
-</pre></div>
+<p>Note that the method converges immediately.  This happens because there is only
+one unobserved stochastic node so there is no need for iteration and the result
+is actually the exact true posterior distribution, not an approximation.
+Currently, the main drawback of using this approach is that BayesPy does not yet
+contain any plotting utilities for nodes that contain both Gaussian and gamma
+variables jointly.</p>
 </div>
-<div class="code python highlight-python"><div class="highlight"><pre><span class="n">xh</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
-<span class="n">Xh</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">xh</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">xh</span><span class="p">))])</span><span class="o">.</span><span class="n">T</span>
-<span class="n">Fh_tau</span> <span class="o">=</span> <span class="n">SumMultiply</span><span class="p">(</span><span class="s">&#39;i,i&#39;</span><span class="p">,</span> <span class="n">B_tau</span><span class="p">,</span> <span class="n">Xh</span><span class="p">)</span>
-<span class="n">bpplt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">Fh_tau</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">xh</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-<span class="n">bpplt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s">&#39;r&#39;</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s">&#39;x&#39;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s">&#39;None&#39;</span><span class="p">)</span>
-<span class="n">bpplt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">k</span><span class="o">*</span><span class="n">xh</span><span class="o">+</span><span class="n">c</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">xh</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s">&#39;r&#39;</span><span class="p">)</span>
-</pre></div>
-</div>
-<div class="highlight-python"><div class="highlight"><pre>---------------------------------------------------------------------------
-AttributeError                            Traceback (most recent call last)
-
-&lt;ipython-input-8-bad1c68bbf3d&gt; in &lt;module&gt;()
-      2 Xh = np.vstack([xh, np.ones(len(xh))]).T
-      3 Fh_tau = SumMultiply(&#39;i,i&#39;, B_tau, Xh)
-----&gt; 4 bpplt.plot(Fh_tau, x=xh, scale=2)
-      5 bpplt.plot(y, x=x, color=&#39;r&#39;, marker=&#39;x&#39;, linestyle=&#39;None&#39;)
-      6 bpplt.plot(k*xh+c, x=xh, color=&#39;r&#39;)
-
-
-/home/jluttine/workspace/bayespy/bayespy/plot.py in plot(Y, axis, scale, center, **kwargs)
-    125             return plot_gaussian(Y, axis=axis, scale=scale, center=center, **kwargs)
-    126
---&gt; 127     (mu, var) = Y.get_mean_and_variance()
-    128     std = np.sqrt(var)
-    129
-
-
-AttributeError: &#39;SumMultiply&#39; object has no attribute &#39;get_mean_and_variance&#39;
-</pre></div>
-</div>
-</div>
-<div class="section" id="multivariate-regression">
-<h2>Multivariate regression<a class="headerlink" href="#multivariate-regression" title="Permalink to this headline">¶</a></h2>
-</div>
-<div class="section" id="non-linear-regression">
-<h2>Non-linear regression<a class="headerlink" href="#non-linear-regression" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="further-extensions">
+<h2>Further extensions<a class="headerlink" href="#further-extensions" title="Permalink to this headline">¶</a></h2>
+<p>The approach discussed in this example can easily be extended to non-linear
+regression and multivariate regression.  For non-linear regression, the inputs
+are first transformed by some known non-linear functions and then linear
+regression is applied to this transformed data.  For multivariate regression,
+<tt class="docutils literal"><span class="pre">X</span></tt> and <tt class="docutils literal"><span class="pre">B</span></tt> are concatenated appropriately: If there are more regressors,
+add more columns to both <tt class="docutils literal"><span class="pre">X</span></tt> and <tt class="docutils literal"><span class="pre">B</span></tt>.  If there are more output dimensions,
+add plates to <tt class="docutils literal"><span class="pre">B</span></tt>.</p>
 </div>
 </div>
 
@@ -219,11 +241,13 @@ AttributeError: &#39;SumMultiply&#39; object has no attribute &#39;get_mean_and_
         <div class="sphinxsidebarwrapper">
   <h3><a href="../index.html">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">Regression</a><ul>
-<li><a class="reference internal" href="#linear-regression">Linear regression</a></li>
+<li><a class="reference internal" href="#">Linear regression</a><ul>
+<li><a class="reference internal" href="#data">Data</a></li>
+<li><a class="reference internal" href="#model">Model</a></li>
+<li><a class="reference internal" href="#inference">Inference</a></li>
+<li><a class="reference internal" href="#results">Results</a></li>
 <li><a class="reference internal" href="#improving-accuracy">Improving accuracy</a></li>
-<li><a class="reference internal" href="#multivariate-regression">Multivariate regression</a></li>
-<li><a class="reference internal" href="#non-linear-regression">Non-linear regression</a></li>
+<li><a class="reference internal" href="#further-extensions">Further extensions</a></li>
 </ul>
 </li>
 </ul>
