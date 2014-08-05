@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Developer guide &mdash; BayesPy v0.1 Documentation</title>
+    <title>Implementing inference engines &mdash; BayesPy v0.1 Documentation</title>
     
     <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -25,8 +25,9 @@
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="top" title="BayesPy v0.1 Documentation" href="../index.html" />
-    <link rel="next" title="Workflow" href="workflow.html" />
-    <link rel="prev" title="Linear state-space model" href="../examples/lssm.html" /> 
+    <link rel="up" title="Developer guide" href="dev_guide.html" />
+    <link rel="next" title="Implementing nodes" href="writingnodes.html" />
+    <link rel="prev" title="Variational message passing" href="vmp.html" /> 
   </head>
   <body>
     <div class="related">
@@ -39,12 +40,13 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="workflow.html" title="Workflow"
+          <a href="writingnodes.html" title="Implementing nodes"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="../examples/lssm.html" title="Linear state-space model"
+          <a href="vmp.html" title="Variational message passing"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">BayesPy v0.1 Documentation</a> &raquo;</li> 
+        <li><a href="../index.html">BayesPy v0.1 Documentation</a> &raquo;</li>
+          <li><a href="dev_guide.html" accesskey="U">Developer guide</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -53,34 +55,15 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <div class="section" id="developer-guide">
-<h1>Developer guide<a class="headerlink" href="#developer-guide" title="Permalink to this headline">¶</a></h1>
-<p>This chapter provides basic information for developers about contributing, the
-theoretical background and the core structure.  It is assumed that the reader
-has read and is familiar with <a class="reference internal" href="../user_guide/user_guide.html#sec-user-guide"><em>User guide</em></a>.</p>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="workflow.html">Workflow</a></li>
-<li class="toctree-l1"><a class="reference internal" href="vmp.html">Variational message passing</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="vmp.html#standard-update-equation">Standard update equation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="vmp.html#variational-messages">Variational messages</a></li>
-<li class="toctree-l2"><a class="reference internal" href="vmp.html#lower-bound">Lower bound</a></li>
-<li class="toctree-l2"><a class="reference internal" href="vmp.html#terms">Terms</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="engine.html">Implementing inference engines</a></li>
-<li class="toctree-l1"><a class="reference internal" href="writingnodes.html">Implementing nodes</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="writingnodes.html#messaging-framework">Messaging framework</a></li>
-<li class="toctree-l2"><a class="reference internal" href="writingnodes.html#stochastic-distributions">Stochastic distributions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="writingnodes.html#stochastic-exponential-family-nodes">Stochastic exponential family nodes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="writingnodes.html#deterministic-nodes">Deterministic nodes</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="writingnodes.html#converter-nodes">Converter nodes</a></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</div>
+  <div class="section" id="implementing-inference-engines">
+<h1>Implementing inference engines<a class="headerlink" href="#implementing-inference-engines" title="Permalink to this headline">¶</a></h1>
+<p>Currently, only variational Bayesian inference engine is implemented.  This
+implementation is not very modular, that is, the inference engine is not well
+separated from the model construction.  Thus, it is not straightforward to
+implement other inference engines at the moment.  Improving the modularity of
+the inference engine and model construction is future work with high priority.
+In any case, BayesPy aims to be an efficient, simple and modular Bayesian
+package for variational inference at least.</p>
 </div>
 
 
@@ -90,14 +73,14 @@ has read and is familiar with <a class="reference internal" href="../user_guide/
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
   <h4>Previous topic</h4>
-  <p class="topless"><a href="../examples/lssm.html"
-                        title="previous chapter">Linear state-space model</a></p>
+  <p class="topless"><a href="vmp.html"
+                        title="previous chapter">Variational message passing</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="workflow.html"
-                        title="next chapter">Workflow</a></p>
+  <p class="topless"><a href="writingnodes.html"
+                        title="next chapter">Implementing nodes</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
-    <li><a href="../_sources/dev_guide/dev_guide.txt"
+    <li><a href="../_sources/dev_guide/engine.txt"
            rel="nofollow">Show Source</a></li>
   </ul>
 <div id="searchbox" style="display: none">
@@ -127,12 +110,13 @@ has read and is familiar with <a class="reference internal" href="../user_guide/
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="workflow.html" title="Workflow"
+          <a href="writingnodes.html" title="Implementing nodes"
              >next</a> |</li>
         <li class="right" >
-          <a href="../examples/lssm.html" title="Linear state-space model"
+          <a href="vmp.html" title="Variational message passing"
              >previous</a> |</li>
-        <li><a href="../index.html">BayesPy v0.1 Documentation</a> &raquo;</li> 
+        <li><a href="../index.html">BayesPy v0.1 Documentation</a> &raquo;</li>
+          <li><a href="dev_guide.html" >Developer guide</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

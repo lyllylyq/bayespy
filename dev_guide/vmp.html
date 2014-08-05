@@ -26,8 +26,8 @@
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="top" title="BayesPy v0.1 Documentation" href="../index.html" />
     <link rel="up" title="Developer guide" href="dev_guide.html" />
-    <link rel="next" title="Implementing nodes" href="writingnodes.html" />
-    <link rel="prev" title="Developer guide" href="dev_guide.html" /> 
+    <link rel="next" title="Implementing inference engines" href="engine.html" />
+    <link rel="prev" title="Workflow" href="workflow.html" /> 
   </head>
   <body>
     <div class="related">
@@ -40,10 +40,10 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="writingnodes.html" title="Implementing nodes"
+          <a href="engine.html" title="Implementing inference engines"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="dev_guide.html" title="Developer guide"
+          <a href="workflow.html" title="Workflow"
              accesskey="P">previous</a> |</li>
         <li><a href="../index.html">BayesPy v0.1 Documentation</a> &raquo;</li>
           <li><a href="dev_guide.html" accesskey="U">Developer guide</a> &raquo;</li> 
@@ -57,7 +57,16 @@
             
   <div class="section" id="variational-message-passing">
 <h1>Variational message passing<a class="headerlink" href="#variational-message-passing" title="Permalink to this headline">¶</a></h1>
-<p>The general update equation for factorized approximation:</p>
+<p>This section briefly describes the variational message passing (VMP) framework,
+which is currently the only implemented inference engine in BayesPy.  The
+variational Bayesian (VB) inference engine in BayesPy assumes that the posterior
+approximation factorizes with respect to nodes and plates.  VMP is based on
+updating one node at a time (the plates in one node can be updated
+simultaneously) and iteratively updating all nodes in turns until convergence.</p>
+<div class="section" id="standard-update-equation">
+<h2>Standard update equation<a class="headerlink" href="#standard-update-equation" title="Permalink to this headline">¶</a></h2>
+<p>The general update equation for the factorized approximation of node
+<span class="math">\(\boldsymbol{\theta}\)</span> is the following:</p>
 <div class="math" id="equation-vmp_general_update">
 <span class="eqno">(1)</span>\[\begin{split}\log q(\boldsymbol{\theta})
 &amp;=
@@ -69,15 +78,16 @@
   \langle \log p(\mathbf{x}|\mathrm{pa}(\mathbf{x})) \rangle
 + \mathrm{const},\end{split}\]</div>
 <p>where <span class="math">\(\mathrm{pa}(\boldsymbol{\theta})\)</span> and
-<span class="math">\(\mathrm{ch}(\boldsymbol{\theta})\)</span> are the set of parents and
-children of <span class="math">\(\boldsymbol{\theta}\)</span>, respectively.  The
-expectations are over the approximate distribution of all other
-variables than <span class="math">\(\boldsymbol{\theta}\)</span>.  Actually, not all the
-variables are needed, because the non-constant part uses only the
-Markov blanket of <span class="math">\(\boldsymbol{\theta}\)</span>.  Thus, the optimization
-can be done locally using messages from neighbouring nodes.</p>
-<p>The messages are simple for conjugate-exponential models.
-Exponential-family distributions have the form</p>
+<span class="math">\(\mathrm{ch}(\boldsymbol{\theta})\)</span> are the set of parents and children of
+<span class="math">\(\boldsymbol{\theta}\)</span>, respectively.  Thus, the posterior approximation of
+a node is updated by taking a sum of the expectations of all log densities in
+which the node variable appears.  The expectations are over the approximate
+distribution of all other variables than <span class="math">\(\boldsymbol{\theta}\)</span>.  Actually,
+not all the variables are needed, because the non-constant part depends only on
+the Markov blanket of <span class="math">\(\boldsymbol{\theta}\)</span>.  This leads to a local
+optimization scheme, which uses messages from neighbouring nodes.</p>
+<p>The messages are simple for conjugate exponential family models.  An exponential
+family distribution has the following log probability density function:</p>
 <div class="math" id="equation-likelihood">
 <span class="eqno">(2)</span>\[\begin{split}\log p(\mathbf{x}|\mathbf{\Theta})
 &amp;=
@@ -85,11 +95,15 @@ Exponential-family distributions have the form</p>
 \boldsymbol{\phi}_{\mathbf{x}}(\mathbf{\Theta})
 + g_{\mathbf{x}}(\mathbf{\Theta})
 + f_{\mathbf{x}}(\mathbf{x}),\end{split}\]</div>
-<p>where <span class="math">\(\mathbf{\Theta}=\{\boldsymbol{\theta}_j\}\)</span> is the set of
-parents.  If a parent has a conjugate prior, <a href="#equation-likelihood">(2)</a> is
-linear with respect to the parent&#8217;s natural statistics.  Thus,
-<a href="#equation-likelihood">(2)</a> can be re-organized with respect to
-<span class="math">\(\boldsymbol{\theta}_j\)</span> as</p>
+<p>where <span class="math">\(\mathbf{\Theta}=\{\boldsymbol{\theta}_j\}\)</span> is the set of parents,
+<span class="math">\(\mathbf{u}\)</span> is the sufficient statistic vector, <span class="math">\(\boldsymbol{\phi}\)</span>
+is the natural parameter vector, <span class="math">\(g\)</span> is the negative log normalizer, and
+<span class="math">\(f\)</span> is the log base function.  Note that the log density is linear with
+respect to the terms that are functions of <span class="math">\(\mathbf{x}\)</span>:
+<span class="math">\(\mathbf{u}\)</span> and <span class="math">\(f\)</span>.  If a parent has a conjugate prior,
+<a href="#equation-likelihood">(2)</a> is also linear with respect to the parent&#8217;s sufficient
+statistic vector.  Thus, <a href="#equation-likelihood">(2)</a> can be re-organized with respect to a
+parent <span class="math">\(\boldsymbol{\theta}_j\)</span> as</p>
 <div class="math">
 \[\begin{split}\log p(\mathbf{x}|\mathbf{\Theta})
 &amp;=
@@ -97,11 +111,22 @@ linear with respect to the parent&#8217;s natural statistics.  Thus,
 \boldsymbol{\phi}_{\mathbf{x}\rightarrow\boldsymbol{\theta}_j}
 (\mathbf{x}, \{\boldsymbol{\theta}_k\}_{k\neq j})
 + \mathrm{const},\end{split}\]</div>
-<p>where <span class="math">\(\mathbf{u}_{\boldsymbol{\theta}_j}\)</span> is the natural
-statistics of <span class="math">\(\boldsymbol{\theta}_j\)</span>.  Thus, the update
-equation <a href="#equation-vmp_general_update">(1)</a> can be given as</p>
+<p>where <span class="math">\(\mathbf{u}_{\boldsymbol{\theta}_j}\)</span> is the sufficient statistic
+vector of <span class="math">\(\boldsymbol{\theta}_j\)</span> and the constant part is constant with
+respect to <span class="math">\(\boldsymbol{\theta}_j\)</span>.  Thus, the update equation
+<a href="#equation-vmp_general_update">(1)</a> for <span class="math">\(\boldsymbol{\theta}_j\)</span> can be written as</p>
 <div class="math">
 \[\begin{split}\log q(\boldsymbol{\theta}_j)
+&amp;=
+\mathbf{u}_{\boldsymbol{\theta}_j}(\boldsymbol{\theta}_j)^{\mathrm{T}}
+  \langle \boldsymbol{\phi}_{\boldsymbol{\theta}_j} \rangle
++ f_{\boldsymbol{\theta}_j}(\boldsymbol{\theta}_j)
++
+\mathbf{u}_{\boldsymbol{\theta}_j}(\boldsymbol{\theta}_j)^{\mathrm{T}}
+\sum_{\mathbf{x} \in \mathrm{ch}(\boldsymbol{\theta}_j)}
+      \langle \boldsymbol{\phi}_{\mathbf{x}\rightarrow\boldsymbol{\theta}_j} \rangle
++ \mathrm{const},
+\\
 &amp;=
 \mathbf{u}_{\boldsymbol{\theta}_j}(\boldsymbol{\theta}_j)^{\mathrm{T}}
 \left(
@@ -113,48 +138,141 @@ equation <a href="#equation-vmp_general_update">(1)</a> can be given as</p>
 + \mathrm{const},\end{split}\]</div>
 <p>where the summation is over all the child nodes of
 <span class="math">\(\boldsymbol{\theta}_j\)</span>.  Because of the conjugacy,
-<span class="math">\(\langle\boldsymbol{\phi}_{\boldsymbol{\theta}_j}\rangle\)</span>
-depends (multi)linearly on the expectations of the parents&#8217; natural
-statistics.  Similarly, <span class="math">\(\langle
-\boldsymbol{\phi}_{\mathbf{x}\rightarrow\boldsymbol{\theta}_j}
-\rangle\)</span> depends (multi)linearly on the expectations of the children&#8217;s
-and co-parents&#8217; natural statistics.</p>
-<p>The required expectations can be computed locally by using messages
-from the parents and the children.  The message from a parent node
-<span class="math">\(\boldsymbol{\theta}_j\)</span> to a child node <span class="math">\(\mathbf{x}\)</span> is</p>
+<span class="math">\(\langle\boldsymbol{\phi}_{\boldsymbol{\theta}_j}\rangle\)</span> depends
+(multi)linearly on the parents&#8217; sufficient statistic vector.  Similarly,
+<span class="math">\(\langle \boldsymbol{\phi}_{\mathbf{x}\rightarrow\boldsymbol{\theta}_j}
+\rangle\)</span> depends (multi)linearly on the expectations of the children&#8217;s and
+co-parents&#8217; sufficient statistics.  This gives the following update equation for
+the natural parameter vector of the posterior approximation
+<span class="math">\(q(\boldsymbol{\phi}_j)\)</span>:</p>
+<div class="math" id="equation-update_phi">
+<span class="eqno">(3)</span>\[\begin{split}\tilde{\boldsymbol{\phi}}_j &amp;= \langle \boldsymbol{\phi}_{\boldsymbol{\theta}_j} \rangle
+  + \sum_{\mathbf{x} \in \mathrm{ch}(\boldsymbol{\theta}_j)} \langle
+      \boldsymbol{\phi}_{\mathbf{x}\rightarrow\boldsymbol{\theta}_j} \rangle.\end{split}\]</div>
+</div>
+<div class="section" id="variational-messages">
+<h2>Variational messages<a class="headerlink" href="#variational-messages" title="Permalink to this headline">¶</a></h2>
+<p>The update equation <a href="#equation-update_phi">(3)</a> leads to a message passing scheme: the term
+<span class="math">\(\langle \boldsymbol{\phi}_{\boldsymbol{\theta}_j} \rangle\)</span> is a function
+of the parents&#8217; sufficient statistic vector and the term <span class="math">\(\langle
+\boldsymbol{\phi}_{\mathbf{x}\rightarrow\boldsymbol{\theta}_j} \rangle\)</span> can be
+interpreted as a message from the child node <span class="math">\(\mathbf{x}\)</span>.  Thus, the
+message from the child node <span class="math">\(\mathbf{x}\)</span> to the parent node
+<span class="math">\(\boldsymbol{\theta}\)</span> is</p>
 <div class="math">
-\[\begin{split}\mathbf{m}_{\mathbf{\boldsymbol{\theta}_j}\rightarrow\mathbf{x}}
-&amp;=
-\langle \mathbf{u}_{\boldsymbol{\theta}_j} \rangle
-=
-\tilde{\mathbf{u}}_{\boldsymbol{\theta}_j}
-(\tilde{\boldsymbol{\phi}}_{\mathbf{\boldsymbol{\theta}_j}}),\end{split}\]</div>
-<p>and the message from a child node <span class="math">\(\mathbf{x}\)</span> to a parent node
-<span class="math">\(\boldsymbol{\theta}_j\)</span> is</p>
+\[\begin{split}\mathbf{m}_{\mathbf{x}\rightarrow\boldsymbol{\theta}}
+&amp;\equiv
+\langle \boldsymbol{\phi}_{\mathbf{x}\rightarrow\boldsymbol{\theta}} \rangle,\end{split}\]</div>
+<p>which can be computed as a function of the sufficient statistic vector of the
+co-parent nodes of <span class="math">\(\boldsymbol{\theta}\)</span> and the sufficient statistic
+vector of the child node <span class="math">\(\mathbf{x}\)</span>.  The message from the parent node
+<span class="math">\(\boldsymbol{\theta}\)</span> to the child node <span class="math">\(\mathbf{x}\)</span> is simply the
+expectation of the sufficient statistic vector:</p>
 <div class="math">
-\[\begin{split}\mathbf{m}_{\mathbf{x}\rightarrow\boldsymbol{\theta}_j}
-&amp;=
-\langle \boldsymbol{\phi}_{\mathbf{x}\rightarrow\boldsymbol{\theta}_j} \rangle
-=
-\boldsymbol{\phi}_{\mathbf{x}\rightarrow\boldsymbol{\theta}_j}
-\left( \langle \mathbf{u}_{\mathbf{x}} \rangle,
-  \{ \mathbf{m}_{\theta_k\rightarrow\mathbf{x}} \}_
-  %\{ \langle \mathbf{u}_{\theta_k} \rangle \}_
-  {k \neq j}
-  %\in \mathrm{cp}({\boldsymbol{\theta}_j}, \mathbf{x})}
-  \right).\end{split}\]</div>
-<p>Using the messages, the natural parameters of
-<span class="math">\(q(\boldsymbol{\theta})\)</span> can be updated as</p>
+\[\begin{split}\mathbf{m}_{\mathbf{\boldsymbol{\theta}}\rightarrow\mathbf{x}}
+&amp;\equiv
+\langle \mathbf{u}_{\boldsymbol{\theta}} \rangle.\end{split}\]</div>
+<p>In order to compute the expectation of the sufficient statistic vector we need
+to write <span class="math">\(q(\boldsymbol{\theta})\)</span> as</p>
 <div class="math">
-\[\begin{split}\tilde{\boldsymbol{\phi}}_{\boldsymbol{\theta}}
-&amp;=
-\boldsymbol{\phi}_{\boldsymbol{\theta}}
-\left(
-  \{ \mathbf{m}_{\mathbf{z}\rightarrow\boldsymbol{\theta}} \}_
-  {\mathbf{z} \in \mathrm{pa}(\boldsymbol{\theta})}
-\right)
-+ \sum_{\mathbf{x} \in \mathrm{ch}(\boldsymbol{\theta})}
-  \mathbf{m}_{\mathbf{x}\rightarrow\boldsymbol{\theta}}.\end{split}\]</div>
+\[\begin{split}\log q(\boldsymbol{\theta}) &amp;=
+\mathbf{u}(\boldsymbol{\theta})^{\mathrm{T}}
+\tilde{\boldsymbol{\phi}}
++ \tilde{g}(\tilde{\boldsymbol{\phi}})
++ f(\boldsymbol{\theta}),\end{split}\]</div>
+<p>where <span class="math">\(\tilde{\boldsymbol{\phi}}\)</span> is the natural
+parameter vector of <span class="math">\(q(\boldsymbol{\theta})\)</span>.  Now, the expectation of the
+sufficient statistic vector is defined as</p>
+<div class="math" id="equation-moments">
+<span class="eqno">(4)</span>\[\begin{split}\langle \mathbf{u}_{\boldsymbol{\theta}} \rangle
+&amp;= - \frac{\partial \tilde{g}}{\partial
+\tilde{\boldsymbol{\phi}}_{\boldsymbol{\theta}}}
+(\tilde{\boldsymbol{\phi}}_{\boldsymbol{\theta}}).\end{split}\]</div>
+<p>We call this expectation of the sufficient statistic vector as the moments
+vector.</p>
+</div>
+<div class="section" id="lower-bound">
+<h2>Lower bound<a class="headerlink" href="#lower-bound" title="Permalink to this headline">¶</a></h2>
+<p>Computing the VB lower bound is not necessary in order to find the posterior
+approximation, although it is extremely useful in monitoring convergence and
+possible bugs.  The VB lower bound can be written as</p>
+<div class="math">
+\[\mathcal{L} = \langle \log p(\mathbf{Y}, \mathbf{X}) \rangle - \langle \log
+q(\mathbf{X}) \rangle,\]</div>
+<p>where <span class="math">\(\mathbf{Y}\)</span> is the set of all observed variables and
+<span class="math">\(\mathbf{X}\)</span> is the set of all latent variables.  It can also be written as</p>
+<div class="math">
+\[\mathcal{L} = \sum_{\mathbf{y} \in \mathbf{Y}} \langle \log p(\mathbf{y} |
+\mathrm{pa}(\mathbf{y})) \rangle
++ \sum_{\mathbf{x} \in \mathbf{X}} \left[ \langle \log p(\mathbf{x} |
+  \mathrm{pa}(\mathbf{x})) \rangle - \langle \log q(\mathbf{x}) \right],\]</div>
+<p>which shows that observed and latent variables contribute differently to the
+lower bound.  These contributions have simple forms for exponential family
+nodes.  Observed exponential family nodes contribute to the lower bound as
+follows:</p>
+<div class="math">
+\[\begin{split}\langle \log p(\mathbf{y}|\mathrm{pa}(\mathbf{y})) \rangle &amp;=
+\mathbf{u}(\mathbf{y})^T \langle \boldsymbol{\phi} \rangle
++ \langle g \rangle + f(\mathbf{x}),\end{split}\]</div>
+<p>where <span class="math">\(\mathbf{y}\)</span> is the observed data.  On the other hand, latent
+exponential family nodes contribute to the lower bound as follows:</p>
+<div class="math">
+\[\begin{split}\langle \log p(\mathbf{x}|\boldsymbol{\theta}) \rangle
+- \langle \log q(\mathbf{x}) \rangle &amp;= \langle \mathbf{u} \rangle^T (\langle
+\boldsymbol{\phi} \rangle - \tilde{\boldsymbol{\phi}} )
++ \langle g \rangle - \tilde{g}.\end{split}\]</div>
+<p>If a node is partially observed and partially unobserved, these formulas are
+applied plate-wise appropriately.</p>
+</div>
+<div class="section" id="terms">
+<span id="sec-vmp-terms"></span><h2>Terms<a class="headerlink" href="#terms" title="Permalink to this headline">¶</a></h2>
+<p>To summarize, implementing VMP requires one to write for each stochastic
+exponential family node:</p>
+<blockquote>
+<div><p><span class="math">\(\langle \boldsymbol{\phi} \rangle\)</span> : the expectation of the prior
+natural parameter vector</p>
+<blockquote>
+<div>Computed as a function of the messages from parents.</div></blockquote>
+<p><span class="math">\(\tilde{\boldsymbol{\phi}}\)</span> : natural parameter vector of the
+posterior approximation</p>
+<blockquote>
+<div>Computed as a sum of <span class="math">\(\langle \boldsymbol{\phi} \rangle\)</span> and the
+messages from children.</div></blockquote>
+<p><span class="math">\(\langle \mathbf{u} \rangle\)</span> : the posterior moments vector</p>
+<blockquote>
+<div>Computed as a function of <span class="math">\(\tilde{\boldsymbol{\phi}}\)</span> as defined
+in <a href="#equation-moments">(4)</a>.</div></blockquote>
+<p><span class="math">\(\mathbf{u}(\mathbf{x})\)</span> : the moments vector for given data</p>
+<blockquote>
+<div>Computed as a function of of the observed data <span class="math">\(\mathbf{x}\)</span>.</div></blockquote>
+<p><span class="math">\(\langle g \rangle\)</span> : the expectation of the negative log normalizer
+of the prior</p>
+<blockquote>
+<div>Computed as a function of parent moments.</div></blockquote>
+<p><span class="math">\(\tilde{g}\)</span> : the negative log normalizer of the posterior
+approximation</p>
+<blockquote>
+<div>Computed as a function of <span class="math">\(\tilde{\boldsymbol{\phi}}\)</span>.</div></blockquote>
+<p><span class="math">\(f(\mathbf{x})\)</span> : the log base measure for given data</p>
+<blockquote>
+<div>Computed as a function of the observed data <span class="math">\(\mathbf{x}\)</span>.</div></blockquote>
+<p><span class="math">\(\langle \boldsymbol{\phi}_{\mathbf{x}\rightarrow\boldsymbol{\theta}}
+\rangle\)</span> : the message to parent <span class="math">\(\boldsymbol{\theta}\)</span></p>
+<blockquote>
+<div>Computed as a function of the moments of this node and the other
+parents.</div></blockquote>
+</div></blockquote>
+<p>Deterministic nodes require only the following terms:</p>
+<blockquote>
+<div><p><span class="math">\(\langle \mathbf{u} \rangle\)</span> : the posterior moments vector</p>
+<blockquote>
+<div>Computed as a function of the messages from the parents.</div></blockquote>
+<p><span class="math">\(\mathbf{m}\)</span> : the message to a parent</p>
+<blockquote>
+<div>Computed as a function of the messages from the other parents and all
+children.</div></blockquote>
+</div></blockquote>
+</div>
 </div>
 
 
@@ -163,12 +281,23 @@ from the parents and the children.  The message from a parent node
       </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Variational message passing</a><ul>
+<li><a class="reference internal" href="#standard-update-equation">Standard update equation</a></li>
+<li><a class="reference internal" href="#variational-messages">Variational messages</a></li>
+<li><a class="reference internal" href="#lower-bound">Lower bound</a></li>
+<li><a class="reference internal" href="#terms">Terms</a></li>
+</ul>
+</li>
+</ul>
+
   <h4>Previous topic</h4>
-  <p class="topless"><a href="dev_guide.html"
-                        title="previous chapter">Developer guide</a></p>
+  <p class="topless"><a href="workflow.html"
+                        title="previous chapter">Workflow</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="writingnodes.html"
-                        title="next chapter">Implementing nodes</a></p>
+  <p class="topless"><a href="engine.html"
+                        title="next chapter">Implementing inference engines</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../_sources/dev_guide/vmp.txt"
@@ -201,10 +330,10 @@ from the parents and the children.  The message from a parent node
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="writingnodes.html" title="Implementing nodes"
+          <a href="engine.html" title="Implementing inference engines"
              >next</a> |</li>
         <li class="right" >
-          <a href="dev_guide.html" title="Developer guide"
+          <a href="workflow.html" title="Workflow"
              >previous</a> |</li>
         <li><a href="../index.html">BayesPy v0.1 Documentation</a> &raquo;</li>
           <li><a href="dev_guide.html" >Developer guide</a> &raquo;</li> 

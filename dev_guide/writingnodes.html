@@ -27,7 +27,7 @@
     <link rel="top" title="BayesPy v0.1 Documentation" href="../index.html" />
     <link rel="up" title="Developer guide" href="dev_guide.html" />
     <link rel="next" title="User API" href="../user_api/user_api.html" />
-    <link rel="prev" title="Variational message passing" href="vmp.html" /> 
+    <link rel="prev" title="Implementing inference engines" href="engine.html" /> 
   </head>
   <body>
     <div class="related">
@@ -43,7 +43,7 @@
           <a href="../user_api/user_api.html" title="User API"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="vmp.html" title="Variational message passing"
+          <a href="engine.html" title="Implementing inference engines"
              accesskey="P">previous</a> |</li>
         <li><a href="../index.html">BayesPy v0.1 Documentation</a> &raquo;</li>
           <li><a href="dev_guide.html" accesskey="U">Developer guide</a> &raquo;</li> 
@@ -57,6 +57,191 @@
             
   <div class="section" id="implementing-nodes">
 <h1>Implementing nodes<a class="headerlink" href="#implementing-nodes" title="Permalink to this headline">¶</a></h1>
+<p>The main goal of BayesPy is to provide a package which enables easy and flexible
+construction of simple and complex models with efficient inference.  However,
+users may sometimes be unable to construct their models because the built-in
+nodes do not implement some specific features.  Thus, one may need to implement
+new nodes in order to construct the model.  BayesPy aims to make the
+implementation of new nodes both simple and fast.  Probably, a large complex
+model can be constructed almost completely with the built-in nodes and the user
+needs to implement only a few nodes.</p>
+<div class="section" id="messaging-framework">
+<h2>Messaging framework<a class="headerlink" href="#messaging-framework" title="Permalink to this headline">¶</a></h2>
+<p>In order to implement nodes, it is important to understand the messaging
+framework of the nodes.  A node is a unit of calculation which communicates to
+its parent and child nodes using messages.  These messages have types that need
+to match between nodes, that is, the child node needs to understand the messages
+its parents are sending and vice versa.  Thus, a node defines which message type
+it requires from each of its parents, and only nodes that have that type of
+output message (i.e., the message to a child node) are valid parent nodes for
+that node.</p>
+<p>The message type is defined by the moments of the parent node.  The moments are
+a collection of expectations: <span class="math">\(\{ \langle f_1(X) \rangle, \ldots, \langle
+f_N(X) \rangle \}\)</span>.  The functions <span class="math">\(f_1, \ldots, f_N\)</span> (and the number of
+the functions) define the message type and they are the sufficient statistic as
+discussed in the previous section.  Different message types are represented by
+<a class="reference internal" href="../dev_api/generated/bayespy.inference.vmp.nodes.node.Moments.html#bayespy.inference.vmp.nodes.node.Moments" title="bayespy.inference.vmp.nodes.node.Moments"><tt class="xref py py-class docutils literal"><span class="pre">Moments</span></tt></a> class hierarchy.  For instance, <tt class="xref py py-class docutils literal"><span class="pre">GaussianMoments</span></tt>
+represents a message type with parent moments <span class="math">\(\{\langle \mathbf{x}
+\rangle, \langle \mathbf{xx}^T \rangle \}\)</span> and <tt class="xref py py-class docutils literal"><span class="pre">WishartMoments</span></tt> a message
+type with parent moments <span class="math">\(\{\langle \mathbf{\Lambda} \rangle, \langle \log
+|\mathbf{\Lambda}| \rangle\}\)</span>.</p>
+<p>Let us give an example: <a class="reference internal" href="../user_api/generated/generated/bayespy.nodes.Gaussian.html#bayespy.nodes.Gaussian" title="bayespy.nodes.Gaussian"><tt class="xref py py-class docutils literal"><span class="pre">Gaussian</span></tt></a> node outputs <tt class="xref py py-class docutils literal"><span class="pre">GaussianMoments</span></tt>
+messages and <a class="reference internal" href="../user_api/generated/generated/bayespy.nodes.Wishart.html#bayespy.nodes.Wishart" title="bayespy.nodes.Wishart"><tt class="xref py py-class docutils literal"><span class="pre">Wishart</span></tt></a> node outputs <tt class="xref py py-class docutils literal"><span class="pre">WishartMoments</span></tt> messages.
+<a class="reference internal" href="../user_api/generated/generated/bayespy.nodes.Gaussian.html#bayespy.nodes.Gaussian" title="bayespy.nodes.Gaussian"><tt class="xref py py-class docutils literal"><span class="pre">Gaussian</span></tt></a> node requires that it receives <tt class="xref py py-class docutils literal"><span class="pre">GaussianMoments</span></tt>
+messages from the mean parent node and <tt class="xref py py-class docutils literal"><span class="pre">WishartMoments</span></tt> messages from the
+precision parent node.  Thus, <a class="reference internal" href="../user_api/generated/generated/bayespy.nodes.Gaussian.html#bayespy.nodes.Gaussian" title="bayespy.nodes.Gaussian"><tt class="xref py py-class docutils literal"><span class="pre">Gaussian</span></tt></a> and <a class="reference internal" href="../user_api/generated/generated/bayespy.nodes.Wishart.html#bayespy.nodes.Wishart" title="bayespy.nodes.Wishart"><tt class="xref py py-class docutils literal"><span class="pre">Wishart</span></tt></a> are valid
+node classes as the mean and precision parent nodes of <a class="reference internal" href="../user_api/generated/generated/bayespy.nodes.Gaussian.html#bayespy.nodes.Gaussian" title="bayespy.nodes.Gaussian"><tt class="xref py py-class docutils literal"><span class="pre">Gaussian</span></tt></a> node.</p>
+<p>Note that several nodes may have the same output message type and some message
+types can be transformed to other message types using deterministic converter
+nodes.  For instance, <a class="reference internal" href="../user_api/generated/generated/bayespy.nodes.Gaussian.html#bayespy.nodes.Gaussian" title="bayespy.nodes.Gaussian"><tt class="xref py py-class docutils literal"><span class="pre">Gaussian</span></tt></a> and <a class="reference internal" href="../user_api/generated/generated/bayespy.nodes.GaussianARD.html#bayespy.nodes.GaussianARD" title="bayespy.nodes.GaussianARD"><tt class="xref py py-class docutils literal"><span class="pre">GaussianARD</span></tt></a> nodes both
+output <tt class="xref py py-class docutils literal"><span class="pre">GaussianMoments</span></tt> messages, deterministic <a class="reference internal" href="../user_api/generated/generated/bayespy.nodes.SumMultiply.html#bayespy.nodes.SumMultiply" title="bayespy.nodes.SumMultiply"><tt class="xref py py-class docutils literal"><span class="pre">SumMultiply</span></tt></a>
+also outputs <tt class="xref py py-class docutils literal"><span class="pre">GaussianMoments</span></tt> messages, and deterministic converter
+<tt class="xref py py-class docutils literal"><span class="pre">_MarkovChainToGaussian</span></tt> converts <tt class="xref py py-class docutils literal"><span class="pre">GaussianMarkovChainMoments</span></tt> to
+<tt class="xref py py-class docutils literal"><span class="pre">GaussianMoments</span></tt>.</p>
+<p>Each node specifies the message type requirements of its parents by
+<tt class="xref py py-attr docutils literal"><span class="pre">Node._parent_moments</span></tt> attribute which is a list of <a class="reference internal" href="../dev_api/generated/bayespy.inference.vmp.nodes.node.Moments.html#bayespy.inference.vmp.nodes.node.Moments" title="bayespy.inference.vmp.nodes.node.Moments"><tt class="xref py py-class docutils literal"><span class="pre">Moments</span></tt></a>
+sub-class instances.  These moments objects have a few purpose when creating the
+node: 1) check that parents are sending proper messages; 2) if parents use
+different message type, try to add a converter which converts the messages to
+the correct type if possible; 3) if given parents are not nodes but numeric
+arrays, convert them to constant nodes with correct output message type.</p>
+<p>When implementing a new node, it is not always necessary to implement a moments
+class.  If another node has the same sufficient statistic vector, thus the same
+moments, that class can be used.  Otherwise, one must implement a simple moments
+class which has the following methods:</p>
+<blockquote>
+<div><ul>
+<li><p class="first"><a class="reference internal" href="../dev_api/generated/generated/bayespy.inference.vmp.nodes.node.Moments.compute_fixed_moments.html#bayespy.inference.vmp.nodes.node.Moments.compute_fixed_moments" title="bayespy.inference.vmp.nodes.node.Moments.compute_fixed_moments"><tt class="xref py py-func docutils literal"><span class="pre">Moments.compute_fixed_moments()</span></tt></a></p>
+<blockquote>
+<div><p>Computes the moments for a known value.  This is used to compute the
+moments of constant numeric arrays and wrap them into constant nodes.</p>
+</div></blockquote>
+</li>
+<li><p class="first"><a class="reference internal" href="../dev_api/generated/generated/bayespy.inference.vmp.nodes.node.Moments.compute_dims_from_values.html#bayespy.inference.vmp.nodes.node.Moments.compute_dims_from_values" title="bayespy.inference.vmp.nodes.node.Moments.compute_dims_from_values"><tt class="xref py py-func docutils literal"><span class="pre">Moments.compute_dims_from_values()</span></tt></a></p>
+<blockquote>
+<div><p>Given a known value of the variable, return the shape of the variable
+dimensions in the moments.  This is used to solve the shape of the moments
+array for constant nodes.</p>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="stochastic-distributions">
+<h2>Stochastic distributions<a class="headerlink" href="#stochastic-distributions" title="Permalink to this headline">¶</a></h2>
+<p>In order to implement a stochastic exponential family node, one must first write
+down the log probability density function of the node and derive the terms
+discussed in section <a class="reference internal" href="vmp.html#sec-vmp-terms"><em>Terms</em></a>.  These terms are implemented and
+collected as a class which is a subclass of <tt class="xref py py-class docutils literal"><span class="pre">Distribution</span></tt>.  The main
+reason to implement these methods in another class instead of the node class
+itself is that these methods can be used without creating a node, for instance,
+in <tt class="xref py py-class docutils literal"><span class="pre">Mixture</span></tt> class.</p>
+<p>For exponential family distributions, the distribution class is a subclass of
+<a class="reference internal" href="../dev_api/generated/bayespy.inference.vmp.nodes.expfamily.ExponentialFamilyDistribution.html#bayespy.inference.vmp.nodes.expfamily.ExponentialFamilyDistribution" title="bayespy.inference.vmp.nodes.expfamily.ExponentialFamilyDistribution"><tt class="xref py py-class docutils literal"><span class="pre">ExponentialFamilyDistribution</span></tt></a>, and the relation between the terms in
+section <a class="reference internal" href="vmp.html#sec-vmp-terms"><em>Terms</em></a> and the methods is as follows:</p>
+<blockquote>
+<div><ul>
+<li><p class="first"><a class="reference internal" href="../dev_api/generated/generated/bayespy.inference.vmp.nodes.expfamily.ExponentialFamilyDistribution.compute_phi_from_parents.html#bayespy.inference.vmp.nodes.expfamily.ExponentialFamilyDistribution.compute_phi_from_parents" title="bayespy.inference.vmp.nodes.expfamily.ExponentialFamilyDistribution.compute_phi_from_parents"><tt class="xref py py-func docutils literal"><span class="pre">ExponentialFamilyDistribution.compute_phi_from_parents()</span></tt></a></p>
+<blockquote>
+<div><p>Computes the expectation of the natural parameters <span class="math">\(\langle
+\boldsymbol{\phi} \rangle\)</span> in the prior distribution given the moments of
+the parents.</p>
+</div></blockquote>
+</li>
+<li><p class="first"><a class="reference internal" href="../dev_api/generated/generated/bayespy.inference.vmp.nodes.expfamily.ExponentialFamilyDistribution.compute_cgf_from_parents.html#bayespy.inference.vmp.nodes.expfamily.ExponentialFamilyDistribution.compute_cgf_from_parents" title="bayespy.inference.vmp.nodes.expfamily.ExponentialFamilyDistribution.compute_cgf_from_parents"><tt class="xref py py-func docutils literal"><span class="pre">ExponentialFamilyDistribution.compute_cgf_from_parents()</span></tt></a></p>
+<blockquote>
+<div><p>Computes the expectation of the negative log normalizer <span class="math">\(\langle g
+\rangle\)</span> of the prior distribution given the moments of the parents.</p>
+</div></blockquote>
+</li>
+<li><p class="first"><a class="reference internal" href="../dev_api/generated/generated/bayespy.inference.vmp.nodes.expfamily.ExponentialFamilyDistribution.compute_moments_and_cgf.html#bayespy.inference.vmp.nodes.expfamily.ExponentialFamilyDistribution.compute_moments_and_cgf" title="bayespy.inference.vmp.nodes.expfamily.ExponentialFamilyDistribution.compute_moments_and_cgf"><tt class="xref py py-func docutils literal"><span class="pre">ExponentialFamilyDistribution.compute_moments_and_cgf()</span></tt></a></p>
+<blockquote>
+<div><p>Computes the moments <span class="math">\(\langle \mathbf{u} \rangle\)</span> and the negative
+log normalizer <span class="math">\(\tilde{g}\)</span> of the posterior distribution
+given the natural parameters <span class="math">\(\tilde{\boldsymbol{\phi}}\)</span>.</p>
+</div></blockquote>
+</li>
+<li><p class="first"><a class="reference internal" href="../dev_api/generated/generated/bayespy.inference.vmp.nodes.expfamily.ExponentialFamilyDistribution.compute_message_to_parent.html#bayespy.inference.vmp.nodes.expfamily.ExponentialFamilyDistribution.compute_message_to_parent" title="bayespy.inference.vmp.nodes.expfamily.ExponentialFamilyDistribution.compute_message_to_parent"><tt class="xref py py-func docutils literal"><span class="pre">ExponentialFamilyDistribution.compute_message_to_parent()</span></tt></a></p>
+<blockquote>
+<div><p>Computes the message <span class="math">\(\langle
+\boldsymbol{\phi}_{\mathbf{x}\rightarrow\boldsymbol{\theta}} \rangle\)</span> from
+the node <span class="math">\(\mathbf{x}\)</span> to its parent node <span class="math">\(\boldsymbol{\theta}\)</span>
+given the moments of the node and the other parents.</p>
+</div></blockquote>
+</li>
+<li><p class="first"><a class="reference internal" href="../dev_api/generated/generated/bayespy.inference.vmp.nodes.expfamily.ExponentialFamilyDistribution.compute_fixed_moments_and_f.html#bayespy.inference.vmp.nodes.expfamily.ExponentialFamilyDistribution.compute_fixed_moments_and_f" title="bayespy.inference.vmp.nodes.expfamily.ExponentialFamilyDistribution.compute_fixed_moments_and_f"><tt class="xref py py-func docutils literal"><span class="pre">ExponentialFamilyDistribution.compute_fixed_moments_and_f()</span></tt></a></p>
+<blockquote>
+<div><p>Computes <span class="math">\(\mathbf{u}(\mathbf{x})\)</span> and <span class="math">\(f(\mathbf{x})\)</span> for
+given observed value <span class="math">\(\mathbf{x}\)</span>.  Without this method, variables
+from this distribution cannot be observed.</p>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+<p>For each stochastic exponential family node, one must write a distribution class
+which implements these methods.  After that, the node class is basically a
+simple wrapper and it also stores the moments and the natural parameters of the
+current posterior approximation.  Note that the distribution classes do not
+store node-specific information, they are more like static collections of
+methods.  However, sometimes the implementations depend on some information,
+such as the dimensionality of the variable, and this information must be
+provided, if needed, when constructing the distribution object.</p>
+<p>In addition to the methods listed above, it is necessary to implement a few more
+methods in some cases.  This happens when the plates of the parent do not map to
+the plates directly as discussed in section <a class="reference internal" href="../user_guide/modelconstruct.html#sec-irregular-plates"><em>Irregular plates</em></a>.  Then,
+one must write methods that implement this plate mapping and apply the same
+mapping to the mask array:</p>
+<blockquote>
+<div><ul>
+<li><p class="first"><a class="reference internal" href="../dev_api/generated/generated/bayespy.inference.vmp.nodes.expfamily.ExponentialFamilyDistribution.plates_from_parent.html#bayespy.inference.vmp.nodes.expfamily.ExponentialFamilyDistribution.plates_from_parent" title="bayespy.inference.vmp.nodes.expfamily.ExponentialFamilyDistribution.plates_from_parent"><tt class="xref py py-func docutils literal"><span class="pre">ExponentialFamilyDistribution.plates_from_parent()</span></tt></a></p>
+<blockquote>
+<div><p>Given the plates of the parent, return the resulting plates of the child.</p>
+</div></blockquote>
+</li>
+<li><p class="first"><a class="reference internal" href="../dev_api/generated/generated/bayespy.inference.vmp.nodes.expfamily.ExponentialFamilyDistribution.plates_to_parent.html#bayespy.inference.vmp.nodes.expfamily.ExponentialFamilyDistribution.plates_to_parent" title="bayespy.inference.vmp.nodes.expfamily.ExponentialFamilyDistribution.plates_to_parent"><tt class="xref py py-func docutils literal"><span class="pre">ExponentialFamilyDistribution.plates_to_parent()</span></tt></a></p>
+<blockquote>
+<div><p>Given the plates of the child, return the plates of the parent that would
+have resulted them.</p>
+</div></blockquote>
+</li>
+<li><p class="first"><a class="reference internal" href="../dev_api/generated/generated/bayespy.inference.vmp.nodes.expfamily.ExponentialFamilyDistribution.compute_mask_to_parent.html#bayespy.inference.vmp.nodes.expfamily.ExponentialFamilyDistribution.compute_mask_to_parent" title="bayespy.inference.vmp.nodes.expfamily.ExponentialFamilyDistribution.compute_mask_to_parent"><tt class="xref py py-func docutils literal"><span class="pre">ExponentialFamilyDistribution.compute_mask_to_parent()</span></tt></a></p>
+<blockquote>
+<div><p>Given the mask array of the child, apply the plate mapping.</p>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+<p>It is important to understand when one must implement these methods, because the
+default implementations in the base class will lead to errors or weird results.</p>
+</div>
+<div class="section" id="stochastic-exponential-family-nodes">
+<h2>Stochastic exponential family nodes<a class="headerlink" href="#stochastic-exponential-family-nodes" title="Permalink to this headline">¶</a></h2>
+<p>After implementing the distribution class, the next task is to implement the
+node class.</p>
+<blockquote>
+<div><ul class="simple">
+<li>constructor</li>
+<li>dims, plates</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="deterministic-nodes">
+<h2>Deterministic nodes<a class="headerlink" href="#deterministic-nodes" title="Permalink to this headline">¶</a></h2>
+<p>Roughly said, a deterministic node takes the message(s) of its parent(s) and
+transforms them to an output message.  The transformation may correspond to some
+deterministic function or it may only be a simple modification of the message to
+another type.</p>
+<blockquote>
+<div><ul class="simple">
+<li>deterministic, stochastic nodes</li>
+<li>message protocol, input output</li>
+<li>derive equations</li>
+</ul>
+</div></blockquote>
+<div class="section" id="converter-nodes">
+<h3>Converter nodes<a class="headerlink" href="#converter-nodes" title="Permalink to this headline">¶</a></h3>
+</div>
+</div>
 </div>
 
 
@@ -65,9 +250,23 @@
       </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Implementing nodes</a><ul>
+<li><a class="reference internal" href="#messaging-framework">Messaging framework</a></li>
+<li><a class="reference internal" href="#stochastic-distributions">Stochastic distributions</a></li>
+<li><a class="reference internal" href="#stochastic-exponential-family-nodes">Stochastic exponential family nodes</a></li>
+<li><a class="reference internal" href="#deterministic-nodes">Deterministic nodes</a><ul>
+<li><a class="reference internal" href="#converter-nodes">Converter nodes</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
   <h4>Previous topic</h4>
-  <p class="topless"><a href="vmp.html"
-                        title="previous chapter">Variational message passing</a></p>
+  <p class="topless"><a href="engine.html"
+                        title="previous chapter">Implementing inference engines</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="../user_api/user_api.html"
                         title="next chapter">User API</a></p>
@@ -106,7 +305,7 @@
           <a href="../user_api/user_api.html" title="User API"
              >next</a> |</li>
         <li class="right" >
-          <a href="vmp.html" title="Variational message passing"
+          <a href="engine.html" title="Implementing inference engines"
              >previous</a> |</li>
         <li><a href="../index.html">BayesPy v0.1 Documentation</a> &raquo;</li>
           <li><a href="dev_guide.html" >Developer guide</a> &raquo;</li> 
