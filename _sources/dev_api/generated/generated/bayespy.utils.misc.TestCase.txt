@@ -38,7 +38,6 @@ bayespy.utils.misc.TestCase
       ~TestCase.assertLess
       ~TestCase.assertLessEqual
       ~TestCase.assertListEqual
-      ~TestCase.assertLogs
       ~TestCase.assertMessage
       ~TestCase.assertMessageToChild
       ~TestCase.assertMultiLineEqual
@@ -79,7 +78,6 @@ bayespy.utils.misc.TestCase
       ~TestCase.setUpClass
       ~TestCase.shortDescription
       ~TestCase.skipTest
-      ~TestCase.subTest
       ~TestCase.tearDown
       ~TestCase.tearDownClass
    
