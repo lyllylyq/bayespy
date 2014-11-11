@@ -103,16 +103,19 @@
 <span class="sd">   CategoricalMarkovChainPlotter</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
+
+<span class="kn">import</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">sys</span>
+
 <span class="c">############################################################################</span>
 <span class="c"># A STUPID WORKAROUND FOR A MATPLOTLIB 1.4.0 BUG RELATED TO INTERACTIVE MODE</span>
 <span class="c"># See: https://github.com/matplotlib/matplotlib/issues/3505</span>
-<span class="c">#import sys</span>
-<span class="c">#sys.ps1 = &#39;SOMETHING&#39;</span>
-<span class="c"># This workaround does not work on Python shell, only on IPython</span>
+<span class="kn">import</span> <span class="nn">__main__</span>
+<span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">__main__</span><span class="p">,</span> <span class="s">&#39;__file__&#39;</span><span class="p">):</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">ps1</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;WORKAROUND FOR A BUG #3505 IN MATPLOTLIB.</span><span class="se">\n</span><span class="s">&#39;</span>
+               <span class="s">&#39;IF YOU SEE THIS MESSAGE, TRY MATPLOTLIB!=1.4.0.&#39;</span><span class="p">)</span>
+<span class="c"># This workaround does not work on Python shell, only on stand-alone scripts</span>
+<span class="c"># and IPython. A better solution: require MPL!=1.4.0.</span>
 <span class="c">#############################################################################</span>
-
-<span class="kn">import</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">sys</span>
-<span class="kn">import</span> <span class="nn">tempfile</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">scipy.sparse</span> <span class="kn">as</span> <span class="nn">sp</span>
@@ -142,8 +145,87 @@
 <span class="n">pyplot</span> <span class="o">=</span> <span class="n">plt</span>
 
 
+<span class="k">def</span> <span class="nf">interactive</span><span class="p">(</span><span class="n">function</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A decorator for forcing functions to use the interactive mode.</span>
 
-<div class="viewcode-block" id="pdf"><a class="viewcode-back" href="../../user_api/generated/generated/bayespy.plot.pdf.html#bayespy.plot.pdf">[docs]</a><span class="k">def</span> <span class="nf">pdf</span><span class="p">(</span><span class="n">Z</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+
+<span class="sd">    function : callable</span>
+<span class="sd">        The function to be decorated</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">new_function</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">mpl</span><span class="o">.</span><span class="n">is_interactive</span><span class="p">():</span>
+            <span class="n">was_interactive</span> <span class="o">=</span> <span class="bp">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">was_interactive</span> <span class="o">=</span> <span class="bp">False</span>
+            <span class="n">mpl</span><span class="o">.</span><span class="n">interactive</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
+
+        <span class="n">retval</span> <span class="o">=</span> <span class="n">function</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">was_interactive</span><span class="p">:</span>
+            <span class="n">mpl</span><span class="o">.</span><span class="n">interactive</span><span class="p">(</span><span class="bp">False</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">retval</span>
+
+    <span class="k">return</span> <span class="n">new_function</span>
+
+
+<span class="k">def</span> <span class="nf">_subplots</span><span class="p">(</span><span class="n">plotfunc</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">fig</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">=</span><span class="p">{}):</span>
+    <span class="sd">&quot;&quot;&quot;Create a collection of subplots</span>
+
+<span class="sd">    Each subplot is created with the same plotting function.</span>
+
+<span class="sd">    Inputs are given as pairs:</span>
+
+<span class="sd">    (x, 3), (y, 2), ...</span>
+
+<span class="sd">    where x,y,... are the input arrays and 3,2,... are the ndim</span>
+<span class="sd">    parameters.  The last ndim axes of each array are interpreted as a</span>
+<span class="sd">    single element to the plotting function.</span>
+
+<span class="sd">    All high-level plotting functions should wrap low-level plotting</span>
+<span class="sd">    functions with this function in order to generate subplots for</span>
+<span class="sd">    plates.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">fig</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gcf</span><span class="p">()</span>
+
+    <span class="c"># Parse shape and plates of each input array</span>
+    <span class="n">shapes</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">x</span><span class="p">)[</span><span class="o">-</span><span class="n">n</span><span class="p">:]</span> <span class="k">if</span> <span class="n">n</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="p">()</span>
+              <span class="k">for</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">n</span><span class="p">)</span> <span class="ow">in</span> <span class="n">args</span><span class="p">]</span>
+    <span class="n">plates</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">x</span><span class="p">)[:</span><span class="o">-</span><span class="n">n</span><span class="p">]</span> <span class="k">if</span> <span class="n">n</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+              <span class="k">for</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">n</span><span class="p">)</span> <span class="ow">in</span> <span class="n">args</span><span class="p">]</span>
+
+    <span class="c"># Get the full grid shape of the subplots</span>
+    <span class="n">broadcasted_plates</span> <span class="o">=</span> <span class="n">misc</span><span class="o">.</span><span class="n">broadcasted_shape</span><span class="p">(</span><span class="o">*</span><span class="n">plates</span><span class="p">)</span>
+
+    <span class="c"># Subplot indexing layout</span>
+    <span class="n">M</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">broadcasted_plates</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">::</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span>
+    <span class="n">N</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">broadcasted_plates</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">::</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span>
+    <span class="n">strides_subplot</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">broadcasted_plates</span><span class="p">[(</span><span class="n">j</span><span class="o">+</span><span class="mi">2</span><span class="p">)::</span><span class="mi">2</span><span class="p">])</span> <span class="o">*</span> <span class="n">N</span>
+                       <span class="k">if</span> <span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">broadcasted_plates</span><span class="p">)</span><span class="o">-</span><span class="n">j</span><span class="p">)</span> <span class="o">%</span> <span class="mi">2</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span>
+                       <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">broadcasted_plates</span><span class="p">[(</span><span class="n">j</span><span class="o">+</span><span class="mi">2</span><span class="p">)::</span><span class="mi">2</span><span class="p">])</span>
+                       <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">broadcasted_plates</span><span class="p">))]</span>
+
+    <span class="c"># Plot each subplot</span>
+    <span class="k">for</span> <span class="n">ind</span> <span class="ow">in</span> <span class="n">misc</span><span class="o">.</span><span class="n">nested_iterator</span><span class="p">(</span><span class="n">broadcasted_plates</span><span class="p">):</span>
+
+        <span class="c"># Get the list of inputs for this subplot</span>
+        <span class="n">broadcasted_args</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)):</span>
+            <span class="n">i</span> <span class="o">=</span> <span class="n">misc</span><span class="o">.</span><span class="n">safe_indices</span><span class="p">(</span><span class="n">ind</span><span class="p">,</span> <span class="n">plates</span><span class="p">[</span><span class="n">n</span><span class="p">])</span>
+            <span class="n">broadcasted_args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="n">n</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="n">i</span><span class="p">])</span>
+
+        <span class="c"># Plot the subplot using the given function</span>
+        <span class="n">ind_subplot</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s">&#39;i,i&#39;</span><span class="p">,</span> <span class="n">ind</span><span class="p">,</span> <span class="n">strides_subplot</span><span class="p">)</span>
+        <span class="n">axes</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">ind_subplot</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">plotfunc</span><span class="p">(</span><span class="o">*</span><span class="n">broadcasted_args</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="n">axes</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="pdf"><a class="viewcode-back" href="../../user_api/generated/generated/bayespy.plot.pdf.html#bayespy.plot.pdf">[docs]</a><span class="k">def</span> <span class="nf">pdf</span><span class="p">(</span><span class="n">Z</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">fig</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Plot probability density function of a scalar variable.</span>
 
@@ -156,9 +238,16 @@
 <span class="sd">    x : array</span>
 <span class="sd">        Grid points</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">axes</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+
+    <span class="c"># TODO: Make it possible to plot a plated variable using _subplots function.</span>
+
+    <span class="k">if</span> <span class="n">axes</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">fig</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
         <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span>
-        
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">fig</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gcf</span><span class="p">()</span>
+        <span class="n">axes</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">)</span>
+
     <span class="k">try</span><span class="p">:</span>
         <span class="n">lpdf</span> <span class="o">=</span> <span class="n">Z</span><span class="o">.</span><span class="n">logpdf</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
@@ -179,7 +268,7 @@
     <span class="k">return</span> <span class="n">retval</span>
 
 </div>
-<div class="viewcode-block" id="contour"><a class="viewcode-back" href="../../user_api/generated/generated/bayespy.plot.contour.html#bayespy.plot.contour">[docs]</a><span class="k">def</span> <span class="nf">contour</span><span class="p">(</span><span class="n">Z</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="contour"><a class="viewcode-back" href="../../user_api/generated/generated/bayespy.plot.contour.html#bayespy.plot.contour">[docs]</a><span class="k">def</span> <span class="nf">contour</span><span class="p">(</span><span class="n">Z</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">fig</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Plot 2-D probability density function of a 2-D variable.</span>
 
@@ -195,8 +284,15 @@
 <span class="sd">    y : array</span>
 <span class="sd">        Grid points on y axis</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">axes</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+
+    <span class="c"># TODO: Make it possible to plot a plated variable using _subplots function.</span>
+
+    <span class="k">if</span> <span class="n">axes</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">fig</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
         <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">fig</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gcf</span><span class="p">()</span>
+        <span class="n">axes</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">)</span>
 
     <span class="n">XY</span> <span class="o">=</span> <span class="n">misc</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
     <span class="k">try</span><span class="p">:</span>
@@ -431,7 +527,7 @@
     <span class="k">return</span>
     
     </div>
-<span class="k">def</span> <span class="nf">_hinton</span><span class="p">(</span><span class="n">axes</span><span class="p">,</span> <span class="n">W</span><span class="p">,</span> <span class="n">error</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">square</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_hinton</span><span class="p">(</span><span class="n">W</span><span class="p">,</span> <span class="n">error</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">square</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Draws a Hinton diagram for visualizing a weight matrix. </span>
 
@@ -441,12 +537,10 @@
 <span class="sd">    Originally copied from</span>
 <span class="sd">    http://wiki.scipy.org/Cookbook/Matplotlib/HintonDiagrams</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c">## reenable = False</span>
-    <span class="c">## if plt.isinteractive():</span>
-    <span class="c">##     plt.ioff()</span>
-    <span class="c">##     reenable = True</span>
-        
-    <span class="c">#P.clf()</span>
+
+    <span class="k">if</span> <span class="n">axes</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span>
+
     <span class="n">W</span> <span class="o">=</span> <span class="n">misc</span><span class="o">.</span><span class="n">atleast_nd</span><span class="p">(</span><span class="n">W</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
     <span class="p">(</span><span class="n">height</span><span class="p">,</span> <span class="n">width</span><span class="p">)</span> <span class="o">=</span> <span class="n">W</span><span class="o">.</span><span class="n">shape</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">vmax</span><span class="p">:</span>
@@ -490,10 +584,6 @@
                            <span class="n">fill</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
             <span class="n">_blob</span><span class="p">(</span><span class="n">axes</span><span class="p">,</span> <span class="n">_x</span><span class="p">,</span> <span class="n">_y</span><span class="p">,</span> <span class="nb">min</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">_w</span><span class="o">/</span><span class="n">vmax</span><span class="p">),</span> <span class="n">_c</span><span class="p">)</span>
                 
-    <span class="c">## if reenable:</span>
-    <span class="c">##     plt.ion()</span>
-    <span class="c">##     #P.show()</span>
-
 
 <span class="k">def</span> <span class="nf">matrix</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
 
@@ -569,12 +659,6 @@
     <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">squeezed_shape</span><span class="p">)</span>
     <span class="n">std</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">std</span><span class="p">,</span> <span class="n">squeezed_shape</span><span class="p">)</span>
 
-    <span class="c"># Make explicit four axes</span>
-    <span class="n">cols</span> <span class="o">=</span> <span class="n">cols</span> <span class="o">+</span> <span class="p">(</span><span class="mi">4</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">ndim</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
-    <span class="n">rows</span> <span class="o">=</span> <span class="n">rows</span> <span class="o">+</span> <span class="p">(</span><span class="mi">4</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">ndim</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
-    <span class="n">x</span> <span class="o">=</span> <span class="n">misc</span><span class="o">.</span><span class="n">atleast_nd</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
-    <span class="n">std</span> <span class="o">=</span> <span class="n">misc</span><span class="o">.</span><span class="n">atleast_nd</span><span class="p">(</span><span class="n">std</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
-
     <span class="n">size</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ndim</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">cols</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">rows</span> <span class="o">!=</span> <span class="n">size</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
@@ -592,26 +676,20 @@
     <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="n">axes</span><span class="p">)</span>
     <span class="n">std</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">std</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="n">axes</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">ndim</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">4</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Can not plot arrays with over 4 axes&quot;</span><span class="p">)</span>
-
-    <span class="n">M</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">x</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="n">N</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">x</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
     <span class="n">vmax</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">+</span> <span class="n">scale</span><span class="o">*</span><span class="n">std</span><span class="p">)</span>
-    <span class="n">axes</span> <span class="o">=</span> <span class="p">[[</span><span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">i</span><span class="o">*</span><span class="n">N</span><span class="o">+</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">M</span><span class="p">)]</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">)]</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">M</span><span class="p">):</span>
-        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
-            <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">i</span><span class="o">*</span><span class="n">N</span><span class="o">+</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+    
+    <span class="k">if</span> <span class="n">scale</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">_subplots</span><span class="p">(</span><span class="n">_hinton</span><span class="p">,</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">fig</span><span class="o">=</span><span class="n">fig</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">vmax</span><span class="o">=</span><span class="n">vmax</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">def</span> <span class="nf">plotfunc</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">_hinton</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">error</span><span class="o">=</span><span class="n">e</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-            <span class="k">if</span> <span class="n">scale</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="n">_hinton</span><span class="p">(</span><span class="n">axes</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">],</span> <span class="n">vmax</span><span class="o">=</span><span class="n">vmax</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">_hinton</span><span class="p">(</span><span class="n">axes</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">],</span> <span class="n">vmax</span><span class="o">=</span><span class="n">vmax</span><span class="p">,</span> <span class="n">error</span><span class="o">=</span><span class="n">scale</span><span class="o">*</span><span class="n">std</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">])</span>
-            <span class="c">#matrix(x[i,j])</span>
+        <span class="n">_subplots</span><span class="p">(</span><span class="n">plotfunc</span><span class="p">,</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="n">scale</span><span class="o">*</span><span class="n">std</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">fig</span><span class="o">=</span><span class="n">fig</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">vmax</span><span class="o">=</span><span class="n">vmax</span><span class="p">))</span>
 
 
 <span class="c"># For backwards compatibility:</span>
 <span class="n">gaussian_array</span> <span class="o">=</span> <span class="n">gaussian_hinton</span>
+
 
 <span class="k">def</span> <span class="nf">timeseries_categorical_mc</span><span class="p">(</span><span class="n">Z</span><span class="p">,</span> <span class="n">fig</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
 
@@ -634,8 +712,8 @@
     <span class="c"># Plot Hintons</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">M</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
-            <span class="n">axes</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">i</span><span class="o">*</span><span class="n">N</span><span class="o">+</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
-            <span class="n">_hinton</span><span class="p">(</span><span class="n">axes</span><span class="p">,</span> <span class="n">z</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">square</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+            <span class="n">axes</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">i</span><span class="o">*</span><span class="n">N</span><span class="o">+</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">_hinton</span><span class="p">(</span><span class="n">z</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">square</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="n">axes</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">beta_hinton</span><span class="p">(</span><span class="n">P</span><span class="p">,</span> <span class="n">square</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
@@ -1067,7 +1145,7 @@
         
 
 <span class="k">def</span> <span class="nf">errorplot</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">error</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">lower</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">upper</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
-              <span class="n">color</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="n">axes</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+              <span class="n">color</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="n">fillcolor</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mf">0.4</span><span class="p">),</span> <span class="n">axes</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 
     <span class="k">if</span> <span class="n">axes</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
         <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span>
@@ -1090,16 +1168,14 @@
 
     <span class="c"># Plot errors</span>
     <span class="k">if</span> <span class="p">(</span><span class="n">lower</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">upper</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">):</span>
-        <span class="c">#print(np.max(lower))</span>
-        <span class="c">#print(np.max(upper))</span>
         <span class="n">l</span> <span class="o">=</span> <span class="n">y</span> <span class="o">-</span> <span class="n">lower</span>
         <span class="n">u</span> <span class="o">=</span> <span class="n">y</span> <span class="o">+</span> <span class="n">upper</span>
         <span class="n">axes</span><span class="o">.</span><span class="n">fill_between</span><span class="p">(</span><span class="n">x</span><span class="p">,</span>
-                          <span class="n">u</span><span class="p">,</span>
                           <span class="n">l</span><span class="p">,</span>
-                          <span class="n">facecolor</span><span class="o">=</span><span class="p">(</span><span class="mf">0.6</span><span class="p">,</span><span class="mf">0.6</span><span class="p">,</span><span class="mf">0.6</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span>
-                          <span class="n">edgecolor</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span>
-                          <span class="n">linewidth</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                          <span class="n">u</span><span class="p">,</span>
+                          <span class="n">facecolor</span><span class="o">=</span><span class="n">fillcolor</span><span class="p">,</span>
+                          <span class="n">edgecolor</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+                          <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
                           <span class="n">interpolate</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
     <span class="c"># Plot function</span>
     <span class="n">axes</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>

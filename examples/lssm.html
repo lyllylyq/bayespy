@@ -284,7 +284,7 @@ matrix:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Q</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">repeat</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
 <span class="go">Iteration 11: loglike=-1.010806e+04 (... seconds)</span>
 <span class="gp">...</span>
-<span class="go">Iteration 60: loglike=-8.906224e+03 (... seconds)</span>
+<span class="go">Iteration 60: loglike=-8.906259e+03 (... seconds)</span>
 <span class="go">Converged at iteration 60.</span>
 </pre></div>
 </div>
@@ -331,7 +331,7 @@ observation space:</p>
 error (RMSE) of the missing values:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">bayespy.utils</span> <span class="kn">import</span> <span class="n">misc</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">misc</span><span class="o">.</span><span class="n">rmse</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="o">~</span><span class="n">mask</span><span class="p">],</span> <span class="n">F</span><span class="o">.</span><span class="n">get_moments</span><span class="p">()[</span><span class="mi">0</span><span class="p">][</span><span class="o">~</span><span class="n">mask</span><span class="p">])</span>
-<span class="go">5.182592...</span>
+<span class="go">5.182...</span>
 </pre></div>
 </div>
 <p>This is relatively close to the standard deviation of the noise (3), so the
