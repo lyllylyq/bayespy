@@ -17,6 +17,7 @@ bayespy.inference.vmp.nodes.gaussian_markov_chain.SwitchingGaussianMarkovChainDi
       ~SwitchingGaussianMarkovChainDistribution.__init__
       ~SwitchingGaussianMarkovChainDistribution.compute_cgf_from_parents
       ~SwitchingGaussianMarkovChainDistribution.compute_fixed_moments_and_f
+      ~SwitchingGaussianMarkovChainDistribution.compute_gradient
       ~SwitchingGaussianMarkovChainDistribution.compute_logpdf
       ~SwitchingGaussianMarkovChainDistribution.compute_mask_to_parent
       ~SwitchingGaussianMarkovChainDistribution.compute_message_to_parent

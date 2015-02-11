@@ -63,6 +63,12 @@
 <dt id="bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.compute_cgf_from_parents">
 <tt class="descclassname">GaussianDistribution.</tt><tt class="descname">compute_cgf_from_parents</tt><big>(</big><em>u_mu_Lambda</em><big>)</big><a class="reference internal" href="../../../_modules/bayespy/inference/vmp/nodes/gaussian.html#GaussianDistribution.compute_cgf_from_parents"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.compute_cgf_from_parents" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute <span class="math">\(\mathrm{E}_{q(p)}[g(p)]\)</span></p>
+<div class="math">
+\[\begin{split}g (\boldsymbol{\mu}, \mathbf{\Lambda})
+&amp;=
+- \frac{1}{2} \operatorname{tr}(\boldsymbol{\mu\mu}^{\mathrm{T}}
+                                \mathbf{\Lambda} )
++ \frac{1}{2} \log |\mathbf{\Lambda}|\end{split}\]</div>
 </dd></dl>
 
 </div>
@@ -124,7 +130,7 @@
     </div>
     <div class="footer">
         &copy; Copyright 2011-2014, Jaakko Luttinen, GPLv3.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>
 </html>

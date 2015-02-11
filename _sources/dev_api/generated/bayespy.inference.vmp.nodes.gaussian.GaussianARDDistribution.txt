@@ -17,6 +17,7 @@ bayespy.inference.vmp.nodes.gaussian.GaussianARDDistribution
       ~GaussianARDDistribution.__init__
       ~GaussianARDDistribution.compute_cgf_from_parents
       ~GaussianARDDistribution.compute_fixed_moments_and_f
+      ~GaussianARDDistribution.compute_gradient
       ~GaussianARDDistribution.compute_logpdf
       ~GaussianARDDistribution.compute_mask_to_parent
       ~GaussianARDDistribution.compute_message_to_parent

@@ -27,7 +27,7 @@
     <link rel="top" title="BayesPy v0.2.3 Documentation" href="../../../index.html" />
     <link rel="up" title="bayespy.nodes" href="../bayespy.nodes.html" />
     <link rel="next" title="bayespy.nodes.Beta.__init__" href="generated/bayespy.nodes.Beta.__init__.html" />
-    <link rel="prev" title="bayespy.nodes.Poisson.plates" href="generated/bayespy.nodes.Poisson.plates.html" /> 
+    <link rel="prev" title="bayespy.nodes.Poisson.plates_multiplier" href="generated/bayespy.nodes.Poisson.plates_multiplier.html" /> 
   </head>
   <body>
     <div class="related">
@@ -43,7 +43,7 @@
           <a href="generated/bayespy.nodes.Beta.__init__.html" title="bayespy.nodes.Beta.__init__"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="generated/bayespy.nodes.Poisson.plates.html" title="bayespy.nodes.Poisson.plates"
+          <a href="generated/bayespy.nodes.Poisson.plates_multiplier.html" title="bayespy.nodes.Poisson.plates_multiplier"
              accesskey="P">previous</a> |</li>
         <li><a href="../../../index.html">BayesPy v0.2.3 Documentation</a> &raquo;</li>
           <li><a href="../../user_api.html" >User API</a> &raquo;</li>
@@ -109,14 +109,26 @@ respectively.</p>
 <tr class="row-even"><td><a class="reference internal" href="generated/bayespy.nodes.Beta.add_plate_axis.html#bayespy.nodes.Beta.add_plate_axis" title="bayespy.nodes.Beta.add_plate_axis"><tt class="xref py py-obj docutils literal"><span class="pre">add_plate_axis</span></tt></a>(to_plate)</td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.nodes.Beta.delete.html#bayespy.nodes.Beta.delete" title="bayespy.nodes.Beta.delete"><tt class="xref py py-obj docutils literal"><span class="pre">delete</span></tt></a>()</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.nodes.Beta.broadcasting_multiplier.html#bayespy.nodes.Beta.broadcasting_multiplier" title="bayespy.nodes.Beta.broadcasting_multiplier"><tt class="xref py py-obj docutils literal"><span class="pre">broadcasting_multiplier</span></tt></a>(plates,&nbsp;*args)</td>
+<td>Compute the plate multiplier for given shapes.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.nodes.Beta.delete.html#bayespy.nodes.Beta.delete" title="bayespy.nodes.Beta.delete"><tt class="xref py py-obj docutils literal"><span class="pre">delete</span></tt></a>()</td>
 <td>Delete this node and the children</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.nodes.Beta.get_gradient.html#bayespy.nodes.Beta.get_gradient" title="bayespy.nodes.Beta.get_gradient"><tt class="xref py py-obj docutils literal"><span class="pre">get_gradient</span></tt></a>(rg)</td>
+<td>Computes gradient with respect to the natural parameters.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="generated/bayespy.nodes.Beta.get_mask.html#bayespy.nodes.Beta.get_mask" title="bayespy.nodes.Beta.get_mask"><tt class="xref py py-obj docutils literal"><span class="pre">get_mask</span></tt></a>()</td>
 <td></td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.nodes.Beta.get_moments.html#bayespy.nodes.Beta.get_moments" title="bayespy.nodes.Beta.get_moments"><tt class="xref py py-obj docutils literal"><span class="pre">get_moments</span></tt></a>()</td>
 <td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.nodes.Beta.get_parameters.html#bayespy.nodes.Beta.get_parameters" title="bayespy.nodes.Beta.get_parameters"><tt class="xref py py-obj docutils literal"><span class="pre">get_parameters</span></tt></a>()</td>
+<td>Return parameters of the VB distribution.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.nodes.Beta.get_riemannian_gradient.html#bayespy.nodes.Beta.get_riemannian_gradient" title="bayespy.nodes.Beta.get_riemannian_gradient"><tt class="xref py py-obj docutils literal"><span class="pre">get_riemannian_gradient</span></tt></a>()</td>
+<td>Computes the Riemannian/natural gradient.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="generated/bayespy.nodes.Beta.get_shape.html#bayespy.nodes.Beta.get_shape" title="bayespy.nodes.Beta.get_shape"><tt class="xref py py-obj docutils literal"><span class="pre">get_shape</span></tt></a>(ind)</td>
 <td></td>
@@ -142,8 +154,8 @@ respectively.</p>
 <tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.nodes.Beta.logpdf.html#bayespy.nodes.Beta.logpdf" title="bayespy.nodes.Beta.logpdf"><tt class="xref py py-obj docutils literal"><span class="pre">logpdf</span></tt></a>(X[,&nbsp;mask])</td>
 <td>Compute the log probability density function Q(X) of this node.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.nodes.Beta.lower_bound_contribution.html#bayespy.nodes.Beta.lower_bound_contribution" title="bayespy.nodes.Beta.lower_bound_contribution"><tt class="xref py py-obj docutils literal"><span class="pre">lower_bound_contribution</span></tt></a>([gradient])</td>
-<td></td>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.nodes.Beta.lower_bound_contribution.html#bayespy.nodes.Beta.lower_bound_contribution" title="bayespy.nodes.Beta.lower_bound_contribution"><tt class="xref py py-obj docutils literal"><span class="pre">lower_bound_contribution</span></tt></a>([gradient,&nbsp;...])</td>
+<td>Compute E[ log p(X|parents) - log q(X) ]</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.nodes.Beta.lowerbound.html#bayespy.nodes.Beta.lowerbound" title="bayespy.nodes.Beta.lowerbound"><tt class="xref py py-obj docutils literal"><span class="pre">lowerbound</span></tt></a>()</td>
 <td></td>
@@ -166,16 +178,19 @@ respectively.</p>
 <tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.nodes.Beta.save.html#bayespy.nodes.Beta.save" title="bayespy.nodes.Beta.save"><tt class="xref py py-obj docutils literal"><span class="pre">save</span></tt></a>(group)</td>
 <td>Save the state of the node into a HDF5 file.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.nodes.Beta.set_plotter.html#bayespy.nodes.Beta.set_plotter" title="bayespy.nodes.Beta.set_plotter"><tt class="xref py py-obj docutils literal"><span class="pre">set_plotter</span></tt></a>(plotter)</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.nodes.Beta.set_parameters.html#bayespy.nodes.Beta.set_parameters" title="bayespy.nodes.Beta.set_parameters"><tt class="xref py py-obj docutils literal"><span class="pre">set_parameters</span></tt></a>(x)</td>
+<td>Set the parameters of the VB distribution.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.nodes.Beta.set_plotter.html#bayespy.nodes.Beta.set_plotter" title="bayespy.nodes.Beta.set_plotter"><tt class="xref py py-obj docutils literal"><span class="pre">set_plotter</span></tt></a>(plotter)</td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.nodes.Beta.show.html#bayespy.nodes.Beta.show" title="bayespy.nodes.Beta.show"><tt class="xref py py-obj docutils literal"><span class="pre">show</span></tt></a>()</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.nodes.Beta.show.html#bayespy.nodes.Beta.show" title="bayespy.nodes.Beta.show"><tt class="xref py py-obj docutils literal"><span class="pre">show</span></tt></a>()</td>
 <td>Print the distribution using standard parameterization.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.nodes.Beta.unobserve.html#bayespy.nodes.Beta.unobserve" title="bayespy.nodes.Beta.unobserve"><tt class="xref py py-obj docutils literal"><span class="pre">unobserve</span></tt></a>()</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.nodes.Beta.unobserve.html#bayespy.nodes.Beta.unobserve" title="bayespy.nodes.Beta.unobserve"><tt class="xref py py-obj docutils literal"><span class="pre">unobserve</span></tt></a>()</td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.nodes.Beta.update.html#bayespy.nodes.Beta.update" title="bayespy.nodes.Beta.update"><tt class="xref py py-obj docutils literal"><span class="pre">update</span></tt></a>()</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.nodes.Beta.update.html#bayespy.nodes.Beta.update" title="bayespy.nodes.Beta.update"><tt class="xref py py-obj docutils literal"><span class="pre">update</span></tt></a>([annealing])</td>
 <td></td>
 </tr>
 </tbody>
@@ -193,6 +208,9 @@ respectively.</p>
 <tr class="row-even"><td><a class="reference internal" href="generated/bayespy.nodes.Beta.plates.html#bayespy.nodes.Beta.plates" title="bayespy.nodes.Beta.plates"><tt class="xref py py-obj docutils literal"><span class="pre">plates</span></tt></a></td>
 <td></td>
 </tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.nodes.Beta.plates_multiplier.html#bayespy.nodes.Beta.plates_multiplier" title="bayespy.nodes.Beta.plates_multiplier"><tt class="xref py py-obj docutils literal"><span class="pre">plates_multiplier</span></tt></a></td>
+<td>Plate multiplier is applied to messages to parents</td>
+</tr>
 </tbody>
 </table>
 </dd></dl>
@@ -206,8 +224,8 @@ respectively.</p>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
   <h4>Previous topic</h4>
-  <p class="topless"><a href="generated/bayespy.nodes.Poisson.plates.html"
-                        title="previous chapter">bayespy.nodes.Poisson.plates</a></p>
+  <p class="topless"><a href="generated/bayespy.nodes.Poisson.plates_multiplier.html"
+                        title="previous chapter">bayespy.nodes.Poisson.plates_multiplier</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="generated/bayespy.nodes.Beta.__init__.html"
                         title="next chapter">bayespy.nodes.Beta.__init__</a></p>
@@ -246,7 +264,7 @@ respectively.</p>
           <a href="generated/bayespy.nodes.Beta.__init__.html" title="bayespy.nodes.Beta.__init__"
              >next</a> |</li>
         <li class="right" >
-          <a href="generated/bayespy.nodes.Poisson.plates.html" title="bayespy.nodes.Poisson.plates"
+          <a href="generated/bayespy.nodes.Poisson.plates_multiplier.html" title="bayespy.nodes.Poisson.plates_multiplier"
              >previous</a> |</li>
         <li><a href="../../../index.html">BayesPy v0.2.3 Documentation</a> &raquo;</li>
           <li><a href="../../user_api.html" >User API</a> &raquo;</li>
@@ -255,7 +273,7 @@ respectively.</p>
     </div>
     <div class="footer">
         &copy; Copyright 2011-2014, Jaakko Luttinen, GPLv3.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>
 </html>

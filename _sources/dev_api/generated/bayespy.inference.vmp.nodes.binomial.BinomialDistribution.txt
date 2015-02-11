@@ -17,6 +17,7 @@ bayespy.inference.vmp.nodes.binomial.BinomialDistribution
       ~BinomialDistribution.__init__
       ~BinomialDistribution.compute_cgf_from_parents
       ~BinomialDistribution.compute_fixed_moments_and_f
+      ~BinomialDistribution.compute_gradient
       ~BinomialDistribution.compute_logpdf
       ~BinomialDistribution.compute_mask_to_parent
       ~BinomialDistribution.compute_message_to_parent

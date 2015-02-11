@@ -27,7 +27,7 @@
     <link rel="top" title="BayesPy v0.2.3 Documentation" href="../../../index.html" />
     <link rel="up" title="bayespy.nodes" href="../bayespy.nodes.html" />
     <link rel="next" title="bayespy.nodes.GaussianMarkovChain.__init__" href="generated/bayespy.nodes.GaussianMarkovChain.__init__.html" />
-    <link rel="prev" title="bayespy.nodes.CategoricalMarkovChain.plates" href="generated/bayespy.nodes.CategoricalMarkovChain.plates.html" /> 
+    <link rel="prev" title="bayespy.nodes.CategoricalMarkovChain.plates_multiplier" href="generated/bayespy.nodes.CategoricalMarkovChain.plates_multiplier.html" /> 
   </head>
   <body>
     <div class="related">
@@ -43,7 +43,7 @@
           <a href="generated/bayespy.nodes.GaussianMarkovChain.__init__.html" title="bayespy.nodes.GaussianMarkovChain.__init__"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="generated/bayespy.nodes.CategoricalMarkovChain.plates.html" title="bayespy.nodes.CategoricalMarkovChain.plates"
+          <a href="generated/bayespy.nodes.CategoricalMarkovChain.plates_multiplier.html" title="bayespy.nodes.CategoricalMarkovChain.plates_multiplier"
              accesskey="P">previous</a> |</li>
         <li><a href="../../../index.html">BayesPy v0.2.3 Documentation</a> &raquo;</li>
           <li><a href="../../user_api.html" >User API</a> &raquo;</li>
@@ -292,14 +292,26 @@ and <span class="math">\(\boldsymbol{\nu}\)</span> are constant over time.</p>
 <tr class="row-even"><td><a class="reference internal" href="generated/bayespy.nodes.GaussianMarkovChain.add_plate_axis.html#bayespy.nodes.GaussianMarkovChain.add_plate_axis" title="bayespy.nodes.GaussianMarkovChain.add_plate_axis"><tt class="xref py py-obj docutils literal"><span class="pre">add_plate_axis</span></tt></a>(to_plate)</td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.nodes.GaussianMarkovChain.delete.html#bayespy.nodes.GaussianMarkovChain.delete" title="bayespy.nodes.GaussianMarkovChain.delete"><tt class="xref py py-obj docutils literal"><span class="pre">delete</span></tt></a>()</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.nodes.GaussianMarkovChain.broadcasting_multiplier.html#bayespy.nodes.GaussianMarkovChain.broadcasting_multiplier" title="bayespy.nodes.GaussianMarkovChain.broadcasting_multiplier"><tt class="xref py py-obj docutils literal"><span class="pre">broadcasting_multiplier</span></tt></a>(plates,&nbsp;*args)</td>
+<td>Compute the plate multiplier for given shapes.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.nodes.GaussianMarkovChain.delete.html#bayespy.nodes.GaussianMarkovChain.delete" title="bayespy.nodes.GaussianMarkovChain.delete"><tt class="xref py py-obj docutils literal"><span class="pre">delete</span></tt></a>()</td>
 <td>Delete this node and the children</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.nodes.GaussianMarkovChain.get_gradient.html#bayespy.nodes.GaussianMarkovChain.get_gradient" title="bayespy.nodes.GaussianMarkovChain.get_gradient"><tt class="xref py py-obj docutils literal"><span class="pre">get_gradient</span></tt></a>(rg)</td>
+<td>Computes gradient with respect to the natural parameters.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="generated/bayespy.nodes.GaussianMarkovChain.get_mask.html#bayespy.nodes.GaussianMarkovChain.get_mask" title="bayespy.nodes.GaussianMarkovChain.get_mask"><tt class="xref py py-obj docutils literal"><span class="pre">get_mask</span></tt></a>()</td>
 <td></td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.nodes.GaussianMarkovChain.get_moments.html#bayespy.nodes.GaussianMarkovChain.get_moments" title="bayespy.nodes.GaussianMarkovChain.get_moments"><tt class="xref py py-obj docutils literal"><span class="pre">get_moments</span></tt></a>()</td>
 <td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.nodes.GaussianMarkovChain.get_parameters.html#bayespy.nodes.GaussianMarkovChain.get_parameters" title="bayespy.nodes.GaussianMarkovChain.get_parameters"><tt class="xref py py-obj docutils literal"><span class="pre">get_parameters</span></tt></a>()</td>
+<td>Return parameters of the VB distribution.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.nodes.GaussianMarkovChain.get_riemannian_gradient.html#bayespy.nodes.GaussianMarkovChain.get_riemannian_gradient" title="bayespy.nodes.GaussianMarkovChain.get_riemannian_gradient"><tt class="xref py py-obj docutils literal"><span class="pre">get_riemannian_gradient</span></tt></a>()</td>
+<td>Computes the Riemannian/natural gradient.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="generated/bayespy.nodes.GaussianMarkovChain.get_shape.html#bayespy.nodes.GaussianMarkovChain.get_shape" title="bayespy.nodes.GaussianMarkovChain.get_shape"><tt class="xref py py-obj docutils literal"><span class="pre">get_shape</span></tt></a>(ind)</td>
 <td></td>
@@ -325,8 +337,8 @@ and <span class="math">\(\boldsymbol{\nu}\)</span> are constant over time.</p>
 <tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.nodes.GaussianMarkovChain.logpdf.html#bayespy.nodes.GaussianMarkovChain.logpdf" title="bayespy.nodes.GaussianMarkovChain.logpdf"><tt class="xref py py-obj docutils literal"><span class="pre">logpdf</span></tt></a>(X[,&nbsp;mask])</td>
 <td>Compute the log probability density function Q(X) of this node.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.nodes.GaussianMarkovChain.lower_bound_contribution.html#bayespy.nodes.GaussianMarkovChain.lower_bound_contribution" title="bayespy.nodes.GaussianMarkovChain.lower_bound_contribution"><tt class="xref py py-obj docutils literal"><span class="pre">lower_bound_contribution</span></tt></a>([gradient])</td>
-<td></td>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.nodes.GaussianMarkovChain.lower_bound_contribution.html#bayespy.nodes.GaussianMarkovChain.lower_bound_contribution" title="bayespy.nodes.GaussianMarkovChain.lower_bound_contribution"><tt class="xref py py-obj docutils literal"><span class="pre">lower_bound_contribution</span></tt></a>([gradient,&nbsp;...])</td>
+<td>Compute E[ log p(X|parents) - log q(X) ]</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.nodes.GaussianMarkovChain.lowerbound.html#bayespy.nodes.GaussianMarkovChain.lowerbound" title="bayespy.nodes.GaussianMarkovChain.lowerbound"><tt class="xref py py-obj docutils literal"><span class="pre">lowerbound</span></tt></a>()</td>
 <td></td>
@@ -352,16 +364,19 @@ and <span class="math">\(\boldsymbol{\nu}\)</span> are constant over time.</p>
 <tr class="row-even"><td><a class="reference internal" href="generated/bayespy.nodes.GaussianMarkovChain.save.html#bayespy.nodes.GaussianMarkovChain.save" title="bayespy.nodes.GaussianMarkovChain.save"><tt class="xref py py-obj docutils literal"><span class="pre">save</span></tt></a>(group)</td>
 <td>Save the state of the node into a HDF5 file.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.nodes.GaussianMarkovChain.set_plotter.html#bayespy.nodes.GaussianMarkovChain.set_plotter" title="bayespy.nodes.GaussianMarkovChain.set_plotter"><tt class="xref py py-obj docutils literal"><span class="pre">set_plotter</span></tt></a>(plotter)</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.nodes.GaussianMarkovChain.set_parameters.html#bayespy.nodes.GaussianMarkovChain.set_parameters" title="bayespy.nodes.GaussianMarkovChain.set_parameters"><tt class="xref py py-obj docutils literal"><span class="pre">set_parameters</span></tt></a>(x)</td>
+<td>Set the parameters of the VB distribution.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.nodes.GaussianMarkovChain.set_plotter.html#bayespy.nodes.GaussianMarkovChain.set_plotter" title="bayespy.nodes.GaussianMarkovChain.set_plotter"><tt class="xref py py-obj docutils literal"><span class="pre">set_plotter</span></tt></a>(plotter)</td>
 <td></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.nodes.GaussianMarkovChain.show.html#bayespy.nodes.GaussianMarkovChain.show" title="bayespy.nodes.GaussianMarkovChain.show"><tt class="xref py py-obj docutils literal"><span class="pre">show</span></tt></a>()</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.nodes.GaussianMarkovChain.show.html#bayespy.nodes.GaussianMarkovChain.show" title="bayespy.nodes.GaussianMarkovChain.show"><tt class="xref py py-obj docutils literal"><span class="pre">show</span></tt></a>()</td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.nodes.GaussianMarkovChain.unobserve.html#bayespy.nodes.GaussianMarkovChain.unobserve" title="bayespy.nodes.GaussianMarkovChain.unobserve"><tt class="xref py py-obj docutils literal"><span class="pre">unobserve</span></tt></a>()</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.nodes.GaussianMarkovChain.unobserve.html#bayespy.nodes.GaussianMarkovChain.unobserve" title="bayespy.nodes.GaussianMarkovChain.unobserve"><tt class="xref py py-obj docutils literal"><span class="pre">unobserve</span></tt></a>()</td>
 <td></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.nodes.GaussianMarkovChain.update.html#bayespy.nodes.GaussianMarkovChain.update" title="bayespy.nodes.GaussianMarkovChain.update"><tt class="xref py py-obj docutils literal"><span class="pre">update</span></tt></a>()</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.nodes.GaussianMarkovChain.update.html#bayespy.nodes.GaussianMarkovChain.update" title="bayespy.nodes.GaussianMarkovChain.update"><tt class="xref py py-obj docutils literal"><span class="pre">update</span></tt></a>([annealing])</td>
 <td></td>
 </tr>
 </tbody>
@@ -379,6 +394,9 @@ and <span class="math">\(\boldsymbol{\nu}\)</span> are constant over time.</p>
 <tr class="row-even"><td><a class="reference internal" href="generated/bayespy.nodes.GaussianMarkovChain.plates.html#bayespy.nodes.GaussianMarkovChain.plates" title="bayespy.nodes.GaussianMarkovChain.plates"><tt class="xref py py-obj docutils literal"><span class="pre">plates</span></tt></a></td>
 <td></td>
 </tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.nodes.GaussianMarkovChain.plates_multiplier.html#bayespy.nodes.GaussianMarkovChain.plates_multiplier" title="bayespy.nodes.GaussianMarkovChain.plates_multiplier"><tt class="xref py py-obj docutils literal"><span class="pre">plates_multiplier</span></tt></a></td>
+<td>Plate multiplier is applied to messages to parents</td>
+</tr>
 </tbody>
 </table>
 </dd></dl>
@@ -392,8 +410,8 @@ and <span class="math">\(\boldsymbol{\nu}\)</span> are constant over time.</p>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
   <h4>Previous topic</h4>
-  <p class="topless"><a href="generated/bayespy.nodes.CategoricalMarkovChain.plates.html"
-                        title="previous chapter">bayespy.nodes.CategoricalMarkovChain.plates</a></p>
+  <p class="topless"><a href="generated/bayespy.nodes.CategoricalMarkovChain.plates_multiplier.html"
+                        title="previous chapter">bayespy.nodes.CategoricalMarkovChain.plates_multiplier</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="generated/bayespy.nodes.GaussianMarkovChain.__init__.html"
                         title="next chapter">bayespy.nodes.GaussianMarkovChain.__init__</a></p>
@@ -432,7 +450,7 @@ and <span class="math">\(\boldsymbol{\nu}\)</span> are constant over time.</p>
           <a href="generated/bayespy.nodes.GaussianMarkovChain.__init__.html" title="bayespy.nodes.GaussianMarkovChain.__init__"
              >next</a> |</li>
         <li class="right" >
-          <a href="generated/bayespy.nodes.CategoricalMarkovChain.plates.html" title="bayespy.nodes.CategoricalMarkovChain.plates"
+          <a href="generated/bayespy.nodes.CategoricalMarkovChain.plates_multiplier.html" title="bayespy.nodes.CategoricalMarkovChain.plates_multiplier"
              >previous</a> |</li>
         <li><a href="../../../index.html">BayesPy v0.2.3 Documentation</a> &raquo;</li>
           <li><a href="../../user_api.html" >User API</a> &raquo;</li>
@@ -441,7 +459,7 @@ and <span class="math">\(\boldsymbol{\nu}\)</span> are constant over time.</p>
     </div>
     <div class="footer">
         &copy; Copyright 2011-2014, Jaakko Luttinen, GPLv3.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>
 </html>

@@ -17,6 +17,7 @@ bayespy.inference.vmp.nodes.bernoulli.BernoulliDistribution
       ~BernoulliDistribution.__init__
       ~BernoulliDistribution.compute_cgf_from_parents
       ~BernoulliDistribution.compute_fixed_moments_and_f
+      ~BernoulliDistribution.compute_gradient
       ~BernoulliDistribution.compute_logpdf
       ~BernoulliDistribution.compute_mask_to_parent
       ~BernoulliDistribution.compute_message_to_parent

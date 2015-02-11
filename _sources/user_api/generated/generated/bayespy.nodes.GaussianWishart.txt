@@ -16,9 +16,13 @@ bayespy.nodes.GaussianWishart
    
       ~GaussianWishart.__init__
       ~GaussianWishart.add_plate_axis
+      ~GaussianWishart.broadcasting_multiplier
       ~GaussianWishart.delete
+      ~GaussianWishart.get_gradient
       ~GaussianWishart.get_mask
       ~GaussianWishart.get_moments
+      ~GaussianWishart.get_parameters
+      ~GaussianWishart.get_riemannian_gradient
       ~GaussianWishart.get_shape
       ~GaussianWishart.has_plotter
       ~GaussianWishart.initialize_from_parameters
@@ -35,6 +39,7 @@ bayespy.nodes.GaussianWishart
       ~GaussianWishart.plot
       ~GaussianWishart.random
       ~GaussianWishart.save
+      ~GaussianWishart.set_parameters
       ~GaussianWishart.set_plotter
       ~GaussianWishart.show
       ~GaussianWishart.unobserve
@@ -51,5 +56,6 @@ bayespy.nodes.GaussianWishart
    
       ~GaussianWishart.dims
       ~GaussianWishart.plates
+      ~GaussianWishart.plates_multiplier
    
    

@@ -162,22 +162,34 @@
 
     
 <div class="viewcode-block" id="DirichletDistribution.compute_message_to_parent"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.dirichlet.DirichletDistribution.compute_message_to_parent.html#bayespy.inference.vmp.nodes.dirichlet.DirichletDistribution.compute_message_to_parent">[docs]</a>    <span class="k">def</span> <span class="nf">compute_message_to_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">u_self</span><span class="p">,</span> <span class="n">u_alpha</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+        <span class="sd">r&quot;&quot;&quot;</span>
 <span class="sd">        Compute the message to a parent node.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
 
     </div>
 <div class="viewcode-block" id="DirichletDistribution.compute_phi_from_parents"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.dirichlet.DirichletDistribution.compute_phi_from_parents.html#bayespy.inference.vmp.nodes.dirichlet.DirichletDistribution.compute_phi_from_parents">[docs]</a>    <span class="k">def</span> <span class="nf">compute_phi_from_parents</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u_alpha</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+        <span class="sd">r&quot;&quot;&quot;</span>
 <span class="sd">        Compute the natural parameter vector given parent moments.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">u_alpha</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
 
     </div>
 <div class="viewcode-block" id="DirichletDistribution.compute_moments_and_cgf"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.dirichlet.DirichletDistribution.compute_moments_and_cgf.html#bayespy.inference.vmp.nodes.dirichlet.DirichletDistribution.compute_moments_and_cgf">[docs]</a>    <span class="k">def</span> <span class="nf">compute_moments_and_cgf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">phi</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+        <span class="sd">r&quot;&quot;&quot;</span>
 <span class="sd">        Compute the moments and :math:`g(\phi)`.</span>
+
+<span class="sd">        .. math::</span>
+
+<span class="sd">           \overline{\mathbf{u}}  (\boldsymbol{\phi})</span>
+<span class="sd">           &amp;=</span>
+<span class="sd">           \begin{bmatrix}</span>
+<span class="sd">             \psi(\phi_1) - \psi(\sum_d \phi_{1,d})</span>
+<span class="sd">           \end{bmatrix}</span>
+<span class="sd">           \\</span>
+<span class="sd">           g_{\boldsymbol{\phi}} (\boldsymbol{\phi})</span>
+<span class="sd">           &amp;=</span>
+<span class="sd">           TODO</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">sum_gammaln</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">special</span><span class="o">.</span><span class="n">gammaln</span><span class="p">(</span><span class="n">phi</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
         <span class="n">gammaln_sum</span> <span class="o">=</span> <span class="n">special</span><span class="o">.</span><span class="n">gammaln</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">phi</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">))</span>
@@ -193,14 +205,14 @@
 
     </div>
 <div class="viewcode-block" id="DirichletDistribution.compute_cgf_from_parents"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.dirichlet.DirichletDistribution.compute_cgf_from_parents.html#bayespy.inference.vmp.nodes.dirichlet.DirichletDistribution.compute_cgf_from_parents">[docs]</a>    <span class="k">def</span> <span class="nf">compute_cgf_from_parents</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u_alpha</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+        <span class="sd">r&quot;&quot;&quot;</span>
 <span class="sd">        Compute :math:`\mathrm{E}_{q(p)}[g(p)]`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">u_alpha</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
 
     </div>
 <div class="viewcode-block" id="DirichletDistribution.compute_fixed_moments_and_f"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.dirichlet.DirichletDistribution.compute_fixed_moments_and_f.html#bayespy.inference.vmp.nodes.dirichlet.DirichletDistribution.compute_fixed_moments_and_f">[docs]</a>    <span class="k">def</span> <span class="nf">compute_fixed_moments_and_f</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+        <span class="sd">r&quot;&quot;&quot;</span>
 <span class="sd">        Compute the moments and :math:`f(x)` for a fixed value.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c"># Check that probabilities are non-negative</span>
@@ -222,11 +234,32 @@
 
     </div>
 <div class="viewcode-block" id="DirichletDistribution.random"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.dirichlet.DirichletDistribution.random.html#bayespy.inference.vmp.nodes.dirichlet.DirichletDistribution.random">[docs]</a>    <span class="k">def</span> <span class="nf">random</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">phi</span><span class="p">,</span> <span class="n">plates</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+        <span class="sd">r&quot;&quot;&quot;</span>
 <span class="sd">        Draw a random sample from the distribution.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">random</span><span class="o">.</span><span class="n">dirichlet</span><span class="p">(</span><span class="n">phi</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">size</span><span class="o">=</span><span class="n">plates</span><span class="p">)</span>
         
+</div>
+<div class="viewcode-block" id="DirichletDistribution.compute_gradient"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.dirichlet.DirichletDistribution.compute_gradient.html#bayespy.inference.vmp.nodes.dirichlet.DirichletDistribution.compute_gradient">[docs]</a>    <span class="k">def</span> <span class="nf">compute_gradient</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">phi</span><span class="p">):</span>
+        <span class="sd">r&quot;&quot;&quot;</span>
+<span class="sd">        Compute the moments and :math:`g(\phi)`.</span>
+
+<span class="sd">             \psi(\phi_1) - \psi(\sum_d \phi_{1,d})</span>
+
+<span class="sd">        Standard gradient given the gradient with respect to the moments, that</span>
+<span class="sd">        is, given the Riemannian gradient :math:`\tilde{\nabla}`:</span>
+
+<span class="sd">        .. math::</span>
+
+<span class="sd">           \nabla &amp;=</span>
+<span class="sd">           \begin{bmatrix}</span>
+<span class="sd">             (\psi^{(1)}(\phi_1) - \psi^{(1)}(\sum_d \phi_{1,d}) \nabla_1</span>
+<span class="sd">           \end{bmatrix}</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">sum_phi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">phi</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="n">d0</span> <span class="o">=</span> <span class="n">g</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">special</span><span class="o">.</span><span class="n">polygamma</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">phi</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">-</span> <span class="n">special</span><span class="o">.</span><span class="n">polygamma</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">sum_phi</span><span class="p">))</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">d0</span><span class="p">]</span>
+
 </div></div>
 <span class="k">class</span> <span class="nc">Dirichlet</span><span class="p">(</span><span class="n">ExponentialFamily</span><span class="p">):</span>
     <span class="sd">r&quot;&quot;&quot;</span>
@@ -332,7 +365,7 @@
     </div>
     <div class="footer">
         &copy; Copyright 2011-2014, Jaakko Luttinen, GPLv3.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>
 </html>

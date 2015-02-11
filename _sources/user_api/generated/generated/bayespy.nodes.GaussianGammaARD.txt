@@ -16,9 +16,13 @@ bayespy.nodes.GaussianGammaARD
    
       ~GaussianGammaARD.__init__
       ~GaussianGammaARD.add_plate_axis
+      ~GaussianGammaARD.broadcasting_multiplier
       ~GaussianGammaARD.delete
+      ~GaussianGammaARD.get_gradient
       ~GaussianGammaARD.get_mask
       ~GaussianGammaARD.get_moments
+      ~GaussianGammaARD.get_parameters
+      ~GaussianGammaARD.get_riemannian_gradient
       ~GaussianGammaARD.get_shape
       ~GaussianGammaARD.has_plotter
       ~GaussianGammaARD.initialize_from_parameters
@@ -35,6 +39,7 @@ bayespy.nodes.GaussianGammaARD
       ~GaussianGammaARD.plot
       ~GaussianGammaARD.random
       ~GaussianGammaARD.save
+      ~GaussianGammaARD.set_parameters
       ~GaussianGammaARD.set_plotter
       ~GaussianGammaARD.unobserve
       ~GaussianGammaARD.update
@@ -50,5 +55,6 @@ bayespy.nodes.GaussianGammaARD
    
       ~GaussianGammaARD.dims
       ~GaussianGammaARD.plates
+      ~GaussianGammaARD.plates_multiplier
    
    

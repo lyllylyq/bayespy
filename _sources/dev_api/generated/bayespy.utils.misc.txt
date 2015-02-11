@@ -63,6 +63,7 @@ bayespy.utils.misc
       repeat_to_shape
       rmse
       rts_smoother
+      safe_indices
       squeeze
       squeeze_to_dim
       sum_multiply

@@ -107,13 +107,31 @@ lower bound.</p>
 <tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.inference.VB.__init__.html#bayespy.inference.VB.__init__" title="bayespy.inference.VB.__init__"><tt class="xref py py-obj docutils literal"><span class="pre">__init__</span></tt></a>(*nodes[,&nbsp;tol,&nbsp;autosave_filename,&nbsp;...])</td>
 <td></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.inference.VB.compute_lowerbound.html#bayespy.inference.VB.compute_lowerbound" title="bayespy.inference.VB.compute_lowerbound"><tt class="xref py py-obj docutils literal"><span class="pre">compute_lowerbound</span></tt></a>()</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.inference.VB.add.html#bayespy.inference.VB.add" title="bayespy.inference.VB.add"><tt class="xref py py-obj docutils literal"><span class="pre">add</span></tt></a>(x1,&nbsp;x2[,&nbsp;scale])</td>
+<td>Add two vectors (in parameter format)</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.inference.VB.compute_lowerbound.html#bayespy.inference.VB.compute_lowerbound" title="bayespy.inference.VB.compute_lowerbound"><tt class="xref py py-obj docutils literal"><span class="pre">compute_lowerbound</span></tt></a>([ignore_masked])</td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.inference.VB.compute_lowerbound_terms.html#bayespy.inference.VB.compute_lowerbound_terms" title="bayespy.inference.VB.compute_lowerbound_terms"><tt class="xref py py-obj docutils literal"><span class="pre">compute_lowerbound_terms</span></tt></a>(*nodes)</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.inference.VB.compute_lowerbound_terms.html#bayespy.inference.VB.compute_lowerbound_terms" title="bayespy.inference.VB.compute_lowerbound_terms"><tt class="xref py py-obj docutils literal"><span class="pre">compute_lowerbound_terms</span></tt></a>(*nodes)</td>
 <td></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.inference.VB.get_iteration_by_nodes.html#bayespy.inference.VB.get_iteration_by_nodes" title="bayespy.inference.VB.get_iteration_by_nodes"><tt class="xref py py-obj docutils literal"><span class="pre">get_iteration_by_nodes</span></tt></a>()</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.inference.VB.dot.html#bayespy.inference.VB.dot" title="bayespy.inference.VB.dot"><tt class="xref py py-obj docutils literal"><span class="pre">dot</span></tt></a>(x1,&nbsp;x2)</td>
+<td>Computes dot products of given vectors (in parameter format)</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.inference.VB.get_gradients.html#bayespy.inference.VB.get_gradients" title="bayespy.inference.VB.get_gradients"><tt class="xref py py-obj docutils literal"><span class="pre">get_gradients</span></tt></a>(*nodes[,&nbsp;euclidian])</td>
+<td>Computes gradients (both Riemannian and normal)</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.inference.VB.get_iteration_by_nodes.html#bayespy.inference.VB.get_iteration_by_nodes" title="bayespy.inference.VB.get_iteration_by_nodes"><tt class="xref py py-obj docutils literal"><span class="pre">get_iteration_by_nodes</span></tt></a>()</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.inference.VB.get_parameters.html#bayespy.inference.VB.get_parameters" title="bayespy.inference.VB.get_parameters"><tt class="xref py py-obj docutils literal"><span class="pre">get_parameters</span></tt></a>(*nodes)</td>
+<td>Get parameters of the nodes</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.inference.VB.gradient_step.html#bayespy.inference.VB.gradient_step" title="bayespy.inference.VB.gradient_step"><tt class="xref py py-obj docutils literal"><span class="pre">gradient_step</span></tt></a>(*nodes[,&nbsp;scale])</td>
+<td>Update nodes by taking a gradient ascent step</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.inference.VB.has_converged.html#bayespy.inference.VB.has_converged" title="bayespy.inference.VB.has_converged"><tt class="xref py py-obj docutils literal"><span class="pre">has_converged</span></tt></a>([tol])</td>
 <td></td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.inference.VB.load.html#bayespy.inference.VB.load" title="bayespy.inference.VB.load"><tt class="xref py py-obj docutils literal"><span class="pre">load</span></tt></a>(*nodes[,&nbsp;filename])</td>
@@ -122,19 +140,46 @@ lower bound.</p>
 <tr class="row-even"><td><a class="reference internal" href="generated/bayespy.inference.VB.loglikelihood_lowerbound.html#bayespy.inference.VB.loglikelihood_lowerbound" title="bayespy.inference.VB.loglikelihood_lowerbound"><tt class="xref py py-obj docutils literal"><span class="pre">loglikelihood_lowerbound</span></tt></a>()</td>
 <td></td>
 </tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.inference.VB.optimize.html#bayespy.inference.VB.optimize" title="bayespy.inference.VB.optimize"><tt class="xref py py-obj docutils literal"><span class="pre">optimize</span></tt></a>(*nodes[,&nbsp;maxiter,&nbsp;verbose,&nbsp;method,&nbsp;...])</td>
+<td>Optimize nodes using Riemannian conjugate gradient</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.inference.VB.pattern_search.html#bayespy.inference.VB.pattern_search" title="bayespy.inference.VB.pattern_search"><tt class="xref py py-obj docutils literal"><span class="pre">pattern_search</span></tt></a>(*nodes[,&nbsp;collapsed,&nbsp;maxiter])</td>
+<td>Perform simple pattern search <a class="reference internal" href="../../../references.html#honkela-2003" id="id1">[4]</a>.</td>
+</tr>
 <tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.inference.VB.plot.html#bayespy.inference.VB.plot" title="bayespy.inference.VB.plot"><tt class="xref py py-obj docutils literal"><span class="pre">plot</span></tt></a>(*nodes)</td>
 <td>Plot the distribution of the given nodes (or all nodes)</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.inference.VB.plot_iteration_by_nodes.html#bayespy.inference.VB.plot_iteration_by_nodes" title="bayespy.inference.VB.plot_iteration_by_nodes"><tt class="xref py py-obj docutils literal"><span class="pre">plot_iteration_by_nodes</span></tt></a>([axes])</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.inference.VB.plot_iteration_by_nodes.html#bayespy.inference.VB.plot_iteration_by_nodes" title="bayespy.inference.VB.plot_iteration_by_nodes"><tt class="xref py py-obj docutils literal"><span class="pre">plot_iteration_by_nodes</span></tt></a>([axes,&nbsp;diff])</td>
 <td>Plot the cost function per node during the iteration.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.inference.VB.save.html#bayespy.inference.VB.save" title="bayespy.inference.VB.save"><tt class="xref py py-obj docutils literal"><span class="pre">save</span></tt></a>([filename])</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.inference.VB.save.html#bayespy.inference.VB.save" title="bayespy.inference.VB.save"><tt class="xref py py-obj docutils literal"><span class="pre">save</span></tt></a>(*nodes[,&nbsp;filename])</td>
 <td></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.inference.VB.set_autosave.html#bayespy.inference.VB.set_autosave" title="bayespy.inference.VB.set_autosave"><tt class="xref py py-obj docutils literal"><span class="pre">set_autosave</span></tt></a>(filename[,&nbsp;iterations])</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.inference.VB.set_annealing.html#bayespy.inference.VB.set_annealing" title="bayespy.inference.VB.set_annealing"><tt class="xref py py-obj docutils literal"><span class="pre">set_annealing</span></tt></a>(annealing)</td>
+<td>Set deterministic annealing from range (0, 1].</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.inference.VB.set_autosave.html#bayespy.inference.VB.set_autosave" title="bayespy.inference.VB.set_autosave"><tt class="xref py py-obj docutils literal"><span class="pre">set_autosave</span></tt></a>(filename[,&nbsp;iterations])</td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.inference.VB.update.html#bayespy.inference.VB.update" title="bayespy.inference.VB.update"><tt class="xref py py-obj docutils literal"><span class="pre">update</span></tt></a>(*nodes[,&nbsp;repeat,&nbsp;plot,&nbsp;tol,&nbsp;verbose])</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.inference.VB.set_callback.html#bayespy.inference.VB.set_callback" title="bayespy.inference.VB.set_callback"><tt class="xref py py-obj docutils literal"><span class="pre">set_callback</span></tt></a>(callback)</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.inference.VB.set_parameters.html#bayespy.inference.VB.set_parameters" title="bayespy.inference.VB.set_parameters"><tt class="xref py py-obj docutils literal"><span class="pre">set_parameters</span></tt></a>(x,&nbsp;*nodes)</td>
+<td>Set parameters of the nodes</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.inference.VB.update.html#bayespy.inference.VB.update" title="bayespy.inference.VB.update"><tt class="xref py py-obj docutils literal"><span class="pre">update</span></tt></a>(*nodes[,&nbsp;repeat,&nbsp;plot,&nbsp;tol,&nbsp;verbose])</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Attributes</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.inference.VB.ignore_bound_checks.html#bayespy.inference.VB.ignore_bound_checks" title="bayespy.inference.VB.ignore_bound_checks"><tt class="xref py py-obj docutils literal"><span class="pre">ignore_bound_checks</span></tt></a></td>
 <td></td>
 </tr>
 </tbody>
@@ -199,7 +244,7 @@ lower bound.</p>
     </div>
     <div class="footer">
         &copy; Copyright 2011-2014, Jaakko Luttinen, GPLv3.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>
 </html>

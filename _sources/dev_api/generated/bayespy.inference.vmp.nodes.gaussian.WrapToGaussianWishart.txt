@@ -16,6 +16,7 @@ bayespy.inference.vmp.nodes.gaussian.WrapToGaussianWishart
    
       ~WrapToGaussianWishart.__init__
       ~WrapToGaussianWishart.add_plate_axis
+      ~WrapToGaussianWishart.broadcasting_multiplier
       ~WrapToGaussianWishart.delete
       ~WrapToGaussianWishart.get_mask
       ~WrapToGaussianWishart.get_moments
@@ -36,5 +37,6 @@ bayespy.inference.vmp.nodes.gaussian.WrapToGaussianWishart
       :toctree: generated/
    
       ~WrapToGaussianWishart.plates
+      ~WrapToGaussianWishart.plates_multiplier
    
    

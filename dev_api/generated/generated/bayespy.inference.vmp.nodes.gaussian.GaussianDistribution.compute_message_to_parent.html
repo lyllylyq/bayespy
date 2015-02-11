@@ -63,6 +63,25 @@
 <dt id="bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.compute_message_to_parent">
 <tt class="descclassname">GaussianDistribution.</tt><tt class="descname">compute_message_to_parent</tt><big>(</big><em>parent</em>, <em>index</em>, <em>u</em>, <em>u_mu_Lambda</em><big>)</big><a class="reference internal" href="../../../_modules/bayespy/inference/vmp/nodes/gaussian.html#GaussianDistribution.compute_message_to_parent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.compute_message_to_parent" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the message to a parent node.</p>
+<div class="math">
+\[\begin{split}\boldsymbol{\phi}_{\boldsymbol{\mu}} (\mathbf{x}, \mathbf{\Lambda})
+&amp;=
+\left[ \begin{matrix}
+  \mathbf{\Lambda} \mathbf{x} 
+  \\
+  - \frac{1}{2} \mathbf{\Lambda}
+\end{matrix} \right]
+\\
+\boldsymbol{\phi}_{\mathbf{\Lambda}} (\mathbf{x}, \boldsymbol{\mu})
+&amp;=
+\left[ \begin{matrix}
+  - \frac{1}{2} \mathbf{xx}^{\mathrm{T}}
+  + \frac{1}{2} \mathbf{x}\boldsymbol{\mu}^{\mathrm{T}}
+  + \frac{1}{2} \boldsymbol{\mu}\mathbf{x}^{\mathrm{T}}
+  - \frac{1}{2} \boldsymbol{\mu\mu}^{\mathrm{T}}
+  \\
+  \frac{1}{2}
+\end{matrix} \right]\end{split}\]</div>
 </dd></dl>
 
 </div>
@@ -124,7 +143,7 @@
     </div>
     <div class="footer">
         &copy; Copyright 2011-2014, Jaakko Luttinen, GPLv3.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>
 </html>

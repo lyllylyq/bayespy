@@ -27,6 +27,7 @@ bayespy.utils.linalg
       outer
       solve_triangular
       tracedot
+      transpose
    
    
 

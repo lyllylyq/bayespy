@@ -17,9 +17,13 @@ bayespy.nodes.Gamma
       ~Gamma.__init__
       ~Gamma.add_plate_axis
       ~Gamma.as_diagonal_wishart
+      ~Gamma.broadcasting_multiplier
       ~Gamma.delete
+      ~Gamma.get_gradient
       ~Gamma.get_mask
       ~Gamma.get_moments
+      ~Gamma.get_parameters
+      ~Gamma.get_riemannian_gradient
       ~Gamma.get_shape
       ~Gamma.has_plotter
       ~Gamma.initialize_from_parameters
@@ -36,6 +40,7 @@ bayespy.nodes.Gamma
       ~Gamma.plot
       ~Gamma.random
       ~Gamma.save
+      ~Gamma.set_parameters
       ~Gamma.set_plotter
       ~Gamma.show
       ~Gamma.unobserve
@@ -52,5 +57,6 @@ bayespy.nodes.Gamma
    
       ~Gamma.dims
       ~Gamma.plates
+      ~Gamma.plates_multiplier
    
    

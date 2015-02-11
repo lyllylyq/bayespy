@@ -16,6 +16,7 @@ bayespy.inference.vmp.nodes.wishart.WishartDistribution
    
       ~WishartDistribution.compute_cgf_from_parents
       ~WishartDistribution.compute_fixed_moments_and_f
+      ~WishartDistribution.compute_gradient
       ~WishartDistribution.compute_logpdf
       ~WishartDistribution.compute_mask_to_parent
       ~WishartDistribution.compute_message_to_parent

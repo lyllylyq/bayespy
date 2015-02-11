@@ -27,7 +27,7 @@
     <link rel="top" title="BayesPy v0.2.3 Documentation" href="../../../index.html" />
     <link rel="up" title="bayespy.nodes" href="../bayespy.nodes.html" />
     <link rel="next" title="bayespy.nodes.GaussianGammaARD.__init__" href="generated/bayespy.nodes.GaussianGammaARD.__init__.html" />
-    <link rel="prev" title="bayespy.nodes.GaussianGammaISO.plates" href="generated/bayespy.nodes.GaussianGammaISO.plates.html" /> 
+    <link rel="prev" title="bayespy.nodes.GaussianGammaISO.plates_multiplier" href="generated/bayespy.nodes.GaussianGammaISO.plates_multiplier.html" /> 
   </head>
   <body>
     <div class="related">
@@ -43,7 +43,7 @@
           <a href="generated/bayespy.nodes.GaussianGammaARD.__init__.html" title="bayespy.nodes.GaussianGammaARD.__init__"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="generated/bayespy.nodes.GaussianGammaISO.plates.html" title="bayespy.nodes.GaussianGammaISO.plates"
+          <a href="generated/bayespy.nodes.GaussianGammaISO.plates_multiplier.html" title="bayespy.nodes.GaussianGammaISO.plates_multiplier"
              accesskey="P">previous</a> |</li>
         <li><a href="../../../index.html">BayesPy v0.2.3 Documentation</a> &raquo;</li>
           <li><a href="../../user_api.html" >User API</a> &raquo;</li>
@@ -94,14 +94,26 @@ form.</p>
 <tr class="row-even"><td><a class="reference internal" href="generated/bayespy.nodes.GaussianGammaARD.add_plate_axis.html#bayespy.nodes.GaussianGammaARD.add_plate_axis" title="bayespy.nodes.GaussianGammaARD.add_plate_axis"><tt class="xref py py-obj docutils literal"><span class="pre">add_plate_axis</span></tt></a>(to_plate)</td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.nodes.GaussianGammaARD.delete.html#bayespy.nodes.GaussianGammaARD.delete" title="bayespy.nodes.GaussianGammaARD.delete"><tt class="xref py py-obj docutils literal"><span class="pre">delete</span></tt></a>()</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.nodes.GaussianGammaARD.broadcasting_multiplier.html#bayespy.nodes.GaussianGammaARD.broadcasting_multiplier" title="bayespy.nodes.GaussianGammaARD.broadcasting_multiplier"><tt class="xref py py-obj docutils literal"><span class="pre">broadcasting_multiplier</span></tt></a>(plates,&nbsp;*args)</td>
+<td>Compute the plate multiplier for given shapes.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.nodes.GaussianGammaARD.delete.html#bayespy.nodes.GaussianGammaARD.delete" title="bayespy.nodes.GaussianGammaARD.delete"><tt class="xref py py-obj docutils literal"><span class="pre">delete</span></tt></a>()</td>
 <td>Delete this node and the children</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.nodes.GaussianGammaARD.get_gradient.html#bayespy.nodes.GaussianGammaARD.get_gradient" title="bayespy.nodes.GaussianGammaARD.get_gradient"><tt class="xref py py-obj docutils literal"><span class="pre">get_gradient</span></tt></a>(rg)</td>
+<td>Computes gradient with respect to the natural parameters.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="generated/bayespy.nodes.GaussianGammaARD.get_mask.html#bayespy.nodes.GaussianGammaARD.get_mask" title="bayespy.nodes.GaussianGammaARD.get_mask"><tt class="xref py py-obj docutils literal"><span class="pre">get_mask</span></tt></a>()</td>
 <td></td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.nodes.GaussianGammaARD.get_moments.html#bayespy.nodes.GaussianGammaARD.get_moments" title="bayespy.nodes.GaussianGammaARD.get_moments"><tt class="xref py py-obj docutils literal"><span class="pre">get_moments</span></tt></a>()</td>
 <td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.nodes.GaussianGammaARD.get_parameters.html#bayespy.nodes.GaussianGammaARD.get_parameters" title="bayespy.nodes.GaussianGammaARD.get_parameters"><tt class="xref py py-obj docutils literal"><span class="pre">get_parameters</span></tt></a>()</td>
+<td>Return parameters of the VB distribution.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.nodes.GaussianGammaARD.get_riemannian_gradient.html#bayespy.nodes.GaussianGammaARD.get_riemannian_gradient" title="bayespy.nodes.GaussianGammaARD.get_riemannian_gradient"><tt class="xref py py-obj docutils literal"><span class="pre">get_riemannian_gradient</span></tt></a>()</td>
+<td>Computes the Riemannian/natural gradient.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="generated/bayespy.nodes.GaussianGammaARD.get_shape.html#bayespy.nodes.GaussianGammaARD.get_shape" title="bayespy.nodes.GaussianGammaARD.get_shape"><tt class="xref py py-obj docutils literal"><span class="pre">get_shape</span></tt></a>(ind)</td>
 <td></td>
@@ -127,8 +139,8 @@ form.</p>
 <tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.nodes.GaussianGammaARD.logpdf.html#bayespy.nodes.GaussianGammaARD.logpdf" title="bayespy.nodes.GaussianGammaARD.logpdf"><tt class="xref py py-obj docutils literal"><span class="pre">logpdf</span></tt></a>(X[,&nbsp;mask])</td>
 <td>Compute the log probability density function Q(X) of this node.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.nodes.GaussianGammaARD.lower_bound_contribution.html#bayespy.nodes.GaussianGammaARD.lower_bound_contribution" title="bayespy.nodes.GaussianGammaARD.lower_bound_contribution"><tt class="xref py py-obj docutils literal"><span class="pre">lower_bound_contribution</span></tt></a>([gradient])</td>
-<td></td>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.nodes.GaussianGammaARD.lower_bound_contribution.html#bayespy.nodes.GaussianGammaARD.lower_bound_contribution" title="bayespy.nodes.GaussianGammaARD.lower_bound_contribution"><tt class="xref py py-obj docutils literal"><span class="pre">lower_bound_contribution</span></tt></a>([gradient,&nbsp;...])</td>
+<td>Compute E[ log p(X|parents) - log q(X) ]</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.nodes.GaussianGammaARD.lowerbound.html#bayespy.nodes.GaussianGammaARD.lowerbound" title="bayespy.nodes.GaussianGammaARD.lowerbound"><tt class="xref py py-obj docutils literal"><span class="pre">lowerbound</span></tt></a>()</td>
 <td></td>
@@ -151,13 +163,16 @@ form.</p>
 <tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.nodes.GaussianGammaARD.save.html#bayespy.nodes.GaussianGammaARD.save" title="bayespy.nodes.GaussianGammaARD.save"><tt class="xref py py-obj docutils literal"><span class="pre">save</span></tt></a>(group)</td>
 <td>Save the state of the node into a HDF5 file.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.nodes.GaussianGammaARD.set_plotter.html#bayespy.nodes.GaussianGammaARD.set_plotter" title="bayespy.nodes.GaussianGammaARD.set_plotter"><tt class="xref py py-obj docutils literal"><span class="pre">set_plotter</span></tt></a>(plotter)</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.nodes.GaussianGammaARD.set_parameters.html#bayespy.nodes.GaussianGammaARD.set_parameters" title="bayespy.nodes.GaussianGammaARD.set_parameters"><tt class="xref py py-obj docutils literal"><span class="pre">set_parameters</span></tt></a>(x)</td>
+<td>Set the parameters of the VB distribution.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.nodes.GaussianGammaARD.set_plotter.html#bayespy.nodes.GaussianGammaARD.set_plotter" title="bayespy.nodes.GaussianGammaARD.set_plotter"><tt class="xref py py-obj docutils literal"><span class="pre">set_plotter</span></tt></a>(plotter)</td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.nodes.GaussianGammaARD.unobserve.html#bayespy.nodes.GaussianGammaARD.unobserve" title="bayespy.nodes.GaussianGammaARD.unobserve"><tt class="xref py py-obj docutils literal"><span class="pre">unobserve</span></tt></a>()</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.nodes.GaussianGammaARD.unobserve.html#bayespy.nodes.GaussianGammaARD.unobserve" title="bayespy.nodes.GaussianGammaARD.unobserve"><tt class="xref py py-obj docutils literal"><span class="pre">unobserve</span></tt></a>()</td>
 <td></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.nodes.GaussianGammaARD.update.html#bayespy.nodes.GaussianGammaARD.update" title="bayespy.nodes.GaussianGammaARD.update"><tt class="xref py py-obj docutils literal"><span class="pre">update</span></tt></a>()</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.nodes.GaussianGammaARD.update.html#bayespy.nodes.GaussianGammaARD.update" title="bayespy.nodes.GaussianGammaARD.update"><tt class="xref py py-obj docutils literal"><span class="pre">update</span></tt></a>([annealing])</td>
 <td></td>
 </tr>
 </tbody>
@@ -175,6 +190,9 @@ form.</p>
 <tr class="row-even"><td><a class="reference internal" href="generated/bayespy.nodes.GaussianGammaARD.plates.html#bayespy.nodes.GaussianGammaARD.plates" title="bayespy.nodes.GaussianGammaARD.plates"><tt class="xref py py-obj docutils literal"><span class="pre">plates</span></tt></a></td>
 <td></td>
 </tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.nodes.GaussianGammaARD.plates_multiplier.html#bayespy.nodes.GaussianGammaARD.plates_multiplier" title="bayespy.nodes.GaussianGammaARD.plates_multiplier"><tt class="xref py py-obj docutils literal"><span class="pre">plates_multiplier</span></tt></a></td>
+<td>Plate multiplier is applied to messages to parents</td>
+</tr>
 </tbody>
 </table>
 </dd></dl>
@@ -188,8 +206,8 @@ form.</p>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
   <h4>Previous topic</h4>
-  <p class="topless"><a href="generated/bayespy.nodes.GaussianGammaISO.plates.html"
-                        title="previous chapter">bayespy.nodes.GaussianGammaISO.plates</a></p>
+  <p class="topless"><a href="generated/bayespy.nodes.GaussianGammaISO.plates_multiplier.html"
+                        title="previous chapter">bayespy.nodes.GaussianGammaISO.plates_multiplier</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="generated/bayespy.nodes.GaussianGammaARD.__init__.html"
                         title="next chapter">bayespy.nodes.GaussianGammaARD.__init__</a></p>
@@ -228,7 +246,7 @@ form.</p>
           <a href="generated/bayespy.nodes.GaussianGammaARD.__init__.html" title="bayespy.nodes.GaussianGammaARD.__init__"
              >next</a> |</li>
         <li class="right" >
-          <a href="generated/bayespy.nodes.GaussianGammaISO.plates.html" title="bayespy.nodes.GaussianGammaISO.plates"
+          <a href="generated/bayespy.nodes.GaussianGammaISO.plates_multiplier.html" title="bayespy.nodes.GaussianGammaISO.plates_multiplier"
              >previous</a> |</li>
         <li><a href="../../../index.html">BayesPy v0.2.3 Documentation</a> &raquo;</li>
           <li><a href="../../user_api.html" >User API</a> &raquo;</li>
@@ -237,7 +255,7 @@ form.</p>
     </div>
     <div class="footer">
         &copy; Copyright 2011-2014, Jaakko Luttinen, GPLv3.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>
 </html>

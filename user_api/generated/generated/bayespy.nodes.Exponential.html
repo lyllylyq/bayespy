@@ -27,7 +27,7 @@
     <link rel="top" title="BayesPy v0.2.3 Documentation" href="../../../index.html" />
     <link rel="up" title="bayespy.nodes" href="../bayespy.nodes.html" />
     <link rel="next" title="bayespy.nodes.Exponential.__init__" href="generated/bayespy.nodes.Exponential.__init__.html" />
-    <link rel="prev" title="bayespy.nodes.Wishart.plates" href="generated/bayespy.nodes.Wishart.plates.html" /> 
+    <link rel="prev" title="bayespy.nodes.Wishart.plates_multiplier" href="generated/bayespy.nodes.Wishart.plates_multiplier.html" /> 
   </head>
   <body>
     <div class="related">
@@ -43,7 +43,7 @@
           <a href="generated/bayespy.nodes.Exponential.__init__.html" title="bayespy.nodes.Exponential.__init__"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="generated/bayespy.nodes.Wishart.plates.html" title="bayespy.nodes.Wishart.plates"
+          <a href="generated/bayespy.nodes.Wishart.plates_multiplier.html" title="bayespy.nodes.Wishart.plates_multiplier"
              accesskey="P">previous</a> |</li>
         <li><a href="../../../index.html">BayesPy v0.2.3 Documentation</a> &raquo;</li>
           <li><a href="../../user_api.html" >User API</a> &raquo;</li>
@@ -118,14 +118,26 @@ an exponential prior distribution but gamma posterior approximation.</p>
 <tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.nodes.Exponential.as_diagonal_wishart.html#bayespy.nodes.Exponential.as_diagonal_wishart" title="bayespy.nodes.Exponential.as_diagonal_wishart"><tt class="xref py py-obj docutils literal"><span class="pre">as_diagonal_wishart</span></tt></a>()</td>
 <td></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.nodes.Exponential.delete.html#bayespy.nodes.Exponential.delete" title="bayespy.nodes.Exponential.delete"><tt class="xref py py-obj docutils literal"><span class="pre">delete</span></tt></a>()</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.nodes.Exponential.broadcasting_multiplier.html#bayespy.nodes.Exponential.broadcasting_multiplier" title="bayespy.nodes.Exponential.broadcasting_multiplier"><tt class="xref py py-obj docutils literal"><span class="pre">broadcasting_multiplier</span></tt></a>(plates,&nbsp;*args)</td>
+<td>Compute the plate multiplier for given shapes.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.nodes.Exponential.delete.html#bayespy.nodes.Exponential.delete" title="bayespy.nodes.Exponential.delete"><tt class="xref py py-obj docutils literal"><span class="pre">delete</span></tt></a>()</td>
 <td>Delete this node and the children</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.nodes.Exponential.get_gradient.html#bayespy.nodes.Exponential.get_gradient" title="bayespy.nodes.Exponential.get_gradient"><tt class="xref py py-obj docutils literal"><span class="pre">get_gradient</span></tt></a>(rg)</td>
+<td>Computes gradient with respect to the natural parameters.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.nodes.Exponential.get_mask.html#bayespy.nodes.Exponential.get_mask" title="bayespy.nodes.Exponential.get_mask"><tt class="xref py py-obj docutils literal"><span class="pre">get_mask</span></tt></a>()</td>
 <td></td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="generated/bayespy.nodes.Exponential.get_moments.html#bayespy.nodes.Exponential.get_moments" title="bayespy.nodes.Exponential.get_moments"><tt class="xref py py-obj docutils literal"><span class="pre">get_moments</span></tt></a>()</td>
 <td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.nodes.Exponential.get_parameters.html#bayespy.nodes.Exponential.get_parameters" title="bayespy.nodes.Exponential.get_parameters"><tt class="xref py py-obj docutils literal"><span class="pre">get_parameters</span></tt></a>()</td>
+<td>Return parameters of the VB distribution.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.nodes.Exponential.get_riemannian_gradient.html#bayespy.nodes.Exponential.get_riemannian_gradient" title="bayespy.nodes.Exponential.get_riemannian_gradient"><tt class="xref py py-obj docutils literal"><span class="pre">get_riemannian_gradient</span></tt></a>()</td>
+<td>Computes the Riemannian/natural gradient.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.nodes.Exponential.get_shape.html#bayespy.nodes.Exponential.get_shape" title="bayespy.nodes.Exponential.get_shape"><tt class="xref py py-obj docutils literal"><span class="pre">get_shape</span></tt></a>(ind)</td>
 <td></td>
@@ -151,8 +163,8 @@ an exponential prior distribution but gamma posterior approximation.</p>
 <tr class="row-even"><td><a class="reference internal" href="generated/bayespy.nodes.Exponential.logpdf.html#bayespy.nodes.Exponential.logpdf" title="bayespy.nodes.Exponential.logpdf"><tt class="xref py py-obj docutils literal"><span class="pre">logpdf</span></tt></a>(X[,&nbsp;mask])</td>
 <td>Compute the log probability density function Q(X) of this node.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.nodes.Exponential.lower_bound_contribution.html#bayespy.nodes.Exponential.lower_bound_contribution" title="bayespy.nodes.Exponential.lower_bound_contribution"><tt class="xref py py-obj docutils literal"><span class="pre">lower_bound_contribution</span></tt></a>([gradient])</td>
-<td></td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.nodes.Exponential.lower_bound_contribution.html#bayespy.nodes.Exponential.lower_bound_contribution" title="bayespy.nodes.Exponential.lower_bound_contribution"><tt class="xref py py-obj docutils literal"><span class="pre">lower_bound_contribution</span></tt></a>([gradient,&nbsp;...])</td>
+<td>Compute E[ log p(X|parents) - log q(X) ]</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="generated/bayespy.nodes.Exponential.lowerbound.html#bayespy.nodes.Exponential.lowerbound" title="bayespy.nodes.Exponential.lowerbound"><tt class="xref py py-obj docutils literal"><span class="pre">lowerbound</span></tt></a>()</td>
 <td></td>
@@ -175,16 +187,19 @@ an exponential prior distribution but gamma posterior approximation.</p>
 <tr class="row-even"><td><a class="reference internal" href="generated/bayespy.nodes.Exponential.save.html#bayespy.nodes.Exponential.save" title="bayespy.nodes.Exponential.save"><tt class="xref py py-obj docutils literal"><span class="pre">save</span></tt></a>(group)</td>
 <td>Save the state of the node into a HDF5 file.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.nodes.Exponential.set_plotter.html#bayespy.nodes.Exponential.set_plotter" title="bayespy.nodes.Exponential.set_plotter"><tt class="xref py py-obj docutils literal"><span class="pre">set_plotter</span></tt></a>(plotter)</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.nodes.Exponential.set_parameters.html#bayespy.nodes.Exponential.set_parameters" title="bayespy.nodes.Exponential.set_parameters"><tt class="xref py py-obj docutils literal"><span class="pre">set_parameters</span></tt></a>(x)</td>
+<td>Set the parameters of the VB distribution.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.nodes.Exponential.set_plotter.html#bayespy.nodes.Exponential.set_plotter" title="bayespy.nodes.Exponential.set_plotter"><tt class="xref py py-obj docutils literal"><span class="pre">set_plotter</span></tt></a>(plotter)</td>
 <td></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.nodes.Exponential.show.html#bayespy.nodes.Exponential.show" title="bayespy.nodes.Exponential.show"><tt class="xref py py-obj docutils literal"><span class="pre">show</span></tt></a>()</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.nodes.Exponential.show.html#bayespy.nodes.Exponential.show" title="bayespy.nodes.Exponential.show"><tt class="xref py py-obj docutils literal"><span class="pre">show</span></tt></a>()</td>
 <td>Print the distribution using standard parameterization.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.nodes.Exponential.unobserve.html#bayespy.nodes.Exponential.unobserve" title="bayespy.nodes.Exponential.unobserve"><tt class="xref py py-obj docutils literal"><span class="pre">unobserve</span></tt></a>()</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.nodes.Exponential.unobserve.html#bayespy.nodes.Exponential.unobserve" title="bayespy.nodes.Exponential.unobserve"><tt class="xref py py-obj docutils literal"><span class="pre">unobserve</span></tt></a>()</td>
 <td></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.nodes.Exponential.update.html#bayespy.nodes.Exponential.update" title="bayespy.nodes.Exponential.update"><tt class="xref py py-obj docutils literal"><span class="pre">update</span></tt></a>()</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.nodes.Exponential.update.html#bayespy.nodes.Exponential.update" title="bayespy.nodes.Exponential.update"><tt class="xref py py-obj docutils literal"><span class="pre">update</span></tt></a>([annealing])</td>
 <td></td>
 </tr>
 </tbody>
@@ -197,10 +212,13 @@ an exponential prior distribution but gamma posterior approximation.</p>
 </colgroup>
 <tbody valign="top">
 <tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.nodes.Exponential.dims.html#bayespy.nodes.Exponential.dims" title="bayespy.nodes.Exponential.dims"><tt class="xref py py-obj docutils literal"><span class="pre">dims</span></tt></a></td>
-<td>tuple() -&gt; empty tuple</td>
+<td></td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="generated/bayespy.nodes.Exponential.plates.html#bayespy.nodes.Exponential.plates" title="bayespy.nodes.Exponential.plates"><tt class="xref py py-obj docutils literal"><span class="pre">plates</span></tt></a></td>
 <td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.nodes.Exponential.plates_multiplier.html#bayespy.nodes.Exponential.plates_multiplier" title="bayespy.nodes.Exponential.plates_multiplier"><tt class="xref py py-obj docutils literal"><span class="pre">plates_multiplier</span></tt></a></td>
+<td>Plate multiplier is applied to messages to parents</td>
 </tr>
 </tbody>
 </table>
@@ -215,8 +233,8 @@ an exponential prior distribution but gamma posterior approximation.</p>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
   <h4>Previous topic</h4>
-  <p class="topless"><a href="generated/bayespy.nodes.Wishart.plates.html"
-                        title="previous chapter">bayespy.nodes.Wishart.plates</a></p>
+  <p class="topless"><a href="generated/bayespy.nodes.Wishart.plates_multiplier.html"
+                        title="previous chapter">bayespy.nodes.Wishart.plates_multiplier</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="generated/bayespy.nodes.Exponential.__init__.html"
                         title="next chapter">bayespy.nodes.Exponential.__init__</a></p>
@@ -255,7 +273,7 @@ an exponential prior distribution but gamma posterior approximation.</p>
           <a href="generated/bayespy.nodes.Exponential.__init__.html" title="bayespy.nodes.Exponential.__init__"
              >next</a> |</li>
         <li class="right" >
-          <a href="generated/bayespy.nodes.Wishart.plates.html" title="bayespy.nodes.Wishart.plates"
+          <a href="generated/bayespy.nodes.Wishart.plates_multiplier.html" title="bayespy.nodes.Wishart.plates_multiplier"
              >previous</a> |</li>
         <li><a href="../../../index.html">BayesPy v0.2.3 Documentation</a> &raquo;</li>
           <li><a href="../../user_api.html" >User API</a> &raquo;</li>
@@ -264,7 +282,7 @@ an exponential prior distribution but gamma posterior approximation.</p>
     </div>
     <div class="footer">
         &copy; Copyright 2011-2014, Jaakko Luttinen, GPLv3.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>
 </html>

@@ -425,8 +425,8 @@
 <span class="k">def</span> <span class="nf">sum_to_plates</span><span class="p">(</span><span class="n">V</span><span class="p">,</span> <span class="n">plates_to</span><span class="p">,</span> <span class="n">plates_from</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">ndim</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">plates_from</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="n">r</span> <span class="o">=</span> <span class="n">gaussian</span><span class="o">.</span><span class="n">Gaussian</span><span class="o">.</span><span class="n">_plate_multiplier</span><span class="p">(</span><span class="n">plates_from</span><span class="p">,</span>
-                                                    <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">V</span><span class="p">))</span>
+            <span class="n">r</span> <span class="o">=</span> <span class="n">gaussian</span><span class="o">.</span><span class="n">Gaussian</span><span class="o">.</span><span class="n">broadcasting_multiplier</span><span class="p">(</span><span class="n">plates_from</span><span class="p">,</span>
+                                                          <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">V</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">r</span> <span class="o">=</span> <span class="mi">1</span>
         <span class="k">return</span> <span class="n">r</span> <span class="o">*</span> <span class="n">misc</span><span class="o">.</span><span class="n">sum_to_shape</span><span class="p">(</span><span class="n">V</span><span class="p">,</span> <span class="n">plates_to</span><span class="p">)</span>
@@ -435,7 +435,7 @@
         <span class="n">plates_V</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">V</span><span class="p">)[:</span><span class="o">-</span><span class="n">ndim</span><span class="p">]</span>
         <span class="n">shape_to</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">plates_to</span><span class="p">)</span> <span class="o">+</span> <span class="n">dims_V</span>
         <span class="k">if</span> <span class="n">plates_from</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="n">r</span> <span class="o">=</span> <span class="n">gaussian</span><span class="o">.</span><span class="n">Gaussian</span><span class="o">.</span><span class="n">_plate_multiplier</span><span class="p">(</span><span class="n">plates_from</span><span class="p">,</span> <span class="n">plates_V</span><span class="p">)</span>
+            <span class="n">r</span> <span class="o">=</span> <span class="n">gaussian</span><span class="o">.</span><span class="n">Gaussian</span><span class="o">.</span><span class="n">broadcasting_multiplier</span><span class="p">(</span><span class="n">plates_from</span><span class="p">,</span> <span class="n">plates_V</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">r</span> <span class="o">=</span> <span class="mi">1</span>
         <span class="k">return</span> <span class="n">r</span> <span class="o">*</span> <span class="n">misc</span><span class="o">.</span><span class="n">sum_to_shape</span><span class="p">(</span><span class="n">V</span><span class="p">,</span> <span class="n">shape_to</span><span class="p">)</span>
@@ -775,7 +775,7 @@
         <span class="k">def</span> <span class="nf">sum_plates</span><span class="p">(</span><span class="n">V</span><span class="p">,</span> <span class="o">*</span><span class="n">plates</span><span class="p">):</span>
             <span class="n">full_plates</span> <span class="o">=</span> <span class="n">misc</span><span class="o">.</span><span class="n">broadcasted_shape</span><span class="p">(</span><span class="o">*</span><span class="n">plates</span><span class="p">)</span>
             
-            <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">node_X</span><span class="o">.</span><span class="n">_plate_multiplier</span><span class="p">(</span><span class="n">full_plates</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">V</span><span class="p">))</span>
+            <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">node_X</span><span class="o">.</span><span class="n">broadcasting_multiplier</span><span class="p">(</span><span class="n">full_plates</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">V</span><span class="p">))</span>
             <span class="k">return</span> <span class="n">r</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">V</span><span class="p">)</span>
 
         <span class="n">XmuXmu_alpha</span> <span class="o">=</span> <span class="n">XmuXmu</span> <span class="o">*</span> <span class="n">alpha</span>
@@ -839,10 +839,10 @@
         <span class="c"># Compute the gradient with respect R</span>
         <span class="c">#</span>
 
-        <span class="n">plate_multiplier</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">node_X</span><span class="o">.</span><span class="n">_plate_multiplier</span>
+        <span class="n">broadcasting_multiplier</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">node_X</span><span class="o">.</span><span class="n">broadcasting_multiplier</span>
         <span class="k">def</span> <span class="nf">sum_plates</span><span class="p">(</span><span class="n">V</span><span class="p">,</span> <span class="n">plates</span><span class="p">):</span>
             <span class="n">ones</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">R</span><span class="p">))</span>
-            <span class="n">r</span> <span class="o">=</span> <span class="n">plate_multiplier</span><span class="p">(</span><span class="n">plates</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">V</span><span class="p">)[:</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span>
+            <span class="n">r</span> <span class="o">=</span> <span class="n">broadcasting_multiplier</span><span class="p">(</span><span class="n">plates</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">V</span><span class="p">)[:</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span>
             <span class="k">return</span> <span class="n">r</span> <span class="o">*</span> <span class="n">misc</span><span class="o">.</span><span class="n">sum_multiply</span><span class="p">(</span><span class="n">V</span><span class="p">,</span> <span class="n">ones</span><span class="p">,</span>
                                          <span class="n">axis</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">2</span><span class="p">),</span>
                                          <span class="n">sumaxis</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
@@ -893,7 +893,7 @@
                                          <span class="mi">0</span><span class="p">,</span>
                                          <span class="p">(</span><span class="n">sum_plates</span><span class="p">(</span><span class="n">D_logalpha</span><span class="p">,</span>
                                                      <span class="n">plates_X</span><span class="p">)</span>
-                                          <span class="o">*</span> <span class="n">plate_multiplier</span><span class="p">((</span><span class="n">D</span><span class="p">,),</span>
+                                          <span class="o">*</span> <span class="n">broadcasting_multiplier</span><span class="p">((</span><span class="n">D</span><span class="p">,),</span>
                                                              <span class="n">plates_alpha</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">:])),</span>
                                          <span class="mi">0</span><span class="p">)</span>
 
@@ -992,8 +992,8 @@
 
         <span class="k">def</span> <span class="nf">sum_plates</span><span class="p">(</span><span class="n">V</span><span class="p">,</span> <span class="n">plates</span><span class="p">):</span>
             <span class="n">ones</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">Q</span><span class="p">))</span>
-            <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">node_X</span><span class="o">.</span><span class="n">_plate_multiplier</span><span class="p">(</span><span class="n">plates</span><span class="p">,</span>
-                                              <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">V</span><span class="p">)[:</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span>
+            <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">node_X</span><span class="o">.</span><span class="n">broadcasting_multiplier</span><span class="p">(</span><span class="n">plates</span><span class="p">,</span>
+                                                    <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">V</span><span class="p">)[:</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span>
 
             <span class="k">return</span> <span class="n">r</span> <span class="o">*</span> <span class="n">misc</span><span class="o">.</span><span class="n">sum_multiply</span><span class="p">(</span><span class="n">V</span><span class="p">,</span> <span class="n">ones</span><span class="p">,</span>
                                          <span class="n">axis</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">2</span><span class="p">),</span>
@@ -1024,7 +1024,7 @@
                                           <span class="mi">0</span><span class="p">,</span>
                                           <span class="p">(</span><span class="n">sum_plates</span><span class="p">(</span><span class="n">D_logalpha</span><span class="p">,</span>
                                                       <span class="n">plates_X</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
-                                           <span class="o">*</span> <span class="n">plate_multiplier</span><span class="p">((</span><span class="n">N</span><span class="p">,</span><span class="n">D</span><span class="p">),</span>
+                                           <span class="o">*</span> <span class="n">broadcasting_multiplier</span><span class="p">((</span><span class="n">N</span><span class="p">,</span><span class="n">D</span><span class="p">),</span>
                                                               <span class="n">plates_alpha</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">:])),</span>
                                           <span class="mi">0</span><span class="p">)</span>
 
@@ -1621,7 +1621,7 @@
     </div>
     <div class="footer">
         &copy; Copyright 2011-2014, Jaakko Luttinen, GPLv3.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>
 </html>

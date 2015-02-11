@@ -16,6 +16,7 @@ bayespy.inference.vmp.nodes.gaussian.WrapToGaussianGammaARD
    
       ~WrapToGaussianGammaARD.__init__
       ~WrapToGaussianGammaARD.add_plate_axis
+      ~WrapToGaussianGammaARD.broadcasting_multiplier
       ~WrapToGaussianGammaARD.delete
       ~WrapToGaussianGammaARD.get_mask
       ~WrapToGaussianGammaARD.get_moments
@@ -36,5 +37,6 @@ bayespy.inference.vmp.nodes.gaussian.WrapToGaussianGammaARD
       :toctree: generated/
    
       ~WrapToGaussianGammaARD.plates
+      ~WrapToGaussianGammaARD.plates_multiplier
    
    

@@ -16,9 +16,13 @@ bayespy.nodes.SwitchingGaussianMarkovChain
    
       ~SwitchingGaussianMarkovChain.__init__
       ~SwitchingGaussianMarkovChain.add_plate_axis
+      ~SwitchingGaussianMarkovChain.broadcasting_multiplier
       ~SwitchingGaussianMarkovChain.delete
+      ~SwitchingGaussianMarkovChain.get_gradient
       ~SwitchingGaussianMarkovChain.get_mask
       ~SwitchingGaussianMarkovChain.get_moments
+      ~SwitchingGaussianMarkovChain.get_parameters
+      ~SwitchingGaussianMarkovChain.get_riemannian_gradient
       ~SwitchingGaussianMarkovChain.get_shape
       ~SwitchingGaussianMarkovChain.has_plotter
       ~SwitchingGaussianMarkovChain.initialize_from_parameters
@@ -36,6 +40,7 @@ bayespy.nodes.SwitchingGaussianMarkovChain
       ~SwitchingGaussianMarkovChain.random
       ~SwitchingGaussianMarkovChain.rotate
       ~SwitchingGaussianMarkovChain.save
+      ~SwitchingGaussianMarkovChain.set_parameters
       ~SwitchingGaussianMarkovChain.set_plotter
       ~SwitchingGaussianMarkovChain.show
       ~SwitchingGaussianMarkovChain.unobserve
@@ -52,5 +57,6 @@ bayespy.nodes.SwitchingGaussianMarkovChain
    
       ~SwitchingGaussianMarkovChain.dims
       ~SwitchingGaussianMarkovChain.plates
+      ~SwitchingGaussianMarkovChain.plates_multiplier
    
    

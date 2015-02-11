@@ -63,6 +63,22 @@
 <dt id="bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.compute_moments_and_cgf">
 <tt class="descclassname">GaussianDistribution.</tt><tt class="descname">compute_moments_and_cgf</tt><big>(</big><em>phi</em>, <em>mask=True</em><big>)</big><a class="reference internal" href="../../../_modules/bayespy/inference/vmp/nodes/gaussian.html#GaussianDistribution.compute_moments_and_cgf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.compute_moments_and_cgf" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the moments and <span class="math">\(g(\phi)\)</span>.</p>
+<div class="math">
+\[\begin{split}\overline{\mathbf{u}}  (\boldsymbol{\phi})
+&amp;=
+\left[ \begin{matrix}
+  - \frac{1}{2} \boldsymbol{\phi}^{-1}_2 \boldsymbol{\phi}_1
+  \\
+  \frac{1}{4} \boldsymbol{\phi}^{-1}_2 \boldsymbol{\phi}_1
+  \boldsymbol{\phi}^{\mathrm{T}}_1 \boldsymbol{\phi}^{-1}_2 
+  - \frac{1}{2} \boldsymbol{\phi}^{-1}_2
+\end{matrix} \right]
+\\
+g_{\boldsymbol{\phi}} (\boldsymbol{\phi})
+&amp;=
+\frac{1}{4} \boldsymbol{\phi}^{\mathrm{T}}_1 \boldsymbol{\phi}^{-1}_2 
+\boldsymbol{\phi}_1
++ \frac{1}{2} \log | -2 \boldsymbol{\phi}_2 |\end{split}\]</div>
 </dd></dl>
 
 </div>
@@ -124,7 +140,7 @@
     </div>
     <div class="footer">
         &copy; Copyright 2011-2014, Jaakko Luttinen, GPLv3.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>
 </html>

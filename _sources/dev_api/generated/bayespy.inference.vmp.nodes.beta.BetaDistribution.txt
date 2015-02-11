@@ -16,6 +16,7 @@ bayespy.inference.vmp.nodes.beta.BetaDistribution
    
       ~BetaDistribution.compute_cgf_from_parents
       ~BetaDistribution.compute_fixed_moments_and_f
+      ~BetaDistribution.compute_gradient
       ~BetaDistribution.compute_logpdf
       ~BetaDistribution.compute_mask_to_parent
       ~BetaDistribution.compute_message_to_parent

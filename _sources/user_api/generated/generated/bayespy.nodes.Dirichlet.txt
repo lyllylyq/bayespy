@@ -16,9 +16,13 @@ bayespy.nodes.Dirichlet
    
       ~Dirichlet.__init__
       ~Dirichlet.add_plate_axis
+      ~Dirichlet.broadcasting_multiplier
       ~Dirichlet.delete
+      ~Dirichlet.get_gradient
       ~Dirichlet.get_mask
       ~Dirichlet.get_moments
+      ~Dirichlet.get_parameters
+      ~Dirichlet.get_riemannian_gradient
       ~Dirichlet.get_shape
       ~Dirichlet.has_plotter
       ~Dirichlet.initialize_from_parameters
@@ -35,6 +39,7 @@ bayespy.nodes.Dirichlet
       ~Dirichlet.plot
       ~Dirichlet.random
       ~Dirichlet.save
+      ~Dirichlet.set_parameters
       ~Dirichlet.set_plotter
       ~Dirichlet.show
       ~Dirichlet.unobserve
@@ -51,5 +56,6 @@ bayespy.nodes.Dirichlet
    
       ~Dirichlet.dims
       ~Dirichlet.plates
+      ~Dirichlet.plates_multiplier
    
    

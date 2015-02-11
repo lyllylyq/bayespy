@@ -26,7 +26,7 @@
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="top" title="BayesPy v0.2.3 Documentation" href="../../../index.html" />
     <link rel="up" title="bayespy.inference.vmp.nodes.gaussian.GaussianDistribution" href="../bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.html" />
-    <link rel="next" title="bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.compute_logpdf" href="bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.compute_logpdf.html" />
+    <link rel="next" title="bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.compute_gradient" href="bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.compute_gradient.html" />
     <link rel="prev" title="bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.compute_cgf_from_parents" href="bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.compute_cgf_from_parents.html" /> 
   </head>
   <body>
@@ -40,7 +40,7 @@
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.compute_logpdf.html" title="bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.compute_logpdf"
+          <a href="bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.compute_gradient.html" title="bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.compute_gradient"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.compute_cgf_from_parents.html" title="bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.compute_cgf_from_parents"
@@ -63,6 +63,17 @@
 <dt id="bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.compute_fixed_moments_and_f">
 <tt class="descclassname">GaussianDistribution.</tt><tt class="descname">compute_fixed_moments_and_f</tt><big>(</big><em>x</em>, <em>mask=True</em><big>)</big><a class="reference internal" href="../../../_modules/bayespy/inference/vmp/nodes/gaussian.html#GaussianDistribution.compute_fixed_moments_and_f"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.compute_fixed_moments_and_f" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the moments and <span class="math">\(f(x)\)</span> for a fixed value.</p>
+<div class="math">
+\[\begin{split}\mathbf{u} (\mathbf{x})
+&amp;=
+\left[ \begin{matrix}
+  \mathbf{x}
+  \\
+  \mathbf{xx}^{\mathrm{T}}
+\end{matrix} \right]
+\\
+f(\mathbf{x})
+&amp;= - \frac{D}{2} \log(2\pi)\end{split}\]</div>
 </dd></dl>
 
 </div>
@@ -77,8 +88,8 @@
   <p class="topless"><a href="bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.compute_cgf_from_parents.html"
                         title="previous chapter">bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.compute_cgf_from_parents</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.compute_logpdf.html"
-                        title="next chapter">bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.compute_logpdf</a></p>
+  <p class="topless"><a href="bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.compute_gradient.html"
+                        title="next chapter">bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.compute_gradient</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../../../_sources/dev_api/generated/generated/bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.compute_fixed_moments_and_f.txt"
@@ -111,7 +122,7 @@
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.compute_logpdf.html" title="bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.compute_logpdf"
+          <a href="bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.compute_gradient.html" title="bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.compute_gradient"
              >next</a> |</li>
         <li class="right" >
           <a href="bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.compute_cgf_from_parents.html" title="bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.compute_cgf_from_parents"
@@ -124,7 +135,7 @@
     </div>
     <div class="footer">
         &copy; Copyright 2011-2014, Jaakko Luttinen, GPLv3.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>
 </html>

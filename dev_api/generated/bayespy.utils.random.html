@@ -27,7 +27,7 @@
     <link rel="top" title="BayesPy v0.2.3 Documentation" href="../../index.html" />
     <link rel="up" title="Utility functions" href="../utils.html" />
     <link rel="next" title="bayespy.utils.random.alpha_beta_recursion" href="generated/bayespy.utils.random.alpha_beta_recursion.html" />
-    <link rel="prev" title="bayespy.utils.linalg.tracedot" href="generated/bayespy.utils.linalg.tracedot.html" /> 
+    <link rel="prev" title="bayespy.utils.linalg.transpose" href="generated/bayespy.utils.linalg.transpose.html" /> 
   </head>
   <body>
     <div class="related">
@@ -43,7 +43,7 @@
           <a href="generated/bayespy.utils.random.alpha_beta_recursion.html" title="bayespy.utils.random.alpha_beta_recursion"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="generated/bayespy.utils.linalg.tracedot.html" title="bayespy.utils.linalg.tracedot"
+          <a href="generated/bayespy.utils.linalg.transpose.html" title="bayespy.utils.linalg.transpose"
              accesskey="P">previous</a> |</li>
         <li><a href="../../index.html">BayesPy v0.2.3 Documentation</a> &raquo;</li>
           <li><a href="../dev_api.html" >Developer API</a> &raquo;</li>
@@ -105,22 +105,25 @@
 <tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.utils.random.invwishart_rand.html#bayespy.utils.random.invwishart_rand" title="bayespy.utils.random.invwishart_rand"><tt class="xref py py-obj docutils literal"><span class="pre">invwishart_rand</span></tt></a>(nu,&nbsp;V)</td>
 <td></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.utils.random.mask.html#bayespy.utils.random.mask" title="bayespy.utils.random.mask"><tt class="xref py py-obj docutils literal"><span class="pre">mask</span></tt></a>(*shape[,&nbsp;p])</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.utils.random.logodds_to_probability.html#bayespy.utils.random.logodds_to_probability" title="bayespy.utils.random.logodds_to_probability"><tt class="xref py py-obj docutils literal"><span class="pre">logodds_to_probability</span></tt></a>(x)</td>
+<td>Solves p from log(p/(1-p))</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.utils.random.mask.html#bayespy.utils.random.mask" title="bayespy.utils.random.mask"><tt class="xref py py-obj docutils literal"><span class="pre">mask</span></tt></a>(*shape[,&nbsp;p])</td>
 <td>Return a boolean array of the given shape.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.utils.random.orth.html#bayespy.utils.random.orth" title="bayespy.utils.random.orth"><tt class="xref py py-obj docutils literal"><span class="pre">orth</span></tt></a>(D)</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.utils.random.orth.html#bayespy.utils.random.orth" title="bayespy.utils.random.orth"><tt class="xref py py-obj docutils literal"><span class="pre">orth</span></tt></a>(D)</td>
 <td>Draw random orthogonal matrix.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.utils.random.sphere.html#bayespy.utils.random.sphere" title="bayespy.utils.random.sphere"><tt class="xref py py-obj docutils literal"><span class="pre">sphere</span></tt></a>([N])</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.utils.random.sphere.html#bayespy.utils.random.sphere" title="bayespy.utils.random.sphere"><tt class="xref py py-obj docutils literal"><span class="pre">sphere</span></tt></a>([N])</td>
 <td>Draw random points uniformly on a unit sphere.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.utils.random.svd.html#bayespy.utils.random.svd" title="bayespy.utils.random.svd"><tt class="xref py py-obj docutils literal"><span class="pre">svd</span></tt></a>(s)</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.utils.random.svd.html#bayespy.utils.random.svd" title="bayespy.utils.random.svd"><tt class="xref py py-obj docutils literal"><span class="pre">svd</span></tt></a>(s)</td>
 <td>Draw a random matrix given its singular values.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.utils.random.t_logpdf.html#bayespy.utils.random.t_logpdf" title="bayespy.utils.random.t_logpdf"><tt class="xref py py-obj docutils literal"><span class="pre">t_logpdf</span></tt></a>(z2,&nbsp;logdet_cov,&nbsp;nu,&nbsp;D)</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.utils.random.t_logpdf.html#bayespy.utils.random.t_logpdf" title="bayespy.utils.random.t_logpdf"><tt class="xref py py-obj docutils literal"><span class="pre">t_logpdf</span></tt></a>(z2,&nbsp;logdet_cov,&nbsp;nu,&nbsp;D)</td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.utils.random.wishart_rand.html#bayespy.utils.random.wishart_rand" title="bayespy.utils.random.wishart_rand"><tt class="xref py py-obj docutils literal"><span class="pre">wishart_rand</span></tt></a>(nu,&nbsp;V)</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.utils.random.wishart_rand.html#bayespy.utils.random.wishart_rand" title="bayespy.utils.random.wishart_rand"><tt class="xref py py-obj docutils literal"><span class="pre">wishart_rand</span></tt></a>(nu,&nbsp;V)</td>
 <td>Draw a random sample from the Wishart distribution.</td>
 </tr>
 </tbody>
@@ -134,8 +137,8 @@
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
   <h4>Previous topic</h4>
-  <p class="topless"><a href="generated/bayespy.utils.linalg.tracedot.html"
-                        title="previous chapter">bayespy.utils.linalg.tracedot</a></p>
+  <p class="topless"><a href="generated/bayespy.utils.linalg.transpose.html"
+                        title="previous chapter">bayespy.utils.linalg.transpose</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="generated/bayespy.utils.random.alpha_beta_recursion.html"
                         title="next chapter">bayespy.utils.random.alpha_beta_recursion</a></p>
@@ -174,7 +177,7 @@
           <a href="generated/bayespy.utils.random.alpha_beta_recursion.html" title="bayespy.utils.random.alpha_beta_recursion"
              >next</a> |</li>
         <li class="right" >
-          <a href="generated/bayespy.utils.linalg.tracedot.html" title="bayespy.utils.linalg.tracedot"
+          <a href="generated/bayespy.utils.linalg.transpose.html" title="bayespy.utils.linalg.transpose"
              >previous</a> |</li>
         <li><a href="../../index.html">BayesPy v0.2.3 Documentation</a> &raquo;</li>
           <li><a href="../dev_api.html" >Developer API</a> &raquo;</li>
@@ -183,7 +186,7 @@
     </div>
     <div class="footer">
         &copy; Copyright 2011-2014, Jaakko Luttinen, GPLv3.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>
 </html>

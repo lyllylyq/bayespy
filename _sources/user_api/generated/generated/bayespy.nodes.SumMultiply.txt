@@ -16,6 +16,7 @@ bayespy.nodes.SumMultiply
    
       ~SumMultiply.__init__
       ~SumMultiply.add_plate_axis
+      ~SumMultiply.broadcasting_multiplier
       ~SumMultiply.delete
       ~SumMultiply.get_mask
       ~SumMultiply.get_moments
@@ -37,5 +38,6 @@ bayespy.nodes.SumMultiply
       :toctree: generated/
    
       ~SumMultiply.plates
+      ~SumMultiply.plates_multiplier
    
    

@@ -1,0 +1,228 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Advanced topics &mdash; BayesPy v0.2.3 Documentation</title>
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.2.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="BayesPy v0.2.3 Documentation" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../index.html">BayesPy v0.2.3 Documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="advanced-topics">
+<h1>Advanced topics<a class="headerlink" href="#advanced-topics" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="the-vb-lower-bound-and-its-gradients">
+<h2>The VB lower bound and its gradients<a class="headerlink" href="#the-vb-lower-bound-and-its-gradients" title="Permalink to this headline">¶</a></h2>
+<p>The VB lower bound:</p>
+<div class="math">
+\[\begin{split}\mathcal{L} &amp;= \underbrace{\langle \log p(X,Z) \rangle}_{\equiv \mathcal{L}_p}
+- \underbrace{\langle \log q(Z) \rangle}_{\equiv \mathcal{L}_q}\end{split}\]</div>
+<p>The child nodes pass the gradient to the parent node so the parent node can
+optimize its parameters.  In general, <span class="math">\(\mathcal{L}_p\)</span> can be almost
+arbitrarily complex function of <span class="math">\(Z\)</span>:</p>
+<div class="math">
+\[\mathcal{L}_p = \langle \log p(X,Z) \rangle.\]</div>
+<p>The gradient is</p>
+<div class="math">
+\[\begin{split}\frac{\partial}{\partial \xi} \mathcal{L}_p
+&amp;= \frac{\partial}{\partial \xi} \langle \log p(X,Z) \rangle
+\\
+&amp;=  \langle \log p(X,Z) \frac{\partial}{\partial \xi} \log q(Z) \rangle\end{split}\]</div>
+<p>which can be computed, for instance, by sampling from <span class="math">\(q(Z)\)</span>.  Note that
+<span class="math">\(\xi\)</span> can represent, for instance, the expectation parameters
+<span class="math">\(\bar{u}\)</span> of <span class="math">\(q(Z)\)</span> in order to obtain the Riemannian gradient for
+an exponential family <span class="math">\(q(Z)\)</span>.</p>
+<p>Often, <span class="math">\(\mathcal{L}_p\)</span> has a simpler form (or it can be further lower
+bounded by a simpler form).  If <span class="math">\(\mathcal{L}_p\)</span> can be written as a
+function of <span class="math">\(\bar{u}\)</span> as</p>
+<div class="math">
+\[\mathcal{L}_p = \bar{u}^T \psi + \mathrm{const},\]</div>
+<p>the gradient with respect to the moments is</p>
+<div class="math">
+\[\frac{\partial}{\partial \bar{u}} \mathcal{L}_p = \psi.\]</div>
+<p>It can be that <span class="math">\(\psi\)</span> can be computed exactly by using moments of other
+nodes or it needs to be approximated by using sampling from the distribution of
+other nodes.</p>
+<p>To summarize, the gradient message can be a numerical gradient, an approximate
+stochastic gradient (by sampling other nodes) or a function which can be used to
+compute an approximate stochastic gradient by sampling the node itself (and
+possibly other nodes).</p>
+</div>
+<div class="section" id="riemannian-gradient">
+<h2>Riemannian gradient<a class="headerlink" href="#riemannian-gradient" title="Permalink to this headline">¶</a></h2>
+<p>In principle, the VB lower bound can be maximized with respect to any
+parameterization of the approximate distribution.  However, normal gradient can
+perform badly, because it doesn&#8217;t take into account the geometry of the space of
+probability distributions.  This can be fixed by using Riemannian (i.e.,
+natural) gradient.  In general, the Riemannian gradient is defined as</p>
+<div class="math">
+\[\tilde{\nabla}_\xi \mathcal{L} = G^{-1} \nabla_\xi \mathcal{L}\]</div>
+<p>where</p>
+<div class="math">
+\[[G]_{ij} = \left\langle \frac{\partial \log q(Z)}{\partial \xi_i}
+\frac{\partial \log q(Z)}{\partial \xi_j} \right\rangle = - \left\langle
+\frac{\partial^2 \log q(Z)}{\partial \xi_i \partial \xi_j} \right\rangle.\]</div>
+<p>For exponential family distributions, the Riemannian gradient with respect to
+the natural parameters <span class="math">\(\phi\)</span> can be computed easily by taking the
+gradient with respect to the moments <span class="math">\(\bar{u}\)</span>:</p>
+<div class="math">
+\[\tilde{\nabla}_\phi = G^{-1} \nabla_\phi \mathcal{L} = \nabla_{\bar{u}}
+\mathcal{L}.\]</div>
+<p>Note that <span class="math">\(G\)</span> depends only on the approximate distribution <span class="math">\(q(Z)\)</span>.
+Thus, the model itself does not need to be in the exponential family but only
+the approximation, in order to use this property.  The Riemannian gradient of
+<span class="math">\(\mathcal{L}_q\)</span> for exponential family distributions <span class="math">\(q(Z)\)</span> is</p>
+<div class="math">
+\[\tilde{\nabla}_\phi \mathcal{L}_q = \nabla_{\bar{u}} \mathcal{L}_q =
+\nabla_{\bar{u}} [ \bar{u}^T \phi + \langle f(Z)
+\rangle + g(\phi) ] = \phi.\]</div>
+<p>Thus, the Riemannian gradient is</p>
+<div class="math">
+\[\tilde{\nabla}_\phi \mathcal{L} = \nabla_{\bar{u}}
+\mathcal{L}_p - \phi.\]</div>
+<div class="admonition-todo admonition" id="index-0">
+<p class="first admonition-title">Todo</p>
+<p class="last">Should f(Z) be taken into account? It cancels out if prior and q are in the
+same family. But if they are not, it doesn&#8217;t cancel out. Does it affect the
+gradient?</p>
+</div>
+<p>Nonlinear conjugate gradient methods <a class="reference internal" href="../references.html#hensman-2012" id="id1">[1]</a>:</p>
+<ul class="simple">
+<li>Fletcher-Reeves:</li>
+</ul>
+<div class="math">
+\[\beta_n = \frac { \langle \tilde{g}_n, \tilde{g}_n \rangle_n } { \langle
+\tilde{g}_{n-1}, \tilde{g}_{n-1} \rangle_{n-1} } = \frac { \langle g_n,
+\tilde{g}_n \rangle } { \langle g_{n-1}, \tilde{g}_{n-1} \rangle }\]</div>
+<ul class="simple">
+<li>Polak-Ribiere:</li>
+</ul>
+<div class="math">
+\[\beta_n = \frac { \langle \tilde{g}_n, \tilde{g}_n - \tilde{g}_{n-1}
+\rangle_n } { \langle \tilde{g}_{n-1}, \tilde{g}_{n-1} \rangle_{n-1} } =
+\frac { \langle g_n, \tilde{g}_n - \tilde{g}_{n-1} \rangle } {
+\langle g_{n-1}, \tilde{g}_{n-1} \rangle }\]</div>
+<ul class="simple">
+<li>Hestenes-Stiefel:</li>
+</ul>
+<div class="math">
+\[\beta_n = - \frac { \langle \tilde{g}_n, \tilde{g}_n - \tilde{g}_{n-1}
+\rangle_n } { \langle \tilde{g}_{n-1}, \tilde{g}_{n-1} \rangle_{n-1} } = -
+\frac { \langle g_n, \tilde{g}_n - \tilde{g}_{n-1} \rangle } { \langle
+g_{n-1}, \tilde{g}_{n-1} \rangle }\]</div>
+<p>where <span class="math">\(\langle \rangle_i\)</span> denotes the inner product in the Riemannian
+geometry, <span class="math">\(\langle \rangle\)</span> denotes the inner product in the Euclidean
+space, <span class="math">\(\tilde{g}\)</span> denotes the Riemannian gradient and <span class="math">\(g\)</span> denotes
+the gradient, and the following property has been used:</p>
+<div class="math">
+\[\langle \tilde{g}_n, \tilde{x} \rangle_n = \tilde{g}_n^T G_n \tilde{x} = g^T
+G^{-1}_n G_n \tilde{x} = g^T \tilde{x} = \langle g, \tilde{x} \rangle\]</div>
+</div>
+<div class="section" id="todo">
+<h2>TODO<a class="headerlink" href="#todo" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><ul class="simple">
+<li>simulated annealing</li>
+<li>Riemannian (conjugate) gradient</li>
+<li>black box variational inference</li>
+<li>stochastic variational inference</li>
+<li>pattern search</li>
+<li>fast inference</li>
+<li>parameter expansion</li>
+</ul>
+</div></blockquote>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Advanced topics</a><ul>
+<li><a class="reference internal" href="#the-vb-lower-bound-and-its-gradients">The VB lower bound and its gradients</a></li>
+<li><a class="reference internal" href="#riemannian-gradient">Riemannian gradient</a></li>
+<li><a class="reference internal" href="#todo">TODO</a></li>
+</ul>
+</li>
+</ul>
+
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/dev_guide/advanced.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../index.html">BayesPy v0.2.3 Documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011-2014, Jaakko Luttinen, GPLv3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+    </div>
+  </body>
+</html>

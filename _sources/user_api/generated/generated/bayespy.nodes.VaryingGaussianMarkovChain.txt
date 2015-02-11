@@ -16,9 +16,13 @@ bayespy.nodes.VaryingGaussianMarkovChain
    
       ~VaryingGaussianMarkovChain.__init__
       ~VaryingGaussianMarkovChain.add_plate_axis
+      ~VaryingGaussianMarkovChain.broadcasting_multiplier
       ~VaryingGaussianMarkovChain.delete
+      ~VaryingGaussianMarkovChain.get_gradient
       ~VaryingGaussianMarkovChain.get_mask
       ~VaryingGaussianMarkovChain.get_moments
+      ~VaryingGaussianMarkovChain.get_parameters
+      ~VaryingGaussianMarkovChain.get_riemannian_gradient
       ~VaryingGaussianMarkovChain.get_shape
       ~VaryingGaussianMarkovChain.has_plotter
       ~VaryingGaussianMarkovChain.initialize_from_parameters
@@ -36,6 +40,7 @@ bayespy.nodes.VaryingGaussianMarkovChain
       ~VaryingGaussianMarkovChain.random
       ~VaryingGaussianMarkovChain.rotate
       ~VaryingGaussianMarkovChain.save
+      ~VaryingGaussianMarkovChain.set_parameters
       ~VaryingGaussianMarkovChain.set_plotter
       ~VaryingGaussianMarkovChain.show
       ~VaryingGaussianMarkovChain.unobserve
@@ -52,5 +57,6 @@ bayespy.nodes.VaryingGaussianMarkovChain
    
       ~VaryingGaussianMarkovChain.dims
       ~VaryingGaussianMarkovChain.plates
+      ~VaryingGaussianMarkovChain.plates_multiplier
    
    

@@ -397,74 +397,33 @@
 <span class="sd">         \boldsymbol{\mu}</span>
 <span class="sd">       + \frac{1}{2} \log |\mathbf{\Lambda}|</span>
 <span class="sd">       - \frac{D}{2} \log (2\pi)</span>
-
-<span class="sd">    .. math::</span>
-
-<span class="sd">       \mathbf{u} (\mathbf{x})</span>
-<span class="sd">       &amp;=</span>
-<span class="sd">       \left[ \begin{matrix}</span>
-<span class="sd">         \mathbf{x}</span>
-<span class="sd">         \\</span>
-<span class="sd">         \mathbf{xx}^{\mathrm{T}}</span>
-<span class="sd">       \end{matrix} \right]</span>
-<span class="sd">       \\</span>
-<span class="sd">       \boldsymbol{\phi} (\boldsymbol{\mu}, \mathbf{\Lambda})</span>
-<span class="sd">       &amp;=</span>
-<span class="sd">       \left[ \begin{matrix}</span>
-<span class="sd">         \mathbf{\Lambda} \boldsymbol{\mu} </span>
-<span class="sd">         \\</span>
-<span class="sd">         - \frac{1}{2} \mathbf{\Lambda}</span>
-<span class="sd">       \end{matrix} \right]</span>
-<span class="sd">       \\</span>
-<span class="sd">       \boldsymbol{\phi}_{\boldsymbol{\mu}} (\mathbf{x}, \mathbf{\Lambda})</span>
-<span class="sd">       &amp;=</span>
-<span class="sd">       \left[ \begin{matrix}</span>
-<span class="sd">         \mathbf{\Lambda} \mathbf{x} </span>
-<span class="sd">         \\</span>
-<span class="sd">         - \frac{1}{2} \mathbf{\Lambda}</span>
-<span class="sd">       \end{matrix} \right]</span>
-<span class="sd">       \\</span>
-<span class="sd">       \boldsymbol{\phi}_{\mathbf{\Lambda}} (\mathbf{x}, \boldsymbol{\mu})</span>
-<span class="sd">       &amp;=</span>
-<span class="sd">       \left[ \begin{matrix}</span>
-<span class="sd">         - \frac{1}{2} \mathbf{xx}^{\mathrm{T}}</span>
-<span class="sd">         + \frac{1}{2} \mathbf{x}\boldsymbol{\mu}^{\mathrm{T}}</span>
-<span class="sd">         + \frac{1}{2} \boldsymbol{\mu}\mathbf{x}^{\mathrm{T}}</span>
-<span class="sd">         - \frac{1}{2} \boldsymbol{\mu\mu}^{\mathrm{T}}</span>
-<span class="sd">         \\</span>
-<span class="sd">         \frac{1}{2}</span>
-<span class="sd">       \end{matrix} \right]</span>
-<span class="sd">       \\</span>
-<span class="sd">       g (\boldsymbol{\mu}, \mathbf{\Lambda})</span>
-<span class="sd">       &amp;=</span>
-<span class="sd">       - \frac{1}{2} \operatorname{tr}(\boldsymbol{\mu\mu}^{\mathrm{T}}</span>
-<span class="sd">                                       \mathbf{\Lambda} )</span>
-<span class="sd">       + \frac{1}{2} \log |\mathbf{\Lambda}|</span>
-<span class="sd">       \\</span>
-<span class="sd">       g_{\boldsymbol{\phi}} (\boldsymbol{\phi})</span>
-<span class="sd">       &amp;=</span>
-<span class="sd">       \frac{1}{4} \boldsymbol{\phi}^{\mathrm{T}}_1 \boldsymbol{\phi}^{-1}_2 </span>
-<span class="sd">       \boldsymbol{\phi}_1</span>
-<span class="sd">       + \frac{1}{2} \log | -2 \boldsymbol{\phi}_2 |</span>
-<span class="sd">       \\</span>
-<span class="sd">       f(\mathbf{x})</span>
-<span class="sd">       &amp;= - \frac{D}{2} \log(2\pi)</span>
-<span class="sd">       \\</span>
-<span class="sd">       \overline{\mathbf{u}}  (\boldsymbol{\phi})</span>
-<span class="sd">       &amp;=</span>
-<span class="sd">       \left[ \begin{matrix}</span>
-<span class="sd">         - \frac{1}{2} \boldsymbol{\phi}^{-1}_2 \boldsymbol{\phi}_1</span>
-<span class="sd">         \\</span>
-<span class="sd">         \frac{1}{4} \boldsymbol{\phi}^{-1}_2 \boldsymbol{\phi}_1</span>
-<span class="sd">         \boldsymbol{\phi}^{\mathrm{T}}_1 \boldsymbol{\phi}^{-1}_2 </span>
-<span class="sd">         - \frac{1}{2} \boldsymbol{\phi}^{-1}_2</span>
-<span class="sd">       \end{matrix} \right]</span>
 <span class="sd">    &quot;&quot;&quot;</span>    
 
     
 <div class="viewcode-block" id="GaussianDistribution.compute_message_to_parent"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.compute_message_to_parent.html#bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.compute_message_to_parent">[docs]</a>    <span class="k">def</span> <span class="nf">compute_message_to_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">u_mu_Lambda</span><span class="p">):</span>
         <span class="sd">r&quot;&quot;&quot;</span>
 <span class="sd">        Compute the message to a parent node.</span>
+
+<span class="sd">        .. math::</span>
+
+<span class="sd">           \boldsymbol{\phi}_{\boldsymbol{\mu}} (\mathbf{x}, \mathbf{\Lambda})</span>
+<span class="sd">           &amp;=</span>
+<span class="sd">           \left[ \begin{matrix}</span>
+<span class="sd">             \mathbf{\Lambda} \mathbf{x} </span>
+<span class="sd">             \\</span>
+<span class="sd">             - \frac{1}{2} \mathbf{\Lambda}</span>
+<span class="sd">           \end{matrix} \right]</span>
+<span class="sd">           \\</span>
+<span class="sd">           \boldsymbol{\phi}_{\mathbf{\Lambda}} (\mathbf{x}, \boldsymbol{\mu})</span>
+<span class="sd">           &amp;=</span>
+<span class="sd">           \left[ \begin{matrix}</span>
+<span class="sd">             - \frac{1}{2} \mathbf{xx}^{\mathrm{T}}</span>
+<span class="sd">             + \frac{1}{2} \mathbf{x}\boldsymbol{\mu}^{\mathrm{T}}</span>
+<span class="sd">             + \frac{1}{2} \boldsymbol{\mu}\mathbf{x}^{\mathrm{T}}</span>
+<span class="sd">             - \frac{1}{2} \boldsymbol{\mu\mu}^{\mathrm{T}}</span>
+<span class="sd">             \\</span>
+<span class="sd">             \frac{1}{2}</span>
+<span class="sd">           \end{matrix} \right]</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">index</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">x</span> <span class="o">=</span> <span class="n">u</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
@@ -480,6 +439,16 @@
 <div class="viewcode-block" id="GaussianDistribution.compute_phi_from_parents"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.compute_phi_from_parents.html#bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.compute_phi_from_parents">[docs]</a>    <span class="k">def</span> <span class="nf">compute_phi_from_parents</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u_mu_Lambda</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
         <span class="sd">r&quot;&quot;&quot;</span>
 <span class="sd">        Compute the natural parameter vector given parent moments.</span>
+
+<span class="sd">        .. math::</span>
+
+<span class="sd">           \boldsymbol{\phi} (\boldsymbol{\mu}, \mathbf{\Lambda})</span>
+<span class="sd">           &amp;=</span>
+<span class="sd">           \left[ \begin{matrix}</span>
+<span class="sd">             \mathbf{\Lambda} \boldsymbol{\mu} </span>
+<span class="sd">             \\</span>
+<span class="sd">             - \frac{1}{2} \mathbf{\Lambda}</span>
+<span class="sd">           \end{matrix} \right]</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">Lambda_mu</span> <span class="o">=</span> <span class="n">u_mu_Lambda</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">Lambda</span> <span class="o">=</span> <span class="n">u_mu_Lambda</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
@@ -489,6 +458,24 @@
 <div class="viewcode-block" id="GaussianDistribution.compute_moments_and_cgf"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.compute_moments_and_cgf.html#bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.compute_moments_and_cgf">[docs]</a>    <span class="k">def</span> <span class="nf">compute_moments_and_cgf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">phi</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
         <span class="sd">r&quot;&quot;&quot;</span>
 <span class="sd">        Compute the moments and :math:`g(\phi)`.</span>
+
+<span class="sd">        .. math::</span>
+<span class="sd">        </span>
+<span class="sd">           \overline{\mathbf{u}}  (\boldsymbol{\phi})</span>
+<span class="sd">           &amp;=</span>
+<span class="sd">           \left[ \begin{matrix}</span>
+<span class="sd">             - \frac{1}{2} \boldsymbol{\phi}^{-1}_2 \boldsymbol{\phi}_1</span>
+<span class="sd">             \\</span>
+<span class="sd">             \frac{1}{4} \boldsymbol{\phi}^{-1}_2 \boldsymbol{\phi}_1</span>
+<span class="sd">             \boldsymbol{\phi}^{\mathrm{T}}_1 \boldsymbol{\phi}^{-1}_2 </span>
+<span class="sd">             - \frac{1}{2} \boldsymbol{\phi}^{-1}_2</span>
+<span class="sd">           \end{matrix} \right]</span>
+<span class="sd">           \\</span>
+<span class="sd">           g_{\boldsymbol{\phi}} (\boldsymbol{\phi})</span>
+<span class="sd">           &amp;=</span>
+<span class="sd">           \frac{1}{4} \boldsymbol{\phi}^{\mathrm{T}}_1 \boldsymbol{\phi}^{-1}_2 </span>
+<span class="sd">           \boldsymbol{\phi}_1</span>
+<span class="sd">           + \frac{1}{2} \log | -2 \boldsymbol{\phi}_2 |</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c"># TODO: Compute -2*phi[1] and simplify the formulas</span>
         <span class="n">L</span> <span class="o">=</span> <span class="n">misc</span><span class="o">.</span><span class="n">m_chol</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="o">*</span><span class="n">phi</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
@@ -506,6 +493,13 @@
 <div class="viewcode-block" id="GaussianDistribution.compute_cgf_from_parents"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.compute_cgf_from_parents.html#bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.compute_cgf_from_parents">[docs]</a>    <span class="k">def</span> <span class="nf">compute_cgf_from_parents</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u_mu_Lambda</span><span class="p">):</span>
         <span class="sd">r&quot;&quot;&quot;</span>
 <span class="sd">        Compute :math:`\mathrm{E}_{q(p)}[g(p)]`</span>
+
+<span class="sd">        .. math::</span>
+<span class="sd">           g (\boldsymbol{\mu}, \mathbf{\Lambda})</span>
+<span class="sd">           &amp;=</span>
+<span class="sd">           - \frac{1}{2} \operatorname{tr}(\boldsymbol{\mu\mu}^{\mathrm{T}}</span>
+<span class="sd">                                           \mathbf{\Lambda} )</span>
+<span class="sd">           + \frac{1}{2} \log |\mathbf{\Lambda}|</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">mu_Lambda_mu</span> <span class="o">=</span> <span class="n">u_mu_Lambda</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
         <span class="n">logdet_Lambda</span> <span class="o">=</span> <span class="n">u_mu_Lambda</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
@@ -515,11 +509,91 @@
 <div class="viewcode-block" id="GaussianDistribution.compute_fixed_moments_and_f"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.compute_fixed_moments_and_f.html#bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.compute_fixed_moments_and_f">[docs]</a>    <span class="k">def</span> <span class="nf">compute_fixed_moments_and_f</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
         <span class="sd">r&quot;&quot;&quot;</span>
 <span class="sd">        Compute the moments and :math:`f(x)` for a fixed value.</span>
+
+<span class="sd">        .. math::</span>
+
+<span class="sd">           \mathbf{u} (\mathbf{x})</span>
+<span class="sd">           &amp;=</span>
+<span class="sd">           \left[ \begin{matrix}</span>
+<span class="sd">             \mathbf{x}</span>
+<span class="sd">             \\</span>
+<span class="sd">             \mathbf{xx}^{\mathrm{T}}</span>
+<span class="sd">           \end{matrix} \right]</span>
+<span class="sd">           \\</span>
+<span class="sd">           f(\mathbf{x})</span>
+<span class="sd">           &amp;= - \frac{D}{2} \log(2\pi)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">k</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">x</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
         <span class="n">u</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="n">misc</span><span class="o">.</span><span class="n">m_outer</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">x</span><span class="p">)]</span>
         <span class="n">f</span> <span class="o">=</span> <span class="o">-</span><span class="n">k</span><span class="o">/</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
         <span class="k">return</span> <span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="GaussianDistribution.compute_gradient"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.compute_gradient.html#bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.compute_gradient">[docs]</a>    <span class="k">def</span> <span class="nf">compute_gradient</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">phi</span><span class="p">):</span>
+        <span class="sd">r&quot;&quot;&quot;</span>
+<span class="sd">        Compute the standard gradient with respect to the natural parameters.</span>
+<span class="sd">        </span>
+<span class="sd">        Gradient of the moments:</span>
+
+<span class="sd">        .. math::</span>
+
+<span class="sd">           \mathrm{d}\overline{\mathbf{u}} &amp;=</span>
+<span class="sd">           \begin{bmatrix}</span>
+<span class="sd">             \frac{1}{2} \phi_2^{-1} \mathrm{d}\phi_2 \phi_2^{-1} \phi_1</span>
+<span class="sd">             - \frac{1}{2} \phi_2^{-1} \mathrm{d}\phi_1</span>
+<span class="sd">             \\</span>
+<span class="sd">             - \frac{1}{4} \phi_2^{-1} \mathrm{d}\phi_2 \phi_2^{-1} \phi_1 \phi_1^{\mathrm{T}} \phi_2^{-1}</span>
+<span class="sd">             - \frac{1}{4} \phi_2^{-1} \phi_1 \phi_1^{\mathrm{T}} \phi_2^{-1} \mathrm{d}\phi_2 \phi_2^{-1}</span>
+<span class="sd">             + \frac{1}{2} \phi_2^{-1} \mathrm{d}\phi_2 \phi_2^{-1}</span>
+<span class="sd">             + \frac{1}{4} \phi_2^{-1} \mathrm{d}\phi_1 \phi_1^{\mathrm{T}} \phi_2^{-1}</span>
+<span class="sd">             + \frac{1}{4} \phi_2^{-1} \phi_1 \mathrm{d}\phi_1^{\mathrm{T}} \phi_2^{-1}</span>
+<span class="sd">           \end{bmatrix}</span>
+<span class="sd">           \\</span>
+<span class="sd">           &amp;=</span>
+<span class="sd">           \begin{bmatrix}</span>
+<span class="sd">             2 (\overline{u}_2 - \overline{u}_1 \overline{u}_1^{\mathrm{T}}) \mathrm{d}\phi_2 \overline{u}_1</span>
+<span class="sd">             + (\overline{u}_2 - \overline{u}_1 \overline{u}_1^{\mathrm{T}}) \mathrm{d}\phi_1</span>
+<span class="sd">             \\</span>
+<span class="sd">             u_2 d\phi_2 u_2 - 2 u_1 u_1^T d\phi_2 u_1 u_1^T</span>
+<span class="sd">             + 2 (u_2 - u_1 u_1^T) d\phi_1 u_1^T</span>
+<span class="sd">           \end{bmatrix}</span>
+
+<span class="sd">        Standard gradient given the gradient with respect to the moments, that</span>
+<span class="sd">        is, given the Riemannian gradient :math:`\tilde{\nabla}`:</span>
+
+<span class="sd">        .. math::</span>
+
+<span class="sd">           \nabla =</span>
+<span class="sd">           \begin{bmatrix}</span>
+<span class="sd">             (\overline{u}_2 - \overline{u}_1 \overline{u}_1^{\mathrm{T}}) \tilde{\nabla}_1</span>
+<span class="sd">             + 2 (u_2 - u_1 u_1^T) \tilde{\nabla}_2 u_1</span>
+<span class="sd">             \\</span>
+<span class="sd">             (u_2 - u_1 u_1^T) \tilde{\nabla}_1 u_1^T</span>
+<span class="sd">             +  u_1 \tilde{\nabla}_1^T (u_2 - u_1 u_1^T)</span>
+<span class="sd">             + 2 u_2 \tilde{\nabla}_2 u_2</span>
+<span class="sd">             - 2 u_1 u_1^T \tilde{\nabla}_2 u_1 u_1^T</span>
+<span class="sd">           \end{bmatrix}</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ndim</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">u</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">xx</span> <span class="o">=</span> <span class="n">u</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="c"># Some helpful variables</span>
+        <span class="n">x_x</span> <span class="o">=</span> <span class="n">linalg</span><span class="o">.</span><span class="n">outer</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="n">ndim</span><span class="p">)</span>
+        <span class="n">Cov</span> <span class="o">=</span> <span class="n">xx</span> <span class="o">-</span> <span class="n">x_x</span>
+        <span class="n">cov_g0</span> <span class="o">=</span> <span class="n">linalg</span><span class="o">.</span><span class="n">mvdot</span><span class="p">(</span><span class="n">Cov</span><span class="p">,</span> <span class="n">g</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">ndim</span><span class="o">=</span><span class="n">ndim</span><span class="p">)</span>
+        <span class="n">cov_g0_x</span> <span class="o">=</span> <span class="n">linalg</span><span class="o">.</span><span class="n">outer</span><span class="p">(</span><span class="n">cov_g0</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="n">ndim</span><span class="p">)</span>
+        <span class="n">g1_x</span> <span class="o">=</span> <span class="n">linalg</span><span class="o">.</span><span class="n">mvdot</span><span class="p">(</span><span class="n">g</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">x</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="n">ndim</span><span class="p">)</span>
+        <span class="c"># Compute gradient terms</span>
+        <span class="n">d0</span> <span class="o">=</span> <span class="n">cov_g0</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">linalg</span><span class="o">.</span><span class="n">mvdot</span><span class="p">(</span><span class="n">Cov</span><span class="p">,</span> <span class="n">g1_x</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="n">ndim</span><span class="p">)</span>
+        <span class="n">d1</span> <span class="o">=</span> <span class="p">(</span><span class="n">cov_g0_x</span> <span class="o">+</span> <span class="n">linalg</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">cov_g0_x</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="n">ndim</span><span class="p">)</span>
+              <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">linalg</span><span class="o">.</span><span class="n">mmdot</span><span class="p">(</span><span class="n">xx</span><span class="p">,</span>
+                                 <span class="n">linalg</span><span class="o">.</span><span class="n">mmdot</span><span class="p">(</span><span class="n">g</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">xx</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="n">ndim</span><span class="p">))</span>
+              <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">x_x</span> <span class="o">*</span> <span class="n">misc</span><span class="o">.</span><span class="n">add_trailing_axes</span><span class="p">(</span><span class="n">linalg</span><span class="o">.</span><span class="n">inner</span><span class="p">(</span><span class="n">g1_x</span><span class="p">,</span>
+                                                              <span class="n">x</span><span class="p">,</span>
+                                                              <span class="n">ndim</span><span class="o">=</span><span class="n">ndim</span><span class="p">),</span>
+                                                 <span class="mi">2</span><span class="o">*</span><span class="n">ndim</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="p">[</span><span class="n">d0</span><span class="p">,</span> <span class="n">d1</span><span class="p">]</span>
 
 </div>
 <div class="viewcode-block" id="GaussianDistribution.random"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.random.html#bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.random">[docs]</a>    <span class="k">def</span> <span class="nf">random</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">phi</span><span class="p">,</span> <span class="n">plates</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
@@ -829,6 +903,73 @@
                                              <span class="n">lower</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
             <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">plates</span> <span class="o">+</span> <span class="n">dims</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">x</span>
+
+</div>
+<div class="viewcode-block" id="GaussianARDDistribution.compute_gradient"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.gaussian.GaussianARDDistribution.compute_gradient.html#bayespy.inference.vmp.nodes.gaussian.GaussianARDDistribution.compute_gradient">[docs]</a>    <span class="k">def</span> <span class="nf">compute_gradient</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">phi</span><span class="p">):</span>
+        <span class="sd">r&quot;&quot;&quot;</span>
+<span class="sd">        Compute the standard gradient with respect to the natural parameters.</span>
+<span class="sd">        </span>
+<span class="sd">        Gradient of the moments:</span>
+
+<span class="sd">        .. math::</span>
+
+<span class="sd">           \mathrm{d}\overline{\mathbf{u}} &amp;=</span>
+<span class="sd">           \begin{bmatrix}</span>
+<span class="sd">             \frac{1}{2} \phi_2^{-1} \mathrm{d}\phi_2 \phi_2^{-1} \phi_1</span>
+<span class="sd">             - \frac{1}{2} \phi_2^{-1} \mathrm{d}\phi_1</span>
+<span class="sd">             \\</span>
+<span class="sd">             - \frac{1}{4} \phi_2^{-1} \mathrm{d}\phi_2 \phi_2^{-1} \phi_1 \phi_1^{\mathrm{T}} \phi_2^{-1}</span>
+<span class="sd">             - \frac{1}{4} \phi_2^{-1} \phi_1 \phi_1^{\mathrm{T}} \phi_2^{-1} \mathrm{d}\phi_2 \phi_2^{-1}</span>
+<span class="sd">             + \frac{1}{2} \phi_2^{-1} \mathrm{d}\phi_2 \phi_2^{-1}</span>
+<span class="sd">             + \frac{1}{4} \phi_2^{-1} \mathrm{d}\phi_1 \phi_1^{\mathrm{T}} \phi_2^{-1}</span>
+<span class="sd">             + \frac{1}{4} \phi_2^{-1} \phi_1 \mathrm{d}\phi_1^{\mathrm{T}} \phi_2^{-1}</span>
+<span class="sd">           \end{bmatrix}</span>
+<span class="sd">           \\</span>
+<span class="sd">           &amp;=</span>
+<span class="sd">           \begin{bmatrix}</span>
+<span class="sd">             2 (\overline{u}_2 - \overline{u}_1 \overline{u}_1^{\mathrm{T}}) \mathrm{d}\phi_2 \overline{u}_1</span>
+<span class="sd">             + (\overline{u}_2 - \overline{u}_1 \overline{u}_1^{\mathrm{T}}) \mathrm{d}\phi_1</span>
+<span class="sd">             \\</span>
+<span class="sd">             u_2 d\phi_2 u_2 - 2 u_1 u_1^T d\phi_2 u_1 u_1^T</span>
+<span class="sd">             + 2 (u_2 - u_1 u_1^T) d\phi_1 u_1^T</span>
+<span class="sd">           \end{bmatrix}</span>
+
+<span class="sd">        Standard gradient given the gradient with respect to the moments, that</span>
+<span class="sd">        is, given the Riemannian gradient :math:`\tilde{\nabla}`:</span>
+
+<span class="sd">        .. math::</span>
+
+<span class="sd">           \nabla =</span>
+<span class="sd">           \begin{bmatrix}</span>
+<span class="sd">             (\overline{u}_2 - \overline{u}_1 \overline{u}_1^{\mathrm{T}}) \tilde{\nabla}_1</span>
+<span class="sd">             + 2 (u_2 - u_1 u_1^T) \tilde{\nabla}_2 u_1</span>
+<span class="sd">             \\</span>
+<span class="sd">             (u_2 - u_1 u_1^T) \tilde{\nabla}_1 u_1^T</span>
+<span class="sd">             +  u_1 \tilde{\nabla}_1^T (u_2 - u_1 u_1^T)</span>
+<span class="sd">             + 2 u_2 \tilde{\nabla}_2 u_2</span>
+<span class="sd">             - 2 u_1 u_1^T \tilde{\nabla}_2 u_1 u_1^T</span>
+<span class="sd">           \end{bmatrix}</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ndim</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ndim</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">u</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">xx</span> <span class="o">=</span> <span class="n">u</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="c"># Some helpful variables</span>
+        <span class="n">x_x</span> <span class="o">=</span> <span class="n">linalg</span><span class="o">.</span><span class="n">outer</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="n">ndim</span><span class="p">)</span>
+        <span class="n">Cov</span> <span class="o">=</span> <span class="n">xx</span> <span class="o">-</span> <span class="n">x_x</span>
+        <span class="n">cov_g0</span> <span class="o">=</span> <span class="n">linalg</span><span class="o">.</span><span class="n">mvdot</span><span class="p">(</span><span class="n">Cov</span><span class="p">,</span> <span class="n">g</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">ndim</span><span class="o">=</span><span class="n">ndim</span><span class="p">)</span>
+        <span class="n">cov_g0_x</span> <span class="o">=</span> <span class="n">linalg</span><span class="o">.</span><span class="n">outer</span><span class="p">(</span><span class="n">cov_g0</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="n">ndim</span><span class="p">)</span>
+        <span class="n">g1_x</span> <span class="o">=</span> <span class="n">linalg</span><span class="o">.</span><span class="n">mvdot</span><span class="p">(</span><span class="n">g</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">x</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="n">ndim</span><span class="p">)</span>
+        <span class="c"># Compute gradient terms</span>
+        <span class="n">d0</span> <span class="o">=</span> <span class="n">cov_g0</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">linalg</span><span class="o">.</span><span class="n">mvdot</span><span class="p">(</span><span class="n">Cov</span><span class="p">,</span> <span class="n">g1_x</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="n">ndim</span><span class="p">)</span>
+        <span class="n">d1</span> <span class="o">=</span> <span class="p">(</span><span class="n">cov_g0_x</span> <span class="o">+</span> <span class="n">linalg</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">cov_g0_x</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="n">ndim</span><span class="p">)</span>
+              <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">linalg</span><span class="o">.</span><span class="n">mmdot</span><span class="p">(</span><span class="n">xx</span><span class="p">,</span>
+                                 <span class="n">linalg</span><span class="o">.</span><span class="n">mmdot</span><span class="p">(</span><span class="n">g</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">xx</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="n">ndim</span><span class="p">))</span>
+              <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">x_x</span> <span class="o">*</span> <span class="n">misc</span><span class="o">.</span><span class="n">add_trailing_axes</span><span class="p">(</span><span class="n">linalg</span><span class="o">.</span><span class="n">inner</span><span class="p">(</span><span class="n">g1_x</span><span class="p">,</span>
+                                                              <span class="n">x</span><span class="p">,</span>
+                                                              <span class="n">ndim</span><span class="o">=</span><span class="n">ndim</span><span class="p">),</span>
+                                                 <span class="mi">2</span><span class="o">*</span><span class="n">ndim</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="p">[</span><span class="n">d0</span><span class="p">,</span> <span class="n">d1</span><span class="p">]</span>
 
 </div></div>
 <div class="viewcode-block" id="GaussianGammaISODistribution"><a class="viewcode-back" href="../../../../../dev_api/generated/bayespy.inference.vmp.nodes.gaussian.GaussianGammaISODistribution.html#bayespy.inference.vmp.nodes.gaussian.GaussianGammaISODistribution">[docs]</a><span class="k">class</span> <span class="nc">GaussianGammaISODistribution</span><span class="p">(</span><span class="n">ExponentialFamilyDistribution</span><span class="p">):</span>
@@ -2704,7 +2845,7 @@
     </div>
     <div class="footer">
         &copy; Copyright 2011-2014, Jaakko Luttinen, GPLv3.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>
 </html>

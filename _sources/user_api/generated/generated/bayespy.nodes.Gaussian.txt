@@ -16,9 +16,13 @@ bayespy.nodes.Gaussian
    
       ~Gaussian.__init__
       ~Gaussian.add_plate_axis
+      ~Gaussian.broadcasting_multiplier
       ~Gaussian.delete
+      ~Gaussian.get_gradient
       ~Gaussian.get_mask
       ~Gaussian.get_moments
+      ~Gaussian.get_parameters
+      ~Gaussian.get_riemannian_gradient
       ~Gaussian.get_shape
       ~Gaussian.has_plotter
       ~Gaussian.initialize_from_parameters
@@ -37,6 +41,7 @@ bayespy.nodes.Gaussian
       ~Gaussian.rotate
       ~Gaussian.rotate_matrix
       ~Gaussian.save
+      ~Gaussian.set_parameters
       ~Gaussian.set_plotter
       ~Gaussian.show
       ~Gaussian.unobserve
@@ -53,5 +58,6 @@ bayespy.nodes.Gaussian
    
       ~Gaussian.dims
       ~Gaussian.plates
+      ~Gaussian.plates_multiplier
    
    

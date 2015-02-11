@@ -16,9 +16,13 @@ bayespy.nodes.Wishart
    
       ~Wishart.__init__
       ~Wishart.add_plate_axis
+      ~Wishart.broadcasting_multiplier
       ~Wishart.delete
+      ~Wishart.get_gradient
       ~Wishart.get_mask
       ~Wishart.get_moments
+      ~Wishart.get_parameters
+      ~Wishart.get_riemannian_gradient
       ~Wishart.get_shape
       ~Wishart.has_plotter
       ~Wishart.initialize_from_parameters
@@ -35,6 +39,7 @@ bayespy.nodes.Wishart
       ~Wishart.plot
       ~Wishart.random
       ~Wishart.save
+      ~Wishart.set_parameters
       ~Wishart.set_plotter
       ~Wishart.show
       ~Wishart.unobserve
@@ -51,5 +56,6 @@ bayespy.nodes.Wishart
    
       ~Wishart.dims
       ~Wishart.plates
+      ~Wishart.plates_multiplier
    
    

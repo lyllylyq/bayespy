@@ -16,9 +16,13 @@ bayespy.nodes.Beta
    
       ~Beta.__init__
       ~Beta.add_plate_axis
+      ~Beta.broadcasting_multiplier
       ~Beta.delete
+      ~Beta.get_gradient
       ~Beta.get_mask
       ~Beta.get_moments
+      ~Beta.get_parameters
+      ~Beta.get_riemannian_gradient
       ~Beta.get_shape
       ~Beta.has_plotter
       ~Beta.initialize_from_parameters
@@ -35,6 +39,7 @@ bayespy.nodes.Beta
       ~Beta.plot
       ~Beta.random
       ~Beta.save
+      ~Beta.set_parameters
       ~Beta.set_plotter
       ~Beta.show
       ~Beta.unobserve
@@ -51,5 +56,6 @@ bayespy.nodes.Beta
    
       ~Beta.dims
       ~Beta.plates
+      ~Beta.plates_multiplier
    
    

@@ -166,16 +166,22 @@ using <a class="reference internal" href="../user_api/generated/generated/bayesp
 standard deviations.  From the ten cluster components, the model uses
 effectively the correct number of clusters (4).  These clusters capture the true
 density accurately.</p>
+<p>In addition to clustering and density estimation, this model could also be used
+for classification by setting the known class assignments as observed.</p>
 </div>
-<div class="section" id="next-steps">
-<h2>Next steps<a class="headerlink" href="#next-steps" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="advanced-next-steps">
+<h2>Advanced next steps<a class="headerlink" href="#advanced-next-steps" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="joint-node-for-mean-and-precision">
+<h3>Joint node for mean and precision<a class="headerlink" href="#joint-node-for-mean-and-precision" title="Permalink to this headline">¶</a></h3>
 <p>The next step for improving the results could be to use <a class="reference internal" href="../user_api/generated/generated/bayespy.nodes.GaussianWishart.html#bayespy.nodes.GaussianWishart" title="bayespy.nodes.GaussianWishart"><tt class="xref py py-class docutils literal"><span class="pre">GaussianWishart</span></tt></a>
 node for modelling the mean vectors <tt class="docutils literal"><span class="pre">mu</span></tt> and precision matrices <tt class="docutils literal"><span class="pre">Lambda</span></tt>
 jointly without factorization.  This should improve the accuracy of the
 posterior approximation and the speed of the VB estimation.  However, the
 implementation is a bit more complex.</p>
-<p>In addition to clustering and density estimation, this model could also be used
-for classification by setting the known class assignments as observed.</p>
+</div>
+<div class="section" id="fast-collapsed-inference">
+<h3>Fast collapsed inference<a class="headerlink" href="#fast-collapsed-inference" title="Permalink to this headline">¶</a></h3>
+</div>
 </div>
 </div>
 
@@ -192,7 +198,11 @@ for classification by setting the known class assignments as observed.</p>
 <li><a class="reference internal" href="#model">Model</a></li>
 <li><a class="reference internal" href="#inference">Inference</a></li>
 <li><a class="reference internal" href="#results">Results</a></li>
-<li><a class="reference internal" href="#next-steps">Next steps</a></li>
+<li><a class="reference internal" href="#advanced-next-steps">Advanced next steps</a><ul>
+<li><a class="reference internal" href="#joint-node-for-mean-and-precision">Joint node for mean and precision</a></li>
+<li><a class="reference internal" href="#fast-collapsed-inference">Fast collapsed inference</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -246,7 +256,7 @@ for classification by setting the known class assignments as observed.</p>
     </div>
     <div class="footer">
         &copy; Copyright 2011-2014, Jaakko Luttinen, GPLv3.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>
 </html>

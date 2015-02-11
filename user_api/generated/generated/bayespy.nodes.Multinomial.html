@@ -27,7 +27,7 @@
     <link rel="top" title="BayesPy v0.2.3 Documentation" href="../../../index.html" />
     <link rel="up" title="bayespy.nodes" href="../bayespy.nodes.html" />
     <link rel="next" title="bayespy.nodes.Multinomial.__init__" href="generated/bayespy.nodes.Multinomial.__init__.html" />
-    <link rel="prev" title="bayespy.nodes.Categorical.plates" href="generated/bayespy.nodes.Categorical.plates.html" /> 
+    <link rel="prev" title="bayespy.nodes.Categorical.plates_multiplier" href="generated/bayespy.nodes.Categorical.plates_multiplier.html" /> 
   </head>
   <body>
     <div class="related">
@@ -43,7 +43,7 @@
           <a href="generated/bayespy.nodes.Multinomial.__init__.html" title="bayespy.nodes.Multinomial.__init__"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="generated/bayespy.nodes.Categorical.plates.html" title="bayespy.nodes.Categorical.plates"
+          <a href="generated/bayespy.nodes.Categorical.plates_multiplier.html" title="bayespy.nodes.Categorical.plates_multiplier"
              accesskey="P">previous</a> |</li>
         <li><a href="../../../index.html">BayesPy v0.2.3 Documentation</a> &raquo;</li>
           <li><a href="../../user_api.html" >User API</a> &raquo;</li>
@@ -112,14 +112,26 @@ x_{K-1}!} p_0^{x_0} \cdots p_{K-1}^{x_{K-1}}\]</div>
 <tr class="row-even"><td><a class="reference internal" href="generated/bayespy.nodes.Multinomial.add_plate_axis.html#bayespy.nodes.Multinomial.add_plate_axis" title="bayespy.nodes.Multinomial.add_plate_axis"><tt class="xref py py-obj docutils literal"><span class="pre">add_plate_axis</span></tt></a>(to_plate)</td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.nodes.Multinomial.delete.html#bayespy.nodes.Multinomial.delete" title="bayespy.nodes.Multinomial.delete"><tt class="xref py py-obj docutils literal"><span class="pre">delete</span></tt></a>()</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.nodes.Multinomial.broadcasting_multiplier.html#bayespy.nodes.Multinomial.broadcasting_multiplier" title="bayespy.nodes.Multinomial.broadcasting_multiplier"><tt class="xref py py-obj docutils literal"><span class="pre">broadcasting_multiplier</span></tt></a>(plates,&nbsp;*args)</td>
+<td>Compute the plate multiplier for given shapes.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.nodes.Multinomial.delete.html#bayespy.nodes.Multinomial.delete" title="bayespy.nodes.Multinomial.delete"><tt class="xref py py-obj docutils literal"><span class="pre">delete</span></tt></a>()</td>
 <td>Delete this node and the children</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.nodes.Multinomial.get_gradient.html#bayespy.nodes.Multinomial.get_gradient" title="bayespy.nodes.Multinomial.get_gradient"><tt class="xref py py-obj docutils literal"><span class="pre">get_gradient</span></tt></a>(rg)</td>
+<td>Computes gradient with respect to the natural parameters.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="generated/bayespy.nodes.Multinomial.get_mask.html#bayespy.nodes.Multinomial.get_mask" title="bayespy.nodes.Multinomial.get_mask"><tt class="xref py py-obj docutils literal"><span class="pre">get_mask</span></tt></a>()</td>
 <td></td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.nodes.Multinomial.get_moments.html#bayespy.nodes.Multinomial.get_moments" title="bayespy.nodes.Multinomial.get_moments"><tt class="xref py py-obj docutils literal"><span class="pre">get_moments</span></tt></a>()</td>
 <td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.nodes.Multinomial.get_parameters.html#bayespy.nodes.Multinomial.get_parameters" title="bayespy.nodes.Multinomial.get_parameters"><tt class="xref py py-obj docutils literal"><span class="pre">get_parameters</span></tt></a>()</td>
+<td>Return parameters of the VB distribution.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.nodes.Multinomial.get_riemannian_gradient.html#bayespy.nodes.Multinomial.get_riemannian_gradient" title="bayespy.nodes.Multinomial.get_riemannian_gradient"><tt class="xref py py-obj docutils literal"><span class="pre">get_riemannian_gradient</span></tt></a>()</td>
+<td>Computes the Riemannian/natural gradient.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="generated/bayespy.nodes.Multinomial.get_shape.html#bayespy.nodes.Multinomial.get_shape" title="bayespy.nodes.Multinomial.get_shape"><tt class="xref py py-obj docutils literal"><span class="pre">get_shape</span></tt></a>(ind)</td>
 <td></td>
@@ -145,8 +157,8 @@ x_{K-1}!} p_0^{x_0} \cdots p_{K-1}^{x_{K-1}}\]</div>
 <tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.nodes.Multinomial.logpdf.html#bayespy.nodes.Multinomial.logpdf" title="bayespy.nodes.Multinomial.logpdf"><tt class="xref py py-obj docutils literal"><span class="pre">logpdf</span></tt></a>(X[,&nbsp;mask])</td>
 <td>Compute the log probability density function Q(X) of this node.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.nodes.Multinomial.lower_bound_contribution.html#bayespy.nodes.Multinomial.lower_bound_contribution" title="bayespy.nodes.Multinomial.lower_bound_contribution"><tt class="xref py py-obj docutils literal"><span class="pre">lower_bound_contribution</span></tt></a>([gradient])</td>
-<td></td>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.nodes.Multinomial.lower_bound_contribution.html#bayespy.nodes.Multinomial.lower_bound_contribution" title="bayespy.nodes.Multinomial.lower_bound_contribution"><tt class="xref py py-obj docutils literal"><span class="pre">lower_bound_contribution</span></tt></a>([gradient,&nbsp;...])</td>
+<td>Compute E[ log p(X|parents) - log q(X) ]</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.nodes.Multinomial.lowerbound.html#bayespy.nodes.Multinomial.lowerbound" title="bayespy.nodes.Multinomial.lowerbound"><tt class="xref py py-obj docutils literal"><span class="pre">lowerbound</span></tt></a>()</td>
 <td></td>
@@ -169,16 +181,19 @@ x_{K-1}!} p_0^{x_0} \cdots p_{K-1}^{x_{K-1}}\]</div>
 <tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.nodes.Multinomial.save.html#bayespy.nodes.Multinomial.save" title="bayespy.nodes.Multinomial.save"><tt class="xref py py-obj docutils literal"><span class="pre">save</span></tt></a>(group)</td>
 <td>Save the state of the node into a HDF5 file.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.nodes.Multinomial.set_plotter.html#bayespy.nodes.Multinomial.set_plotter" title="bayespy.nodes.Multinomial.set_plotter"><tt class="xref py py-obj docutils literal"><span class="pre">set_plotter</span></tt></a>(plotter)</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.nodes.Multinomial.set_parameters.html#bayespy.nodes.Multinomial.set_parameters" title="bayespy.nodes.Multinomial.set_parameters"><tt class="xref py py-obj docutils literal"><span class="pre">set_parameters</span></tt></a>(x)</td>
+<td>Set the parameters of the VB distribution.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.nodes.Multinomial.set_plotter.html#bayespy.nodes.Multinomial.set_plotter" title="bayespy.nodes.Multinomial.set_plotter"><tt class="xref py py-obj docutils literal"><span class="pre">set_plotter</span></tt></a>(plotter)</td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.nodes.Multinomial.show.html#bayespy.nodes.Multinomial.show" title="bayespy.nodes.Multinomial.show"><tt class="xref py py-obj docutils literal"><span class="pre">show</span></tt></a>()</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.nodes.Multinomial.show.html#bayespy.nodes.Multinomial.show" title="bayespy.nodes.Multinomial.show"><tt class="xref py py-obj docutils literal"><span class="pre">show</span></tt></a>()</td>
 <td>Print the distribution using standard parameterization.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.nodes.Multinomial.unobserve.html#bayespy.nodes.Multinomial.unobserve" title="bayespy.nodes.Multinomial.unobserve"><tt class="xref py py-obj docutils literal"><span class="pre">unobserve</span></tt></a>()</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.nodes.Multinomial.unobserve.html#bayespy.nodes.Multinomial.unobserve" title="bayespy.nodes.Multinomial.unobserve"><tt class="xref py py-obj docutils literal"><span class="pre">unobserve</span></tt></a>()</td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.nodes.Multinomial.update.html#bayespy.nodes.Multinomial.update" title="bayespy.nodes.Multinomial.update"><tt class="xref py py-obj docutils literal"><span class="pre">update</span></tt></a>()</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.nodes.Multinomial.update.html#bayespy.nodes.Multinomial.update" title="bayespy.nodes.Multinomial.update"><tt class="xref py py-obj docutils literal"><span class="pre">update</span></tt></a>([annealing])</td>
 <td></td>
 </tr>
 </tbody>
@@ -196,6 +211,9 @@ x_{K-1}!} p_0^{x_0} \cdots p_{K-1}^{x_{K-1}}\]</div>
 <tr class="row-even"><td><a class="reference internal" href="generated/bayespy.nodes.Multinomial.plates.html#bayespy.nodes.Multinomial.plates" title="bayespy.nodes.Multinomial.plates"><tt class="xref py py-obj docutils literal"><span class="pre">plates</span></tt></a></td>
 <td></td>
 </tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.nodes.Multinomial.plates_multiplier.html#bayespy.nodes.Multinomial.plates_multiplier" title="bayespy.nodes.Multinomial.plates_multiplier"><tt class="xref py py-obj docutils literal"><span class="pre">plates_multiplier</span></tt></a></td>
+<td>Plate multiplier is applied to messages to parents</td>
+</tr>
 </tbody>
 </table>
 </dd></dl>
@@ -209,8 +227,8 @@ x_{K-1}!} p_0^{x_0} \cdots p_{K-1}^{x_{K-1}}\]</div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
   <h4>Previous topic</h4>
-  <p class="topless"><a href="generated/bayespy.nodes.Categorical.plates.html"
-                        title="previous chapter">bayespy.nodes.Categorical.plates</a></p>
+  <p class="topless"><a href="generated/bayespy.nodes.Categorical.plates_multiplier.html"
+                        title="previous chapter">bayespy.nodes.Categorical.plates_multiplier</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="generated/bayespy.nodes.Multinomial.__init__.html"
                         title="next chapter">bayespy.nodes.Multinomial.__init__</a></p>
@@ -249,7 +267,7 @@ x_{K-1}!} p_0^{x_0} \cdots p_{K-1}^{x_{K-1}}\]</div>
           <a href="generated/bayespy.nodes.Multinomial.__init__.html" title="bayespy.nodes.Multinomial.__init__"
              >next</a> |</li>
         <li class="right" >
-          <a href="generated/bayespy.nodes.Categorical.plates.html" title="bayespy.nodes.Categorical.plates"
+          <a href="generated/bayespy.nodes.Categorical.plates_multiplier.html" title="bayespy.nodes.Categorical.plates_multiplier"
              >previous</a> |</li>
         <li><a href="../../../index.html">BayesPy v0.2.3 Documentation</a> &raquo;</li>
           <li><a href="../../user_api.html" >User API</a> &raquo;</li>
@@ -258,7 +276,7 @@ x_{K-1}!} p_0^{x_0} \cdots p_{K-1}^{x_{K-1}}\]</div>
     </div>
     <div class="footer">
         &copy; Copyright 2011-2014, Jaakko Luttinen, GPLv3.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>
 </html>

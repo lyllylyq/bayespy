@@ -16,9 +16,13 @@ bayespy.nodes.Binomial
    
       ~Binomial.__init__
       ~Binomial.add_plate_axis
+      ~Binomial.broadcasting_multiplier
       ~Binomial.delete
+      ~Binomial.get_gradient
       ~Binomial.get_mask
       ~Binomial.get_moments
+      ~Binomial.get_parameters
+      ~Binomial.get_riemannian_gradient
       ~Binomial.get_shape
       ~Binomial.has_plotter
       ~Binomial.initialize_from_parameters
@@ -35,6 +39,7 @@ bayespy.nodes.Binomial
       ~Binomial.plot
       ~Binomial.random
       ~Binomial.save
+      ~Binomial.set_parameters
       ~Binomial.set_plotter
       ~Binomial.show
       ~Binomial.unobserve
@@ -51,5 +56,6 @@ bayespy.nodes.Binomial
    
       ~Binomial.dims
       ~Binomial.plates
+      ~Binomial.plates_multiplier
    
    

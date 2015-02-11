@@ -16,6 +16,7 @@ bayespy.inference.vmp.nodes.expfamily.ExponentialFamilyDistribution
    
       ~ExponentialFamilyDistribution.compute_cgf_from_parents
       ~ExponentialFamilyDistribution.compute_fixed_moments_and_f
+      ~ExponentialFamilyDistribution.compute_gradient
       ~ExponentialFamilyDistribution.compute_logpdf
       ~ExponentialFamilyDistribution.compute_mask_to_parent
       ~ExponentialFamilyDistribution.compute_message_to_parent

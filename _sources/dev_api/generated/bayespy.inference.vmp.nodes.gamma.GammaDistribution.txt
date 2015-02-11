@@ -16,6 +16,7 @@ bayespy.inference.vmp.nodes.gamma.GammaDistribution
    
       ~GammaDistribution.compute_cgf_from_parents
       ~GammaDistribution.compute_fixed_moments_and_f
+      ~GammaDistribution.compute_gradient
       ~GammaDistribution.compute_logpdf
       ~GammaDistribution.compute_mask_to_parent
       ~GammaDistribution.compute_message_to_parent

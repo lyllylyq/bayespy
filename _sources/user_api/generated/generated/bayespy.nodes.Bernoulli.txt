@@ -16,9 +16,13 @@ bayespy.nodes.Bernoulli
    
       ~Bernoulli.__init__
       ~Bernoulli.add_plate_axis
+      ~Bernoulli.broadcasting_multiplier
       ~Bernoulli.delete
+      ~Bernoulli.get_gradient
       ~Bernoulli.get_mask
       ~Bernoulli.get_moments
+      ~Bernoulli.get_parameters
+      ~Bernoulli.get_riemannian_gradient
       ~Bernoulli.get_shape
       ~Bernoulli.has_plotter
       ~Bernoulli.initialize_from_parameters
@@ -35,6 +39,7 @@ bayespy.nodes.Bernoulli
       ~Bernoulli.plot
       ~Bernoulli.random
       ~Bernoulli.save
+      ~Bernoulli.set_parameters
       ~Bernoulli.set_plotter
       ~Bernoulli.show
       ~Bernoulli.unobserve
@@ -51,5 +56,6 @@ bayespy.nodes.Bernoulli
    
       ~Bernoulli.dims
       ~Bernoulli.plates
+      ~Bernoulli.plates_multiplier
    
    

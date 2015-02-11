@@ -614,13 +614,17 @@
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="n">axes</span><span class="p">)</span>
 
 </div>
-<span class="k">def</span> <span class="nf">safe_indices</span><span class="p">(</span><span class="n">inds</span><span class="p">,</span> <span class="n">shape</span><span class="p">):</span>
+<div class="viewcode-block" id="safe_indices"><a class="viewcode-back" href="../../../dev_api/generated/generated/bayespy.utils.misc.safe_indices.html#bayespy.utils.misc.safe_indices">[docs]</a><span class="k">def</span> <span class="nf">safe_indices</span><span class="p">(</span><span class="n">inds</span><span class="p">,</span> <span class="n">shape</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Makes sure that indices are valid for given shape.</span>
 
 <span class="sd">    The shorter shape determines the length.</span>
 
 <span class="sd">    For instance,</span>
+
+<span class="sd">    .. testsetup::</span>
+
+<span class="sd">       from bayespy.utils.misc import safe_indices</span>
 
 <span class="sd">    &gt;&gt;&gt; safe_indices( (3, 4, 5), (1, 6) )</span>
 <span class="sd">    (0, 5)</span>
@@ -635,7 +639,7 @@
 
     <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">fmin</span><span class="p">(</span><span class="n">inds</span><span class="p">,</span> <span class="n">maxinds</span><span class="p">))</span>
 
-
+</div>
 <div class="viewcode-block" id="broadcasted_shape"><a class="viewcode-back" href="../../../dev_api/generated/generated/bayespy.utils.misc.broadcasted_shape.html#bayespy.utils.misc.broadcasted_shape">[docs]</a><span class="k">def</span> <span class="nf">broadcasted_shape</span><span class="p">(</span><span class="o">*</span><span class="n">shapes</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Computes the resulting broadcasted shape for a given set of shapes.</span>
@@ -1351,7 +1355,7 @@
     </div>
     <div class="footer">
         &copy; Copyright 2011-2014, Jaakko Luttinen, GPLv3.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>
 </html>

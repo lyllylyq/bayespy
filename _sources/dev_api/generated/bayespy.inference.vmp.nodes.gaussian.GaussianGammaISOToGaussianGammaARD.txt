@@ -16,6 +16,7 @@ bayespy.inference.vmp.nodes.gaussian.GaussianGammaISOToGaussianGammaARD
    
       ~GaussianGammaISOToGaussianGammaARD.__init__
       ~GaussianGammaISOToGaussianGammaARD.add_plate_axis
+      ~GaussianGammaISOToGaussianGammaARD.broadcasting_multiplier
       ~GaussianGammaISOToGaussianGammaARD.delete
       ~GaussianGammaISOToGaussianGammaARD.get_mask
       ~GaussianGammaISOToGaussianGammaARD.get_moments
@@ -36,5 +37,6 @@ bayespy.inference.vmp.nodes.gaussian.GaussianGammaISOToGaussianGammaARD
       :toctree: generated/
    
       ~GaussianGammaISOToGaussianGammaARD.plates
+      ~GaussianGammaISOToGaussianGammaARD.plates_multiplier
    
    

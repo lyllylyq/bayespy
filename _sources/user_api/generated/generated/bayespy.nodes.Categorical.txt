@@ -16,9 +16,13 @@ bayespy.nodes.Categorical
    
       ~Categorical.__init__
       ~Categorical.add_plate_axis
+      ~Categorical.broadcasting_multiplier
       ~Categorical.delete
+      ~Categorical.get_gradient
       ~Categorical.get_mask
       ~Categorical.get_moments
+      ~Categorical.get_parameters
+      ~Categorical.get_riemannian_gradient
       ~Categorical.get_shape
       ~Categorical.has_plotter
       ~Categorical.initialize_from_parameters
@@ -35,6 +39,7 @@ bayespy.nodes.Categorical
       ~Categorical.plot
       ~Categorical.random
       ~Categorical.save
+      ~Categorical.set_parameters
       ~Categorical.set_plotter
       ~Categorical.show
       ~Categorical.unobserve
@@ -51,5 +56,6 @@ bayespy.nodes.Categorical
    
       ~Categorical.dims
       ~Categorical.plates
+      ~Categorical.plates_multiplier
    
    

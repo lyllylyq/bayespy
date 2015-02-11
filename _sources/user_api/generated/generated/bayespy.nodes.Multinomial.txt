@@ -16,9 +16,13 @@ bayespy.nodes.Multinomial
    
       ~Multinomial.__init__
       ~Multinomial.add_plate_axis
+      ~Multinomial.broadcasting_multiplier
       ~Multinomial.delete
+      ~Multinomial.get_gradient
       ~Multinomial.get_mask
       ~Multinomial.get_moments
+      ~Multinomial.get_parameters
+      ~Multinomial.get_riemannian_gradient
       ~Multinomial.get_shape
       ~Multinomial.has_plotter
       ~Multinomial.initialize_from_parameters
@@ -35,6 +39,7 @@ bayespy.nodes.Multinomial
       ~Multinomial.plot
       ~Multinomial.random
       ~Multinomial.save
+      ~Multinomial.set_parameters
       ~Multinomial.set_plotter
       ~Multinomial.show
       ~Multinomial.unobserve
@@ -51,5 +56,6 @@ bayespy.nodes.Multinomial
    
       ~Multinomial.dims
       ~Multinomial.plates
+      ~Multinomial.plates_multiplier
    
    

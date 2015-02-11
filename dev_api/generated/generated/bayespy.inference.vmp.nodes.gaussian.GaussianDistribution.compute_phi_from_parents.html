@@ -63,6 +63,14 @@
 <dt id="bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.compute_phi_from_parents">
 <tt class="descclassname">GaussianDistribution.</tt><tt class="descname">compute_phi_from_parents</tt><big>(</big><em>u_mu_Lambda</em>, <em>mask=True</em><big>)</big><a class="reference internal" href="../../../_modules/bayespy/inference/vmp/nodes/gaussian.html#GaussianDistribution.compute_phi_from_parents"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.compute_phi_from_parents" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the natural parameter vector given parent moments.</p>
+<div class="math">
+\[\begin{split}\boldsymbol{\phi} (\boldsymbol{\mu}, \mathbf{\Lambda})
+&amp;=
+\left[ \begin{matrix}
+  \mathbf{\Lambda} \boldsymbol{\mu} 
+  \\
+  - \frac{1}{2} \mathbf{\Lambda}
+\end{matrix} \right]\end{split}\]</div>
 </dd></dl>
 
 </div>
@@ -124,7 +132,7 @@
     </div>
     <div class="footer">
         &copy; Copyright 2011-2014, Jaakko Luttinen, GPLv3.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>
 </html>

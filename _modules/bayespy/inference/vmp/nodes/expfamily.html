@@ -72,6 +72,8 @@
 <span class="c"># along with BayesPy.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
 <span class="c">######################################################################</span>
 
+<span class="kn">import</span> <span class="nn">warnings</span>
+
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
 
 <span class="kn">from</span> <span class="nn">bayespy.utils</span> <span class="kn">import</span> <span class="n">misc</span>
@@ -122,6 +124,16 @@
             <span class="n">L</span> <span class="o">=</span> <span class="n">L</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">phi_i</span> <span class="o">*</span> <span class="n">u_i</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis_sum</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">L</span>
 
+</div>
+<div class="viewcode-block" id="ExponentialFamilyDistribution.compute_gradient"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.expfamily.ExponentialFamilyDistribution.compute_gradient.html#bayespy.inference.vmp.nodes.expfamily.ExponentialFamilyDistribution.compute_gradient">[docs]</a>    <span class="k">def</span> <span class="nf">compute_gradient</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">phi</span><span class="p">):</span>
+        <span class="sd">r&quot;&quot;&quot;</span>
+<span class="sd">        Compute the standard gradient with respect to the natural parameters.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s">&quot;Standard gradient not yet implemented for </span><span class="si">%s</span><span class="s">&quot;</span>
+                                  <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">))</span>
+
+
 </div></div>
 <span class="k">def</span> <span class="nf">useconstructor</span><span class="p">(</span><span class="n">__init__</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">constructor_decorator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -158,8 +170,8 @@
 <span class="sd">    Sub-classes may need to re-implement:</span>
 <span class="sd">    1. If they manipulate plates:</span>
 <span class="sd">       _compute_mask_to_parent(index, mask)</span>
-<span class="sd">       _plates_to_parent(self, index)</span>
-<span class="sd">       _plates_from_parent(self, index)</span>
+<span class="sd">       _compute_plates_to_parent(self, index, plates)</span>
+<span class="sd">       _compute_plates_from_parent(self, index, plates)</span>
 <span class="sd">    </span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -171,6 +183,8 @@
 
     <span class="nd">@useconstructor</span>
 <div class="viewcode-block" id="ExponentialFamily.__init__"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.expfamily.ExponentialFamily.__init__.html#bayespy.inference.vmp.nodes.expfamily.ExponentialFamily.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">parents</span><span class="p">,</span> <span class="n">initialize</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">annealing</span> <span class="o">=</span> <span class="mf">1.0</span>
 
         <span class="c"># Terms for the lower bound (G for latent and F for observed)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">g</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
@@ -258,6 +272,7 @@
         <span class="c">#self.initialize_from_prior()</span>
         <span class="n">X</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">random</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">initialize_from_value</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+
 </div>
     <span class="k">def</span> <span class="nf">_update_phi_from_parents</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">u_parents</span><span class="p">):</span>
 
@@ -294,19 +309,135 @@
 
     <span class="k">def</span> <span class="nf">_set_moments_and_cgf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_set_moments</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">mask</span><span class="p">)</span>
-        <span class="c"># TODO/FIXME: Apply mask to g too!!</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">g</span> <span class="o">=</span> <span class="n">g</span>
 
+        <span class="bp">self</span><span class="o">.</span><span class="n">g</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">g</span><span class="p">)</span>
+
+        <span class="k">return</span>
+
+
+    <span class="k">def</span> <span class="nf">_compute_gradient</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">m_children</span><span class="p">,</span> <span class="o">*</span><span class="n">u_parents</span><span class="p">):</span>
+        <span class="sd">r&quot;&quot;&quot;</span>
+<span class="sd">        Computes the Riemannian/natural gradient for exponential family.</span>
+
+<span class="sd">        d = phi_p - phi_q</span>
+
+<span class="sd">        where phi_p is phi from log p(all) and phi_q is from log q(self).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c"># Compute the gradient</span>
+        <span class="n">phi</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compute_phi_from_parents</span><span class="p">(</span><span class="o">*</span><span class="n">u_parents</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">phi</span><span class="p">)):</span>
+            <span class="n">phi</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">phi</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">m_children</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">phi</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+
+        <span class="c"># Allow using reparameterization (e.g., log for positive parameters)</span>
+        <span class="n">phi</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parameters_gradient</span><span class="p">(</span><span class="n">phi</span><span class="p">)</span>
+
+        <span class="c"># Explicit broadcasting</span>
+        <span class="c">#for i in range(len(self.phi)):</span>
+        <span class="c">#    phi[i] = phi[i] * np.ones(self.get_shape(i))</span>
+
+        <span class="c"># Vectorize</span>
+
+        <span class="k">return</span> <span class="n">phi</span>
+
+
+<div class="viewcode-block" id="ExponentialFamily.get_riemannian_gradient"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.expfamily.ExponentialFamily.get_riemannian_gradient.html#bayespy.inference.vmp.nodes.expfamily.ExponentialFamily.get_riemannian_gradient">[docs]</a>    <span class="k">def</span> <span class="nf">get_riemannian_gradient</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">r&quot;&quot;&quot;</span>
+<span class="sd">        Computes the Riemannian/natural gradient.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">u_parents</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_message_from_parents</span><span class="p">()</span>
+        <span class="n">m_children</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_message_from_children</span><span class="p">()</span>
+        
+        <span class="c"># TODO/FIXME: Put observed plates to zero?</span>
+        <span class="c"># Compute the gradient</span>
+        <span class="n">phi</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_distribution</span><span class="o">.</span><span class="n">compute_phi_from_parents</span><span class="p">(</span><span class="o">*</span><span class="n">u_parents</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">phi</span><span class="p">)):</span>
+            <span class="n">phi</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">phi</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">m_children</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">phi</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">annealing</span>
+            <span class="n">phi</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">phi</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_shape</span><span class="p">(</span><span class="n">i</span><span class="p">))</span>
+
+        <span class="c"># Allow using reparameterization (e.g., log for positive parameters)</span>
+        <span class="c">#phi = self._parameters_gradient(phi)</span>
+
+        <span class="c"># Explicit broadcasting</span>
+        <span class="c">#for i in range(len(self.phi)):</span>
+        <span class="c">#    phi[i] = phi[i] * np.ones(self.get_shape(i))</span>
+
+        <span class="c"># Vectorize</span>
+        
+
+        <span class="k">return</span> <span class="n">phi</span>
+        <span class="c">#return self._compute_gradient(m_children, *u_parents)</span>
+
+</div>
+<div class="viewcode-block" id="ExponentialFamily.get_gradient"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.expfamily.ExponentialFamily.get_gradient.html#bayespy.inference.vmp.nodes.expfamily.ExponentialFamily.get_gradient">[docs]</a>    <span class="k">def</span> <span class="nf">get_gradient</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rg</span><span class="p">):</span>
+        <span class="sd">r&quot;&quot;&quot; Computes gradient with respect to the natural parameters.</span>
+
+<span class="sd">        The function takes the Riemannian gradient as an input.  This is for</span>
+<span class="sd">        three reasons: 1) You probably want to use the Riemannian gradient</span>
+<span class="sd">        anyway so this helps avoiding accidental use of this function.  2) The</span>
+<span class="sd">        gradient is computed by using the Riemannian gradient and chain rules.</span>
+<span class="sd">        3) Probably you need both Riemannian and normal gradients anyway so you</span>
+<span class="sd">        can provide it to this function to avoid re-computing it.&quot;&quot;&quot;</span>
+            
+        <span class="n">g</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_distribution</span><span class="o">.</span><span class="n">compute_gradient</span><span class="p">(</span><span class="n">rg</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">phi</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">g</span>
+
+
+    <span class="c">## def update_parameters(self, d, scale=1.0):</span>
+    <span class="c">##     r&quot;&quot;&quot;</span>
+    <span class="c">##     Update the parameters of the VB distribution given a change.</span>
+
+    <span class="c">##     The parameters should be such that they can be used for</span>
+    <span class="c">##     optimization, that is, use log transformation for positive</span>
+    <span class="c">##     parameters.</span>
+    <span class="c">##     &quot;&quot;&quot;</span>
+    <span class="c">##     phi = self.get_parameters()</span>
+    <span class="c">##     for i in range(len(phi)):</span>
+    <span class="c">##         phi[i] = phi[i] + scale*d[i]</span>
+    <span class="c">##     self.set_parameters(phi)</span>
+    <span class="c">##     return</span>
+
+</div>
+<div class="viewcode-block" id="ExponentialFamily.get_parameters"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.expfamily.ExponentialFamily.get_parameters.html#bayespy.inference.vmp.nodes.expfamily.ExponentialFamily.get_parameters">[docs]</a>    <span class="k">def</span> <span class="nf">get_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">r&quot;&quot;&quot;</span>
+<span class="sd">        Return parameters of the VB distribution.</span>
+
+<span class="sd">        The parameters should be such that they can be used for</span>
+<span class="sd">        optimization, that is, use log transformation for positive</span>
+<span class="sd">        parameters.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">phi</span><span class="p">]</span>
+            
+
+</div>
+    <span class="k">def</span> <span class="nf">_decode_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">x</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="ExponentialFamily.set_parameters"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.expfamily.ExponentialFamily.set_parameters.html#bayespy.inference.vmp.nodes.expfamily.ExponentialFamily.set_parameters">[docs]</a>    <span class="k">def</span> <span class="nf">set_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="sd">r&quot;&quot;&quot;</span>
+<span class="sd">        Set the parameters of the VB distribution.</span>
+
+<span class="sd">        The parameters should be such that they can be used for</span>
+<span class="sd">        optimization, that is, use log transformation for positive</span>
+<span class="sd">        parameters.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">phi</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_decode_parameters</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_update_moments_and_cgf</span><span class="p">()</span>
+        <span class="k">return</span>
+
+</div>
     <span class="k">def</span> <span class="nf">_update_distribution_and_lowerbound</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">m_children</span><span class="p">,</span> <span class="o">*</span><span class="n">u_parents</span><span class="p">):</span>
 
         <span class="c"># Update phi first from parents..</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_update_phi_from_parents</span><span class="p">(</span><span class="o">*</span><span class="n">u_parents</span><span class="p">)</span>
         <span class="c"># .. then just add children&#39;s message</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">phi</span><span class="p">)):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">phi</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">phi</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">m_children</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">phi</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">annealing</span> <span class="o">*</span> <span class="p">(</span><span class="n">phi</span> <span class="o">+</span> <span class="n">m</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="p">(</span><span class="n">phi</span><span class="p">,</span> <span class="n">m</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">phi</span><span class="p">,</span> <span class="n">m_children</span><span class="p">)]</span>
 
         <span class="c"># Update u and g</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_update_moments_and_cgf</span><span class="p">()</span>
+
 
     <span class="k">def</span> <span class="nf">_update_moments_and_cgf</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -345,29 +476,55 @@
         <span class="c"># Set the moments</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_set_moments</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">mask</span><span class="p">)</span>
         
-        <span class="c"># TODO/FIXME: Use the mask?</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">f</span> <span class="o">=</span> <span class="n">f</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">f</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="p">)</span>
 
         <span class="c"># Observed nodes should not be ignored</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">observed</span> <span class="o">=</span> <span class="n">mask</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_update_mask</span><span class="p">()</span>
 </div>
-<div class="viewcode-block" id="ExponentialFamily.lower_bound_contribution"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.expfamily.ExponentialFamily.lower_bound_contribution.html#bayespy.inference.vmp.nodes.expfamily.ExponentialFamily.lower_bound_contribution">[docs]</a>    <span class="k">def</span> <span class="nf">lower_bound_contribution</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gradient</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
-        <span class="c"># Compute E[ log p(X|parents) - log q(X) ] over q(X)q(parents)</span>
+<div class="viewcode-block" id="ExponentialFamily.lower_bound_contribution"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.expfamily.ExponentialFamily.lower_bound_contribution.html#bayespy.inference.vmp.nodes.expfamily.ExponentialFamily.lower_bound_contribution">[docs]</a>    <span class="k">def</span> <span class="nf">lower_bound_contribution</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gradient</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">ignore_masked</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+        <span class="sd">r&quot;&quot;&quot;Compute E[ log p(X|parents) - log q(X) ]</span>
+
+<span class="sd">        If deterministic annealing is used, the term E[ -log q(X) ] is</span>
+<span class="sd">        divided by the anneling coefficient.  That is, phi and cgf of q</span>
+<span class="sd">        are multiplied by the temperature (inverse annealing</span>
+<span class="sd">        coefficient).</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c"># Annealing temperature</span>
+        <span class="n">T</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">annealing</span>
         
         <span class="c"># Messages from parents</span>
-        <span class="c">#u_parents = [parent.message_to_child() for parent in self.parents]</span>
         <span class="n">u_parents</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_message_from_parents</span><span class="p">()</span>
         <span class="n">phi</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_distribution</span><span class="o">.</span><span class="n">compute_phi_from_parents</span><span class="p">(</span><span class="o">*</span><span class="n">u_parents</span><span class="p">)</span>
         <span class="c"># G from parents</span>
         <span class="n">L</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_distribution</span><span class="o">.</span><span class="n">compute_cgf_from_parents</span><span class="p">(</span><span class="o">*</span><span class="n">u_parents</span><span class="p">)</span>
-        <span class="c"># L = g</span>
-        <span class="c"># G for unobserved variables (ignored variables are handled</span>
-        <span class="c"># properly automatically)</span>
+
+        <span class="c"># G for unobserved variables (ignored variables are handled properly</span>
+        <span class="c"># automatically)</span>
         <span class="n">latent_mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_not</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">observed</span><span class="p">)</span>
-        <span class="c">#latent_mask = np.logical_and(self.mask, np.logical_not(self.observed))</span>
-        <span class="c"># F for observed, G for latent</span>
-        <span class="n">L</span> <span class="o">=</span> <span class="n">L</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">observed</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="p">,</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">g</span><span class="p">)</span>
+
+        <span class="c"># G and F</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">observed</span><span class="p">):</span>
+            <span class="n">z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+        <span class="k">elif</span> <span class="n">T</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">z</span> <span class="o">=</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">g</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">z</span> <span class="o">=</span> <span class="o">-</span><span class="n">T</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">g</span>
+            <span class="c">## TRIED THIS BUT IT WAS WRONG:</span>
+            <span class="c">## z = -T * self.g + (1-T) * self.f</span>
+            <span class="c">## if np.any(np.isnan(self.f)):</span>
+            <span class="c">##     warnings.warn(&quot;F(x) not implemented for node %s. This &quot;</span>
+            <span class="c">##                   &quot;is required for annealed lower bound &quot;</span>
+            <span class="c">##                   &quot;computation.&quot; % self.__class__.__name__)</span>
+            <span class="c">##</span>
+            <span class="c">## It was wrong because the optimal q distribution has f which is</span>
+            <span class="c">## weighted by 1/T and here the f of q is weighted by T so the</span>
+            <span class="c">## total weight is 1, thus it cancels out with f of p.</span>
+
+        <span class="n">L</span> <span class="o">=</span> <span class="n">L</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">observed</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span>
+
         <span class="k">for</span> <span class="p">(</span><span class="n">phi_p</span><span class="p">,</span> <span class="n">phi_q</span><span class="p">,</span> <span class="n">u_q</span><span class="p">,</span> <span class="n">dims</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">phi</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">phi</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dims</span><span class="p">):</span>
             <span class="c"># Form a mask which puts observed variables to zero and</span>
             <span class="c"># broadcasts properly</span>
@@ -380,16 +537,24 @@
 
             <span class="c"># Compute the term</span>
             <span class="n">phi_q</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">latent_mask_i</span><span class="p">,</span> <span class="n">phi_q</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="c"># Apply annealing</span>
             <span class="c"># TODO/FIXME: Use einsum here?</span>
-            <span class="n">Z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">phi_p</span><span class="o">-</span><span class="n">phi_q</span><span class="p">)</span> <span class="o">*</span> <span class="n">u_q</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis_sum</span><span class="p">)</span>
+            <span class="n">Z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">phi_p</span><span class="o">-</span><span class="n">T</span><span class="o">*</span><span class="n">phi_q</span><span class="p">)</span> <span class="o">*</span> <span class="n">u_q</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis_sum</span><span class="p">)</span>
 
             <span class="n">L</span> <span class="o">=</span> <span class="n">L</span> <span class="o">+</span> <span class="n">Z</span>
 
-        <span class="k">return</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mask</span><span class="p">,</span> <span class="n">L</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
-                <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_plate_multiplier</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">plates</span><span class="p">,</span>
-                                         <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">L</span><span class="p">),</span>
-                                         <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mask</span><span class="p">)))</span>
-        <span class="c">#return L</span>
+        <span class="k">if</span> <span class="n">ignore_masked</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mask</span><span class="p">,</span> <span class="n">L</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+                    <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">broadcasting_multiplier</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">plates</span><span class="p">,</span>
+                                                   <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">L</span><span class="p">),</span>
+                                                   <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mask</span><span class="p">))</span>
+                    <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">plates_multiplier</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">L</span><span class="p">)</span>
+                    <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">broadcasting_multiplier</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">plates</span><span class="p">,</span>
+                                                   <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">L</span><span class="p">))</span>
+                    <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">plates_multiplier</span><span class="p">))</span>
+
 </div>
 <div class="viewcode-block" id="ExponentialFamily.logpdf"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.expfamily.ExponentialFamily.logpdf.html#bayespy.inference.vmp.nodes.expfamily.ExponentialFamily.logpdf">[docs]</a>    <span class="k">def</span> <span class="nf">logpdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -493,7 +658,7 @@
     </div>
     <div class="footer">
         &copy; Copyright 2011-2014, Jaakko Luttinen, GPLv3.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>
 </html>

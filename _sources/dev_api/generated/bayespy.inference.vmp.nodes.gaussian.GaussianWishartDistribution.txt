@@ -16,6 +16,7 @@ bayespy.inference.vmp.nodes.gaussian.GaussianWishartDistribution
    
       ~GaussianWishartDistribution.compute_cgf_from_parents
       ~GaussianWishartDistribution.compute_fixed_moments_and_f
+      ~GaussianWishartDistribution.compute_gradient
       ~GaussianWishartDistribution.compute_logpdf
       ~GaussianWishartDistribution.compute_mask_to_parent
       ~GaussianWishartDistribution.compute_message_to_parent

@@ -16,6 +16,7 @@ bayespy.nodes.Gate
    
       ~Gate.__init__
       ~Gate.add_plate_axis
+      ~Gate.broadcasting_multiplier
       ~Gate.delete
       ~Gate.get_mask
       ~Gate.get_moments
@@ -36,5 +37,6 @@ bayespy.nodes.Gate
       :toctree: generated/
    
       ~Gate.plates
+      ~Gate.plates_multiplier
    
    

@@ -16,9 +16,13 @@ bayespy.inference.vmp.nodes.expfamily.ExponentialFamily
    
       ~ExponentialFamily.__init__
       ~ExponentialFamily.add_plate_axis
+      ~ExponentialFamily.broadcasting_multiplier
       ~ExponentialFamily.delete
+      ~ExponentialFamily.get_gradient
       ~ExponentialFamily.get_mask
       ~ExponentialFamily.get_moments
+      ~ExponentialFamily.get_parameters
+      ~ExponentialFamily.get_riemannian_gradient
       ~ExponentialFamily.get_shape
       ~ExponentialFamily.has_plotter
       ~ExponentialFamily.initialize_from_parameters
@@ -35,6 +39,7 @@ bayespy.inference.vmp.nodes.expfamily.ExponentialFamily
       ~ExponentialFamily.plot
       ~ExponentialFamily.random
       ~ExponentialFamily.save
+      ~ExponentialFamily.set_parameters
       ~ExponentialFamily.set_plotter
       ~ExponentialFamily.unobserve
       ~ExponentialFamily.update
@@ -50,5 +55,6 @@ bayespy.inference.vmp.nodes.expfamily.ExponentialFamily
    
       ~ExponentialFamily.dims
       ~ExponentialFamily.plates
+      ~ExponentialFamily.plates_multiplier
    
    

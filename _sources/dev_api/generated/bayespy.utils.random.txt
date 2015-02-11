@@ -23,6 +23,7 @@ bayespy.utils.random
       gaussian_logpdf
       intervals
       invwishart_rand
+      logodds_to_probability
       mask
       orth
       sphere

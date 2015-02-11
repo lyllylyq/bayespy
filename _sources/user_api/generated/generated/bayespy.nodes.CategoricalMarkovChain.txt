@@ -16,9 +16,13 @@ bayespy.nodes.CategoricalMarkovChain
    
       ~CategoricalMarkovChain.__init__
       ~CategoricalMarkovChain.add_plate_axis
+      ~CategoricalMarkovChain.broadcasting_multiplier
       ~CategoricalMarkovChain.delete
+      ~CategoricalMarkovChain.get_gradient
       ~CategoricalMarkovChain.get_mask
       ~CategoricalMarkovChain.get_moments
+      ~CategoricalMarkovChain.get_parameters
+      ~CategoricalMarkovChain.get_riemannian_gradient
       ~CategoricalMarkovChain.get_shape
       ~CategoricalMarkovChain.has_plotter
       ~CategoricalMarkovChain.initialize_from_parameters
@@ -35,6 +39,7 @@ bayespy.nodes.CategoricalMarkovChain
       ~CategoricalMarkovChain.plot
       ~CategoricalMarkovChain.random
       ~CategoricalMarkovChain.save
+      ~CategoricalMarkovChain.set_parameters
       ~CategoricalMarkovChain.set_plotter
       ~CategoricalMarkovChain.show
       ~CategoricalMarkovChain.unobserve
@@ -51,5 +56,6 @@ bayespy.nodes.CategoricalMarkovChain
    
       ~CategoricalMarkovChain.dims
       ~CategoricalMarkovChain.plates
+      ~CategoricalMarkovChain.plates_multiplier
    
    

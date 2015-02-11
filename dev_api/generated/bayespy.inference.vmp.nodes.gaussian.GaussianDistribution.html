@@ -80,70 +80,10 @@
   \boldsymbol{\mu}
 + \frac{1}{2} \log |\mathbf{\Lambda}|
 - \frac{D}{2} \log (2\pi)\end{split}\]</div>
-<div class="math">
-\[\begin{split}\mathbf{u} (\mathbf{x})
-&amp;=
-\left[ \begin{matrix}
-  \mathbf{x}
-  \\
-  \mathbf{xx}^{\mathrm{T}}
-\end{matrix} \right]
-\\
-\boldsymbol{\phi} (\boldsymbol{\mu}, \mathbf{\Lambda})
-&amp;=
-\left[ \begin{matrix}
-  \mathbf{\Lambda} \boldsymbol{\mu} 
-  \\
-  - \frac{1}{2} \mathbf{\Lambda}
-\end{matrix} \right]
-\\
-\boldsymbol{\phi}_{\boldsymbol{\mu}} (\mathbf{x}, \mathbf{\Lambda})
-&amp;=
-\left[ \begin{matrix}
-  \mathbf{\Lambda} \mathbf{x} 
-  \\
-  - \frac{1}{2} \mathbf{\Lambda}
-\end{matrix} \right]
-\\
-\boldsymbol{\phi}_{\mathbf{\Lambda}} (\mathbf{x}, \boldsymbol{\mu})
-&amp;=
-\left[ \begin{matrix}
-  - \frac{1}{2} \mathbf{xx}^{\mathrm{T}}
-  + \frac{1}{2} \mathbf{x}\boldsymbol{\mu}^{\mathrm{T}}
-  + \frac{1}{2} \boldsymbol{\mu}\mathbf{x}^{\mathrm{T}}
-  - \frac{1}{2} \boldsymbol{\mu\mu}^{\mathrm{T}}
-  \\
-  \frac{1}{2}
-\end{matrix} \right]
-\\
-g (\boldsymbol{\mu}, \mathbf{\Lambda})
-&amp;=
-- \frac{1}{2} \operatorname{tr}(\boldsymbol{\mu\mu}^{\mathrm{T}}
-                                \mathbf{\Lambda} )
-+ \frac{1}{2} \log |\mathbf{\Lambda}|
-\\
-g_{\boldsymbol{\phi}} (\boldsymbol{\phi})
-&amp;=
-\frac{1}{4} \boldsymbol{\phi}^{\mathrm{T}}_1 \boldsymbol{\phi}^{-1}_2 
-\boldsymbol{\phi}_1
-+ \frac{1}{2} \log | -2 \boldsymbol{\phi}_2 |
-\\
-f(\mathbf{x})
-&amp;= - \frac{D}{2} \log(2\pi)
-\\
-\overline{\mathbf{u}}  (\boldsymbol{\phi})
-&amp;=
-\left[ \begin{matrix}
-  - \frac{1}{2} \boldsymbol{\phi}^{-1}_2 \boldsymbol{\phi}_1
-  \\
-  \frac{1}{4} \boldsymbol{\phi}^{-1}_2 \boldsymbol{\phi}_1
-  \boldsymbol{\phi}^{\mathrm{T}}_1 \boldsymbol{\phi}^{-1}_2 
-  - \frac{1}{2} \boldsymbol{\phi}^{-1}_2
-\end{matrix} \right]\end{split}\]</div>
 <dl class="method">
 <dt id="bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.__init__">
 <tt class="descname">__init__</tt><big>(</big><big>)</big><a class="headerlink" href="#bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><p>x.__init__(...) initializes x; see help(type(x)) for signature</p>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
 </dd></dl>
 
 <p class="rubric">Methods</p>
@@ -159,28 +99,31 @@ f(\mathbf{x})
 <tr class="row-even"><td><a class="reference internal" href="generated/bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.compute_fixed_moments_and_f.html#bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.compute_fixed_moments_and_f" title="bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.compute_fixed_moments_and_f"><tt class="xref py py-obj docutils literal"><span class="pre">compute_fixed_moments_and_f</span></tt></a>(x[,&nbsp;mask])</td>
 <td>Compute the moments and <span class="math">\(f(x)\)</span> for a fixed value.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.compute_logpdf.html#bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.compute_logpdf" title="bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.compute_logpdf"><tt class="xref py py-obj docutils literal"><span class="pre">compute_logpdf</span></tt></a>(u,&nbsp;phi,&nbsp;g,&nbsp;f,&nbsp;ndims)</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.compute_gradient.html#bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.compute_gradient" title="bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.compute_gradient"><tt class="xref py py-obj docutils literal"><span class="pre">compute_gradient</span></tt></a>(g,&nbsp;u,&nbsp;phi)</td>
+<td>Compute the standard gradient with respect to the natural parameters.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.compute_logpdf.html#bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.compute_logpdf" title="bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.compute_logpdf"><tt class="xref py py-obj docutils literal"><span class="pre">compute_logpdf</span></tt></a>(u,&nbsp;phi,&nbsp;g,&nbsp;f,&nbsp;ndims)</td>
 <td>Compute E[log p(X)] given E[u], E[phi], E[g] and E[f].</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.compute_mask_to_parent.html#bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.compute_mask_to_parent" title="bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.compute_mask_to_parent"><tt class="xref py py-obj docutils literal"><span class="pre">compute_mask_to_parent</span></tt></a>(index,&nbsp;mask)</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.compute_mask_to_parent.html#bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.compute_mask_to_parent" title="bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.compute_mask_to_parent"><tt class="xref py py-obj docutils literal"><span class="pre">compute_mask_to_parent</span></tt></a>(index,&nbsp;mask)</td>
 <td>Maps the mask to the plates of a parent.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.compute_message_to_parent.html#bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.compute_message_to_parent" title="bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.compute_message_to_parent"><tt class="xref py py-obj docutils literal"><span class="pre">compute_message_to_parent</span></tt></a>(parent,&nbsp;index,&nbsp;u,&nbsp;...)</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.compute_message_to_parent.html#bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.compute_message_to_parent" title="bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.compute_message_to_parent"><tt class="xref py py-obj docutils literal"><span class="pre">compute_message_to_parent</span></tt></a>(parent,&nbsp;index,&nbsp;u,&nbsp;...)</td>
 <td>Compute the message to a parent node.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.compute_moments_and_cgf.html#bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.compute_moments_and_cgf" title="bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.compute_moments_and_cgf"><tt class="xref py py-obj docutils literal"><span class="pre">compute_moments_and_cgf</span></tt></a>(phi[,&nbsp;mask])</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.compute_moments_and_cgf.html#bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.compute_moments_and_cgf" title="bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.compute_moments_and_cgf"><tt class="xref py py-obj docutils literal"><span class="pre">compute_moments_and_cgf</span></tt></a>(phi[,&nbsp;mask])</td>
 <td>Compute the moments and <span class="math">\(g(\phi)\)</span>.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.compute_phi_from_parents.html#bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.compute_phi_from_parents" title="bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.compute_phi_from_parents"><tt class="xref py py-obj docutils literal"><span class="pre">compute_phi_from_parents</span></tt></a>(u_mu_Lambda[,&nbsp;mask])</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.compute_phi_from_parents.html#bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.compute_phi_from_parents" title="bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.compute_phi_from_parents"><tt class="xref py py-obj docutils literal"><span class="pre">compute_phi_from_parents</span></tt></a>(u_mu_Lambda[,&nbsp;mask])</td>
 <td>Compute the natural parameter vector given parent moments.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.plates_from_parent.html#bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.plates_from_parent" title="bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.plates_from_parent"><tt class="xref py py-obj docutils literal"><span class="pre">plates_from_parent</span></tt></a>(index,&nbsp;plates)</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.plates_from_parent.html#bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.plates_from_parent" title="bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.plates_from_parent"><tt class="xref py py-obj docutils literal"><span class="pre">plates_from_parent</span></tt></a>(index,&nbsp;plates)</td>
 <td>Resolve the plate mapping from a parent.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.plates_to_parent.html#bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.plates_to_parent" title="bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.plates_to_parent"><tt class="xref py py-obj docutils literal"><span class="pre">plates_to_parent</span></tt></a>(index,&nbsp;plates)</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.plates_to_parent.html#bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.plates_to_parent" title="bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.plates_to_parent"><tt class="xref py py-obj docutils literal"><span class="pre">plates_to_parent</span></tt></a>(index,&nbsp;plates)</td>
 <td>Resolves the plate mapping to a parent.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.random.html#bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.random" title="bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.random"><tt class="xref py py-obj docutils literal"><span class="pre">random</span></tt></a>(*phi[,&nbsp;plates])</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.random.html#bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.random" title="bayespy.inference.vmp.nodes.gaussian.GaussianDistribution.random"><tt class="xref py py-obj docutils literal"><span class="pre">random</span></tt></a>(*phi[,&nbsp;plates])</td>
 <td>Draw a random sample from the distribution.</td>
 </tr>
 </tbody>
@@ -245,7 +188,7 @@ f(\mathbf{x})
     </div>
     <div class="footer">
         &copy; Copyright 2011-2014, Jaakko Luttinen, GPLv3.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>
 </html>

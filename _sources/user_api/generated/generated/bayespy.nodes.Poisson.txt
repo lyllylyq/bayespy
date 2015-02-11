@@ -16,9 +16,13 @@ bayespy.nodes.Poisson
    
       ~Poisson.__init__
       ~Poisson.add_plate_axis
+      ~Poisson.broadcasting_multiplier
       ~Poisson.delete
+      ~Poisson.get_gradient
       ~Poisson.get_mask
       ~Poisson.get_moments
+      ~Poisson.get_parameters
+      ~Poisson.get_riemannian_gradient
       ~Poisson.get_shape
       ~Poisson.has_plotter
       ~Poisson.initialize_from_parameters
@@ -35,6 +39,7 @@ bayespy.nodes.Poisson
       ~Poisson.plot
       ~Poisson.random
       ~Poisson.save
+      ~Poisson.set_parameters
       ~Poisson.set_plotter
       ~Poisson.show
       ~Poisson.unobserve
@@ -51,5 +56,6 @@ bayespy.nodes.Poisson
    
       ~Poisson.dims
       ~Poisson.plates
+      ~Poisson.plates_multiplier
    
    

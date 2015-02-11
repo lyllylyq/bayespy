@@ -16,9 +16,13 @@ bayespy.nodes.Mixture
    
       ~Mixture.__init__
       ~Mixture.add_plate_axis
+      ~Mixture.broadcasting_multiplier
       ~Mixture.delete
+      ~Mixture.get_gradient
       ~Mixture.get_mask
       ~Mixture.get_moments
+      ~Mixture.get_parameters
+      ~Mixture.get_riemannian_gradient
       ~Mixture.get_shape
       ~Mixture.has_plotter
       ~Mixture.initialize_from_parameters
@@ -36,6 +40,7 @@ bayespy.nodes.Mixture
       ~Mixture.plot
       ~Mixture.random
       ~Mixture.save
+      ~Mixture.set_parameters
       ~Mixture.set_plotter
       ~Mixture.unobserve
       ~Mixture.update
@@ -51,5 +56,6 @@ bayespy.nodes.Mixture
    
       ~Mixture.dims
       ~Mixture.plates
+      ~Mixture.plates_multiplier
    
    

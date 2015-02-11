@@ -16,6 +16,7 @@ bayespy.inference.vmp.nodes.constant.Constant
    
       ~Constant.__init__
       ~Constant.add_plate_axis
+      ~Constant.broadcasting_multiplier
       ~Constant.delete
       ~Constant.get_mask
       ~Constant.get_moments
@@ -35,5 +36,6 @@ bayespy.inference.vmp.nodes.constant.Constant
       :toctree: generated/
    
       ~Constant.plates
+      ~Constant.plates_multiplier
    
    

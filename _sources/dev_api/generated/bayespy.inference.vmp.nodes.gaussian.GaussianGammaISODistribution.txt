@@ -16,6 +16,7 @@ bayespy.inference.vmp.nodes.gaussian.GaussianGammaISODistribution
    
       ~GaussianGammaISODistribution.compute_cgf_from_parents
       ~GaussianGammaISODistribution.compute_fixed_moments_and_f
+      ~GaussianGammaISODistribution.compute_gradient
       ~GaussianGammaISODistribution.compute_logpdf
       ~GaussianGammaISODistribution.compute_mask_to_parent
       ~GaussianGammaISODistribution.compute_message_to_parent

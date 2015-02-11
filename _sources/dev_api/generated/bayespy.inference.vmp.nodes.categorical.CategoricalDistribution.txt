@@ -17,6 +17,7 @@ bayespy.inference.vmp.nodes.categorical.CategoricalDistribution
       ~CategoricalDistribution.__init__
       ~CategoricalDistribution.compute_cgf_from_parents
       ~CategoricalDistribution.compute_fixed_moments_and_f
+      ~CategoricalDistribution.compute_gradient
       ~CategoricalDistribution.compute_logpdf
       ~CategoricalDistribution.compute_mask_to_parent
       ~CategoricalDistribution.compute_message_to_parent
