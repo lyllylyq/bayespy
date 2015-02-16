@@ -220,6 +220,61 @@ the next iteration with a new annealing value.</p>
 </div>
 <div class="section" id="stochastic-variational-inference">
 <h2>Stochastic variational inference<a class="headerlink" href="#stochastic-variational-inference" title="Permalink to this headline">¶</a></h2>
+<p>In stochastic variational inference [???], the idea is to use mini-batches
+of large datasets to compute noisy gradients and learn the VB distributions by
+using stochastic gradient ascent.  In order for it to be useful, the model must
+be such that it can be divided into &#8220;intermediate&#8221; and &#8220;global&#8221; variables.  The
+number of intermediate variables increases with the data but the number of
+global variables remains fixed.  The global variables are learnt in the
+stochastic optimization.</p>
+<p>By denoting the data as <span class="math">\(Y=[Y_1, \ldots, Y_N]\)</span>, the intermediate variables
+as <span class="math">\(Z=[Z_1, \ldots, Z_N]\)</span> and the global variables as <span class="math">\(\theta\)</span>, the
+model needs to have the following structure:</p>
+<div class="math">
+\[\begin{split}p(Y, Z, \theta) &amp;= p(\theta) \prod^N_{n=1} p(Y_n|Z_n,\theta) p(Z_n|\theta)\end{split}\]</div>
+<p>The algorithm consists of three steps which are iterated: 1) a random mini-batch
+of the data is selected, 2) the corresponding intermediate variables are updated
+by using normal VB update equations, and 3) the global variables are updated
+with (stochastic) gradient ascent as if there was as many replications of the
+mini-batch as needed to recover the original dataset size.</p>
+<p>The learning rate for the gradient ascent must satisfy:</p>
+<div class="math">
+\[\begin{split}\sum^\infty_{i=1} \alpha_i = \infty \qquad \text{and} \qquad
+\sum^\infty_{i=1} \alpha^2 &lt; \infty,\end{split}\]</div>
+<p>where <span class="math">\(i\)</span> is the iteration number.  An example of a valid learning
+parameter is <span class="math">\(\alpha_i = (\delta + i)^{-\gamma}\)</span>, where <span class="math">\(\delta\)</span> is
+a delay and <span class="math">\(\gamma\)</span> is a forgetting rate.</p>
+<p>Stochastic variational inference is relatively easy to use in BayesPy.  The idea
+is that the user creates a model for the size of a mini-batch and specifies a
+multiplier for those plate axes that are replicated.  For the PCA example, the
+mini-batch model can be costructed as follows.  We decide to use <tt class="docutils literal"><span class="pre">C</span></tt> as a
+global variable and <tt class="docutils literal"><span class="pre">X</span></tt> as an intermediate variable.  The global variables
+<tt class="docutils literal"><span class="pre">alpha</span></tt>, <tt class="docutils literal"><span class="pre">C</span></tt> and <tt class="docutils literal"><span class="pre">tau</span></tt> are constructed identically as before.  The
+intermediate variable <tt class="docutils literal"><span class="pre">X</span></tt> is constructed as:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">X</span> <span class="o">=</span> <span class="n">GaussianARD</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span>
+<span class="gp">... </span>                <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">D</span><span class="p">,),</span>
+<span class="gp">... </span>                <span class="n">plates</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">5</span><span class="p">),</span>
+<span class="gp">... </span>                <span class="n">plates_multiplier</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">20</span><span class="p">),</span>
+<span class="gp">... </span>                <span class="n">name</span><span class="o">=</span><span class="s">&#39;X&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Note that the plates are <tt class="docutils literal"><span class="pre">(1,5)</span></tt> where as they are <tt class="docutils literal"><span class="pre">(1,100)</span></tt> in the full
+model.  Thus, we need to provide a plates multiplier <tt class="docutils literal"><span class="pre">(1,20)</span></tt> to define how
+the plates are replicated to get the full dateset.  These multipliers do not
+need to be integers, in this case the latter plate is multiplied by
+<span class="math">\(100/5=20\)</span>.  The remaining variables are defined as before:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">F</span> <span class="o">=</span> <span class="n">Dot</span><span class="p">(</span><span class="n">C</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Y</span> <span class="o">=</span> <span class="n">GaussianARD</span><span class="p">(</span><span class="n">F</span><span class="p">,</span> <span class="n">tau</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s">&#39;Y&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Note that the plates of <tt class="docutils literal"><span class="pre">Y</span></tt> and <tt class="docutils literal"><span class="pre">F</span></tt> also correspond to the size of the
+mini-batch and they also deduce the plate multipliers from their parents
+parents, thus we do not need to specify the multiplier here explicitly (although
+it is ok to do so).</p>
+<p>Let us construct the inference engine for the new mini-batch model:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Q</span> <span class="o">=</span> <span class="n">VB</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">tau</span><span class="p">)</span>
+</pre></div>
+</div>
 </div>
 <div class="section" id="black-box-variational-inference">
 <h2>Black-box variational inference<a class="headerlink" href="#black-box-variational-inference" title="Permalink to this headline">¶</a></h2>

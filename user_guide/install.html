@@ -66,9 +66,13 @@ errors or some relevant details are missing, please file a bug report at
 <div class="section" id="installing-bayespy">
 <h2>Installing BayesPy<a class="headerlink" href="#installing-bayespy" title="Permalink to this headline">¶</a></h2>
 <p>BayesPy can be installed easily by using Pip if the system has been properly set
-up.  First, you may want to set up a virtual environment.  Using virtual
-environment is optional but recommended.  To create and activate a new virtual
-environment, run</p>
+up.  If you have problems with the following methods, see the following section
+for some help on installing the requirements.</p>
+<div class="section" id="for-users">
+<h3>For users<a class="headerlink" href="#for-users" title="Permalink to this headline">¶</a></h3>
+<p>First, you may want to set up a virtual environment.  Using virtual environment
+is optional but recommended.  To create and activate a new virtual environment,
+run (in the folder in which you want to create the environment):</p>
 <div class="highlight-console"><div class="highlight"><pre><span class="go">virtualenv -p python3 --system-site-packages ENV</span>
 <span class="go">source ENV/bin/activate</span>
 </pre></div>
@@ -82,12 +86,34 @@ instead:</p>
 <div class="highlight-console"><div class="highlight"><pre><span class="go">pip install https://github.com/bayespy/bayespy/archive/master.zip</span>
 </pre></div>
 </div>
+</div>
+<div class="section" id="for-developers">
+<h3>For developers<a class="headerlink" href="#for-developers" title="Permalink to this headline">¶</a></h3>
+<p>If you want to install the development version of BayesPy in such a way that you
+can easily edit the package, follow these instructions.  Get the git repository:</p>
+<div class="highlight-console"><div class="highlight"><pre><span class="go">git clone https://github.com/bayespy/bayespy.git</span>
+<span class="go">cd bayespy</span>
+</pre></div>
+</div>
+<p>Create and activate a new virtual environment (optional but recommended):</p>
+<div class="highlight-console"><div class="highlight"><pre><span class="go">virtualenv -p python3 --system-site-packages ENV</span>
+<span class="go">source ENV/bin/activate</span>
+</pre></div>
+</div>
+<p>Install BayesPy in editable mode:</p>
+<div class="highlight-console"><div class="highlight"><pre><span class="go">pip install -e .</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="checking-installation">
+<h3>Checking installation<a class="headerlink" href="#checking-installation" title="Permalink to this headline">¶</a></h3>
 <p>If you have problems installing BayesPy, read the next section for more details.
 It is recommended to run the unit tests in order to check that BayesPy is
 working properly.  Thus, install Nose and run the unit tests:</p>
 <div class="highlight-console"><div class="highlight"><pre><span class="go">pip install nose</span>
 <span class="go">nosetests bayespy</span>
 </pre></div>
+</div>
 </div>
 </div>
 <div class="section" id="installing-requirements">
@@ -178,7 +204,12 @@ running the following commands in the <tt class="docutils literal"><span class="
   <h3><a href="../index.html">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">Installation</a><ul>
-<li><a class="reference internal" href="#installing-bayespy">Installing BayesPy</a></li>
+<li><a class="reference internal" href="#installing-bayespy">Installing BayesPy</a><ul>
+<li><a class="reference internal" href="#for-users">For users</a></li>
+<li><a class="reference internal" href="#for-developers">For developers</a></li>
+<li><a class="reference internal" href="#checking-installation">Checking installation</a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#installing-requirements">Installing requirements</a></li>
 <li><a class="reference internal" href="#compiling-documentation">Compiling documentation</a></li>
 </ul>

@@ -400,11 +400,15 @@
     <span class="c"># return gula.inner1d(A, b[...,np.newaxis,:])</span>
     <span class="c"># </span>
     <span class="c"># Use einsum instead:</span>
-    <span class="k">if</span> <span class="n">ndim</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s">&quot;mvdot not yet implemented for ndim!=1&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">ndim</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="n">misc</span><span class="o">.</span><span class="n">add_axes</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="n">ndim</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="o">-</span><span class="n">ndim</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">_dot</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">b</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="bp">None</span><span class="p">])[</span><span class="o">...</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span>
-    <span class="c">#return np.einsum(&#39;...ik,...k-&gt;...i&#39;, A, b)</span>
+    <span class="k">return</span> <span class="n">inner</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="n">ndim</span><span class="p">)</span>
+    <span class="c">## if ndim != 1:</span>
+    <span class="c">##     raise NotImplementedError(&quot;mvdot not yet implemented for ndim!=1&quot;)</span>
+
+    <span class="c">## return _dot(A, b[...,None])[...,0]</span>
+    <span class="c">## #return np.einsum(&#39;...ik,...k-&gt;...i&#39;, A, b)</span>
 </div>
 <div class="viewcode-block" id="mmdot"><a class="viewcode-back" href="../../../dev_api/generated/generated/bayespy.utils.linalg.mmdot.html#bayespy.utils.linalg.mmdot">[docs]</a><span class="k">def</span> <span class="nf">mmdot</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -412,18 +416,24 @@
 
 <span class="sd">    Applies broadcasting.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">ndim</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;transpose not yet implemented for ndim!=1&quot;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">_dot</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">ndim</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">A</span> <span class="o">*</span> <span class="n">B</span>
+    <span class="k">elif</span> <span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">_dot</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;mmdot not yet implemented for ndim&gt;1&quot;</span><span class="p">)</span>
     <span class="c">#return np.einsum(&#39;...ik,...kj-&gt;...ij&#39;, A, B)</span>
 </div>
 <div class="viewcode-block" id="transpose"><a class="viewcode-back" href="../../../dev_api/generated/generated/bayespy.utils.linalg.transpose.html#bayespy.utils.linalg.transpose">[docs]</a><span class="k">def</span> <span class="nf">transpose</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Transpose the matrix.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">ndim</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;transpose not yet implemented for ndim!=1&quot;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">swapaxes</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">ndim</span><span class="p">):</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">swapaxes</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="o">-</span><span class="n">n</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="o">-</span><span class="n">ndim</span><span class="o">-</span><span class="n">n</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">X</span>
+    <span class="c">## if ndim != 1:</span>
+    <span class="c">##     raise Exception(&quot;transpose not yet implemented for ndim!=1&quot;)</span>
+    <span class="c">## return np.swapaxes(X, -1, -2)</span>
 </div>
 <div class="viewcode-block" id="m_dot"><a class="viewcode-back" href="../../../dev_api/generated/generated/bayespy.utils.linalg.m_dot.html#bayespy.utils.linalg.m_dot">[docs]</a><span class="k">def</span> <span class="nf">m_dot</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="n">b</span><span class="p">):</span>
     <span class="k">raise</span> <span class="ne">DeprecationWarning</span><span class="p">()</span>
