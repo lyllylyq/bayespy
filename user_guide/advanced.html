@@ -280,17 +280,20 @@ do so).</p>
 </pre></div>
 </div>
 <p>Then, stochastic variational inference algorithm could look as follows:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">200</span><span class="p">):</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Q</span><span class="o">.</span><span class="n">ignore_bound_checks</span> <span class="o">=</span> <span class="bp">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">200</span><span class="p">):</span>
 <span class="gp">... </span>    <span class="n">subset</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
 <span class="gp">... </span>    <span class="n">Y</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">data</span><span class="p">[:,</span><span class="n">subset</span><span class="p">])</span>
 <span class="gp">... </span>    <span class="n">Q</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
 <span class="gp">... </span>    <span class="n">learning_rate</span> <span class="o">=</span> <span class="p">(</span><span class="n">n</span> <span class="o">+</span> <span class="mf">2.0</span><span class="p">)</span> <span class="o">**</span> <span class="p">(</span><span class="o">-</span><span class="mf">0.7</span><span class="p">)</span>
 <span class="gp">... </span>    <span class="n">Q</span><span class="o">.</span><span class="n">gradient_step</span><span class="p">(</span><span class="n">C</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">tau</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="n">learning_rate</span><span class="p">)</span>
+<span class="go">Iteration ...</span>
 </pre></div>
 </div>
-<p>The loop consists of three parts: 1) Draw a random mini-batch of the data (5
-samples from 100).  2) Update the intermediate variable <tt class="docutils literal"><span class="pre">X</span></tt>.  3) Update global
-variables with gradient ascent using a proper learning rate.</p>
+<p>First, we ignore the bound checks because they are noisy.  Then, the loop
+consists of three parts: 1) Draw a random mini-batch of the data (5 samples from
+100).  2) Update the intermediate variable <tt class="docutils literal"><span class="pre">X</span></tt>.  3) Update global variables
+with gradient ascent using a proper learning rate.</p>
 </div>
 <div class="section" id="black-box-variational-inference">
 <h2>Black-box variational inference<a class="headerlink" href="#black-box-variational-inference" title="Permalink to this headline">¶</a></h2>
