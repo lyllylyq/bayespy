@@ -456,7 +456,7 @@
 <span class="sd">    Requirements:</span>
 <span class="sd">    * X and alpha do not contain any observed values</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-<div class="viewcode-block" id="RotateGaussianARD.__init__"><a class="viewcode-back" href="../../../../user_api/generated/generated/generated/bayespy.inference.vmp.transformations.RotateGaussianARD.__init__.html#bayespy.inference.vmp.transformations.RotateGaussianARD.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="o">*</span><span class="n">alpha</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">precompute</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+<div class="viewcode-block" id="RotateGaussianARD.__init__"><a class="viewcode-back" href="../../../../user_api/generated/generated/generated/bayespy.inference.vmp.transformations.RotateGaussianARD.__init__.html#bayespy.inference.vmp.transformations.RotateGaussianARD.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="o">*</span><span class="n">alpha</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">precompute</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">subset</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Precompute tells whether to compute some moments once in the setup</span>
 <span class="sd">        function instead of every time in the bound function.  However, they are</span>
@@ -489,18 +489,48 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Axis out of bounds&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">axis</span> <span class="o">=</span> <span class="n">axis</span>
 
+        <span class="c"># Allow rotation of only subset of elements/slices</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">D</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">dims</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">axis</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">subset</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="c">#self.subset = np.ones(self.D, dtype=bool)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">subset</span> <span class="o">=</span> <span class="bp">None</span> <span class="c">#tuple(range(self.D))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c">#self.subset = tuple(range(self.D))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">subset</span> <span class="o">=</span> <span class="n">subset</span> <span class="c">#self.subset[subset]</span>
+            <span class="k">if</span> <span class="n">axis</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s">&quot;Subset indexing for non-last &quot;</span>
+                                          <span class="s">&quot;axis not yet implemented&quot;</span><span class="p">)</span>
+            <span class="c">## self.subset = np.zeros(self.D, dtype=bool)</span>
+            <span class="c">## self.subset[list(subset)] = True</span>
+
 </div>
 <div class="viewcode-block" id="RotateGaussianARD.nodes"><a class="viewcode-back" href="../../../../user_api/generated/generated/generated/bayespy.inference.vmp.transformations.RotateGaussianARD.nodes.html#bayespy.inference.vmp.transformations.RotateGaussianARD.nodes">[docs]</a>    <span class="k">def</span> <span class="nf">nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">update_alpha</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">node_X</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">node_alpha</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">node_X</span><span class="p">]</span>
+
 </div>
+    <span class="k">def</span> <span class="nf">_full_rotation_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">R</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">subset</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">R_full</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">D</span><span class="p">)</span>
+            <span class="n">indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ix_</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">subset</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">subset</span><span class="p">)</span>
+            <span class="n">R_full</span><span class="p">[</span><span class="n">indices</span><span class="p">]</span> <span class="o">=</span> <span class="n">R</span>
+            <span class="k">return</span> <span class="n">R_full</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">R</span>
+
+
 <div class="viewcode-block" id="RotateGaussianARD.rotate"><a class="viewcode-back" href="../../../../user_api/generated/generated/generated/bayespy.inference.vmp.transformations.RotateGaussianARD.rotate.html#bayespy.inference.vmp.transformations.RotateGaussianARD.rotate">[docs]</a>    <span class="k">def</span> <span class="nf">rotate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">inv</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">logdet</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">Q</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
 
+        <span class="c">## R = self._full_rotation_matrix(R)</span>
+        <span class="c">## if inv is not None:</span>
+        <span class="c">##     inv = self._full_rotation_matrix(inv)</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">node_X</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> 
-                           <span class="n">inv</span><span class="o">=</span><span class="n">inv</span><span class="p">,</span> 
-                           <span class="n">logdet</span><span class="o">=</span><span class="n">logdet</span><span class="p">,</span> 
+                           <span class="n">inv</span><span class="o">=</span><span class="n">inv</span><span class="p">,</span>
+                           <span class="n">logdet</span><span class="o">=</span><span class="n">logdet</span><span class="p">,</span>
+                           <span class="n">subset</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">subset</span><span class="p">,</span>
                            <span class="n">axis</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">axis</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">plate_axis</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
@@ -534,6 +564,9 @@
         <span class="c"># Get the mean parameter. It will not be rotated. This assumes that mu</span>
         <span class="c"># and alpha are really independent.</span>
         <span class="p">(</span><span class="n">alpha_mu</span><span class="p">,</span> <span class="n">alpha_mu2</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">_</span><span class="p">)</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">node_parent</span><span class="o">.</span><span class="n">get_moments</span><span class="p">()</span>
+        <span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">XX</span><span class="p">)</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">node_X</span><span class="o">.</span><span class="n">get_moments</span><span class="p">()</span>
+
+        <span class="c">#</span>
         <span class="n">mu</span> <span class="o">=</span> <span class="n">alpha_mu</span> <span class="o">/</span> <span class="n">alpha</span>
         <span class="n">mu2</span> <span class="o">=</span> <span class="n">alpha_mu2</span> <span class="o">/</span> <span class="n">alpha</span>
         <span class="c"># For simplicity, force mu to have the same shape as X</span>
@@ -543,8 +576,6 @@
         <span class="c">##                                              self.node_X.dims[0],</span>
         <span class="c">##                                              mu,</span>
         <span class="c">##                                              mumu)</span>
-
-        <span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">XX</span><span class="p">)</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">node_X</span><span class="o">.</span><span class="n">get_moments</span><span class="p">()</span>
 
         <span class="c"># Take diagonal of covariances to variances for axes that are not in R</span>
         <span class="c"># (and move those axes to be the last)</span>
@@ -672,6 +703,59 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">plates_X</span> <span class="o">=</span> <span class="n">plates_X</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">plates_alpha</span> <span class="o">=</span> <span class="n">plates_alpha</span>
 
+        <span class="c"># Take only a subset of the matrix for rotation</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">subset</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">precompute</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s">&quot;Precomputation not implemented when &quot;</span>
+                                          <span class="s">&quot;using a subset&quot;</span><span class="p">)</span>
+            <span class="c"># from X</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">X</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">subset</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mu2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mu2</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">subset</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">plate_axis</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="c"># from CovX</span>
+                <span class="n">inds</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ndim</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">CovX</span><span class="p">)</span><span class="o">-</span><span class="mi">2</span><span class="p">):</span>
+                    <span class="n">inds</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">CovX</span><span class="p">)[</span><span class="n">i</span><span class="p">]))</span>
+                <span class="n">inds</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">subset</span><span class="p">)</span>
+                <span class="n">inds</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">subset</span><span class="p">)</span>
+                <span class="n">indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ix_</span><span class="p">(</span><span class="o">*</span><span class="n">inds</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">CovX</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">CovX</span><span class="p">[</span><span class="n">indices</span><span class="p">]</span>
+                <span class="c"># from mu</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">mu</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mu</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">subset</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c"># from XX</span>
+                <span class="n">inds</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ndim</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">XX</span><span class="p">)</span><span class="o">-</span><span class="mi">2</span><span class="p">):</span>
+                    <span class="n">inds</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">XX</span><span class="p">)[</span><span class="n">i</span><span class="p">]))</span>
+                <span class="n">inds</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">subset</span><span class="p">)</span>
+                <span class="n">inds</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">subset</span><span class="p">)</span>
+                <span class="n">indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ix_</span><span class="p">(</span><span class="o">*</span><span class="n">inds</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">XX</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">XX</span><span class="p">[</span><span class="n">indices</span><span class="p">]</span>
+                <span class="c"># from Xmu</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">Xmu</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Xmu</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">subset</span><span class="p">]</span>
+            <span class="c"># from alpha</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">update_alpha</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">subset</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">a0</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">a0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">a0</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">subset</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">b0</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">b0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">b0</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">subset</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">alpha</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">alpha</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">subset</span><span class="p">]</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">plates_alpha</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">plates_alpha</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">subset</span><span class="p">))</span>
+        <span class="c">##     # from mu</span>
+        <span class="c">##     # from alpha</span>
+        <span class="c">##     alpha_mu = alpha_mu[...,self.subset]</span>
+        <span class="c">##     alpha_mu2 = alpha_mu2[...,self.subset]</span>
+        <span class="c">##     alpha = alpha[...,self.subset]</span>
+        <span class="c">##     dims = list(self.node_X.dims[0])</span>
+        <span class="c">##     dims[-1] = len(self.subset)</span>
+        <span class="c">## else:</span>
+        <span class="c">##     dims = list(self.node_X.dims[0])</span>
+
 </div>
     <span class="k">def</span> <span class="nf">_compute_bound</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">logdet</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">inv</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">Q</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">gradient</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">terms</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -681,6 +765,10 @@
 <span class="sd">        p(X|alpha) = prod_m N(x_m|0,diag(alpha))</span>
 <span class="sd">        p(alpha) = prod_d G(a_d,b_d)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c">## R = self._full_rotation_matrix(R)</span>
+        <span class="c">## if inv is not None:</span>
+        <span class="c">##     inv = self._full_rotation_matrix(inv)</span>
 
         <span class="c">#</span>
         <span class="c"># Transform the distributions and moments</span>
@@ -928,6 +1016,10 @@
             <span class="o">+</span> <span class="n">dlogH_alpha</span>
                         <span class="p">)</span>
 
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">subset</span><span class="p">:</span>
+            <span class="n">indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ix_</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">subset</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">subset</span><span class="p">)</span>
+            <span class="n">dR_bound</span> <span class="o">=</span> <span class="n">dR_bound</span><span class="p">[</span><span class="n">indices</span><span class="p">]</span>
+
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">plate_axis</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">(</span><span class="n">bound</span><span class="p">,</span> <span class="n">dR_bound</span><span class="p">)</span>
 
@@ -1131,8 +1223,13 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">A_rotator</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="n">inv</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">inv</span><span class="o">=</span><span class="n">R</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">logdet</span><span class="o">=-</span><span class="n">logdet</span><span class="p">,</span> <span class="n">Q</span><span class="o">=</span><span class="n">R</span><span class="p">)</span>
 </div>
     <span class="k">def</span> <span class="nf">_computations_for_A_and_X</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">XpXn</span><span class="p">,</span> <span class="n">XpXp</span><span class="p">):</span>
-        <span class="c"># Get moments of A (and make sure they include time axis)</span>
+        <span class="c"># Get moments of the state dynamics matrix</span>
         <span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">AA</span><span class="p">)</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">A_node</span><span class="o">.</span><span class="n">get_moments</span><span class="p">()</span>
+        <span class="c"># Ignore axes that correspond to input signals</span>
+        <span class="n">D</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">A</span><span class="p">)[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
+        <span class="n">A</span> <span class="o">=</span> <span class="n">A</span><span class="p">[</span><span class="o">...</span><span class="p">,:</span><span class="n">D</span><span class="p">]</span>
+        <span class="n">AA</span> <span class="o">=</span> <span class="n">AA</span><span class="p">[</span><span class="o">...</span><span class="p">,:</span><span class="n">D</span><span class="p">,:</span><span class="n">D</span><span class="p">]</span>
+        <span class="c"># Make sure time axis is in the arrays</span>
         <span class="n">A</span> <span class="o">=</span> <span class="n">misc</span><span class="o">.</span><span class="n">atleast_nd</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
         <span class="n">AA</span> <span class="o">=</span> <span class="n">misc</span><span class="o">.</span><span class="n">atleast_nd</span><span class="p">(</span><span class="n">AA</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
         <span class="n">CovA</span> <span class="o">=</span> <span class="n">AA</span> <span class="o">-</span> <span class="n">A</span><span class="p">[</span><span class="o">...</span><span class="p">,:,</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]</span><span class="o">*</span><span class="n">A</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,:]</span>

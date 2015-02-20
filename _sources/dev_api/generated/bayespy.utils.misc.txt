@@ -20,6 +20,7 @@ bayespy.utils.misc
       block_banded
       broadcasted_shape
       broadcasted_shape_from_arrays
+      broadcasting_multiplier
       ceildiv
       check_gradient
       chol
@@ -67,6 +68,7 @@ bayespy.utils.misc
       squeeze
       squeeze_to_dim
       sum_multiply
+      sum_multiply_to_plates
       sum_product
       sum_to_dim
       sum_to_shape

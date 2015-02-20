@@ -62,21 +62,7 @@
 <dl class="method">
 <dt id="bayespy.inference.vmp.nodes.gaussian.GaussianToGaussianGammaISO.broadcasting_multiplier">
 <tt class="descclassname">GaussianToGaussianGammaISO.</tt><tt class="descname">broadcasting_multiplier</tt><big>(</big><em>plates</em>, <em>*args</em><big>)</big><a class="headerlink" href="#bayespy.inference.vmp.nodes.gaussian.GaussianToGaussianGammaISO.broadcasting_multiplier" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute the plate multiplier for given shapes.</p>
-<p>The first shape is compared to all other shapes (using NumPy
-broadcasting rules). All the elements which are non-unit in the first
-shape but 1 in all other shapes are multiplied together.</p>
-<p>This method is used, for instance, for computing a correction factor for
-messages to parents: If this node has non-unit plates that are unit
-plates in the parent, those plates are summed. However, if the message
-has unit axis for that plate, it should be first broadcasted to the
-plates of this node and then summed to the plates of the parent. In
-order to avoid this broadcasting and summing, it is more efficient to
-just multiply by the correct factor. This method computes that
-factor. The first argument is the full plate shape of this node (with
-respect to the parent). The other arguments are the shape of the message
-array and the plates of the parent (with respect to this node).</p>
-</dd></dl>
+<dd></dd></dl>
 
 </div>
 

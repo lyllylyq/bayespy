@@ -60,7 +60,7 @@
 <h1>bayespy.nodes.GaussianMarkovChain<a class="headerlink" href="#bayespy-nodes-gaussianmarkovchain" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="bayespy.nodes.GaussianMarkovChain">
-<em class="property">class </em><tt class="descclassname">bayespy.nodes.</tt><tt class="descname">GaussianMarkovChain</tt><big>(</big><em>mu</em>, <em>Lambda</em>, <em>A</em>, <em>nu</em>, <em>n=None</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#bayespy.nodes.GaussianMarkovChain" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">bayespy.nodes.</tt><tt class="descname">GaussianMarkovChain</tt><big>(</big><em>mu</em>, <em>Lambda</em>, <em>A</em>, <em>nu</em>, <em>n=None</em>, <em>inputs=None</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#bayespy.nodes.GaussianMarkovChain" title="Permalink to this definition">¶</a></dt>
 <dd><p>Node for Gaussian Markov chain random variables.</p>
 <p>In a simple case, the graphical model can be presented as:</p>
 <div class="figure">
@@ -275,7 +275,7 @@ and <span class="math">\(\boldsymbol{\nu}\)</span> are constant over time.</p>
 </div>
 <dl class="method">
 <dt id="bayespy.nodes.GaussianMarkovChain.__init__">
-<tt class="descname">__init__</tt><big>(</big><em>mu</em>, <em>Lambda</em>, <em>A</em>, <em>nu</em>, <em>n=None</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#bayespy.nodes.GaussianMarkovChain.__init__" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">__init__</tt><big>(</big><em>mu</em>, <em>Lambda</em>, <em>A</em>, <em>nu</em>, <em>n=None</em>, <em>inputs=None</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#bayespy.nodes.GaussianMarkovChain.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create GaussianMarkovChain node.</p>
 </dd></dl>
 
@@ -286,14 +286,14 @@ and <span class="math">\(\boldsymbol{\nu}\)</span> are constant over time.</p>
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.nodes.GaussianMarkovChain.__init__.html#bayespy.nodes.GaussianMarkovChain.__init__" title="bayespy.nodes.GaussianMarkovChain.__init__"><tt class="xref py py-obj docutils literal"><span class="pre">__init__</span></tt></a>(mu,&nbsp;Lambda,&nbsp;A,&nbsp;nu[,&nbsp;n])</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.nodes.GaussianMarkovChain.__init__.html#bayespy.nodes.GaussianMarkovChain.__init__" title="bayespy.nodes.GaussianMarkovChain.__init__"><tt class="xref py py-obj docutils literal"><span class="pre">__init__</span></tt></a>(mu,&nbsp;Lambda,&nbsp;A,&nbsp;nu[,&nbsp;n,&nbsp;inputs])</td>
 <td>Create GaussianMarkovChain node.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="generated/bayespy.nodes.GaussianMarkovChain.add_plate_axis.html#bayespy.nodes.GaussianMarkovChain.add_plate_axis" title="bayespy.nodes.GaussianMarkovChain.add_plate_axis"><tt class="xref py py-obj docutils literal"><span class="pre">add_plate_axis</span></tt></a>(to_plate)</td>
 <td></td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.nodes.GaussianMarkovChain.broadcasting_multiplier.html#bayespy.nodes.GaussianMarkovChain.broadcasting_multiplier" title="bayespy.nodes.GaussianMarkovChain.broadcasting_multiplier"><tt class="xref py py-obj docutils literal"><span class="pre">broadcasting_multiplier</span></tt></a>(plates,&nbsp;*args)</td>
-<td>Compute the plate multiplier for given shapes.</td>
+<td></td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="generated/bayespy.nodes.GaussianMarkovChain.delete.html#bayespy.nodes.GaussianMarkovChain.delete" title="bayespy.nodes.GaussianMarkovChain.delete"><tt class="xref py py-obj docutils literal"><span class="pre">delete</span></tt></a>()</td>
 <td>Delete this node and the children</td>

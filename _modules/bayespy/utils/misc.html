@@ -498,6 +498,93 @@
         <span class="n">axes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">dimdiff</span><span class="p">)</span>
         <span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axes</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">A</span>
+
+</div>
+<div class="viewcode-block" id="broadcasting_multiplier"><a class="viewcode-back" href="../../../dev_api/generated/generated/bayespy.utils.misc.broadcasting_multiplier.html#bayespy.utils.misc.broadcasting_multiplier">[docs]</a><span class="k">def</span> <span class="nf">broadcasting_multiplier</span><span class="p">(</span><span class="n">plates</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Compute the plate multiplier for given shapes.</span>
+
+<span class="sd">    The first shape is compared to all other shapes (using NumPy</span>
+<span class="sd">    broadcasting rules). All the elements which are non-unit in the first</span>
+<span class="sd">    shape but 1 in all other shapes are multiplied together.</span>
+
+<span class="sd">    This method is used, for instance, for computing a correction factor for</span>
+<span class="sd">    messages to parents: If this node has non-unit plates that are unit</span>
+<span class="sd">    plates in the parent, those plates are summed. However, if the message</span>
+<span class="sd">    has unit axis for that plate, it should be first broadcasted to the</span>
+<span class="sd">    plates of this node and then summed to the plates of the parent. In</span>
+<span class="sd">    order to avoid this broadcasting and summing, it is more efficient to</span>
+<span class="sd">    just multiply by the correct factor. This method computes that</span>
+<span class="sd">    factor. The first argument is the full plate shape of this node (with</span>
+<span class="sd">    respect to the parent). The other arguments are the shape of the message</span>
+<span class="sd">    array and the plates of the parent (with respect to this node).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c"># Check broadcasting of the shapes</span>
+    <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">args</span><span class="p">:</span>
+        <span class="n">broadcasted_shape</span><span class="p">(</span><span class="n">plates</span><span class="p">,</span> <span class="n">arg</span><span class="p">)</span>
+
+    <span class="c"># Check that each arg-plates are a subset of plates?</span>
+    <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">args</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">is_shape_subset</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="n">plates</span><span class="p">):</span>
+            <span class="k">print</span><span class="p">(</span><span class="s">&quot;Plates:&quot;</span><span class="p">,</span> <span class="n">plates</span><span class="p">)</span>
+            <span class="k">print</span><span class="p">(</span><span class="s">&quot;Args:&quot;</span><span class="p">,</span> <span class="n">args</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;The shapes in args are not a sub-shape of &quot;</span>
+                             <span class="s">&quot;plates&quot;</span><span class="p">)</span>
+
+    <span class="n">r</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="n">plates</span><span class="p">),</span><span class="mi">0</span><span class="p">):</span>
+        <span class="n">mult</span> <span class="o">=</span> <span class="bp">True</span>
+        <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">args</span><span class="p">:</span>
+            <span class="c"># if -j &lt;= len(arg) and arg[j] != 1:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="o">-</span><span class="n">j</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span> <span class="ow">or</span> <span class="n">arg</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">):</span>
+                <span class="n">mult</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="k">if</span> <span class="n">mult</span><span class="p">:</span>
+            <span class="n">r</span> <span class="o">*=</span> <span class="n">plates</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">r</span>
+
+</div>
+<div class="viewcode-block" id="sum_multiply_to_plates"><a class="viewcode-back" href="../../../dev_api/generated/generated/bayespy.utils.misc.sum_multiply_to_plates.html#bayespy.utils.misc.sum_multiply_to_plates">[docs]</a><span class="k">def</span> <span class="nf">sum_multiply_to_plates</span><span class="p">(</span><span class="o">*</span><span class="n">arrays</span><span class="p">,</span> <span class="n">to_plates</span><span class="o">=</span><span class="p">(),</span> <span class="n">from_plates</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Compute the product of the arguments and sum to the target shape.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">arrays</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">arrays</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">get_plates</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">ndim</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">x</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">x</span><span class="p">[:</span><span class="o">-</span><span class="n">ndim</span><span class="p">]</span>
+
+    <span class="n">plates_arrays</span> <span class="o">=</span> <span class="p">[</span><span class="n">get_plates</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">array</span><span class="p">))</span> <span class="k">for</span> <span class="n">array</span> <span class="ow">in</span> <span class="n">arrays</span><span class="p">]</span>
+    <span class="n">product_plates</span> <span class="o">=</span> <span class="n">broadcasted_shape</span><span class="p">(</span><span class="o">*</span><span class="n">plates_arrays</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">from_plates</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">from_plates</span> <span class="o">=</span> <span class="n">product_plates</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">broadcasting_multiplier</span><span class="p">(</span><span class="n">from_plates</span><span class="p">,</span> <span class="n">product_plates</span><span class="p">,</span> <span class="n">to_plates</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">ind</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">arrays</span><span class="p">)):</span>
+        <span class="n">plates_others</span> <span class="o">=</span> <span class="n">plates_arrays</span><span class="p">[:</span><span class="n">ind</span><span class="p">]</span> <span class="o">+</span> <span class="n">plates_arrays</span><span class="p">[(</span><span class="n">ind</span><span class="o">+</span><span class="mi">1</span><span class="p">):]</span>
+        <span class="n">plates_without</span> <span class="o">=</span> <span class="n">broadcasted_shape</span><span class="p">(</span><span class="n">to_plates</span><span class="p">,</span> <span class="o">*</span><span class="n">plates_others</span><span class="p">)</span>
+        <span class="n">ax</span> <span class="o">=</span> <span class="n">axes_to_collapse</span><span class="p">(</span><span class="n">plates_arrays</span><span class="p">[</span><span class="n">ind</span><span class="p">],</span> <span class="c">#get_plates(np.shape(arrays[ind])),</span>
+                              <span class="n">plates_without</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">ax</span><span class="p">:</span>
+            <span class="n">ax</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">([</span><span class="n">a</span><span class="o">-</span><span class="n">ndim</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">ax</span><span class="p">])</span>
+            <span class="n">arrays</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">arrays</span><span class="p">[</span><span class="n">ind</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+    <span class="n">plates_arrays</span> <span class="o">=</span> <span class="p">[</span><span class="n">get_plates</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">array</span><span class="p">))</span> <span class="k">for</span> <span class="n">array</span> <span class="ow">in</span> <span class="n">arrays</span><span class="p">]</span>
+    <span class="n">product_plates</span> <span class="o">=</span> <span class="n">broadcasted_shape</span><span class="p">(</span><span class="o">*</span><span class="n">plates_arrays</span><span class="p">)</span>
+
+    <span class="n">ax</span> <span class="o">=</span> <span class="n">axes_to_collapse</span><span class="p">(</span><span class="n">product_plates</span><span class="p">,</span> <span class="n">to_plates</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">ax</span><span class="p">:</span>
+        <span class="n">ax</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">([</span><span class="n">a</span><span class="o">-</span><span class="n">ndim</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">ax</span><span class="p">])</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">sum_multiply</span><span class="p">(</span><span class="o">*</span><span class="n">arrays</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">functools</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">multiply</span><span class="p">,</span> <span class="n">arrays</span><span class="p">)</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">squeeze_to_dim</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">to_plates</span><span class="p">)</span> <span class="o">+</span> <span class="n">ndim</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">r</span> <span class="o">*</span> <span class="n">y</span>
+
 </div>
 <div class="viewcode-block" id="sum_multiply"><a class="viewcode-back" href="../../../dev_api/generated/generated/bayespy.utils.misc.sum_multiply.html#bayespy.utils.misc.sum_multiply">[docs]</a><span class="k">def</span> <span class="nf">sum_multiply</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">sumaxis</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
 

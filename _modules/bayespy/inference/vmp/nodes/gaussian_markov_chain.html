@@ -290,7 +290,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
 
-<div class="viewcode-block" id="GaussianMarkovChainDistribution.compute_message_to_parent"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.gaussian_markov_chain.GaussianMarkovChainDistribution.compute_message_to_parent.html#bayespy.inference.vmp.nodes.gaussian_markov_chain.GaussianMarkovChainDistribution.compute_message_to_parent">[docs]</a>    <span class="k">def</span> <span class="nf">compute_message_to_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">u_mu</span><span class="p">,</span> <span class="n">u_Lambda</span><span class="p">,</span> <span class="n">u_A</span><span class="p">,</span> <span class="n">u_v</span><span class="p">):</span>
+<div class="viewcode-block" id="GaussianMarkovChainDistribution.compute_message_to_parent"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.gaussian_markov_chain.GaussianMarkovChainDistribution.compute_message_to_parent.html#bayespy.inference.vmp.nodes.gaussian_markov_chain.GaussianMarkovChainDistribution.compute_message_to_parent">[docs]</a>    <span class="k">def</span> <span class="nf">compute_message_to_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">u_mu</span><span class="p">,</span> <span class="n">u_Lambda</span><span class="p">,</span> <span class="n">u_A</span><span class="p">,</span> <span class="n">u_v</span><span class="p">,</span> <span class="o">*</span><span class="n">u_inputs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Compute a message to a parent.</span>
 
@@ -308,9 +308,11 @@
 <span class="sd">            Moments of parent `A`.</span>
 <span class="sd">        u_v : list of ndarrays</span>
 <span class="sd">            Moments of parent `v`.</span>
-<span class="sd">        u_N : list of ndarrays</span>
-<span class="sd">            Moments of parent `N`.</span>
+<span class="sd">        u_inputs : list of ndarrays</span>
+<span class="sd">            Moments of input signals.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">D</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">u</span><span class="p">[</span><span class="mi">0</span><span class="p">])[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
         
         <span class="k">if</span> <span class="n">index</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>   <span class="c"># mu</span>
             <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
@@ -325,9 +327,29 @@
             <span class="c"># function which computes sum(v*XnXn) without computing the huge</span>
             <span class="c"># v*XnXn explicitly.</span>
             <span class="n">m1</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.5</span> <span class="o">*</span> <span class="n">message_sum_multiply</span><span class="p">(</span><span class="n">parent</span><span class="o">.</span><span class="n">plates</span><span class="p">,</span>
-                                             <span class="n">parent</span><span class="o">.</span><span class="n">dims</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                                             <span class="p">(</span><span class="n">D</span><span class="p">,</span> <span class="n">D</span><span class="p">),</span> <span class="c">#parent.dims[1],</span>
                                              <span class="n">v</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">],</span>
                                              <span class="n">XnXn</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:])</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">u_inputs</span><span class="p">):</span>
+                <span class="n">Xn</span> <span class="o">=</span> <span class="n">u</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">z</span> <span class="o">=</span> <span class="n">u_inputs</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">zz</span> <span class="o">=</span> <span class="n">u_inputs</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">D_inputs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">z</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">m0_B</span> <span class="o">=</span> <span class="n">v</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="bp">None</span><span class="p">]</span> <span class="o">*</span> <span class="n">Xn</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="mi">1</span><span class="p">:,:,</span><span class="bp">None</span><span class="p">]</span> <span class="o">*</span> <span class="n">z</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="bp">None</span><span class="p">,:]</span>
+                <span class="n">m1_BB</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.5</span> <span class="o">*</span> <span class="n">message_sum_multiply</span><span class="p">(</span><span class="n">parent</span><span class="o">.</span><span class="n">plates</span><span class="p">,</span>
+                                                    <span class="p">(</span><span class="n">D_inputs</span><span class="p">,</span> <span class="n">D_inputs</span><span class="p">),</span>
+                                                    <span class="n">zz</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span>    <span class="p">:,</span>    <span class="p">:],</span>
+                                                    <span class="n">v</span><span class="p">[</span> <span class="o">...</span><span class="p">,</span>    <span class="p">:,</span> <span class="bp">None</span><span class="p">,</span> <span class="bp">None</span><span class="p">])</span>
+                <span class="n">Xp_z</span> <span class="o">=</span> <span class="n">Xn</span><span class="p">[</span><span class="o">...</span><span class="p">,:</span><span class="o">-</span><span class="mi">1</span><span class="p">,:,</span><span class="bp">None</span><span class="p">]</span> <span class="o">*</span> <span class="n">z</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="bp">None</span><span class="p">,:]</span>
+                <span class="n">m1_AB</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.5</span> <span class="o">*</span> <span class="n">message_sum_multiply</span><span class="p">(</span><span class="n">parent</span><span class="o">.</span><span class="n">plates</span><span class="p">,</span>
+                                                    <span class="p">(</span><span class="n">D</span><span class="p">,</span> <span class="n">D_inputs</span><span class="p">),</span>
+                                                    <span class="n">Xp_z</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span>    <span class="p">:,</span>    <span class="p">:],</span>
+                                                    <span class="n">v</span><span class="p">[</span>   <span class="o">...</span><span class="p">,</span>    <span class="p">:,</span> <span class="bp">None</span><span class="p">,</span> <span class="bp">None</span><span class="p">])</span>
+                <span class="c"># Construct full message arrays from blocks</span>
+                <span class="n">m0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">m0</span><span class="p">,</span> <span class="n">m0_B</span><span class="p">],</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+                <span class="n">row1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">m1</span><span class="p">,</span> <span class="n">m1_AB</span><span class="p">],</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+                <span class="n">row2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">m1_AB</span><span class="o">.</span><span class="n">swapaxes</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">2</span><span class="p">),</span> <span class="n">m1_BB</span><span class="p">],</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+                <span class="n">m1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">row1</span><span class="p">,</span> <span class="n">row2</span><span class="p">],</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">2</span><span class="p">)</span>
                                       
             <span class="c">#m1 = -0.5 * v[...,np.newaxis,np.newaxis] * XnXn[..., :-1, np.newaxis, :, :]</span>
         <span class="k">elif</span> <span class="n">index</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span> <span class="c"># v</span>
@@ -339,7 +361,10 @@
                   <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s">&#39;...ik,...ki-&gt;...i&#39;</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">XpXn</span><span class="p">)</span>
                   <span class="o">-</span> <span class="mf">0.5</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s">&#39;...ikl,...kl-&gt;...i&#39;</span><span class="p">,</span> <span class="n">AA</span><span class="p">,</span> <span class="n">XnXn</span><span class="p">[</span><span class="o">...</span><span class="p">,:</span><span class="o">-</span><span class="mi">1</span><span class="p">,:,:]))</span>
             <span class="n">m1</span> <span class="o">=</span> <span class="mf">0.5</span>
-        <span class="k">elif</span> <span class="n">index</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span> <span class="c"># N</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">u_inputs</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s">&quot;Message to innovation not yet implemented &quot;</span>
+                                          <span class="s">&quot;if using input signals&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">index</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span> <span class="c"># input signals</span>
             <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
 
         <span class="k">return</span> <span class="p">[</span><span class="n">m0</span><span class="p">,</span> <span class="n">m1</span><span class="p">]</span>
@@ -354,11 +379,13 @@
             <span class="k">return</span> <span class="n">mask</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]</span>
         <span class="k">elif</span> <span class="n">index</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span> <span class="c"># v</span>
             <span class="k">return</span> <span class="n">mask</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="n">index</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span> <span class="c"># input signals</span>
+            <span class="k">return</span> <span class="n">mask</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Index out of bounds&quot;</span><span class="p">)</span>
 
 </div>
-<div class="viewcode-block" id="GaussianMarkovChainDistribution.compute_phi_from_parents"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.gaussian_markov_chain.GaussianMarkovChainDistribution.compute_phi_from_parents.html#bayespy.inference.vmp.nodes.gaussian_markov_chain.GaussianMarkovChainDistribution.compute_phi_from_parents">[docs]</a>    <span class="k">def</span> <span class="nf">compute_phi_from_parents</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u_mu</span><span class="p">,</span> <span class="n">u_Lambda</span><span class="p">,</span> <span class="n">u_A</span><span class="p">,</span> <span class="n">u_v</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+<div class="viewcode-block" id="GaussianMarkovChainDistribution.compute_phi_from_parents"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.gaussian_markov_chain.GaussianMarkovChainDistribution.compute_phi_from_parents.html#bayespy.inference.vmp.nodes.gaussian_markov_chain.GaussianMarkovChainDistribution.compute_phi_from_parents">[docs]</a>    <span class="k">def</span> <span class="nf">compute_phi_from_parents</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u_mu</span><span class="p">,</span> <span class="n">u_Lambda</span><span class="p">,</span> <span class="n">u_A</span><span class="p">,</span> <span class="n">u_v</span><span class="p">,</span> <span class="o">*</span><span class="n">u_inputs</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Compute the natural parameters using parents&#39; moments.</span>
 
@@ -383,15 +410,29 @@
         <span class="n">N</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span>
         
         <span class="c"># Helpful variables (show shapes in comments)</span>
-        <span class="n">mu</span> <span class="o">=</span> <span class="n">u_mu</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>         <span class="c"># (..., D)</span>
-        <span class="n">Lambda</span> <span class="o">=</span> <span class="n">u_Lambda</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="c"># (..., D, D)</span>
-        <span class="n">A</span> <span class="o">=</span> <span class="n">u_A</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>           <span class="c"># (..., N-1, D, D)</span>
-        <span class="n">AA</span> <span class="o">=</span> <span class="n">u_A</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>          <span class="c"># (..., N-1, D, D, D)</span>
-        <span class="n">v</span> <span class="o">=</span> <span class="n">u_v</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>           <span class="c"># (..., N-1, D)</span>
+        <span class="n">mu</span> <span class="o">=</span> <span class="n">u_mu</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>           <span class="c"># (..., D)</span>
+        <span class="n">Lambda</span> <span class="o">=</span> <span class="n">u_Lambda</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>   <span class="c"># (..., D, D)</span>
+        <span class="n">A</span> <span class="o">=</span> <span class="n">u_A</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="o">...</span><span class="p">,:</span><span class="n">D</span><span class="p">]</span>     <span class="c"># (..., N-1, D, D)</span>
+        <span class="n">AA</span> <span class="o">=</span> <span class="n">u_A</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="o">...</span><span class="p">,:</span><span class="n">D</span><span class="p">,:</span><span class="n">D</span><span class="p">]</span> <span class="c"># (..., N-1, D, D, D)</span>
+        <span class="n">B</span> <span class="o">=</span> <span class="n">u_A</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="o">...</span><span class="p">,</span><span class="n">D</span><span class="p">:]</span>     <span class="c"># (..., N-1, D, inputs)</span>
+        <span class="n">BB</span> <span class="o">=</span> <span class="n">u_A</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="o">...</span><span class="p">,</span><span class="n">D</span><span class="p">:,</span><span class="n">D</span><span class="p">:]</span> <span class="c"># (..., N-1, D, inputs, inputs)</span>
+        <span class="n">AB</span> <span class="o">=</span> <span class="n">u_A</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="o">...</span><span class="p">,:</span><span class="n">D</span><span class="p">,</span><span class="n">D</span><span class="p">:]</span> <span class="c"># (..., N-1, D, D, inputs)</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="n">u_v</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>             <span class="c"># (..., N-1, D)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">u_inputs</span><span class="p">):</span>
+            <span class="n">inputs</span> <span class="o">=</span> <span class="n">u_inputs</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">inputs</span> <span class="o">=</span> <span class="bp">None</span>
 
         <span class="c"># Allocate memory (take into account effective plates)</span>
-        <span class="n">plates_phi0</span> <span class="o">=</span> <span class="n">misc</span><span class="o">.</span><span class="n">broadcasted_shape</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">mu</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
-                                             <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">Lambda</span><span class="p">)[:</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">inputs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">plates_phi0</span> <span class="o">=</span> <span class="n">misc</span><span class="o">.</span><span class="n">broadcasted_shape</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">mu</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
+                                                 <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">Lambda</span><span class="p">)[:</span><span class="o">-</span><span class="mi">2</span><span class="p">],</span>
+                                                 <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">B</span><span class="p">)[:</span><span class="o">-</span><span class="mi">3</span><span class="p">],</span>
+                                                 <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">v</span><span class="p">)[:</span><span class="o">-</span><span class="mi">2</span><span class="p">],</span>
+                                                 <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">AB</span><span class="p">)[:</span><span class="o">-</span><span class="mi">4</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">plates_phi0</span> <span class="o">=</span> <span class="n">misc</span><span class="o">.</span><span class="n">broadcasted_shape</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">mu</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
+                                                 <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">Lambda</span><span class="p">)[:</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span>
         <span class="n">plates_phi1</span> <span class="o">=</span> <span class="n">misc</span><span class="o">.</span><span class="n">broadcasted_shape</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">Lambda</span><span class="p">)[:</span><span class="o">-</span><span class="mi">2</span><span class="p">],</span>
                                              <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">v</span><span class="p">)[:</span><span class="o">-</span><span class="mi">2</span><span class="p">],</span>
                                              <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">AA</span><span class="p">)[:</span><span class="o">-</span><span class="mi">4</span><span class="p">])</span>
@@ -406,6 +447,12 @@
         <span class="n">phi0</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="mi">0</span><span class="p">,:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s">&#39;...ik,...k-&gt;...i&#39;</span><span class="p">,</span> <span class="n">Lambda</span><span class="p">,</span> <span class="n">mu</span><span class="p">)</span>
         <span class="n">phi1</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="mi">0</span><span class="p">,:,:]</span> <span class="o">=</span> <span class="n">Lambda</span>
 
+        <span class="c"># Effect of the input signals</span>
+        <span class="k">if</span> <span class="n">inputs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">phi0</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="mi">1</span><span class="p">:,:]</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s">&#39;...i,...ij,...j-&gt;...i&#39;</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">inputs</span><span class="p">)</span>
+            <span class="n">AB_v</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s">&#39;...dij,...d-&gt;...ij&#39;</span><span class="p">,</span> <span class="n">AB</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+            <span class="n">phi0</span><span class="p">[</span><span class="o">...</span><span class="p">,:</span><span class="o">-</span><span class="mi">1</span><span class="p">,:]</span> <span class="o">-=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s">&#39;...ij,...j-&gt;...i&#39;</span><span class="p">,</span> <span class="n">AB_v</span><span class="p">,</span> <span class="n">inputs</span><span class="p">)</span>
+
         <span class="c"># Diagonal blocks: -0.5 * (V_i + A_{i+1}&#39; * V_{i+1} * A_{i+1})</span>
         <span class="n">phi1</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">1</span><span class="p">:,</span> <span class="p">:,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">v</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="n">D</span><span class="p">)</span>
         <span class="n">phi1</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s">&#39;...kij,...k-&gt;...ij&#39;</span><span class="p">,</span> <span class="n">AA</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
@@ -418,15 +465,32 @@
 
         <span class="k">return</span> <span class="p">(</span><span class="n">phi0</span><span class="p">,</span> <span class="n">phi1</span><span class="p">,</span> <span class="n">phi2</span><span class="p">)</span>
 </div>
-<div class="viewcode-block" id="GaussianMarkovChainDistribution.compute_cgf_from_parents"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.gaussian_markov_chain.GaussianMarkovChainDistribution.compute_cgf_from_parents.html#bayespy.inference.vmp.nodes.gaussian_markov_chain.GaussianMarkovChainDistribution.compute_cgf_from_parents">[docs]</a>    <span class="k">def</span> <span class="nf">compute_cgf_from_parents</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u_mu</span><span class="p">,</span> <span class="n">u_Lambda</span><span class="p">,</span> <span class="n">u_A</span><span class="p">,</span> <span class="n">u_v</span><span class="p">):</span>
+<div class="viewcode-block" id="GaussianMarkovChainDistribution.compute_cgf_from_parents"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.gaussian_markov_chain.GaussianMarkovChainDistribution.compute_cgf_from_parents.html#bayespy.inference.vmp.nodes.gaussian_markov_chain.GaussianMarkovChainDistribution.compute_cgf_from_parents">[docs]</a>    <span class="k">def</span> <span class="nf">compute_cgf_from_parents</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u_mu</span><span class="p">,</span> <span class="n">u_Lambda</span><span class="p">,</span> <span class="n">u_A</span><span class="p">,</span> <span class="n">u_v</span><span class="p">,</span> <span class="o">*</span><span class="n">u_inputs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Compute CGF using the moments of the parents.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">_compute_cgf_for_gaussian_markov_chain</span><span class="p">(</span><span class="n">u_mu</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
-                                                      <span class="n">u_Lambda</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
-                                                      <span class="n">u_Lambda</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
-                                                      <span class="n">u_v</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
-                                                      <span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="p">)</span>
+        <span class="n">g</span> <span class="o">=</span> <span class="n">_compute_cgf_for_gaussian_markov_chain</span><span class="p">(</span><span class="n">u_mu</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                                                   <span class="n">u_Lambda</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                                                   <span class="n">u_Lambda</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                                                   <span class="n">u_v</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                                                   <span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">u_inputs</span><span class="p">):</span>
+            <span class="n">D</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">u_mu</span><span class="p">[</span><span class="mi">0</span><span class="p">])[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">uu</span> <span class="o">=</span> <span class="n">u_inputs</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">BB</span> <span class="o">=</span> <span class="n">u_A</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="o">...</span><span class="p">,</span><span class="n">D</span><span class="p">:,</span><span class="n">D</span><span class="p">:]</span>
+            <span class="n">v</span> <span class="o">=</span> <span class="n">u_v</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">BB_v</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s">&#39;...d,...dij-&gt;...ij&#39;</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">BB</span><span class="p">)</span>
+            <span class="n">g_inputs</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.5</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s">&#39;...ij,...ij-&gt;...&#39;</span><span class="p">,</span> <span class="n">uu</span><span class="p">,</span> <span class="n">BB_v</span><span class="p">)</span>
+            <span class="c"># Sum over time axis</span>
+            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">ndim</span><span class="p">(</span><span class="n">g_inputs</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">g_inputs</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">g_inputs</span> <span class="o">*=</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">g_inputs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">g_inputs</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">g</span> <span class="o">=</span> <span class="n">g</span> <span class="o">+</span> <span class="n">g_inputs</span>
+
+        <span class="k">return</span> <span class="n">g</span>
+
 </div>
 <div class="viewcode-block" id="GaussianMarkovChainDistribution.plates_to_parent"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.gaussian_markov_chain.GaussianMarkovChainDistribution.plates_to_parent.html#bayespy.inference.vmp.nodes.gaussian_markov_chain.GaussianMarkovChainDistribution.plates_to_parent">[docs]</a>    <span class="k">def</span> <span class="nf">plates_to_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">plates</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -454,6 +518,8 @@
             <span class="k">return</span> <span class="n">plates</span> <span class="o">+</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">D</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">index</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span> <span class="c"># v</span>
             <span class="k">return</span> <span class="n">plates</span> <span class="o">+</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">D</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">index</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span> <span class="c"># input signals</span>
+            <span class="k">return</span> <span class="n">plates</span> <span class="o">+</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="o">-</span><span class="mi">1</span><span class="p">,)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Invalid parent index.&quot;</span><span class="p">)</span>
 </div>
@@ -482,6 +548,8 @@
             <span class="k">return</span> <span class="n">plates</span><span class="p">[:</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
         <span class="k">elif</span> <span class="n">index</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span> <span class="c"># v</span>
             <span class="k">return</span> <span class="n">plates</span><span class="p">[:</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="n">index</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span> <span class="c"># input signals</span>
+            <span class="k">return</span> <span class="n">plates</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Invalid parent index.&quot;</span><span class="p">)</span>
 
@@ -564,22 +632,16 @@
 <span class="sd">    VaryingGaussianMarkovChain, CategoricalMarkovChain</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">_parent_moments</span> <span class="o">=</span> <span class="p">(</span><span class="n">GaussianMoments</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
-                       <span class="n">WishartMoments</span><span class="p">(),</span>
-                       <span class="n">GaussianMoments</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
-                       <span class="n">GammaMoments</span><span class="p">())</span>
 
-
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">Lambda</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">nu</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">Lambda</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">nu</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">inputs</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create GaussianMarkovChain node.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span> <span class="n">Lambda</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">nu</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="n">n</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span> <span class="n">Lambda</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">nu</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="n">n</span><span class="p">,</span> <span class="n">inputs</span><span class="o">=</span><span class="n">inputs</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
 
     <span class="nd">@classmethod</span>
-    <span class="nd">@ensureparents</span>
-    <span class="k">def</span> <span class="nf">_constructor</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">Lambda</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_constructor</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">Lambda</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">inputs</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Constructs distribution and moments objects.</span>
 <span class="sd">        </span>
@@ -598,30 +660,69 @@
 <span class="sd">        Similarly, `v` should be a collection of diagonal innovation</span>
 <span class="sd">        matrix elements, thus the last plate should equal D.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        
-        <span class="n">n_A</span> <span class="o">=</span> <span class="mi">1</span>
+
+        <span class="c"># Check whether to use input signals or not</span>
+        <span class="k">if</span> <span class="n">inputs</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">_parent_moments</span> <span class="o">=</span> <span class="p">(</span><span class="n">GaussianMoments</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
+                               <span class="n">WishartMoments</span><span class="p">(),</span>
+                               <span class="n">GaussianMoments</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
+                               <span class="n">GammaMoments</span><span class="p">())</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">_parent_moments</span> <span class="o">=</span> <span class="p">(</span><span class="n">GaussianMoments</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
+                               <span class="n">WishartMoments</span><span class="p">(),</span>
+                               <span class="n">GaussianMoments</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
+                               <span class="n">GammaMoments</span><span class="p">(),</span>
+                               <span class="n">GaussianMoments</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+
+        <span class="c"># Ensure that parent nodes are of proper type</span>
+        <span class="n">mu</span> <span class="o">=</span> <span class="n">cls</span><span class="o">.</span><span class="n">_ensure_moments</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span> <span class="n">_parent_moments</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">Lambda</span> <span class="o">=</span> <span class="n">cls</span><span class="o">.</span><span class="n">_ensure_moments</span><span class="p">(</span><span class="n">Lambda</span><span class="p">,</span> <span class="n">_parent_moments</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">A</span> <span class="o">=</span> <span class="n">cls</span><span class="o">.</span><span class="n">_ensure_moments</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">_parent_moments</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="n">cls</span><span class="o">.</span><span class="n">_ensure_moments</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">_parent_moments</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">inputs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">inputs</span> <span class="o">=</span> <span class="n">cls</span><span class="o">.</span><span class="n">_ensure_moments</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">_parent_moments</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span>
+
+        <span class="c"># Time instances from input signals</span>
+        <span class="k">if</span> <span class="n">inputs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">plates</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">n_inputs</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">plates</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">n_inputs</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="c"># Time instances from state dynamics matrix</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">plates</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">:</span>
             <span class="n">n_A</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">plates</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
-        <span class="n">n_v</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">n_A</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="c"># Time instances from innovation noise</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">plates</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">:</span>
             <span class="n">n_v</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">plates</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
-        <span class="k">if</span> <span class="n">n_v</span> <span class="o">!=</span> <span class="n">n_A</span> <span class="ow">and</span> <span class="n">n_v</span> <span class="o">!=</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">n_A</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;Plates of A and v are giving different number of time instances&quot;</span><span class="p">)</span>
-        <span class="n">n_A</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">n_v</span><span class="p">,</span> <span class="n">n_A</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">n_v</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="c"># Check consistency of the number of time instances</span>
+        <span class="k">if</span> <span class="p">(</span> <span class="p">(</span><span class="n">n_v</span> <span class="o">!=</span> <span class="n">n_A</span> <span class="ow">and</span> <span class="n">n_v</span> <span class="o">!=</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">n_A</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">)</span> <span class="ow">or</span>
+             <span class="p">(</span><span class="n">n_inputs</span> <span class="o">!=</span> <span class="n">n_A</span> <span class="ow">and</span> <span class="n">n_inputs</span> <span class="o">!=</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">n_A</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">)</span> <span class="ow">or</span>
+             <span class="p">(</span><span class="n">n_inputs</span> <span class="o">!=</span> <span class="n">n_v</span> <span class="ow">and</span> <span class="n">n_inputs</span> <span class="o">!=</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">n_v</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">)</span> <span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;Plates of parents are giving different number of time instances&quot;</span><span class="p">)</span>
+        <span class="n">n_parents</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">n_v</span><span class="p">,</span> <span class="n">n_A</span><span class="p">,</span> <span class="n">n_inputs</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">n</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">n_A</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">n_parents</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;The number of time instances could not be &quot;</span>
                                 <span class="s">&quot;determined automatically. Give the number of &quot;</span>
                                 <span class="s">&quot;time instances.&quot;</span><span class="p">)</span>
-            <span class="n">n</span> <span class="o">=</span> <span class="n">n_A</span> <span class="o">+</span> <span class="mi">1</span>
-        <span class="k">elif</span> <span class="n">n_A</span> <span class="o">!=</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">n_A</span><span class="o">+</span><span class="mi">1</span> <span class="o">!=</span> <span class="n">n</span><span class="p">:</span>
+            <span class="n">n</span> <span class="o">=</span> <span class="n">n_parents</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="k">elif</span> <span class="n">n_parents</span> <span class="o">!=</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">n_parents</span><span class="o">+</span><span class="mi">1</span> <span class="o">!=</span> <span class="n">n</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;The number of time instances must match &quot;</span>
                             <span class="s">&quot;the number of last plates of parents: &quot;</span>
-                            <span class="s">&quot;</span><span class="si">%d</span><span class="s"> != </span><span class="si">%d</span><span class="s">+1&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">n_A</span><span class="p">))</span>
-                                
+                            <span class="s">&quot;</span><span class="si">%d</span><span class="s"> != </span><span class="si">%d</span><span class="s">+1&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">n_parents</span><span class="p">))</span>
+
+        <span class="c"># Dimensionality of the states</span>
         <span class="n">D</span> <span class="o">=</span> <span class="n">mu</span><span class="o">.</span><span class="n">dims</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
-        <span class="c">#M = N.get_moments()[0]</span>
+        <span class="c"># Number of states</span>
         <span class="n">M</span> <span class="o">=</span> <span class="n">n</span>
+        <span class="c"># Dimensionality of the inputs</span>
+        <span class="k">if</span> <span class="n">inputs</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">D_inputs</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">D_inputs</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">dims</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
 
         <span class="c"># Check mu</span>
         <span class="k">if</span> <span class="n">mu</span><span class="o">.</span><span class="n">dims</span> <span class="o">!=</span> <span class="p">(</span> <span class="p">(</span><span class="n">D</span><span class="p">,),</span> <span class="p">(</span><span class="n">D</span><span class="p">,</span><span class="n">D</span><span class="p">)</span> <span class="p">):</span>
@@ -630,7 +731,7 @@
         <span class="k">if</span> <span class="n">Lambda</span><span class="o">.</span><span class="n">dims</span> <span class="o">!=</span> <span class="p">(</span> <span class="p">(</span><span class="n">D</span><span class="p">,</span><span class="n">D</span><span class="p">),</span> <span class="p">()</span> <span class="p">):</span>
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;Second parent has wrong dimensionality&quot;</span><span class="p">)</span>
         <span class="c"># Check A</span>
-        <span class="k">if</span> <span class="n">A</span><span class="o">.</span><span class="n">dims</span> <span class="o">!=</span> <span class="p">(</span> <span class="p">(</span><span class="n">D</span><span class="p">,),</span> <span class="p">(</span><span class="n">D</span><span class="p">,</span><span class="n">D</span><span class="p">)</span> <span class="p">):</span>
+        <span class="k">if</span> <span class="n">A</span><span class="o">.</span><span class="n">dims</span> <span class="o">!=</span> <span class="p">(</span> <span class="p">(</span><span class="n">D</span><span class="o">+</span><span class="n">D_inputs</span><span class="p">,),</span> <span class="p">(</span><span class="n">D</span><span class="o">+</span><span class="n">D_inputs</span><span class="p">,</span><span class="n">D</span><span class="o">+</span><span class="n">D_inputs</span><span class="p">)</span> <span class="p">):</span>
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;Third parent has wrong dimensionality&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">plates</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">A</span><span class="o">.</span><span class="n">plates</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="n">D</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;Third parent should have a last plate &quot;</span>
@@ -657,12 +758,18 @@
                              <span class="s">&quot;parent should have length equal to one or &quot;</span>
                              <span class="s">&quot;N-1 where N is the number of time &quot;</span>
                              <span class="s">&quot;instances.&quot;</span><span class="p">)</span>
-
+        <span class="c"># Check input signals</span>
+        <span class="k">if</span> <span class="n">inputs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">dims</span> <span class="o">!=</span> <span class="p">(</span> <span class="p">(</span><span class="n">D_inputs</span><span class="p">,),</span> <span class="p">(</span><span class="n">D_inputs</span><span class="p">,</span> <span class="n">D_inputs</span><span class="p">)</span> <span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Input signals have wrong dimensionality&quot;</span><span class="p">)</span>
         
         <span class="n">dims</span> <span class="o">=</span> <span class="p">(</span> <span class="p">(</span><span class="n">M</span><span class="p">,</span><span class="n">D</span><span class="p">),</span> <span class="p">(</span><span class="n">M</span><span class="p">,</span><span class="n">D</span><span class="p">,</span><span class="n">D</span><span class="p">),</span> <span class="p">(</span><span class="n">M</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="n">D</span><span class="p">,</span><span class="n">D</span><span class="p">)</span> <span class="p">)</span>
         <span class="n">distribution</span> <span class="o">=</span> <span class="n">GaussianMarkovChainDistribution</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">D</span><span class="p">)</span>
 
-        <span class="n">parents</span> <span class="o">=</span> <span class="p">[</span><span class="n">mu</span><span class="p">,</span> <span class="n">Lambda</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">v</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">inputs</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">parents</span> <span class="o">=</span> <span class="p">[</span><span class="n">mu</span><span class="p">,</span> <span class="n">Lambda</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">v</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">parents</span> <span class="o">=</span> <span class="p">[</span><span class="n">mu</span><span class="p">,</span> <span class="n">Lambda</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">inputs</span><span class="p">]</span>
 
         <span class="k">return</span> <span class="p">(</span> <span class="n">parents</span><span class="p">,</span>
                  <span class="n">kwargs</span><span class="p">,</span>
@@ -674,7 +781,7 @@
                                    <span class="n">distribution</span><span class="o">.</span><span class="n">plates_from_parent</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">v</span><span class="o">.</span><span class="n">plates</span><span class="p">)),</span>
                  <span class="n">distribution</span><span class="p">,</span> 
                  <span class="n">cls</span><span class="o">.</span><span class="n">_moments</span><span class="p">,</span> 
-                 <span class="n">cls</span><span class="o">.</span><span class="n">_parent_moments</span><span class="p">)</span>
+                 <span class="n">_parent_moments</span><span class="p">)</span>
 
     
 

@@ -22,9 +22,11 @@ bayespy.inference.vmp.nodes.constant.Constant
       ~Constant.get_moments
       ~Constant.get_shape
       ~Constant.has_plotter
+      ~Constant.lower_bound_contribution
       ~Constant.move_plates
       ~Constant.plot
       ~Constant.set_plotter
+      ~Constant.set_value
    
    
 

@@ -60,7 +60,7 @@
 <h1>bayespy.inference.vmp.transformations.RotateGaussianARD<a class="headerlink" href="#bayespy-inference-vmp-transformations-rotategaussianard" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="bayespy.inference.vmp.transformations.RotateGaussianARD">
-<em class="property">class </em><tt class="descclassname">bayespy.inference.vmp.transformations.</tt><tt class="descname">RotateGaussianARD</tt><big>(</big><em>X</em>, <em>*alpha</em>, <em>axis=-1</em>, <em>precompute=False</em><big>)</big><a class="reference internal" href="../../../_modules/bayespy/inference/vmp/transformations.html#RotateGaussianARD"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bayespy.inference.vmp.transformations.RotateGaussianARD" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">bayespy.inference.vmp.transformations.</tt><tt class="descname">RotateGaussianARD</tt><big>(</big><em>X</em>, <em>*alpha</em>, <em>axis=-1</em>, <em>precompute=False</em>, <em>subset=None</em><big>)</big><a class="reference internal" href="../../../_modules/bayespy/inference/vmp/transformations.html#RotateGaussianARD"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bayespy.inference.vmp.transformations.RotateGaussianARD" title="Permalink to this definition">¶</a></dt>
 <dd><p>Rotation parameter expansion for <a class="reference internal" href="bayespy.nodes.GaussianARD.html#bayespy.nodes.GaussianARD" title="bayespy.nodes.GaussianARD"><tt class="xref py py-class docutils literal"><span class="pre">bayespy.nodes.GaussianARD</span></tt></a></p>
 <p>The model:</p>
 <p>alpha ~ N(a, b)
@@ -71,7 +71,7 @@ X ~ N(mu, alpha)</p>
 * X and alpha do not contain any observed values</p>
 <dl class="method">
 <dt id="bayespy.inference.vmp.transformations.RotateGaussianARD.__init__">
-<tt class="descname">__init__</tt><big>(</big><em>X</em>, <em>*alpha</em>, <em>axis=-1</em>, <em>precompute=False</em><big>)</big><a class="reference internal" href="../../../_modules/bayespy/inference/vmp/transformations.html#RotateGaussianARD.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bayespy.inference.vmp.transformations.RotateGaussianARD.__init__" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">__init__</tt><big>(</big><em>X</em>, <em>*alpha</em>, <em>axis=-1</em>, <em>precompute=False</em>, <em>subset=None</em><big>)</big><a class="reference internal" href="../../../_modules/bayespy/inference/vmp/transformations.html#RotateGaussianARD.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bayespy.inference.vmp.transformations.RotateGaussianARD.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Precompute tells whether to compute some moments once in the setup
 function instead of every time in the bound function.  However, they are
 computed a bit differently in the bound function so it can be useful
@@ -87,7 +87,7 @@ plates of alpha, and the dimensions for R and Q are quite small.</p>
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.inference.vmp.transformations.RotateGaussianARD.__init__.html#bayespy.inference.vmp.transformations.RotateGaussianARD.__init__" title="bayespy.inference.vmp.transformations.RotateGaussianARD.__init__"><tt class="xref py py-obj docutils literal"><span class="pre">__init__</span></tt></a>(X,&nbsp;*alpha[,&nbsp;axis,&nbsp;precompute])</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.inference.vmp.transformations.RotateGaussianARD.__init__.html#bayespy.inference.vmp.transformations.RotateGaussianARD.__init__" title="bayespy.inference.vmp.transformations.RotateGaussianARD.__init__"><tt class="xref py py-obj docutils literal"><span class="pre">__init__</span></tt></a>(X,&nbsp;*alpha[,&nbsp;axis,&nbsp;precompute,&nbsp;subset])</td>
 <td>Precompute tells whether to compute some moments once in the setup function instead of every time in the bound function.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="generated/bayespy.inference.vmp.transformations.RotateGaussianARD.bound.html#bayespy.inference.vmp.transformations.RotateGaussianARD.bound" title="bayespy.inference.vmp.transformations.RotateGaussianARD.bound"><tt class="xref py py-obj docutils literal"><span class="pre">bound</span></tt></a>(R[,&nbsp;logdet,&nbsp;inv,&nbsp;Q])</td>

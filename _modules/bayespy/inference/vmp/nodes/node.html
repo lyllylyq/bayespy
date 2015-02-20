@@ -581,54 +581,45 @@
         <span class="c"># The parent we&#39;re sending the message to</span>
         <span class="n">parent</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parents</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
 
+        <span class="c"># Plates with respect to the parent</span>
+        <span class="n">plates_self</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_plates_to_parent</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+
+        <span class="c"># Plate multiplier of the parent</span>
+        <span class="n">multiplier_parent</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_plates_multiplier_from_parent</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+
+        <span class="c"># Check if m is a logpdf function (for black-box variational inference)</span>
+        <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="n">m</span><span class="p">):</span>
+            <span class="k">def</span> <span class="nf">m_function</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
+                <span class="n">lpdf</span> <span class="o">=</span> <span class="n">m</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
+                <span class="c"># Log pdf only contains plate axes!</span>
+                <span class="n">plates_m</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">lpdf</span><span class="p">)</span>
+                <span class="n">r</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">broadcasting_multiplier</span><span class="p">(</span><span class="n">plates_self</span><span class="p">,</span>
+                                                  <span class="n">plates_m</span><span class="p">,</span>
+                                                  <span class="n">plates_mask</span><span class="p">,</span>
+                                                  <span class="n">parent</span><span class="o">.</span><span class="n">plates</span><span class="p">)</span> <span class="o">*</span>
+                     <span class="bp">self</span><span class="o">.</span><span class="n">broadcasting_multiplier</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">plates_multiplier</span><span class="p">,</span>
+                                                  <span class="n">multiplier_parent</span><span class="p">))</span>
+                <span class="n">axes_msg</span> <span class="o">=</span> <span class="n">misc</span><span class="o">.</span><span class="n">axes_to_collapse</span><span class="p">(</span><span class="n">plates_m</span><span class="p">,</span> <span class="n">parent</span><span class="o">.</span><span class="n">plates</span><span class="p">)</span>
+                <span class="n">m</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">misc</span><span class="o">.</span><span class="n">sum_multiply</span><span class="p">(</span><span class="n">mask_i</span><span class="p">,</span> <span class="n">m</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">r</span><span class="p">,</span>
+                                         <span class="n">axis</span><span class="o">=</span><span class="n">axes_msg</span><span class="p">,</span>
+                                         <span class="n">keepdims</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+                <span class="c"># Remove leading singular plates if the parent does not have</span>
+                <span class="c"># those plate axes.</span>
+                <span class="n">m</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">misc</span><span class="o">.</span><span class="n">squeeze_to_dim</span><span class="p">(</span><span class="n">m</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="nb">len</span><span class="p">(</span><span class="n">shape_parent</span><span class="p">))</span>
+
+            <span class="k">return</span> <span class="n">m_function</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
+
         <span class="c"># Compact the message to a proper shape</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">m</span><span class="p">)):</span>
 
             <span class="c"># Empty messages are given as None. We can ignore those.</span>
             <span class="k">if</span> <span class="n">m</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
 
-                <span class="c"># Plates in the message</span>
-                <span class="n">shape_m</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">m</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
-                <span class="n">dim_parent</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">parent</span><span class="o">.</span><span class="n">dims</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
-                <span class="k">if</span> <span class="n">dim_parent</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-                    <span class="n">plates_m</span> <span class="o">=</span> <span class="n">shape_m</span><span class="p">[:</span><span class="o">-</span><span class="n">dim_parent</span><span class="p">]</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">plates_m</span> <span class="o">=</span> <span class="n">shape_m</span>
-
-                <span class="c"># Compute the multiplier (multiply by the number of plates for</span>
-                <span class="c"># which the message, the mask and the parent have single</span>
-                <span class="c"># plates).  Such a plate is meant to be broadcasted but because</span>
-                <span class="c"># the parent has singular plate axis, it won&#39;t broadcast (and</span>
-                <span class="c"># sum over it), so we need to multiply it.</span>
-                <span class="n">plates_self</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_plates_to_parent</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
                 <span class="k">try</span><span class="p">:</span>
-                    <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">broadcasting_multiplier</span><span class="p">(</span><span class="n">plates_self</span><span class="p">,</span> 
-                                                     <span class="n">plates_m</span><span class="p">,</span>
-                                                     <span class="n">plates_mask</span><span class="p">,</span>
-                                                     <span class="n">parent</span><span class="o">.</span><span class="n">plates</span><span class="p">)</span>
-                <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;The plates of the message, the mask and &quot;</span>
-                                     <span class="s">&quot;parent[</span><span class="si">%d</span><span class="s">] node (</span><span class="si">%s</span><span class="s">) are not a &quot;</span>
-                                     <span class="s">&quot;broadcastable subset of the plates of &quot;</span>
-                                     <span class="s">&quot;this node (</span><span class="si">%s</span><span class="s">).  The message has shape &quot;</span>
-                                     <span class="s">&quot;</span><span class="si">%s</span><span class="s">, meaning plates </span><span class="si">%s</span><span class="s">. The mask has &quot;</span>
-                                     <span class="s">&quot;plates </span><span class="si">%s</span><span class="s">. This node has plates </span><span class="si">%s</span><span class="s"> with &quot;</span>
-                                     <span class="s">&quot;respect to the parent[</span><span class="si">%d</span><span class="s">], which has &quot;</span>
-                                     <span class="s">&quot;plates </span><span class="si">%s</span><span class="s">.&quot;</span>
-                                     <span class="o">%</span> <span class="p">(</span><span class="n">index</span><span class="p">,</span>
-                                        <span class="n">parent</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
-                                        <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
-                                        <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">m</span><span class="p">[</span><span class="n">i</span><span class="p">]),</span> 
-                                        <span class="n">plates_m</span><span class="p">,</span> 
-                                        <span class="n">plates_mask</span><span class="p">,</span>
-                                        <span class="n">plates_self</span><span class="p">,</span>
-                                        <span class="n">index</span><span class="p">,</span> 
-                                        <span class="n">parent</span><span class="o">.</span><span class="n">plates</span><span class="p">))</span>
-
-                <span class="n">multiplier_parent</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_plates_multiplier_from_parent</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
-                <span class="k">try</span><span class="p">:</span>
-                    <span class="n">r</span> <span class="o">*=</span> <span class="bp">self</span><span class="o">.</span><span class="n">broadcasting_multiplier</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">plates_multiplier</span><span class="p">,</span>
-                                                      <span class="n">multiplier_parent</span><span class="p">)</span>
+                    <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">broadcasting_multiplier</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">plates_multiplier</span><span class="p">,</span>
+                                                     <span class="n">multiplier_parent</span><span class="p">)</span>
                 <span class="k">except</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;The plate multipliers are incompatible. &quot;</span>
                                      <span class="s">&quot;This node (</span><span class="si">%s</span><span class="s">) has </span><span class="si">%s</span><span class="s"> and parent[</span><span class="si">%d</span><span class="s">] &quot;</span>
@@ -639,26 +630,23 @@
                                         <span class="n">parent</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
                                         <span class="n">multiplier_parent</span><span class="p">))</span>
 
+                <span class="n">ndim</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">parent</span><span class="o">.</span><span class="n">dims</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                <span class="c"># Source and target shapes</span>
+                <span class="k">if</span> <span class="n">ndim</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">dims</span> <span class="o">=</span> <span class="n">misc</span><span class="o">.</span><span class="n">broadcasted_shape</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">m</span><span class="p">[</span><span class="n">i</span><span class="p">])[</span><span class="o">-</span><span class="n">ndim</span><span class="p">:],</span>
+                                                  <span class="n">parent</span><span class="o">.</span><span class="n">dims</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                    <span class="n">from_shape</span> <span class="o">=</span> <span class="n">plates_self</span> <span class="o">+</span> <span class="n">dims</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">from_shape</span> <span class="o">=</span> <span class="n">plates_self</span>
+                <span class="n">to_shape</span> <span class="o">=</span> <span class="n">parent</span><span class="o">.</span><span class="n">get_shape</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
                 <span class="c"># Add variable axes to the mask</span>
-                <span class="n">shape_mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">mask</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span><span class="p">,)</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">parent</span><span class="o">.</span><span class="n">dims</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
-                <span class="n">mask_i</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">shape_mask</span><span class="p">)</span>
-
-                <span class="c"># Sum over plates that are not in the message nor in the parent</span>
-                <span class="n">shape_parent</span> <span class="o">=</span> <span class="n">parent</span><span class="o">.</span><span class="n">get_shape</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
-                <span class="n">shape_msg</span> <span class="o">=</span> <span class="n">misc</span><span class="o">.</span><span class="n">broadcasted_shape</span><span class="p">(</span><span class="n">shape_m</span><span class="p">,</span> <span class="n">shape_parent</span><span class="p">)</span>
-                <span class="n">axes_mask</span> <span class="o">=</span> <span class="n">misc</span><span class="o">.</span><span class="n">axes_to_collapse</span><span class="p">(</span><span class="n">shape_mask</span><span class="p">,</span> <span class="n">shape_msg</span><span class="p">)</span>
-                <span class="n">mask_i</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">mask_i</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axes_mask</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-
-                <span class="c"># Compute the masked message and sum over the plates that the</span>
-                <span class="c"># parent does not have.</span>
-                <span class="n">axes_msg</span> <span class="o">=</span> <span class="n">misc</span><span class="o">.</span><span class="n">axes_to_collapse</span><span class="p">(</span><span class="n">shape_msg</span><span class="p">,</span> <span class="n">shape_parent</span><span class="p">)</span>
-                <span class="n">m</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">misc</span><span class="o">.</span><span class="n">sum_multiply</span><span class="p">(</span><span class="n">mask_i</span><span class="p">,</span> <span class="n">m</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">r</span><span class="p">,</span> 
-                                         <span class="n">axis</span><span class="o">=</span><span class="n">axes_msg</span><span class="p">,</span> 
-                                         <span class="n">keepdims</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-
-                <span class="c"># Remove leading singular plates if the parent does not have</span>
-                <span class="c"># those plate axes.</span>
-                <span class="n">m</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">misc</span><span class="o">.</span><span class="n">squeeze_to_dim</span><span class="p">(</span><span class="n">m</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="nb">len</span><span class="p">(</span><span class="n">shape_parent</span><span class="p">))</span>
+                <span class="n">mask_i</span> <span class="o">=</span> <span class="n">misc</span><span class="o">.</span><span class="n">add_trailing_axes</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">ndim</span><span class="p">)</span>
+                <span class="c"># Apply mask and sum plate axes as necessary (and apply plate</span>
+                <span class="c"># multiplier)</span>
+                <span class="n">m</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">r</span> <span class="o">*</span> <span class="n">misc</span><span class="o">.</span><span class="n">sum_multiply_to_plates</span><span class="p">(</span><span class="n">m</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">mask_i</span><span class="p">,</span>
+                                                       <span class="n">to_plates</span><span class="o">=</span><span class="n">to_shape</span><span class="p">,</span>
+                                                       <span class="n">from_plates</span><span class="o">=</span><span class="n">from_shape</span><span class="p">,</span>
+                                                       <span class="n">ndim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">m</span>
 
@@ -699,45 +687,46 @@
 </div>
     <span class="nd">@staticmethod</span>
 <div class="viewcode-block" id="Node.broadcasting_multiplier"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.node.Node.broadcasting_multiplier.html#bayespy.inference.vmp.nodes.node.Node.broadcasting_multiplier">[docs]</a>    <span class="k">def</span> <span class="nf">broadcasting_multiplier</span><span class="p">(</span><span class="n">plates</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Compute the plate multiplier for given shapes.</span>
+        <span class="k">return</span> <span class="n">misc</span><span class="o">.</span><span class="n">broadcasting_multiplier</span><span class="p">(</span><span class="n">plates</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span>
+        <span class="c">## &quot;&quot;&quot;</span>
+        <span class="c">## Compute the plate multiplier for given shapes.</span>
 
-<span class="sd">        The first shape is compared to all other shapes (using NumPy</span>
-<span class="sd">        broadcasting rules). All the elements which are non-unit in the first</span>
-<span class="sd">        shape but 1 in all other shapes are multiplied together.</span>
+        <span class="c">## The first shape is compared to all other shapes (using NumPy</span>
+        <span class="c">## broadcasting rules). All the elements which are non-unit in the first</span>
+        <span class="c">## shape but 1 in all other shapes are multiplied together.</span>
 
-<span class="sd">        This method is used, for instance, for computing a correction factor for</span>
-<span class="sd">        messages to parents: If this node has non-unit plates that are unit</span>
-<span class="sd">        plates in the parent, those plates are summed. However, if the message</span>
-<span class="sd">        has unit axis for that plate, it should be first broadcasted to the</span>
-<span class="sd">        plates of this node and then summed to the plates of the parent. In</span>
-<span class="sd">        order to avoid this broadcasting and summing, it is more efficient to</span>
-<span class="sd">        just multiply by the correct factor. This method computes that</span>
-<span class="sd">        factor. The first argument is the full plate shape of this node (with</span>
-<span class="sd">        respect to the parent). The other arguments are the shape of the message</span>
-<span class="sd">        array and the plates of the parent (with respect to this node).</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c">## This method is used, for instance, for computing a correction factor for</span>
+        <span class="c">## messages to parents: If this node has non-unit plates that are unit</span>
+        <span class="c">## plates in the parent, those plates are summed. However, if the message</span>
+        <span class="c">## has unit axis for that plate, it should be first broadcasted to the</span>
+        <span class="c">## plates of this node and then summed to the plates of the parent. In</span>
+        <span class="c">## order to avoid this broadcasting and summing, it is more efficient to</span>
+        <span class="c">## just multiply by the correct factor. This method computes that</span>
+        <span class="c">## factor. The first argument is the full plate shape of this node (with</span>
+        <span class="c">## respect to the parent). The other arguments are the shape of the message</span>
+        <span class="c">## array and the plates of the parent (with respect to this node).</span>
+        <span class="c">## &quot;&quot;&quot;</span>
         
-        <span class="c"># Check broadcasting of the shapes</span>
-        <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">args</span><span class="p">:</span>
-            <span class="n">misc</span><span class="o">.</span><span class="n">broadcasted_shape</span><span class="p">(</span><span class="n">plates</span><span class="p">,</span> <span class="n">arg</span><span class="p">)</span>
+        <span class="c">## # Check broadcasting of the shapes</span>
+        <span class="c">## for arg in args:</span>
+        <span class="c">##     misc.broadcasted_shape(plates, arg)</span>
 
-        <span class="c"># Check that each arg-plates are a subset of plates?</span>
-        <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">args</span><span class="p">:</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">misc</span><span class="o">.</span><span class="n">is_shape_subset</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="n">plates</span><span class="p">):</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;The shapes in args are not a sub-shape of &quot;</span>
-                                 <span class="s">&quot;plates.&quot;</span><span class="p">)</span>
+        <span class="c">## # Check that each arg-plates are a subset of plates?</span>
+        <span class="c">## for arg in args:</span>
+        <span class="c">##     if not misc.is_shape_subset(arg, plates):</span>
+        <span class="c">##         raise ValueError(&quot;The shapes in args are not a sub-shape of &quot;</span>
+        <span class="c">##                          &quot;plates.&quot;)</span>
             
-        <span class="n">r</span> <span class="o">=</span> <span class="mi">1</span>
-        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="n">plates</span><span class="p">),</span><span class="mi">0</span><span class="p">):</span>
-            <span class="n">mult</span> <span class="o">=</span> <span class="bp">True</span>
-            <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">args</span><span class="p">:</span>
-                <span class="c"># if -j &lt;= len(arg) and arg[j] != 1:</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="o">-</span><span class="n">j</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span> <span class="ow">or</span> <span class="n">arg</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">):</span>
-                    <span class="n">mult</span> <span class="o">=</span> <span class="bp">False</span>
-            <span class="k">if</span> <span class="n">mult</span><span class="p">:</span>
-                <span class="n">r</span> <span class="o">*=</span> <span class="n">plates</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
-        <span class="k">return</span> <span class="n">r</span>
+        <span class="c">## r = 1</span>
+        <span class="c">## for j in range(-len(plates),0):</span>
+        <span class="c">##     mult = True</span>
+        <span class="c">##     for arg in args:</span>
+        <span class="c">##         # if -j &lt;= len(arg) and arg[j] != 1:</span>
+        <span class="c">##         if not (-j &gt; len(arg) or arg[j] == 1):</span>
+        <span class="c">##             mult = False</span>
+        <span class="c">##     if mult:</span>
+        <span class="c">##         r *= plates[j]</span>
+        <span class="c">## return r</span>
 </div>
 <div class="viewcode-block" id="Node.move_plates"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.node.Node.move_plates.html#bayespy.inference.vmp.nodes.node.Node.move_plates">[docs]</a>    <span class="k">def</span> <span class="nf">move_plates</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">from_plate</span><span class="p">,</span> <span class="n">to_plate</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">_MovePlate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> 
