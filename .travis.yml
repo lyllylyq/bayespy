@@ -10,16 +10,19 @@ matrix:
   include:
     - python: 3.3.0
       env:
+        - PYTHONVERSION==3.3.0
         - NUMPYVERSION==1.8.0
         - SCIPYVERSION==0.13.0
         - MATPLOTLIBVERSION==1.2.0
     - python: 3.3
       env:
+        - PYTHONVERSION==3.3
         - NUMPYVERSION=
         - SCIPYVERSION=
         - MATPLOTLIBVERSION=
     - python: 3.4
       env:
+        - PYTHONVERSION==3.4
         - NUMPYVERSION=
         - SCIPYVERSION=
         - MATPLOTLIBVERSION=
@@ -33,11 +36,11 @@ install:
   - conda config --set always_yes yes --set changeps1 no
   - conda info -a
   - DEPS="pip nose coverage"
-  - conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION
-  - conda install numpy$NUMPYVERSION
-  - conda install scipy$SCIPYVERSION
-  - conda install matplotlib$MATPLOTLIBVERSION
-  - conda install h5py
+  - conda create -q -n test-environment python$PYTHON_VERSION
+  - conda install -n --yes numpy$NUMPYVERSION
+  - conda install -n --yes scipy$SCIPYVERSION
+  - conda install -n --yes matplotlib$MATPLOTLIBVERSION
+  - conda install -n --yes h5py
   - source activate test-environment
   - pip install coveralls
 
