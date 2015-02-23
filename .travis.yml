@@ -8,16 +8,16 @@ sudo: false
 # http://repo.continuum.io/pkgs/free/linux-64/index.html
 matrix:
   include:
+    - python: 3.3.0
+      env:
+        - NUMPYVERSION==1.8.0
+        - SCIPYVERSION==0.13.0
+        - MATPLOTLIBVERSION==1.2.0
     - python: 3.3
       env:
         - NUMPYVERSION=
         - SCIPYVERSION=
         - MATPLOTLIBVERSION=
-    - python: 3.3
-      env:
-        - NUMPYVERSION==1.8.0
-        - SCIPYVERSION==0.13.0
-        - MATPLOTLIBVERSION==1.2.0
     - python: 3.4
       env:
         - NUMPYVERSION=
@@ -32,8 +32,12 @@ install:
   - hash -r
   - conda config --set always_yes yes --set changeps1 no
   - conda info -a
-  - DEPS="pip nose coverage numpy$NUMPYVERSION scipy$SCIPYVERSION matplotlib$MATPLOTLIBVERSION h5py"
-  - conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION $DEPS
+  - DEPS="pip nose coverage"
+  - conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION
+  - conda install numpy$NUMPYVERSION
+  - conda install scipy$SCIPYVERSION
+  - conda install matplotlib$MATPLOTLIBVERSION
+  - conda instlal h5py
   - source activate test-environment
   - pip install coveralls
 
