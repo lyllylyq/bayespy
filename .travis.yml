@@ -3,10 +3,29 @@ language: python
 # use the faster container-based architecture
 sudo: false
 
-# python versions to test
-python:
-  - 3.3
-  - 3.4
+# versions to test
+matrix:
+  include:
+    - python: 3.3
+      env:
+        - NUMPYVERSION=
+        - SCIPYVERSION=
+        - MATPLOTLIBVERSION=
+    - python: 3.3
+      env:
+        - NUMPYVERSION===1.8.0
+        - SCIPYVERSION===0.13.0
+        - MATPLOTLIBVERSION===1.2.0
+    - python: 3.4
+      env:
+        - NUMPYVERSION=
+        - SCIPYVERSION=
+        - MATPLOTLIBVERSION=
+    - python: 3.4
+      env:
+        - NUMPYVERSION===1.8.0
+        - SCIPYVERSION===0.13.0
+        - MATPLOTLIBVERSION===1.2.0
 
 # install Miniconda; use it to install dependencies
 install:
@@ -16,7 +35,7 @@ install:
   - hash -r
   - conda config --set always_yes yes --set changeps1 no
   - conda info -a
-  - DEPS="pip nose coverage numpy scipy matplotlib h5py"
+  - DEPS="pip nose coverage numpy$NUMPYVERSION scipy$SCIPYVERSION matplotlib$MATPLOTLIBVERSION h5py"
   - conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION $DEPS
   - source activate test-environment
   - pip install coveralls
