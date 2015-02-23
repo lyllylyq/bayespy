@@ -37,7 +37,7 @@ install:
   - conda install numpy$NUMPYVERSION
   - conda install scipy$SCIPYVERSION
   - conda install matplotlib$MATPLOTLIBVERSION
-  - conda instlal h5py
+  - conda install h5py
   - source activate test-environment
   - pip install coveralls
 
