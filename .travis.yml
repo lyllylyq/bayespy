@@ -36,7 +36,7 @@ install:
   - conda config --set always_yes yes --set changeps1 no
   - conda info -a
   - DEPS="pip nose coverage"
-  - conda create -q -n test-environment python$PYTHON_VERSION $DEPS
+  - conda create -q -n test-environment python$PYTHONVERSION $DEPS
   - conda install -n test-environment --yes numpy$NUMPYVERSION
   - conda install -n test-environment --yes scipy$SCIPYVERSION
   - conda install -n test-environment --yes matplotlib$MATPLOTLIBVERSION
