@@ -4,6 +4,8 @@ language: python
 sudo: false
 
 # versions to test
+# list of packages in miniconda:
+# http://repo.continuum.io/pkgs/free/linux-64/index.html
 matrix:
   include:
     - python: 3.3
@@ -21,11 +23,6 @@ matrix:
         - NUMPYVERSION=
         - SCIPYVERSION=
         - MATPLOTLIBVERSION=
-    - python: 3.4
-      env:
-        - NUMPYVERSION==1.8.0
-        - SCIPYVERSION==0.13.0
-        - MATPLOTLIBVERSION==1.2.0
 
 # install Miniconda; use it to install dependencies
 install:
