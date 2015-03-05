@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Installation &mdash; BayesPy v0.2.3 Documentation</title>
+    <title>Installation &mdash; BayesPy v0.3 Documentation</title>
     
     <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.2.3',
+        VERSION:     '0.3',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="BayesPy v0.2.3 Documentation" href="../index.html" />
+    <link rel="top" title="BayesPy v0.3 Documentation" href="../index.html" />
     <link rel="up" title="User guide" href="user_guide.html" />
     <link rel="next" title="Quick start guide" href="quickstart.html" />
     <link rel="prev" title="User guide" href="user_guide.html" /> 
@@ -45,7 +45,7 @@
         <li class="right" >
           <a href="user_guide.html" title="User guide"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">BayesPy v0.2.3 Documentation</a> &raquo;</li>
+        <li><a href="../index.html">BayesPy v0.3 Documentation</a> &raquo;</li>
           <li><a href="user_guide.html" accesskey="U">User guide</a> &raquo;</li> 
       </ul>
     </div>  
@@ -118,7 +118,7 @@ working properly.  Thus, install Nose and run the unit tests:</p>
 </div>
 <div class="section" id="installing-requirements">
 <h2>Installing requirements<a class="headerlink" href="#installing-requirements" title="Permalink to this headline">¶</a></h2>
-<p>BayesPy requires Python 3.2 (or later) and the following packages:</p>
+<p>BayesPy requires Python 3.3 (or later) and the following packages:</p>
 <ul class="simple">
 <li>NumPy (&gt;=1.8.0),</li>
 <li>SciPy (&gt;=0.13.0)</li>
@@ -149,9 +149,14 @@ packages might be called something like <tt class="docutils literal"><span class
 However, it is possible that these system packages are not recent enough
 for BayesPy.</p>
 </li>
-<li><p class="first">Install the packages using Pip: <tt class="docutils literal"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">&quot;numpy&gt;=1.8.0&quot;</span>
-<span class="pre">&quot;scipy&gt;=0.13.0&quot;</span> <span class="pre">&quot;matplotlib&gt;=1.2&quot;</span> <span class="pre">h5py</span></tt>.  However, this may require that
-the system has the libraries needed for compiling (e.g., C compiler, Python
+<li><p class="first">Install the packages using Pip:</p>
+<div class="highlight-console"><div class="highlight"><pre><span class="go">pip install &quot;distribute&gt;=0.6.28&quot;</span>
+<span class="go">pip install &quot;numpy&gt;=1.8.0&quot; &quot;scipy&gt;=0.13.0&quot; &quot;matplotlib&gt;=1.2&quot; h5py</span>
+</pre></div>
+</div>
+<p>This also makes sure you have recent enough version of Distribute (required
+by Matplotlib).  However, this installation method may require that the
+system has some libraries needed for compiling (e.g., C compiler, Python
 development files, BLAS/LAPACK).  For instance, on Ubuntu (&gt;= 12.10), you
 may install the required system libraries for each package as:</p>
 <div class="highlight-console"><div class="highlight"><pre><span class="go">sudo apt-get build-dep python3-numpy</span>
@@ -160,9 +165,7 @@ may install the required system libraries for each package as:</p>
 <span class="go">sudo apt-get build-dep python-h5py</span>
 </pre></div>
 </div>
-<p>Then installation using Pip should work.  Also, make sure you have recent
-enough version of Distribute (required by Matplotlib): <tt class="docutils literal"><span class="pre">pip</span> <span class="pre">install</span>
-<span class="pre">&quot;distribute&gt;=0.6.28&quot;</span></tt>.</p>
+<p>Then installation using Pip should work.</p>
 </li>
 </ol>
 </div></blockquote>
@@ -259,7 +262,7 @@ running the following commands in the <tt class="docutils literal"><span class="
         <li class="right" >
           <a href="user_guide.html" title="User guide"
              >previous</a> |</li>
-        <li><a href="../index.html">BayesPy v0.2.3 Documentation</a> &raquo;</li>
+        <li><a href="../index.html">BayesPy v0.3 Documentation</a> &raquo;</li>
           <li><a href="user_guide.html" >User guide</a> &raquo;</li> 
       </ul>
     </div>

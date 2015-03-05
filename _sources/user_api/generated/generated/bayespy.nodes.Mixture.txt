@@ -42,6 +42,7 @@ bayespy.nodes.Mixture
       ~Mixture.save
       ~Mixture.set_parameters
       ~Mixture.set_plotter
+      ~Mixture.show
       ~Mixture.unobserve
       ~Mixture.update
    

@@ -57,6 +57,7 @@ bayespy.utils.misc
       make_equal_ndim
       mean
       moveaxis
+      multidigamma
       multiply_shapes
       nans
       nested_iterator

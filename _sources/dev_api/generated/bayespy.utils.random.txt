@@ -29,6 +29,7 @@ bayespy.utils.random
       sphere
       svd
       t_logpdf
+      wishart
       wishart_rand
    
    

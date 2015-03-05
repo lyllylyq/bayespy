@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>bayespy.inference.vmp.nodes.wishart.WishartDistribution.compute_phi_from_parents &mdash; BayesPy v0.2.3 Documentation</title>
+    <title>bayespy.inference.vmp.nodes.wishart.WishartDistribution.compute_phi_from_parents &mdash; BayesPy v0.3 Documentation</title>
     
     <link rel="stylesheet" href="../../../_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.2.3',
+        VERSION:     '0.3',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="BayesPy v0.2.3 Documentation" href="../../../index.html" />
+    <link rel="top" title="BayesPy v0.3 Documentation" href="../../../index.html" />
     <link rel="up" title="bayespy.inference.vmp.nodes.wishart.WishartDistribution" href="../bayespy.inference.vmp.nodes.wishart.WishartDistribution.html" />
     <link rel="next" title="bayespy.inference.vmp.nodes.wishart.WishartDistribution.plates_from_parent" href="bayespy.inference.vmp.nodes.wishart.WishartDistribution.plates_from_parent.html" />
     <link rel="prev" title="bayespy.inference.vmp.nodes.wishart.WishartDistribution.compute_moments_and_cgf" href="bayespy.inference.vmp.nodes.wishart.WishartDistribution.compute_moments_and_cgf.html" /> 
@@ -45,7 +45,7 @@
         <li class="right" >
           <a href="bayespy.inference.vmp.nodes.wishart.WishartDistribution.compute_moments_and_cgf.html" title="bayespy.inference.vmp.nodes.wishart.WishartDistribution.compute_moments_and_cgf"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../../index.html">BayesPy v0.2.3 Documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">BayesPy v0.3 Documentation</a> &raquo;</li>
           <li><a href="../../dev_api.html" >Developer API</a> &raquo;</li>
           <li><a href="../../distributions.html" >Distributions</a> &raquo;</li>
           <li><a href="../bayespy.inference.vmp.nodes.wishart.WishartDistribution.html" accesskey="U">bayespy.inference.vmp.nodes.wishart.WishartDistribution</a> &raquo;</li> 
@@ -61,8 +61,16 @@
 <h1>bayespy.inference.vmp.nodes.wishart.WishartDistribution.compute_phi_from_parents<a class="headerlink" href="#bayespy-inference-vmp-nodes-wishart-wishartdistribution-compute-phi-from-parents" title="Permalink to this headline">¶</a></h1>
 <dl class="method">
 <dt id="bayespy.inference.vmp.nodes.wishart.WishartDistribution.compute_phi_from_parents">
-<tt class="descclassname">WishartDistribution.</tt><tt class="descname">compute_phi_from_parents</tt><big>(</big><em>*u_parents</em>, <em>mask=True</em><big>)</big><a class="reference internal" href="../../../_modules/bayespy/inference/vmp/nodes/wishart.html#WishartDistribution.compute_phi_from_parents"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bayespy.inference.vmp.nodes.wishart.WishartDistribution.compute_phi_from_parents" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<tt class="descclassname">WishartDistribution.</tt><tt class="descname">compute_phi_from_parents</tt><big>(</big><em>u_n</em>, <em>u_V</em>, <em>mask=True</em><big>)</big><a class="reference internal" href="../../../_modules/bayespy/inference/vmp/nodes/wishart.html#WishartDistribution.compute_phi_from_parents"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bayespy.inference.vmp.nodes.wishart.WishartDistribution.compute_phi_from_parents" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute natural parameters</p>
+<div class="math">
+\[\begin{split}\phi(n, V) =
+\begin{bmatrix}
+  -\frac{1}{2} V
+  \\
+  \frac{1}{2} n
+\end{bmatrix}\end{split}\]</div>
+</dd></dl>
 
 </div>
 
@@ -115,7 +123,7 @@
         <li class="right" >
           <a href="bayespy.inference.vmp.nodes.wishart.WishartDistribution.compute_moments_and_cgf.html" title="bayespy.inference.vmp.nodes.wishart.WishartDistribution.compute_moments_and_cgf"
              >previous</a> |</li>
-        <li><a href="../../../index.html">BayesPy v0.2.3 Documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">BayesPy v0.3 Documentation</a> &raquo;</li>
           <li><a href="../../dev_api.html" >Developer API</a> &raquo;</li>
           <li><a href="../../distributions.html" >Distributions</a> &raquo;</li>
           <li><a href="../bayespy.inference.vmp.nodes.wishart.WishartDistribution.html" >bayespy.inference.vmp.nodes.wishart.WishartDistribution</a> &raquo;</li> 

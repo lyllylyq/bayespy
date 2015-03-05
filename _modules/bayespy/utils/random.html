@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>bayespy.utils.random &mdash; BayesPy v0.2.3 Documentation</title>
+    <title>bayespy.utils.random &mdash; BayesPy v0.3 Documentation</title>
     
     <link rel="stylesheet" href="../../../_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.2.3',
+        VERSION:     '0.3',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="BayesPy v0.2.3 Documentation" href="../../../index.html" />
+    <link rel="top" title="BayesPy v0.3 Documentation" href="../../../index.html" />
     <link rel="up" title="Module code" href="../../index.html" /> 
   </head>
   <body>
@@ -37,7 +37,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">BayesPy v0.2.3 Documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">BayesPy v0.3 Documentation</a> &raquo;</li>
           <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
@@ -121,7 +121,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="o">*</span><span class="n">shape</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">p</span>
 </div>
-<div class="viewcode-block" id="wishart_rand"><a class="viewcode-back" href="../../../dev_api/generated/generated/bayespy.utils.random.wishart_rand.html#bayespy.utils.random.wishart_rand">[docs]</a><span class="k">def</span> <span class="nf">wishart_rand</span><span class="p">(</span><span class="n">nu</span><span class="p">,</span> <span class="n">V</span><span class="p">):</span>
+<div class="viewcode-block" id="wishart"><a class="viewcode-back" href="../../../dev_api/generated/generated/bayespy.utils.random.wishart.html#bayespy.utils.random.wishart">[docs]</a><span class="k">def</span> <span class="nf">wishart</span><span class="p">(</span><span class="n">nu</span><span class="p">,</span> <span class="n">V</span><span class="p">):</span>
     <span class="sd">r&quot;&quot;&quot;</span>
 <span class="sd">    Draw a random sample from the Wishart distribution.</span>
 
@@ -137,11 +137,13 @@
     <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">multivariate_normal</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">D</span><span class="p">),</span> <span class="n">V</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">nu</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">X</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
 </div>
+<span class="n">wishart_rand</span> <span class="o">=</span> <span class="n">wishart</span>
+
 <div class="viewcode-block" id="invwishart_rand"><a class="viewcode-back" href="../../../dev_api/generated/generated/bayespy.utils.random.invwishart_rand.html#bayespy.utils.random.invwishart_rand">[docs]</a><span class="k">def</span> <span class="nf">invwishart_rand</span><span class="p">(</span><span class="n">nu</span><span class="p">,</span> <span class="n">V</span><span class="p">):</span>
     <span class="c"># TODO/FIXME: Are these correct..</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">wishart_rand</span><span class="p">(</span><span class="n">nu</span><span class="p">,</span> <span class="n">V</span><span class="p">))</span>
 </div>
-<div class="viewcode-block" id="covariance"><a class="viewcode-back" href="../../../dev_api/generated/generated/bayespy.utils.random.covariance.html#bayespy.utils.random.covariance">[docs]</a><span class="k">def</span> <span class="nf">covariance</span><span class="p">(</span><span class="n">D</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">()):</span>
+<div class="viewcode-block" id="covariance"><a class="viewcode-back" href="../../../dev_api/generated/generated/bayespy.utils.random.covariance.html#bayespy.utils.random.covariance">[docs]</a><span class="k">def</span> <span class="nf">covariance</span><span class="p">(</span><span class="n">D</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(),</span> <span class="n">nu</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
     <span class="sd">r&quot;&quot;&quot;</span>
 <span class="sd">    Draw a random covariance matrix.</span>
 
@@ -163,10 +165,16 @@
 
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
         <span class="n">size</span> <span class="o">=</span> <span class="p">(</span><span class="n">size</span><span class="p">,)</span>
+
+    <span class="k">if</span> <span class="n">nu</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">nu</span> <span class="o">=</span> <span class="n">D</span>
+
+    <span class="k">if</span> <span class="n">nu</span> <span class="o">&lt;</span> <span class="n">D</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;nu must be greater than or equal to D&quot;</span><span class="p">)</span>
         
-    <span class="n">shape</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">size</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">D</span><span class="p">,</span><span class="n">D</span><span class="p">)</span>
+    <span class="n">shape</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">size</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">D</span><span class="p">,</span><span class="n">nu</span><span class="p">)</span>
     <span class="n">C</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="o">*</span><span class="n">shape</span><span class="p">)</span>
-    <span class="n">C</span> <span class="o">=</span> <span class="n">linalg</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">C</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">swapaxes</span><span class="p">(</span><span class="n">C</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">))</span>
+    <span class="n">C</span> <span class="o">=</span> <span class="n">linalg</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">C</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">swapaxes</span><span class="p">(</span><span class="n">C</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">))</span> <span class="o">/</span> <span class="n">nu</span>
     <span class="k">return</span> <span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">C</span><span class="p">)</span>
 <span class="c">#return np.linalg.inv(np.dot(C, C.T))</span>
 </div>
@@ -485,7 +493,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">BayesPy v0.2.3 Documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">BayesPy v0.3 Documentation</a> &raquo;</li>
           <li><a href="../../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>

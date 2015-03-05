@@ -41,6 +41,7 @@ bayespy.inference.vmp.nodes.expfamily.ExponentialFamily
       ~ExponentialFamily.save
       ~ExponentialFamily.set_parameters
       ~ExponentialFamily.set_plotter
+      ~ExponentialFamily.show
       ~ExponentialFamily.unobserve
       ~ExponentialFamily.update
    

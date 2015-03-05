@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>bayespy.utils.misc &mdash; BayesPy v0.2.3 Documentation</title>
+    <title>bayespy.utils.misc &mdash; BayesPy v0.3 Documentation</title>
     
     <link rel="stylesheet" href="../../../_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.2.3',
+        VERSION:     '0.3',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="BayesPy v0.2.3 Documentation" href="../../../index.html" />
+    <link rel="top" title="BayesPy v0.3 Documentation" href="../../../index.html" />
     <link rel="up" title="Module code" href="../../index.html" /> 
   </head>
   <body>
@@ -37,7 +37,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">BayesPy v0.2.3 Documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">BayesPy v0.3 Documentation</a> &raquo;</li>
           <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
@@ -1078,12 +1078,15 @@
     <span class="k">return</span> <span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s">&#39;...ii-&gt;...i&#39;</span><span class="p">,</span> <span class="n">U</span><span class="p">)),</span> <span class="n">axis</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,))</span>
 
 </div>
-<div class="viewcode-block" id="m_digamma"><a class="viewcode-back" href="../../../dev_api/generated/generated/bayespy.utils.misc.m_digamma.html#bayespy.utils.misc.m_digamma">[docs]</a><span class="k">def</span> <span class="nf">m_digamma</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">d</span><span class="p">):</span>
-    <span class="n">y</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">d</span><span class="p">):</span>
-        <span class="n">y</span> <span class="o">+=</span> <span class="n">special</span><span class="o">.</span><span class="n">digamma</span><span class="p">(</span><span class="n">a</span> <span class="o">+</span> <span class="mf">0.5</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">i</span><span class="p">))</span>
-    <span class="k">return</span> <span class="n">y</span>
+<div class="viewcode-block" id="multidigamma"><a class="viewcode-back" href="../../../dev_api/generated/generated/bayespy.utils.misc.multidigamma.html#bayespy.utils.misc.multidigamma">[docs]</a><span class="k">def</span> <span class="nf">multidigamma</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">d</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns the derivative of the log of multivariate gamma.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">special</span><span class="o">.</span><span class="n">digamma</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="bp">None</span><span class="p">]</span> <span class="o">-</span> <span class="mf">0.5</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">d</span><span class="p">)),</span>
+                  <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
 </div>
+<span class="n">m_digamma</span> <span class="o">=</span> <span class="n">multidigamma</span>
+
 <div class="viewcode-block" id="m_outer"><a class="viewcode-back" href="../../../dev_api/generated/generated/bayespy.utils.misc.m_outer.html#bayespy.utils.misc.m_outer">[docs]</a><span class="k">def</span> <span class="nf">m_outer</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="n">B</span><span class="p">):</span>
     <span class="c"># Computes outer product over the last axes of A and B. The other</span>
     <span class="c"># axes are broadcasted. Thus, if A has shape (..., N) and B has</span>
@@ -1436,7 +1439,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">BayesPy v0.2.3 Documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">BayesPy v0.3 Documentation</a> &raquo;</li>
           <li><a href="../../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>

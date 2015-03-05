@@ -41,6 +41,7 @@ bayespy.nodes.GaussianGammaARD
       ~GaussianGammaARD.save
       ~GaussianGammaARD.set_parameters
       ~GaussianGammaARD.set_plotter
+      ~GaussianGammaARD.show
       ~GaussianGammaARD.unobserve
       ~GaussianGammaARD.update
    

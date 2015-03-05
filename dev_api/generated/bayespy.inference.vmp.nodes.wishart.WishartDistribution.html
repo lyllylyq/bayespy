@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>bayespy.inference.vmp.nodes.wishart.WishartDistribution &mdash; BayesPy v0.2.3 Documentation</title>
+    <title>bayespy.inference.vmp.nodes.wishart.WishartDistribution &mdash; BayesPy v0.3 Documentation</title>
     
     <link rel="stylesheet" href="../../_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.2.3',
+        VERSION:     '0.3',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="BayesPy v0.2.3 Documentation" href="../../index.html" />
+    <link rel="top" title="BayesPy v0.3 Documentation" href="../../index.html" />
     <link rel="up" title="Distributions" href="../distributions.html" />
     <link rel="next" title="bayespy.inference.vmp.nodes.wishart.WishartDistribution.compute_cgf_from_parents" href="generated/bayespy.inference.vmp.nodes.wishart.WishartDistribution.compute_cgf_from_parents.html" />
     <link rel="prev" title="bayespy.inference.vmp.nodes.gamma.GammaDistribution.random" href="generated/bayespy.inference.vmp.nodes.gamma.GammaDistribution.random.html" /> 
@@ -45,7 +45,7 @@
         <li class="right" >
           <a href="generated/bayespy.inference.vmp.nodes.gamma.GammaDistribution.random.html" title="bayespy.inference.vmp.nodes.gamma.GammaDistribution.random"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">BayesPy v0.2.3 Documentation</a> &raquo;</li>
+        <li><a href="../../index.html">BayesPy v0.3 Documentation</a> &raquo;</li>
           <li><a href="../dev_api.html" >Developer API</a> &raquo;</li>
           <li><a href="../distributions.html" accesskey="U">Distributions</a> &raquo;</li> 
       </ul>
@@ -62,6 +62,12 @@
 <dt id="bayespy.inference.vmp.nodes.wishart.WishartDistribution">
 <em class="property">class </em><tt class="descclassname">bayespy.inference.vmp.nodes.wishart.</tt><tt class="descname">WishartDistribution</tt><a class="reference internal" href="../../_modules/bayespy/inference/vmp/nodes/wishart.html#WishartDistribution"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bayespy.inference.vmp.nodes.wishart.WishartDistribution" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sub-classes implement distribution specific computations.</p>
+<p>Distribution for <span class="math">\(k   imes k\)</span> symmetric positive definite matrix.</p>
+<div class="math">
+\[\Lambda \sim \mathcal{W}(n, V)\]</div>
+<p>Note: <span class="math">\(V\)</span> is inverse scale matrix.</p>
+<div class="math">
+\[p(\Lambda | n, V) = ..\]</div>
 <dl class="method">
 <dt id="bayespy.inference.vmp.nodes.wishart.WishartDistribution.__init__">
 <tt class="descname">__init__</tt><big>(</big><big>)</big><a class="headerlink" href="#bayespy.inference.vmp.nodes.wishart.WishartDistribution.__init__" title="Permalink to this definition">¶</a></dt>
@@ -75,8 +81,8 @@
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.inference.vmp.nodes.wishart.WishartDistribution.compute_cgf_from_parents.html#bayespy.inference.vmp.nodes.wishart.WishartDistribution.compute_cgf_from_parents" title="bayespy.inference.vmp.nodes.wishart.WishartDistribution.compute_cgf_from_parents"><tt class="xref py py-obj docutils literal"><span class="pre">compute_cgf_from_parents</span></tt></a>(*u_parents)</td>
-<td></td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.inference.vmp.nodes.wishart.WishartDistribution.compute_cgf_from_parents.html#bayespy.inference.vmp.nodes.wishart.WishartDistribution.compute_cgf_from_parents" title="bayespy.inference.vmp.nodes.wishart.WishartDistribution.compute_cgf_from_parents"><tt class="xref py py-obj docutils literal"><span class="pre">compute_cgf_from_parents</span></tt></a>(u_n,&nbsp;u_V)</td>
+<td>CGF from parents</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="generated/bayespy.inference.vmp.nodes.wishart.WishartDistribution.compute_fixed_moments_and_f.html#bayespy.inference.vmp.nodes.wishart.WishartDistribution.compute_fixed_moments_and_f" title="bayespy.inference.vmp.nodes.wishart.WishartDistribution.compute_fixed_moments_and_f"><tt class="xref py py-obj docutils literal"><span class="pre">compute_fixed_moments_and_f</span></tt></a>(Lambda[,&nbsp;mask])</td>
 <td>Compute u(x) and f(x) for given x.</td>
@@ -94,10 +100,10 @@
 <td></td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.inference.vmp.nodes.wishart.WishartDistribution.compute_moments_and_cgf.html#bayespy.inference.vmp.nodes.wishart.WishartDistribution.compute_moments_and_cgf" title="bayespy.inference.vmp.nodes.wishart.WishartDistribution.compute_moments_and_cgf"><tt class="xref py py-obj docutils literal"><span class="pre">compute_moments_and_cgf</span></tt></a>(phi[,&nbsp;mask])</td>
-<td></td>
+<td>Return moments and cgf for given natural parameters</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.inference.vmp.nodes.wishart.WishartDistribution.compute_phi_from_parents.html#bayespy.inference.vmp.nodes.wishart.WishartDistribution.compute_phi_from_parents" title="bayespy.inference.vmp.nodes.wishart.WishartDistribution.compute_phi_from_parents"><tt class="xref py py-obj docutils literal"><span class="pre">compute_phi_from_parents</span></tt></a>(*u_parents[,&nbsp;mask])</td>
-<td></td>
+<tr class="row-even"><td><a class="reference internal" href="generated/bayespy.inference.vmp.nodes.wishart.WishartDistribution.compute_phi_from_parents.html#bayespy.inference.vmp.nodes.wishart.WishartDistribution.compute_phi_from_parents" title="bayespy.inference.vmp.nodes.wishart.WishartDistribution.compute_phi_from_parents"><tt class="xref py py-obj docutils literal"><span class="pre">compute_phi_from_parents</span></tt></a>(u_n,&nbsp;u_V[,&nbsp;mask])</td>
+<td>Compute natural parameters</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="generated/bayespy.inference.vmp.nodes.wishart.WishartDistribution.plates_from_parent.html#bayespy.inference.vmp.nodes.wishart.WishartDistribution.plates_from_parent" title="bayespy.inference.vmp.nodes.wishart.WishartDistribution.plates_from_parent"><tt class="xref py py-obj docutils literal"><span class="pre">plates_from_parent</span></tt></a>(index,&nbsp;plates)</td>
 <td>Resolve the plate mapping from a parent.</td>
@@ -163,7 +169,7 @@
         <li class="right" >
           <a href="generated/bayespy.inference.vmp.nodes.gamma.GammaDistribution.random.html" title="bayespy.inference.vmp.nodes.gamma.GammaDistribution.random"
              >previous</a> |</li>
-        <li><a href="../../index.html">BayesPy v0.2.3 Documentation</a> &raquo;</li>
+        <li><a href="../../index.html">BayesPy v0.3 Documentation</a> &raquo;</li>
           <li><a href="../dev_api.html" >Developer API</a> &raquo;</li>
           <li><a href="../distributions.html" >Distributions</a> &raquo;</li> 
       </ul>

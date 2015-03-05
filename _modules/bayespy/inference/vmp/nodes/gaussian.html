@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>bayespy.inference.vmp.nodes.gaussian &mdash; BayesPy v0.2.3 Documentation</title>
+    <title>bayespy.inference.vmp.nodes.gaussian &mdash; BayesPy v0.3 Documentation</title>
     
     <link rel="stylesheet" href="../../../../../_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../../',
-        VERSION:     '0.2.3',
+        VERSION:     '0.3',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="../../../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="BayesPy v0.2.3 Documentation" href="../../../../../index.html" />
+    <link rel="top" title="BayesPy v0.3 Documentation" href="../../../../../index.html" />
     <link rel="up" title="bayespy.inference" href="../../../inference.html" /> 
   </head>
   <body>
@@ -37,7 +37,7 @@
         <li class="right" >
           <a href="../../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../../../index.html">BayesPy v0.2.3 Documentation</a> &raquo;</li>
+        <li><a href="../../../../../index.html">BayesPy v0.3 Documentation</a> &raquo;</li>
           <li><a href="../../../../index.html" >Module code</a> &raquo;</li>
           <li><a href="../../../inference.html" accesskey="U">bayespy.inference</a> &raquo;</li> 
       </ul>
@@ -1226,14 +1226,16 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_initialize_from_parent_moments</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
 
         
-    <span class="k">def</span> <span class="nf">show</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">mu</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">Cov</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">misc</span><span class="o">.</span><span class="n">m_outer</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span> <span class="n">mu</span><span class="p">)</span>
-        <span class="k">print</span><span class="p">(</span><span class="s">&quot;</span><span class="si">%s</span><span class="s"> ~ Gaussian(mu, Cov)&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
-        <span class="k">print</span><span class="p">(</span><span class="s">&quot;  mu = &quot;</span><span class="p">)</span>
-        <span class="k">print</span><span class="p">(</span><span class="n">mu</span><span class="p">)</span>
-        <span class="k">print</span><span class="p">(</span><span class="s">&quot;  Cov = &quot;</span><span class="p">)</span>
-        <span class="k">print</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">Cov</span><span class="p">))</span>
+        <span class="k">return</span> <span class="p">(</span><span class="s">&quot;</span><span class="si">%s</span><span class="s"> ~ Gaussian(mu, Cov)</span><span class="se">\n</span><span class="s">&quot;</span>
+                <span class="s">&quot;  mu = </span><span class="se">\n</span><span class="s">&quot;</span>
+                <span class="s">&quot;</span><span class="si">%s</span><span class="se">\n</span><span class="s">&quot;</span>
+                <span class="s">&quot;  Cov = </span><span class="se">\n</span><span class="s">&quot;</span>
+                <span class="s">&quot;</span><span class="si">%s</span><span class="se">\n</span><span class="s">&quot;</span>
+                <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">Cov</span><span class="p">))</span>
+
 
     <span class="k">def</span> <span class="nf">rotate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">inv</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">logdet</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">Q</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
 
@@ -1495,15 +1497,15 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_set_moments_and_cgf</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">mask</span><span class="p">)</span>
         <span class="k">return</span>
 
-    <span class="k">def</span> <span class="nf">show</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">mu</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">Cov</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">misc</span><span class="o">.</span><span class="n">m_outer</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span> <span class="n">mu</span><span class="p">)</span>
-        <span class="k">print</span><span class="p">(</span><span class="s">&quot;</span><span class="si">%s</span><span class="s"> ~ Gaussian(mu, Cov)&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
-        <span class="k">print</span><span class="p">(</span><span class="s">&quot;  mu = &quot;</span><span class="p">)</span>
-        <span class="k">print</span><span class="p">(</span><span class="n">mu</span><span class="p">)</span>
-        <span class="k">print</span><span class="p">(</span><span class="s">&quot;  Cov = &quot;</span><span class="p">)</span>
-        <span class="k">print</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">Cov</span><span class="p">))</span>
+        <span class="k">return</span> <span class="p">(</span><span class="s">&quot;</span><span class="si">%s</span><span class="s"> ~ Gaussian(mu, Cov)</span><span class="se">\n</span><span class="s">&quot;</span>
+                <span class="s">&quot;  mu = </span><span class="se">\n</span><span class="s">&quot;</span>
+                <span class="s">&quot;</span><span class="si">%s</span><span class="se">\n</span><span class="s">&quot;</span>
+                <span class="s">&quot;  Cov = </span><span class="se">\n</span><span class="s">&quot;</span>
+                <span class="s">&quot;</span><span class="si">%s</span><span class="se">\n</span><span class="s">&quot;</span>
+                <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">Cov</span><span class="p">))</span>
 
 
     <span class="k">def</span> <span class="nf">rotate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">inv</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">logdet</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">Q</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">subset</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
@@ -1645,13 +1647,6 @@
                 <span class="n">cls</span><span class="o">.</span><span class="n">_parent_moments</span><span class="p">)</span>
 
     
-    <span class="k">def</span> <span class="nf">show</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">r&quot;&quot;&quot;</span>
-<span class="sd">        Print the distribution using standard parameterization.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
-
-
     <span class="k">def</span> <span class="nf">plotmatrix</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">r&quot;&quot;&quot;</span>
 <span class="sd">        Creates a matrix of marginal plots.</span>
@@ -1937,13 +1932,6 @@
                 <span class="n">parent_moments</span><span class="p">)</span>
 
     
-    <span class="k">def</span> <span class="nf">show</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">r&quot;&quot;&quot;</span>
-<span class="sd">        Print the distribution using standard parameterization.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
-
-
 
 <span class="c">#</span>
 <span class="c"># CONVERTERS</span>
@@ -2840,7 +2828,7 @@
         <li class="right" >
           <a href="../../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../../../index.html">BayesPy v0.2.3 Documentation</a> &raquo;</li>
+        <li><a href="../../../../../index.html">BayesPy v0.3 Documentation</a> &raquo;</li>
           <li><a href="../../../../index.html" >Module code</a> &raquo;</li>
           <li><a href="../../../inference.html" >bayespy.inference</a> &raquo;</li> 
       </ul>
