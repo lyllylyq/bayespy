@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>bayespy.nodes.Gate.__init__ &mdash; BayesPy v0.3 Documentation</title>
+    <title>bayespy.nodes.Gate.__init__ &mdash; BayesPy v0.3.1 Documentation</title>
     
     <link rel="stylesheet" href="../../../../_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../',
-        VERSION:     '0.3',
+        VERSION:     '0.3.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="../../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="BayesPy v0.3 Documentation" href="../../../../index.html" />
+    <link rel="top" title="BayesPy v0.3.1 Documentation" href="../../../../index.html" />
     <link rel="up" title="bayespy.nodes.Gate" href="../bayespy.nodes.Gate.html" />
     <link rel="next" title="bayespy.nodes.Gate.add_plate_axis" href="bayespy.nodes.Gate.add_plate_axis.html" />
     <link rel="prev" title="bayespy.nodes.Gate" href="../bayespy.nodes.Gate.html" /> 
@@ -45,7 +45,7 @@
         <li class="right" >
           <a href="../bayespy.nodes.Gate.html" title="bayespy.nodes.Gate"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../../../index.html">BayesPy v0.3 Documentation</a> &raquo;</li>
+        <li><a href="../../../../index.html">BayesPy v0.3.1 Documentation</a> &raquo;</li>
           <li><a href="../../../user_api.html" >User API</a> &raquo;</li>
           <li><a href="../../bayespy.nodes.html" >bayespy.nodes</a> &raquo;</li>
           <li><a href="../bayespy.nodes.Gate.html" accesskey="U">bayespy.nodes.Gate</a> &raquo;</li> 
@@ -62,7 +62,29 @@
 <dl class="method">
 <dt id="bayespy.nodes.Gate.__init__">
 <tt class="descclassname">Gate.</tt><tt class="descname">__init__</tt><big>(</big><em>Z</em>, <em>X</em>, <em>gated_plate=-1</em>, <em>moments=None</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#bayespy.nodes.Gate.__init__" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Constructor for the gating node.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>Z</strong> : Categorical-like node</p>
+<blockquote>
+<div><p>A variable which chooses the index along the gated plate axis</p>
+</div></blockquote>
+<p><strong>X</strong> : node</p>
+<blockquote>
+<div><p>The node whose plate axis is gated</p>
+</div></blockquote>
+<p><strong>gated_plate</strong> : int (optional)</p>
+<blockquote class="last">
+<div><p>The index of the plate axis to be gated (by default, -1, that is,
+the last axis).</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 </div>
 
@@ -115,7 +137,7 @@
         <li class="right" >
           <a href="../bayespy.nodes.Gate.html" title="bayespy.nodes.Gate"
              >previous</a> |</li>
-        <li><a href="../../../../index.html">BayesPy v0.3 Documentation</a> &raquo;</li>
+        <li><a href="../../../../index.html">BayesPy v0.3.1 Documentation</a> &raquo;</li>
           <li><a href="../../../user_api.html" >User API</a> &raquo;</li>
           <li><a href="../../bayespy.nodes.html" >bayespy.nodes</a> &raquo;</li>
           <li><a href="../bayespy.nodes.Gate.html" >bayespy.nodes.Gate</a> &raquo;</li> 

@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>bayespy.inference.vmp.nodes.gaussian_markov_chain &mdash; BayesPy v0.3 Documentation</title>
+    <title>bayespy.inference.vmp.nodes.gaussian_markov_chain &mdash; BayesPy v0.3.1 Documentation</title>
     
     <link rel="stylesheet" href="../../../../../_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../../',
-        VERSION:     '0.3',
+        VERSION:     '0.3.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="../../../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="BayesPy v0.3 Documentation" href="../../../../../index.html" />
+    <link rel="top" title="BayesPy v0.3.1 Documentation" href="../../../../../index.html" />
     <link rel="up" title="bayespy.inference" href="../../../inference.html" /> 
   </head>
   <body>
@@ -37,7 +37,7 @@
         <li class="right" >
           <a href="../../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../../../index.html">BayesPy v0.3 Documentation</a> &raquo;</li>
+        <li><a href="../../../../../index.html">BayesPy v0.3.1 Documentation</a> &raquo;</li>
           <li><a href="../../../../index.html" >Module code</a> &raquo;</li>
           <li><a href="../../../inference.html" accesskey="U">bayespy.inference</a> &raquo;</li> 
       </ul>
@@ -181,7 +181,7 @@
 
 <span class="sd">        Child classes must implement this.</span>
 
-<span class="sd">        Parameters:</span>
+<span class="sd">        Parameters</span>
 <span class="sd">        -----------</span>
 <span class="sd">        index : int</span>
 <span class="sd">            The index of the parent node to use.</span>
@@ -291,8 +291,8 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Compute a message to a parent.</span>
 
-<span class="sd">        Parameters:</span>
-<span class="sd">        -----------</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
 <span class="sd">        index : int</span>
 <span class="sd">            Index of the parent requesting the message.</span>
 <span class="sd">        u : list of ndarrays</span>
@@ -312,9 +312,19 @@
         <span class="n">D</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">u</span><span class="p">[</span><span class="mi">0</span><span class="p">])[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
         
         <span class="k">if</span> <span class="n">index</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>   <span class="c"># mu</span>
-            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
+            <span class="n">Lambda</span> <span class="o">=</span> <span class="n">u_Lambda</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">x0</span> <span class="o">=</span> <span class="n">u</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="o">...</span><span class="p">,</span><span class="mi">0</span><span class="p">,:]</span>
+            <span class="n">m0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s">&#39;...ik,...k-&gt;...i&#39;</span><span class="p">,</span> <span class="n">Lambda</span><span class="p">,</span> <span class="n">x0</span><span class="p">)</span>
+            <span class="n">m1</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.5</span><span class="o">*</span><span class="n">Lambda</span>
         <span class="k">elif</span> <span class="n">index</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span> <span class="c"># Lambda</span>
-            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
+            <span class="n">x0</span> <span class="o">=</span> <span class="n">u</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="o">...</span><span class="p">,</span><span class="mi">0</span><span class="p">,:]</span>
+            <span class="n">x0x0</span> <span class="o">=</span> <span class="n">u</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="o">...</span><span class="p">,</span><span class="mi">0</span><span class="p">,:,:]</span>
+            <span class="n">mu</span> <span class="o">=</span> <span class="n">u_mu</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">mumu</span> <span class="o">=</span> <span class="n">u_mu</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">x0mu</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s">&#39;...i,...j-&gt;...ij&#39;</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">mu</span><span class="p">)</span>
+            <span class="n">mux0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">swapaxes</span><span class="p">(</span><span class="n">x0mu</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">)</span>
+            <span class="n">m0</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.5</span><span class="o">*</span><span class="n">x0x0</span> <span class="o">+</span> <span class="mf">0.5</span><span class="o">*</span><span class="n">x0mu</span> <span class="o">+</span> <span class="mf">0.5</span><span class="o">*</span><span class="n">mux0</span> <span class="o">-</span> <span class="mf">0.5</span><span class="o">*</span><span class="n">mumu</span>
+            <span class="n">m1</span> <span class="o">=</span> <span class="mf">0.5</span>
         <span class="k">elif</span> <span class="n">index</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span> <span class="c"># A</span>
             <span class="n">XnXn</span> <span class="o">=</span> <span class="n">u</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
             <span class="n">XpXn</span> <span class="o">=</span> <span class="n">u</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
@@ -350,17 +360,29 @@
                                       
             <span class="c">#m1 = -0.5 * v[...,np.newaxis,np.newaxis] * XnXn[..., :-1, np.newaxis, :, :]</span>
         <span class="k">elif</span> <span class="n">index</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span> <span class="c"># v</span>
+            <span class="c">## if len(u_inputs):</span>
+            <span class="c">##     raise NotImplementedError(&quot;Message to innovation not yet implemented &quot;</span>
+            <span class="c">##                               &quot;if using input signals&quot;)</span>
             <span class="n">XnXn</span> <span class="o">=</span> <span class="n">u</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="c"># (...,N,D,D)</span>
             <span class="n">XpXn</span> <span class="o">=</span> <span class="n">u</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="c"># (...,N-1,D,D)</span>
-            <span class="n">A</span> <span class="o">=</span> <span class="n">u_A</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>  <span class="c"># (...,N-1,D,D)</span>
-            <span class="n">AA</span> <span class="o">=</span> <span class="n">u_A</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="c"># (...,N-1,D,D,D)</span>
+            <span class="n">A</span> <span class="o">=</span> <span class="n">u_A</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="o">...</span><span class="p">,:</span><span class="n">D</span><span class="p">]</span>     <span class="c"># (..., N-1, D, D)</span>
+            <span class="n">AA</span> <span class="o">=</span> <span class="n">u_A</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="o">...</span><span class="p">,:</span><span class="n">D</span><span class="p">,:</span><span class="n">D</span><span class="p">]</span> <span class="c"># (..., N-1, D, D, D)</span>
             <span class="n">m0</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span> <span class="mf">0.5</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s">&#39;...ii-&gt;...i&#39;</span><span class="p">,</span> <span class="n">XnXn</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="mi">1</span><span class="p">:,:,:])</span>
                   <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s">&#39;...ik,...ki-&gt;...i&#39;</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">XpXn</span><span class="p">)</span>
                   <span class="o">-</span> <span class="mf">0.5</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s">&#39;...ikl,...kl-&gt;...i&#39;</span><span class="p">,</span> <span class="n">AA</span><span class="p">,</span> <span class="n">XnXn</span><span class="p">[</span><span class="o">...</span><span class="p">,:</span><span class="o">-</span><span class="mi">1</span><span class="p">,:,:]))</span>
-            <span class="n">m1</span> <span class="o">=</span> <span class="mf">0.5</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">u_inputs</span><span class="p">):</span>
-                <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s">&quot;Message to innovation not yet implemented &quot;</span>
-                                          <span class="s">&quot;if using input signals&quot;</span><span class="p">)</span>
+                <span class="n">Xn</span> <span class="o">=</span> <span class="n">u</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>              <span class="c"># (..., N, D)</span>
+                <span class="n">B</span> <span class="o">=</span> <span class="n">u_A</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="o">...</span><span class="p">,</span><span class="n">D</span><span class="p">:]</span>     <span class="c"># (..., N-1, D, inputs)</span>
+                <span class="n">BB</span> <span class="o">=</span> <span class="n">u_A</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="o">...</span><span class="p">,</span><span class="n">D</span><span class="p">:,</span><span class="n">D</span><span class="p">:]</span> <span class="c"># (..., N-1, D, inputs, inputs)</span>
+                <span class="n">AB</span> <span class="o">=</span> <span class="n">u_A</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="o">...</span><span class="p">,:</span><span class="n">D</span><span class="p">,</span><span class="n">D</span><span class="p">:]</span> <span class="c"># (..., N-1, D, D, inputs)</span>
+                <span class="n">Un</span> <span class="o">=</span> <span class="n">u_inputs</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>    <span class="c"># (..., N-1, inputs)</span>
+                <span class="n">UnUn</span> <span class="o">=</span> <span class="n">u_inputs</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>  <span class="c"># (..., N-1, inputs, inputs)</span>
+                <span class="n">BUn</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s">&#39;...dk,...k-&gt;...d&#39;</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">Un</span><span class="p">)</span>
+                <span class="n">m0</span> <span class="o">=</span> <span class="n">m0</span> <span class="o">+</span> <span class="p">(</span><span class="o">-</span> <span class="mf">0.5</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s">&#39;...ikl,...kl-&gt;...i&#39;</span><span class="p">,</span> <span class="n">BB</span><span class="p">,</span> <span class="n">UnUn</span><span class="p">)</span>
+                           <span class="o">+</span> <span class="n">BUn</span> <span class="o">*</span> <span class="n">Xn</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="mi">1</span><span class="p">:,:]</span>
+                           <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s">&#39;...ijk,...j,...k&#39;</span><span class="p">,</span> <span class="n">AB</span><span class="p">,</span> <span class="n">Xn</span><span class="p">[</span><span class="o">...</span><span class="p">,:</span><span class="o">-</span><span class="mi">1</span><span class="p">,:],</span> <span class="n">Un</span><span class="p">))</span>
+
+            <span class="n">m1</span> <span class="o">=</span> <span class="mf">0.5</span>
         <span class="k">elif</span> <span class="n">index</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span> <span class="c"># input signals</span>
             <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
 
@@ -501,8 +523,8 @@
 <span class="sd">          A:      (...,N-1,D)</span>
 <span class="sd">          v:      (...,N-1,D)</span>
 
-<span class="sd">        Parameters:</span>
-<span class="sd">        -----------</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
 <span class="sd">        index : int</span>
 <span class="sd">            The index of the parent node to use.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -794,7 +816,7 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Compute a message to a parent.</span>
 
-<span class="sd">        Parameters:</span>
+<span class="sd">        Parameters</span>
 <span class="sd">        -----------</span>
 <span class="sd">        index : int</span>
 <span class="sd">            Index of the parent requesting the message.</span>
@@ -1000,7 +1022,7 @@
 <span class="sd">          A:      (...,N-1,D)</span>
 <span class="sd">          v:      (...,N-1,D)</span>
 
-<span class="sd">        Parameters:</span>
+<span class="sd">        Parameters</span>
 <span class="sd">        -----------</span>
 <span class="sd">        index : int</span>
 <span class="sd">            The index of the parent node to use.</span>
@@ -1313,8 +1335,8 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Compute a message to a parent.</span>
 
-<span class="sd">        Parameters:</span>
-<span class="sd">        -----------</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
 <span class="sd">        index : int</span>
 <span class="sd">            Index of the parent requesting the message.</span>
 <span class="sd">        u : list of ndarrays</span>
@@ -1533,8 +1555,8 @@
 <span class="sd">          A:      (...,N-1,D)</span>
 <span class="sd">          v:      (...,N-1,D)</span>
 
-<span class="sd">        Parameters:</span>
-<span class="sd">        -----------</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
 <span class="sd">        index : int</span>
 <span class="sd">            The index of the parent node to use.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -1922,15 +1944,15 @@
 <span class="sd">        we&#39;ll put the last/third message to None meaning that it is</span>
 <span class="sd">        empty.</span>
 
-<span class="sd">        Parameters:</span>
-<span class="sd">        -----------</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
 <span class="sd">        index : int</span>
 <span class="sd">            Index of the parent requesting the message.</span>
 <span class="sd">        u_parents : list of list of ndarrays</span>
 <span class="sd">            List of parents&#39; moments.</span>
 
-<span class="sd">        Returns:</span>
-<span class="sd">        --------</span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
 <span class="sd">        m : list of ndarrays</span>
 <span class="sd">            Message as a list of arrays.</span>
 <span class="sd">        mask : boolean ndarray</span>
@@ -1977,7 +1999,7 @@
         <li class="right" >
           <a href="../../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../../../index.html">BayesPy v0.3 Documentation</a> &raquo;</li>
+        <li><a href="../../../../../index.html">BayesPy v0.3.1 Documentation</a> &raquo;</li>
           <li><a href="../../../../index.html" >Module code</a> &raquo;</li>
           <li><a href="../../../inference.html" >bayespy.inference</a> &raquo;</li> 
       </ul>

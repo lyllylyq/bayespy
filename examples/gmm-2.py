@@ -33,5 +33,5 @@ Q = VB(Y, mu, Lambda, Z, alpha)
 Y.observe(y)
 Q.update(repeat=1000)
 
-bpplt.gaussian_mixture(Y, scale=2)
+bpplt.gaussian_mixture_2d(Y, alpha=alpha, scale=2)
 bpplt.pyplot.show()
