@@ -8,7 +8,7 @@
     
     <title>bayespy.nodes.Gamma.get_gradient &mdash; BayesPy v0.3.1 Documentation</title>
     
-    <link rel="stylesheet" href="../../../../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
     
     <script type="text/javascript">
@@ -50,33 +50,7 @@
           <li><a href="../../bayespy.nodes.html" >bayespy.nodes</a> &raquo;</li>
           <li><a href="../bayespy.nodes.Gamma.html" accesskey="U">bayespy.nodes.Gamma</a> &raquo;</li> 
       </ul>
-    </div>  
-
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
-          <div class="body">
-            
-  <div class="section" id="bayespy-nodes-gamma-get-gradient">
-<h1>bayespy.nodes.Gamma.get_gradient<a class="headerlink" href="#bayespy-nodes-gamma-get-gradient" title="Permalink to this headline">¶</a></h1>
-<dl class="method">
-<dt id="bayespy.nodes.Gamma.get_gradient">
-<tt class="descclassname">Gamma.</tt><tt class="descname">get_gradient</tt><big>(</big><em>rg</em><big>)</big><a class="headerlink" href="#bayespy.nodes.Gamma.get_gradient" title="Permalink to this definition">¶</a></dt>
-<dd><p>Computes gradient with respect to the natural parameters.</p>
-<p>The function takes the Riemannian gradient as an input.  This is for
-three reasons: 1) You probably want to use the Riemannian gradient
-anyway so this helps avoiding accidental use of this function.  2) The
-gradient is computed by using the Riemannian gradient and chain rules.
-3) Probably you need both Riemannian and normal gradients anyway so you
-can provide it to this function to avoid re-computing it.</p>
-</dd></dl>
-
-</div>
-
-
-          </div>
-        </div>
-      </div>
+    </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
   <h4>Previous topic</h4>
@@ -103,6 +77,32 @@ can provide it to this function to avoid re-computing it.</p>
     </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="bayespy-nodes-gamma-get-gradient">
+<h1>bayespy.nodes.Gamma.get_gradient<a class="headerlink" href="#bayespy-nodes-gamma-get-gradient" title="Permalink to this headline">¶</a></h1>
+<dl class="method">
+<dt id="bayespy.nodes.Gamma.get_gradient">
+<tt class="descclassname">Gamma.</tt><tt class="descname">get_gradient</tt><big>(</big><em>rg</em><big>)</big><a class="headerlink" href="#bayespy.nodes.Gamma.get_gradient" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes gradient with respect to the natural parameters.</p>
+<p>The function takes the Riemannian gradient as an input.  This is for
+three reasons: 1) You probably want to use the Riemannian gradient
+anyway so this helps avoiding accidental use of this function.  2) The
+gradient is computed by using the Riemannian gradient and chain rules.
+3) Probably you need both Riemannian and normal gradients anyway so you
+can provide it to this function to avoid re-computing it.</p>
+</dd></dl>
+
+</div>
+
+
+          </div>
         </div>
       </div>
       <div class="clearer"></div>

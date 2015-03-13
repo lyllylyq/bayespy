@@ -8,7 +8,7 @@
     
     <title>bayespy.utils.linalg.outer &mdash; BayesPy v0.3.1 Documentation</title>
     
-    <link rel="stylesheet" href="../../../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     
     <script type="text/javascript">
@@ -50,33 +50,7 @@
           <li><a href="../../utils.html" >Utility functions</a> &raquo;</li>
           <li><a href="../bayespy.utils.linalg.html" accesskey="U">bayespy.utils.linalg</a> &raquo;</li> 
       </ul>
-    </div>  
-
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
-          <div class="body">
-            
-  <div class="section" id="bayespy-utils-linalg-outer">
-<h1>bayespy.utils.linalg.outer<a class="headerlink" href="#bayespy-utils-linalg-outer" title="Permalink to this headline">¶</a></h1>
-<dl class="function">
-<dt id="bayespy.utils.linalg.outer">
-<tt class="descclassname">bayespy.utils.linalg.</tt><tt class="descname">outer</tt><big>(</big><em>A</em>, <em>B</em>, <em>ndim=1</em><big>)</big><a class="reference internal" href="../../../_modules/bayespy/utils/linalg.html#outer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bayespy.utils.linalg.outer" title="Permalink to this definition">¶</a></dt>
-<dd><p>Computes outer product over the last axes of A and B.</p>
-<p>The other axes are broadcasted. Thus, if A has shape (..., N) and B has
-shape (..., M), then the result has shape (..., N, M).</p>
-<p>Using the argument <cite>ndim</cite> it is possible to change that how many axes
-trailing axes are used for the outer product. For instance, if ndim=3, A and
-B have shapes (...,N1,N2,N3) and (...,M1,M2,M3), the result has shape
-(...,N1,M1,N2,M2,N3,M3).</p>
-</dd></dl>
-
-</div>
-
-
-          </div>
-        </div>
-      </div>
+    </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
   <h4>Previous topic</h4>
@@ -103,6 +77,32 @@ B have shapes (...,N1,N2,N3) and (...,M1,M2,M3), the result has shape
     </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="bayespy-utils-linalg-outer">
+<h1>bayespy.utils.linalg.outer<a class="headerlink" href="#bayespy-utils-linalg-outer" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="bayespy.utils.linalg.outer">
+<tt class="descclassname">bayespy.utils.linalg.</tt><tt class="descname">outer</tt><big>(</big><em>A</em>, <em>B</em>, <em>ndim=1</em><big>)</big><a class="reference internal" href="../../../_modules/bayespy/utils/linalg.html#outer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bayespy.utils.linalg.outer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes outer product over the last axes of A and B.</p>
+<p>The other axes are broadcasted. Thus, if A has shape (..., N) and B has
+shape (..., M), then the result has shape (..., N, M).</p>
+<p>Using the argument <cite>ndim</cite> it is possible to change that how many axes
+trailing axes are used for the outer product. For instance, if ndim=3, A and
+B have shapes (...,N1,N2,N3) and (...,M1,M2,M3), the result has shape
+(...,N1,M1,N2,M2,N3,M3).</p>
+</dd></dl>
+
+</div>
+
+
+          </div>
         </div>
       </div>
       <div class="clearer"></div>

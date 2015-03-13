@@ -8,7 +8,7 @@
     
     <title>bayespy.nodes.Gamma.lower_bound_contribution &mdash; BayesPy v0.3.1 Documentation</title>
     
-    <link rel="stylesheet" href="../../../../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
     
     <script type="text/javascript">
@@ -50,31 +50,7 @@
           <li><a href="../../bayespy.nodes.html" >bayespy.nodes</a> &raquo;</li>
           <li><a href="../bayespy.nodes.Gamma.html" accesskey="U">bayespy.nodes.Gamma</a> &raquo;</li> 
       </ul>
-    </div>  
-
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
-          <div class="body">
-            
-  <div class="section" id="bayespy-nodes-gamma-lower-bound-contribution">
-<h1>bayespy.nodes.Gamma.lower_bound_contribution<a class="headerlink" href="#bayespy-nodes-gamma-lower-bound-contribution" title="Permalink to this headline">¶</a></h1>
-<dl class="method">
-<dt id="bayespy.nodes.Gamma.lower_bound_contribution">
-<tt class="descclassname">Gamma.</tt><tt class="descname">lower_bound_contribution</tt><big>(</big><em>gradient=False</em>, <em>ignore_masked=True</em><big>)</big><a class="headerlink" href="#bayespy.nodes.Gamma.lower_bound_contribution" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute E[ log p(X|parents) - log q(X) ]</p>
-<p>If deterministic annealing is used, the term E[ -log q(X) ] is
-divided by the anneling coefficient.  That is, phi and cgf of q
-are multiplied by the temperature (inverse annealing
-coefficient).</p>
-</dd></dl>
-
-</div>
-
-
-          </div>
-        </div>
-      </div>
+    </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
   <h4>Previous topic</h4>
@@ -101,6 +77,30 @@ coefficient).</p>
     </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="bayespy-nodes-gamma-lower-bound-contribution">
+<h1>bayespy.nodes.Gamma.lower_bound_contribution<a class="headerlink" href="#bayespy-nodes-gamma-lower-bound-contribution" title="Permalink to this headline">¶</a></h1>
+<dl class="method">
+<dt id="bayespy.nodes.Gamma.lower_bound_contribution">
+<tt class="descclassname">Gamma.</tt><tt class="descname">lower_bound_contribution</tt><big>(</big><em>gradient=False</em>, <em>ignore_masked=True</em><big>)</big><a class="headerlink" href="#bayespy.nodes.Gamma.lower_bound_contribution" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute E[ log p(X|parents) - log q(X) ]</p>
+<p>If deterministic annealing is used, the term E[ -log q(X) ] is
+divided by the anneling coefficient.  That is, phi and cgf of q
+are multiplied by the temperature (inverse annealing
+coefficient).</p>
+</dd></dl>
+
+</div>
+
+
+          </div>
         </div>
       </div>
       <div class="clearer"></div>

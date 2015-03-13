@@ -8,7 +8,7 @@
     
     <title>bayespy.utils.misc.diag &mdash; BayesPy v0.3.1 Documentation</title>
     
-    <link rel="stylesheet" href="../../../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     
     <script type="text/javascript">
@@ -50,34 +50,7 @@
           <li><a href="../../utils.html" >Utility functions</a> &raquo;</li>
           <li><a href="../bayespy.utils.misc.html" accesskey="U">bayespy.utils.misc</a> &raquo;</li> 
       </ul>
-    </div>  
-
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
-          <div class="body">
-            
-  <div class="section" id="bayespy-utils-misc-diag">
-<h1>bayespy.utils.misc.diag<a class="headerlink" href="#bayespy-utils-misc-diag" title="Permalink to this headline">¶</a></h1>
-<dl class="function">
-<dt id="bayespy.utils.misc.diag">
-<tt class="descclassname">bayespy.utils.misc.</tt><tt class="descname">diag</tt><big>(</big><em>X</em>, <em>ndim=1</em><big>)</big><a class="reference internal" href="../../../_modules/bayespy/utils/misc.html#diag"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bayespy.utils.misc.diag" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create a diagonal array given the diagonal elements.</p>
-<p>The diagonal array can be multi-dimensional. By default, the last axis is
-transformed to two axes (diagonal matrix) but this can be changed using ndim
-keyword. For instance, an array with shape (K,L,M,N) can be transformed to a
-set of diagonal 4-D tensors with shape (K,L,M,N,M,N) by giving ndim=2. If
-ndim=3, the result has shape (K,L,M,N,L,M,N), and so on.</p>
-<p>Diagonality means that for the resulting array Y holds:
-Y[...,i_1,i_2,..,i_ndim,j_1,j_2,..,j_ndim] is zero if i_n!=j_n for any n.</p>
-</dd></dl>
-
-</div>
-
-
-          </div>
-        </div>
-      </div>
+    </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
   <h4>Previous topic</h4>
@@ -104,6 +77,33 @@ Y[...,i_1,i_2,..,i_ndim,j_1,j_2,..,j_ndim] is zero if i_n!=j_n for any n.</p>
     </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="bayespy-utils-misc-diag">
+<h1>bayespy.utils.misc.diag<a class="headerlink" href="#bayespy-utils-misc-diag" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="bayespy.utils.misc.diag">
+<tt class="descclassname">bayespy.utils.misc.</tt><tt class="descname">diag</tt><big>(</big><em>X</em>, <em>ndim=1</em><big>)</big><a class="reference internal" href="../../../_modules/bayespy/utils/misc.html#diag"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bayespy.utils.misc.diag" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a diagonal array given the diagonal elements.</p>
+<p>The diagonal array can be multi-dimensional. By default, the last axis is
+transformed to two axes (diagonal matrix) but this can be changed using ndim
+keyword. For instance, an array with shape (K,L,M,N) can be transformed to a
+set of diagonal 4-D tensors with shape (K,L,M,N,M,N) by giving ndim=2. If
+ndim=3, the result has shape (K,L,M,N,L,M,N), and so on.</p>
+<p>Diagonality means that for the resulting array Y holds:
+Y[...,i_1,i_2,..,i_ndim,j_1,j_2,..,j_ndim] is zero if i_n!=j_n for any n.</p>
+</dd></dl>
+
+</div>
+
+
+          </div>
         </div>
       </div>
       <div class="clearer"></div>

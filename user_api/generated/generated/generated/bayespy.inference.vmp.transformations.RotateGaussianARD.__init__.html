@@ -8,7 +8,7 @@
     
     <title>bayespy.inference.vmp.transformations.RotateGaussianARD.__init__ &mdash; BayesPy v0.3.1 Documentation</title>
     
-    <link rel="stylesheet" href="../../../../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
     
     <script type="text/javascript">
@@ -50,32 +50,7 @@
           <li><a href="../../bayespy.inference.html" >bayespy.inference</a> &raquo;</li>
           <li><a href="../bayespy.inference.vmp.transformations.RotateGaussianARD.html" accesskey="U">bayespy.inference.vmp.transformations.RotateGaussianARD</a> &raquo;</li> 
       </ul>
-    </div>  
-
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
-          <div class="body">
-            
-  <div class="section" id="bayespy-inference-vmp-transformations-rotategaussianard-init">
-<h1>bayespy.inference.vmp.transformations.RotateGaussianARD.__init__<a class="headerlink" href="#bayespy-inference-vmp-transformations-rotategaussianard-init" title="Permalink to this headline">¶</a></h1>
-<dl class="method">
-<dt id="bayespy.inference.vmp.transformations.RotateGaussianARD.__init__">
-<tt class="descclassname">RotateGaussianARD.</tt><tt class="descname">__init__</tt><big>(</big><em>X</em>, <em>*alpha</em>, <em>axis=-1</em>, <em>precompute=False</em>, <em>subset=None</em><big>)</big><a class="reference internal" href="../../../../_modules/bayespy/inference/vmp/transformations.html#RotateGaussianARD.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bayespy.inference.vmp.transformations.RotateGaussianARD.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Precompute tells whether to compute some moments once in the setup
-function instead of every time in the bound function.  However, they are
-computed a bit differently in the bound function so it can be useful
-too. Precomputation is probably beneficial only when there are large
-axes that are not rotated (by R nor Q) and they are not contained in the
-plates of alpha, and the dimensions for R and Q are quite small.</p>
-</dd></dl>
-
-</div>
-
-
-          </div>
-        </div>
-      </div>
+    </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
   <h4>Previous topic</h4>
@@ -102,6 +77,31 @@ plates of alpha, and the dimensions for R and Q are quite small.</p>
     </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="bayespy-inference-vmp-transformations-rotategaussianard-init">
+<h1>bayespy.inference.vmp.transformations.RotateGaussianARD.__init__<a class="headerlink" href="#bayespy-inference-vmp-transformations-rotategaussianard-init" title="Permalink to this headline">¶</a></h1>
+<dl class="method">
+<dt id="bayespy.inference.vmp.transformations.RotateGaussianARD.__init__">
+<tt class="descclassname">RotateGaussianARD.</tt><tt class="descname">__init__</tt><big>(</big><em>X</em>, <em>*alpha</em>, <em>axis=-1</em>, <em>precompute=False</em>, <em>subset=None</em><big>)</big><a class="reference internal" href="../../../../_modules/bayespy/inference/vmp/transformations.html#RotateGaussianARD.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bayespy.inference.vmp.transformations.RotateGaussianARD.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Precompute tells whether to compute some moments once in the setup
+function instead of every time in the bound function.  However, they are
+computed a bit differently in the bound function so it can be useful
+too. Precomputation is probably beneficial only when there are large
+axes that are not rotated (by R nor Q) and they are not contained in the
+plates of alpha, and the dimensions for R and Q are quite small.</p>
+</dd></dl>
+
+</div>
+
+
+          </div>
         </div>
       </div>
       <div class="clearer"></div>

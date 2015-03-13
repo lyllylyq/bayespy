@@ -8,7 +8,7 @@
     
     <title>Constructing the model &mdash; BayesPy v0.3.1 Documentation</title>
     
-    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     
     <script type="text/javascript">
@@ -48,7 +48,63 @@
         <li><a href="../index.html">BayesPy v0.3.1 Documentation</a> &raquo;</li>
           <li><a href="user_guide.html" accesskey="U">User guide</a> &raquo;</li> 
       </ul>
-    </div>  
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Constructing the model</a><ul>
+<li><a class="reference internal" href="#creating-nodes">Creating nodes</a><ul>
+<li><a class="reference internal" href="#conjugacy-of-the-parents">Conjugacy of the parents</a></li>
+<li><a class="reference internal" href="#independence-of-the-parents">Independence of the parents</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#effects-of-the-nodes-on-inference">Effects of the nodes on inference</a><ul>
+<li><a class="reference internal" href="#prior-probability-distribution">Prior probability distribution</a></li>
+<li><a class="reference internal" href="#posterior-factorization">Posterior factorization</a></li>
+<li><a class="reference internal" href="#functional-form-of-the-posterior">Functional form of the posterior</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#using-plate-notation">Using plate notation</a><ul>
+<li><a class="reference internal" href="#defining-plates">Defining plates</a></li>
+<li><a class="reference internal" href="#sharing-and-broadcasting-plates">Sharing and broadcasting plates</a></li>
+<li><a class="reference internal" href="#plates-in-deterministic-nodes">Plates in deterministic nodes</a></li>
+<li><a class="reference internal" href="#plates-in-constants">Plates in constants</a></li>
+<li><a class="reference internal" href="#factorization-of-plates">Factorization of plates</a></li>
+<li><a class="reference internal" href="#irregular-plates">Irregular plates</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#example-model-principal-component-analysis">Example model: Principal component analysis</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="quickstart.html"
+                        title="previous chapter">Quick start guide</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="inference.html"
+                        title="next chapter">Performing inference</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/user_guide/modelconstruct.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
 
     <div class="document">
       <div class="documentwrapper">
@@ -961,62 +1017,6 @@ perform inference.</p>
 
 
           </div>
-        </div>
-      </div>
-      <div class="sphinxsidebar">
-        <div class="sphinxsidebarwrapper">
-  <h3><a href="../index.html">Table Of Contents</a></h3>
-  <ul>
-<li><a class="reference internal" href="#">Constructing the model</a><ul>
-<li><a class="reference internal" href="#creating-nodes">Creating nodes</a><ul>
-<li><a class="reference internal" href="#conjugacy-of-the-parents">Conjugacy of the parents</a></li>
-<li><a class="reference internal" href="#independence-of-the-parents">Independence of the parents</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#effects-of-the-nodes-on-inference">Effects of the nodes on inference</a><ul>
-<li><a class="reference internal" href="#prior-probability-distribution">Prior probability distribution</a></li>
-<li><a class="reference internal" href="#posterior-factorization">Posterior factorization</a></li>
-<li><a class="reference internal" href="#functional-form-of-the-posterior">Functional form of the posterior</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#using-plate-notation">Using plate notation</a><ul>
-<li><a class="reference internal" href="#defining-plates">Defining plates</a></li>
-<li><a class="reference internal" href="#sharing-and-broadcasting-plates">Sharing and broadcasting plates</a></li>
-<li><a class="reference internal" href="#plates-in-deterministic-nodes">Plates in deterministic nodes</a></li>
-<li><a class="reference internal" href="#plates-in-constants">Plates in constants</a></li>
-<li><a class="reference internal" href="#factorization-of-plates">Factorization of plates</a></li>
-<li><a class="reference internal" href="#irregular-plates">Irregular plates</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#example-model-principal-component-analysis">Example model: Principal component analysis</a></li>
-</ul>
-</li>
-</ul>
-
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="quickstart.html"
-                        title="previous chapter">Quick start guide</a></p>
-  <h4>Next topic</h4>
-  <p class="topless"><a href="inference.html"
-                        title="next chapter">Performing inference</a></p>
-  <h3>This Page</h3>
-  <ul class="this-page-menu">
-    <li><a href="../_sources/user_guide/modelconstruct.txt"
-           rel="nofollow">Show Source</a></li>
-  </ul>
-<div id="searchbox" style="display: none">
-  <h3>Quick search</h3>
-    <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
-    </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
-</div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
