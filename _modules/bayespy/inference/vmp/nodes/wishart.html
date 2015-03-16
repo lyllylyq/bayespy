@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>bayespy.inference.vmp.nodes.wishart &mdash; BayesPy v0.3.1 Documentation</title>
+    <title>bayespy.inference.vmp.nodes.wishart &mdash; BayesPy v0.3.2 Documentation</title>
     
     <link rel="stylesheet" href="../../../../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../../',
-        VERSION:     '0.3.1',
+        VERSION:     '0.3.2',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="../../../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="BayesPy v0.3.1 Documentation" href="../../../../../index.html" />
+    <link rel="top" title="BayesPy v0.3.2 Documentation" href="../../../../../index.html" />
     <link rel="up" title="bayespy.inference" href="../../../inference.html" /> 
   </head>
   <body>
@@ -37,7 +37,7 @@
         <li class="right" >
           <a href="../../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../../../index.html">BayesPy v0.3.1 Documentation</a> &raquo;</li>
+        <li><a href="../../../../../index.html">BayesPy v0.3.2 Documentation</a> &raquo;</li>
           <li><a href="../../../../index.html" >Module code</a> &raquo;</li>
           <li><a href="../../../inference.html" accesskey="U">bayespy.inference</a> &raquo;</li> 
       </ul>
@@ -92,7 +92,7 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">scipy.special</span> <span class="kn">as</span> <span class="nn">special</span>
 
-<span class="kn">from</span> <span class="nn">bayespy.utils</span> <span class="kn">import</span> <span class="n">misc</span>
+<span class="kn">from</span> <span class="nn">bayespy.utils</span> <span class="kn">import</span> <span class="n">misc</span><span class="p">,</span> <span class="n">linalg</span>
 
 <span class="kn">from</span> <span class="nn">.expfamily</span> <span class="kn">import</span> <span class="n">ExponentialFamily</span>
 <span class="kn">from</span> <span class="nn">.expfamily</span> <span class="kn">import</span> <span class="n">ExponentialFamilyDistribution</span>
@@ -120,7 +120,7 @@
 
 <div class="viewcode-block" id="WishartMoments.compute_fixed_moments"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.wishart.WishartMoments.compute_fixed_moments.html#bayespy.inference.vmp.nodes.wishart.WishartMoments.compute_fixed_moments">[docs]</a>    <span class="k">def</span> <span class="nf">compute_fixed_moments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Lambda</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Compute moments for fixed x. &quot;&quot;&quot;</span>
-        <span class="n">ldet</span> <span class="o">=</span> <span class="n">misc</span><span class="o">.</span><span class="n">m_chol_logdet</span><span class="p">(</span><span class="n">misc</span><span class="o">.</span><span class="n">m_chol</span><span class="p">(</span><span class="n">Lambda</span><span class="p">))</span>
+        <span class="n">ldet</span> <span class="o">=</span> <span class="n">linalg</span><span class="o">.</span><span class="n">chol_logdet</span><span class="p">(</span><span class="n">linalg</span><span class="o">.</span><span class="n">chol</span><span class="p">(</span><span class="n">Lambda</span><span class="p">))</span>
         <span class="n">u</span> <span class="o">=</span> <span class="p">[</span><span class="n">Lambda</span><span class="p">,</span>
              <span class="n">ldet</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">u</span>
@@ -189,11 +189,11 @@
 <span class="sd">            \\</span>
 <span class="sd">            g(\phi) = \phi_2 \log|-\phi_1| - \log \Gamma_k(\phi_2)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">U</span> <span class="o">=</span> <span class="n">misc</span><span class="o">.</span><span class="n">m_chol</span><span class="p">(</span><span class="o">-</span><span class="n">phi</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">U</span> <span class="o">=</span> <span class="n">linalg</span><span class="o">.</span><span class="n">chol</span><span class="p">(</span><span class="o">-</span><span class="n">phi</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
         <span class="n">k</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">phi</span><span class="p">[</span><span class="mi">0</span><span class="p">])[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
         <span class="c">#k = self.dims[0][0]</span>
-        <span class="n">logdet_phi0</span> <span class="o">=</span> <span class="n">misc</span><span class="o">.</span><span class="n">m_chol_logdet</span><span class="p">(</span><span class="n">U</span><span class="p">)</span>
-        <span class="n">u0</span> <span class="o">=</span> <span class="n">phi</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="o">...</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]</span> <span class="o">*</span> <span class="n">misc</span><span class="o">.</span><span class="n">m_chol_inv</span><span class="p">(</span><span class="n">U</span><span class="p">)</span>
+        <span class="n">logdet_phi0</span> <span class="o">=</span> <span class="n">linalg</span><span class="o">.</span><span class="n">chol_logdet</span><span class="p">(</span><span class="n">U</span><span class="p">)</span>
+        <span class="n">u0</span> <span class="o">=</span> <span class="n">phi</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="o">...</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]</span> <span class="o">*</span> <span class="n">linalg</span><span class="o">.</span><span class="n">chol_inv</span><span class="p">(</span><span class="n">U</span><span class="p">)</span>
         <span class="n">u1</span> <span class="o">=</span> <span class="o">-</span><span class="n">logdet_phi0</span> <span class="o">+</span> <span class="n">misc</span><span class="o">.</span><span class="n">multidigamma</span><span class="p">(</span><span class="n">phi</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">k</span><span class="p">)</span>
         <span class="n">u</span> <span class="o">=</span> <span class="p">[</span><span class="n">u0</span><span class="p">,</span> <span class="n">u1</span><span class="p">]</span>
         <span class="n">g</span> <span class="o">=</span> <span class="n">phi</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">logdet_phi0</span> <span class="o">-</span> <span class="n">special</span><span class="o">.</span><span class="n">multigammaln</span><span class="p">(</span><span class="n">phi</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">k</span><span class="p">)</span>
@@ -230,7 +230,7 @@
 <span class="sd">            \end{bmatrix}</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">k</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">Lambda</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-        <span class="n">ldet</span> <span class="o">=</span> <span class="n">misc</span><span class="o">.</span><span class="n">m_chol_logdet</span><span class="p">(</span><span class="n">misc</span><span class="o">.</span><span class="n">m_chol</span><span class="p">(</span><span class="n">Lambda</span><span class="p">))</span>
+        <span class="n">ldet</span> <span class="o">=</span> <span class="n">linalg</span><span class="o">.</span><span class="n">chol_logdet</span><span class="p">(</span><span class="n">linalg</span><span class="o">.</span><span class="n">chol</span><span class="p">(</span><span class="n">Lambda</span><span class="p">))</span>
         <span class="n">u</span> <span class="o">=</span> <span class="p">[</span><span class="n">Lambda</span><span class="p">,</span>
              <span class="n">ldet</span><span class="p">]</span>
         <span class="n">f</span> <span class="o">=</span> <span class="o">-</span><span class="p">(</span><span class="n">k</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span> <span class="o">*</span> <span class="n">ldet</span>
@@ -328,7 +328,7 @@
         <li class="right" >
           <a href="../../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../../../index.html">BayesPy v0.3.1 Documentation</a> &raquo;</li>
+        <li><a href="../../../../../index.html">BayesPy v0.3.2 Documentation</a> &raquo;</li>
           <li><a href="../../../../index.html" >Module code</a> &raquo;</li>
           <li><a href="../../../inference.html" >bayespy.inference</a> &raquo;</li> 
       </ul>

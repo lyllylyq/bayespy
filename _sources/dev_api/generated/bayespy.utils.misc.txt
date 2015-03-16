@@ -45,10 +45,6 @@ bayespy.utils.misc
       kalman_filter
       logdet_chol
       logsumexp
-      m_chol
-      m_chol_inv
-      m_chol_logdet
-      m_chol_solve
       m_digamma
       m_dot
       m_outer

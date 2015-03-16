@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>bayespy.inference.vmp.nodes.gaussian &mdash; BayesPy v0.3.1 Documentation</title>
+    <title>bayespy.inference.vmp.nodes.gaussian &mdash; BayesPy v0.3.2 Documentation</title>
     
     <link rel="stylesheet" href="../../../../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../../',
-        VERSION:     '0.3.1',
+        VERSION:     '0.3.2',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="../../../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="BayesPy v0.3.1 Documentation" href="../../../../../index.html" />
+    <link rel="top" title="BayesPy v0.3.2 Documentation" href="../../../../../index.html" />
     <link rel="up" title="bayespy.inference" href="../../../inference.html" /> 
   </head>
   <body>
@@ -37,7 +37,7 @@
         <li class="right" >
           <a href="../../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../../../index.html">BayesPy v0.3.1 Documentation</a> &raquo;</li>
+        <li><a href="../../../../../index.html">BayesPy v0.3.2 Documentation</a> &raquo;</li>
           <li><a href="../../../../index.html" >Module code</a> &raquo;</li>
           <li><a href="../../../inference.html" accesskey="U">bayespy.inference</a> &raquo;</li> 
       </ul>
@@ -495,15 +495,15 @@
 <span class="sd">           + \frac{1}{2} \log | -2 \boldsymbol{\phi}_2 |</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c"># TODO: Compute -2*phi[1] and simplify the formulas</span>
-        <span class="n">L</span> <span class="o">=</span> <span class="n">misc</span><span class="o">.</span><span class="n">m_chol</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="o">*</span><span class="n">phi</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">L</span> <span class="o">=</span> <span class="n">linalg</span><span class="o">.</span><span class="n">chol</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="o">*</span><span class="n">phi</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
         <span class="n">k</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">phi</span><span class="p">[</span><span class="mi">0</span><span class="p">])[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
         <span class="c"># Moments</span>
-        <span class="n">u0</span> <span class="o">=</span> <span class="n">misc</span><span class="o">.</span><span class="n">m_chol_solve</span><span class="p">(</span><span class="n">L</span><span class="p">,</span> <span class="n">phi</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-        <span class="n">u1</span> <span class="o">=</span> <span class="n">misc</span><span class="o">.</span><span class="n">m_outer</span><span class="p">(</span><span class="n">u0</span><span class="p">,</span> <span class="n">u0</span><span class="p">)</span> <span class="o">+</span> <span class="n">misc</span><span class="o">.</span><span class="n">m_chol_inv</span><span class="p">(</span><span class="n">L</span><span class="p">)</span>
+        <span class="n">u0</span> <span class="o">=</span> <span class="n">linalg</span><span class="o">.</span><span class="n">chol_solve</span><span class="p">(</span><span class="n">L</span><span class="p">,</span> <span class="n">phi</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">u1</span> <span class="o">=</span> <span class="n">misc</span><span class="o">.</span><span class="n">m_outer</span><span class="p">(</span><span class="n">u0</span><span class="p">,</span> <span class="n">u0</span><span class="p">)</span> <span class="o">+</span> <span class="n">linalg</span><span class="o">.</span><span class="n">chol_inv</span><span class="p">(</span><span class="n">L</span><span class="p">)</span>
         <span class="n">u</span> <span class="o">=</span> <span class="p">[</span><span class="n">u0</span><span class="p">,</span> <span class="n">u1</span><span class="p">]</span>
         <span class="c"># G</span>
         <span class="n">g</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mf">0.5</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s">&#39;...i,...i&#39;</span><span class="p">,</span> <span class="n">u</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">phi</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-             <span class="o">+</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">misc</span><span class="o">.</span><span class="n">m_chol_logdet</span><span class="p">(</span><span class="n">L</span><span class="p">))</span>
+             <span class="o">+</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">linalg</span><span class="o">.</span><span class="n">chol_logdet</span><span class="p">(</span><span class="n">L</span><span class="p">))</span>
              <span class="c">#+ 0.5 * np.log(2) * self.dims[0][0])</span>
         <span class="k">return</span> <span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">g</span><span class="p">)</span>
 </div>
@@ -622,8 +622,8 @@
         <span class="c"># observed/fixed elements!</span>
 
         <span class="c"># Note that phi[1] is -0.5*inv(Cov)</span>
-        <span class="n">U</span> <span class="o">=</span> <span class="n">misc</span><span class="o">.</span><span class="n">m_chol</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="o">*</span><span class="n">phi</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-        <span class="n">mu</span> <span class="o">=</span> <span class="n">misc</span><span class="o">.</span><span class="n">m_chol_solve</span><span class="p">(</span><span class="n">U</span><span class="p">,</span> <span class="n">phi</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">U</span> <span class="o">=</span> <span class="n">linalg</span><span class="o">.</span><span class="n">chol</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="o">*</span><span class="n">phi</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">mu</span> <span class="o">=</span> <span class="n">linalg</span><span class="o">.</span><span class="n">chol_solve</span><span class="p">(</span><span class="n">U</span><span class="p">,</span> <span class="n">phi</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
         <span class="n">z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">plates</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">mu</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">:])</span>
         <span class="c"># Compute mu + U&#39;*z</span>
         <span class="n">z</span> <span class="o">=</span> <span class="n">misc</span><span class="o">.</span><span class="n">m_solve_triangular</span><span class="p">(</span><span class="n">U</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">trans</span><span class="o">=</span><span class="s">&#39;T&#39;</span><span class="p">,</span> <span class="n">lower</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
@@ -2828,7 +2828,7 @@
         <li class="right" >
           <a href="../../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../../../index.html">BayesPy v0.3.1 Documentation</a> &raquo;</li>
+        <li><a href="../../../../../index.html">BayesPy v0.3.2 Documentation</a> &raquo;</li>
           <li><a href="../../../../index.html" >Module code</a> &raquo;</li>
           <li><a href="../../../inference.html" >bayespy.inference</a> &raquo;</li> 
       </ul>

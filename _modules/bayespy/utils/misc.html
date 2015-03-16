@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>bayespy.utils.misc &mdash; BayesPy v0.3.1 Documentation</title>
+    <title>bayespy.utils.misc &mdash; BayesPy v0.3.2 Documentation</title>
     
     <link rel="stylesheet" href="../../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.3.1',
+        VERSION:     '0.3.2',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="BayesPy v0.3.1 Documentation" href="../../../index.html" />
+    <link rel="top" title="BayesPy v0.3.2 Documentation" href="../../../index.html" />
     <link rel="up" title="Module code" href="../../index.html" /> 
   </head>
   <body>
@@ -37,7 +37,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">BayesPy v0.3.1 Documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">BayesPy v0.3.2 Documentation</a> &raquo;</li>
           <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>
@@ -1007,92 +1007,6 @@
 
         
     <span class="k">return</span> <span class="n">out</span>
-    
-    </div>
-<div class="viewcode-block" id="m_chol"><a class="viewcode-back" href="../../../dev_api/generated/generated/bayespy.utils.misc.m_chol.html#bayespy.utils.misc.m_chol">[docs]</a><span class="k">def</span> <span class="nf">m_chol</span><span class="p">(</span><span class="n">C</span><span class="p">):</span>
-    <span class="c"># Computes Cholesky decomposition for a collection of matrices.</span>
-    <span class="c"># The last two axes of C are considered as the matrix.</span>
-    <span class="n">C</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_2d</span><span class="p">(</span><span class="n">C</span><span class="p">)</span>
-    <span class="n">U</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">C</span><span class="p">))</span>
-    <span class="c">#print(&#39;m_chol&#39;, C)</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">nested_iterator</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">U</span><span class="p">)[:</span><span class="o">-</span><span class="mi">2</span><span class="p">]):</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">U</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">linalg</span><span class="o">.</span><span class="n">cho_factor</span><span class="p">(</span><span class="n">C</span><span class="p">[</span><span class="n">i</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="k">except</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">LinAlgError</span><span class="p">:</span>
-            <span class="k">print</span><span class="p">(</span><span class="n">C</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
-            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;Matrix not positive definite&quot;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">U</span>
-
-</div>
-<div class="viewcode-block" id="m_chol_solve"><a class="viewcode-back" href="../../../dev_api/generated/generated/bayespy.utils.misc.m_chol_solve.html#bayespy.utils.misc.m_chol_solve">[docs]</a><span class="k">def</span> <span class="nf">m_chol_solve</span><span class="p">(</span><span class="n">U</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-
-    
-    <span class="c"># Allocate memory</span>
-    <span class="n">U</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_2d</span><span class="p">(</span><span class="n">U</span><span class="p">)</span>
-    <span class="n">B</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">B</span><span class="p">)</span>
-    <span class="n">sh_u</span> <span class="o">=</span> <span class="n">U</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
-    <span class="n">sh_b</span> <span class="o">=</span> <span class="n">B</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-    <span class="n">l_u</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">sh_u</span><span class="p">)</span>
-    <span class="n">l_b</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">sh_b</span><span class="p">)</span>
-
-    <span class="c"># Check which axis are iterated over with B along with U</span>
-    <span class="n">ind_b</span> <span class="o">=</span> <span class="p">[</span><span class="bp">Ellipsis</span><span class="p">]</span> <span class="o">*</span> <span class="n">l_b</span>
-    <span class="n">l_min</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">l_u</span><span class="p">,</span> <span class="n">l_b</span><span class="p">)</span>
-    <span class="n">jnd_b</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="o">-</span><span class="n">l_min</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span> <span class="k">if</span> <span class="n">sh_b</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">==</span><span class="n">sh_u</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
-
-    <span class="k">if</span> <span class="n">out</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
-        <span class="c"># Shape of the result (broadcasting rules)</span>
-        <span class="n">sh</span> <span class="o">=</span> <span class="n">broadcasted_shape</span><span class="p">(</span><span class="n">sh_u</span><span class="p">,</span> <span class="n">sh_b</span><span class="p">)</span>
-        <span class="c">#out = np.zeros(np.shape(B))</span>
-        <span class="n">out</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">sh</span> <span class="o">+</span> <span class="n">B</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">:])</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">nested_iterator</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">U</span><span class="p">)[:</span><span class="o">-</span><span class="mi">2</span><span class="p">]):</span>
-
-        <span class="c"># The goal is to run Cholesky solver once for all vectors of B</span>
-        <span class="c"># for which the matrices of U are the same (according to the</span>
-        <span class="c"># broadcasting rules). Thus, we collect all the axes of B for</span>
-        <span class="c"># which U is singleton and form them as a 2-D matrix and then</span>
-        <span class="c"># run the solver once.</span>
-        
-        <span class="c"># Select those axes of B for which U and B are not singleton</span>
-        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">jnd_b</span><span class="p">:</span>
-            <span class="n">ind_b</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
-            
-        <span class="c"># Collect all the axes for which U is singleton</span>
-        <span class="n">b</span> <span class="o">=</span> <span class="n">B</span><span class="p">[</span><span class="nb">tuple</span><span class="p">(</span><span class="n">ind_b</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="bp">Ellipsis</span><span class="p">,)]</span>
-
-        <span class="c"># Reshape it to a 2-D (or 1-D) array</span>
-        <span class="n">orig_shape</span> <span class="o">=</span> <span class="n">b</span><span class="o">.</span><span class="n">shape</span>
-        <span class="k">if</span> <span class="n">b</span><span class="o">.</span><span class="n">ndim</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="n">b</span> <span class="o">=</span> <span class="n">b</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">b</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
-
-        <span class="c"># Ellipsis to all preceeding axes and ellipsis for the last</span>
-        <span class="c"># axis:</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ind_b</span><span class="p">)</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">sh</span><span class="p">):</span>
-            <span class="n">ind_out</span> <span class="o">=</span> <span class="p">(</span><span class="bp">Ellipsis</span><span class="p">,)</span> <span class="o">+</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">ind_b</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="bp">Ellipsis</span><span class="p">,)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">ind_out</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">ind_b</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="bp">Ellipsis</span><span class="p">,)</span>
-
-        <span class="n">out</span><span class="p">[</span><span class="n">ind_out</span><span class="p">]</span> <span class="o">=</span> <span class="n">linalg</span><span class="o">.</span><span class="n">cho_solve</span><span class="p">((</span><span class="n">U</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="bp">False</span><span class="p">),</span>
-                                        <span class="n">b</span><span class="o">.</span><span class="n">T</span><span class="p">)</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">orig_shape</span><span class="p">)</span>
-
-        
-    <span class="k">return</span> <span class="n">out</span>
-    
-</div>
-<div class="viewcode-block" id="m_chol_inv"><a class="viewcode-back" href="../../../dev_api/generated/generated/bayespy.utils.misc.m_chol_inv.html#bayespy.utils.misc.m_chol_inv">[docs]</a><span class="k">def</span> <span class="nf">m_chol_inv</span><span class="p">(</span><span class="n">U</span><span class="p">):</span>
-    <span class="c"># Allocate memory</span>
-    <span class="n">V</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">U</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]),</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">U</span><span class="p">)[:</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span><span class="o">+</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">nested_iterator</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">U</span><span class="p">)[:</span><span class="o">-</span><span class="mi">2</span><span class="p">]):</span>
-        <span class="n">V</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">linalg</span><span class="o">.</span><span class="n">cho_solve</span><span class="p">((</span><span class="n">U</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="bp">False</span><span class="p">),</span>
-                                <span class="n">V</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
-                                <span class="n">overwrite_b</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span> <span class="c"># This would need Fortran order</span>
-        
-    <span class="k">return</span> <span class="n">V</span>
-    
-</div>
-<div class="viewcode-block" id="m_chol_logdet"><a class="viewcode-back" href="../../../dev_api/generated/generated/bayespy.utils.misc.m_chol_logdet.html#bayespy.utils.misc.m_chol_logdet">[docs]</a><span class="k">def</span> <span class="nf">m_chol_logdet</span><span class="p">(</span><span class="n">U</span><span class="p">):</span>
-    <span class="c"># Computes Cholesky decomposition for a collection of matrices.</span>
-    <span class="k">return</span> <span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s">&#39;...ii-&gt;...i&#39;</span><span class="p">,</span> <span class="n">U</span><span class="p">)),</span> <span class="n">axis</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,))</span>
 
 </div>
 <div class="viewcode-block" id="multidigamma"><a class="viewcode-back" href="../../../dev_api/generated/generated/bayespy.utils.misc.multidigamma.html#bayespy.utils.misc.multidigamma">[docs]</a><span class="k">def</span> <span class="nf">multidigamma</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">d</span><span class="p">):</span>
@@ -1439,7 +1353,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">BayesPy v0.3.1 Documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">BayesPy v0.3.2 Documentation</a> &raquo;</li>
           <li><a href="../../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>
