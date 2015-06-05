@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>bayespy.inference.vmp.nodes.expfamily &mdash; BayesPy v0.3.2 Documentation</title>
+    <title>bayespy.inference.vmp.nodes.expfamily &mdash; BayesPy v0.3.3 Documentation</title>
     
     <link rel="stylesheet" href="../../../../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../../',
-        VERSION:     '0.3.2',
+        VERSION:     '0.3.3',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="../../../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="BayesPy v0.3.2 Documentation" href="../../../../../index.html" />
+    <link rel="top" title="BayesPy v0.3.3 Documentation" href="../../../../../index.html" />
     <link rel="up" title="bayespy.inference" href="../../../inference.html" /> 
   </head>
   <body>
@@ -37,7 +37,7 @@
         <li class="right" >
           <a href="../../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../../../index.html">BayesPy v0.3.2 Documentation</a> &raquo;</li>
+        <li><a href="../../../../../index.html">BayesPy v0.3.3 Documentation</a> &raquo;</li>
           <li><a href="../../../../index.html" >Module code</a> &raquo;</li>
           <li><a href="../../../inference.html" accesskey="U">bayespy.inference</a> &raquo;</li> 
       </ul>
@@ -66,28 +66,12 @@
           <div class="body">
             
   <h1>Source code for bayespy.inference.vmp.nodes.expfamily</h1><div class="highlight"><pre>
-<span class="c">######################################################################</span>
+<span class="c">################################################################################</span>
 <span class="c"># Copyright (C) 2013-2014 Jaakko Luttinen</span>
 <span class="c">#</span>
-<span class="c"># This file is licensed under Version 3.0 of the GNU General Public</span>
-<span class="c"># License. See LICENSE for a text of the license.</span>
-<span class="c">######################################################################</span>
+<span class="c"># This file is licensed under the MIT License.</span>
+<span class="c">################################################################################</span>
 
-<span class="c">######################################################################</span>
-<span class="c"># This file is part of BayesPy.</span>
-<span class="c">#</span>
-<span class="c"># BayesPy is free software: you can redistribute it and/or modify it</span>
-<span class="c"># under the terms of the GNU General Public License version 3 as</span>
-<span class="c"># published by the Free Software Foundation.</span>
-<span class="c">#</span>
-<span class="c"># BayesPy is distributed in the hope that it will be useful, but</span>
-<span class="c"># WITHOUT ANY WARRANTY; without even the implied warranty of</span>
-<span class="c"># MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU</span>
-<span class="c"># General Public License for more details.</span>
-<span class="c">#</span>
-<span class="c"># You should have received a copy of the GNU General Public License</span>
-<span class="c"># along with BayesPy.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
-<span class="c">######################################################################</span>
 
 <span class="kn">import</span> <span class="nn">warnings</span>
 
@@ -599,7 +583,7 @@
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">logpdf</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">mask</span><span class="p">))</span>
         
 </div>
-<div class="viewcode-block" id="ExponentialFamily.save"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.expfamily.ExponentialFamily.save.html#bayespy.inference.vmp.nodes.expfamily.ExponentialFamily.save">[docs]</a>    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Save the state of the node into a HDF5 file.</span>
 
@@ -613,9 +597,10 @@
             <span class="n">misc</span><span class="o">.</span><span class="n">write_to_hdf5</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">phi</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="s">&#39;phi</span><span class="si">%d</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">i</span><span class="p">)</span>
         <span class="n">misc</span><span class="o">.</span><span class="n">write_to_hdf5</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="p">,</span> <span class="s">&#39;f&#39;</span><span class="p">)</span>
         <span class="n">misc</span><span class="o">.</span><span class="n">write_to_hdf5</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">g</span><span class="p">,</span> <span class="s">&#39;g&#39;</span><span class="p">)</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>
-    </div>
-<div class="viewcode-block" id="ExponentialFamily.load"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.expfamily.ExponentialFamily.load.html#bayespy.inference.vmp.nodes.expfamily.ExponentialFamily.load">[docs]</a>    <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_save</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>
+
+    
+    <span class="k">def</span> <span class="nf">_load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Load the state of the node from a HDF5 file.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -626,9 +611,9 @@
             
         <span class="bp">self</span><span class="o">.</span><span class="n">f</span> <span class="o">=</span> <span class="n">group</span><span class="p">[</span><span class="s">&#39;f&#39;</span><span class="p">][</span><span class="o">...</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">g</span> <span class="o">=</span> <span class="n">group</span><span class="p">[</span><span class="s">&#39;g&#39;</span><span class="p">][</span><span class="o">...</span><span class="p">]</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_load</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>
 
-        </div>
+
 <div class="viewcode-block" id="ExponentialFamily.random"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.expfamily.ExponentialFamily.random.html#bayespy.inference.vmp.nodes.expfamily.ExponentialFamily.random">[docs]</a>    <span class="k">def</span> <span class="nf">random</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Draw a random sample from the distribution.</span>
@@ -650,13 +635,13 @@
         <li class="right" >
           <a href="../../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../../../index.html">BayesPy v0.3.2 Documentation</a> &raquo;</li>
+        <li><a href="../../../../../index.html">BayesPy v0.3.3 Documentation</a> &raquo;</li>
           <li><a href="../../../../index.html" >Module code</a> &raquo;</li>
           <li><a href="../../../inference.html" >bayespy.inference</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2011-2015, Jaakko Luttinen, GPLv3.
+        &copy; Copyright 2011-2015, Jaakko Luttinen, MIT.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>

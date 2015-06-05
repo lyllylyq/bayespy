@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>bayespy.plot &mdash; BayesPy v0.3.2 Documentation</title>
+    <title>bayespy.plot &mdash; BayesPy v0.3.3 Documentation</title>
     
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.3.2',
+        VERSION:     '0.3.3',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="BayesPy v0.3.2 Documentation" href="../../index.html" />
+    <link rel="top" title="BayesPy v0.3.3 Documentation" href="../../index.html" />
     <link rel="up" title="Module code" href="../index.html" /> 
   </head>
   <body>
@@ -37,7 +37,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">BayesPy v0.3.2 Documentation</a> &raquo;</li>
+        <li><a href="../../index.html">BayesPy v0.3.3 Documentation</a> &raquo;</li>
           <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>
@@ -65,28 +65,12 @@
           <div class="body">
             
   <h1>Source code for bayespy.plot</h1><div class="highlight"><pre>
-<span class="c">######################################################################</span>
+<span class="c">################################################################################</span>
 <span class="c"># Copyright (C) 2011-2013 Jaakko Luttinen</span>
 <span class="c">#</span>
-<span class="c"># This file is licensed under Version 3.0 of the GNU General Public</span>
-<span class="c"># License. See LICENSE for a text of the license.</span>
-<span class="c">######################################################################</span>
+<span class="c"># This file is licensed under the MIT License.</span>
+<span class="c">################################################################################</span>
 
-<span class="c">######################################################################</span>
-<span class="c"># This file is part of BayesPy.</span>
-<span class="c">#</span>
-<span class="c"># BayesPy is free software: you can redistribute it and/or modify it</span>
-<span class="c"># under the terms of the GNU General Public License version 3 as</span>
-<span class="c"># published by the Free Software Foundation.</span>
-<span class="c">#</span>
-<span class="c"># BayesPy is distributed in the hope that it will be useful, but</span>
-<span class="c"># WITHOUT ANY WARRANTY; without even the implied warranty of</span>
-<span class="c"># MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU</span>
-<span class="c"># General Public License for more details.</span>
-<span class="c">#</span>
-<span class="c"># You should have received a copy of the GNU General Public License</span>
-<span class="c"># along with BayesPy.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
-<span class="c">######################################################################</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">Functions for plotting nodes.</span>
@@ -149,7 +133,8 @@
 <span class="kn">from</span> <span class="nn">bayespy.inference.vmp.nodes.beta</span> <span class="kn">import</span> <span class="n">DirichletMoments</span>
 <span class="kn">from</span> <span class="nn">bayespy.inference.vmp.nodes.bernoulli</span> <span class="kn">import</span> <span class="n">BernoulliMoments</span>
 <span class="kn">from</span> <span class="nn">bayespy.inference.vmp.nodes.categorical</span> <span class="kn">import</span> <span class="n">CategoricalMoments</span>
-<span class="kn">from</span> <span class="nn">bayespy.inference.vmp.nodes.node</span> <span class="kn">import</span> <span class="n">Node</span>
+<span class="kn">from</span> <span class="nn">bayespy.inference.vmp.nodes.gamma</span> <span class="kn">import</span> <span class="n">GammaMoments</span>
+<span class="kn">from</span> <span class="nn">bayespy.inference.vmp.nodes.node</span> <span class="kn">import</span> <span class="n">Node</span><span class="p">,</span> <span class="n">Moments</span>
 
 <span class="kn">from</span> <span class="nn">bayespy.utils</span> <span class="kn">import</span> <span class="p">(</span><span class="n">misc</span><span class="p">,</span>
                            <span class="n">random</span><span class="p">,</span>
@@ -189,7 +174,7 @@
     <span class="k">return</span> <span class="n">new_function</span>
 
 
-<span class="k">def</span> <span class="nf">_subplots</span><span class="p">(</span><span class="n">plotfunc</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">fig</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">=</span><span class="p">{}):</span>
+<span class="k">def</span> <span class="nf">_subplots</span><span class="p">(</span><span class="n">plotfunc</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">fig</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Create a collection of subplots</span>
 
 <span class="sd">    Each subplot is created with the same plotting function.</span>
@@ -206,6 +191,9 @@
 <span class="sd">    functions with this function in order to generate subplots for</span>
 <span class="sd">    plates.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">kwargs</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{}</span>
 
     <span class="k">if</span> <span class="n">fig</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
         <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gcf</span><span class="p">()</span>
@@ -744,6 +732,77 @@
         <span class="n">_subplots</span><span class="p">(</span><span class="n">plotfunc</span><span class="p">,</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="n">scale</span><span class="o">*</span><span class="n">std</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">fig</span><span class="o">=</span><span class="n">fig</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">vmax</span><span class="o">=</span><span class="n">vmax</span><span class="p">))</span>
 
 
+<span class="k">def</span> <span class="nf">_hinton_figure</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">rows</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">cols</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">fig</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">square</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Plot the Hinton diagram of a Gaussian node</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">scale</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">std</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">if</span> <span class="n">fig</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gcf</span><span class="p">()</span>
+
+    <span class="c"># Get mean and second moment</span>
+    <span class="n">shape</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">size</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ndim</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">rows</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">rows</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+    <span class="k">if</span> <span class="n">cols</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">cols</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+
+    <span class="c"># Preprocess the axes to 0,...,ndim</span>
+    <span class="k">if</span> <span class="n">rows</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">rows</span> <span class="o">+=</span> <span class="n">size</span>
+    <span class="k">if</span> <span class="n">cols</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">cols</span> <span class="o">+=</span> <span class="n">size</span>
+    <span class="k">if</span> <span class="n">rows</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">rows</span> <span class="o">&gt;=</span> <span class="n">size</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Row axis invalid&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">cols</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">cols</span> <span class="o">&gt;=</span> <span class="n">size</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Column axis invalid&quot;</span><span class="p">)</span>
+
+    <span class="c"># Remove non-row and non-column axes that have length 1</span>
+    <span class="n">squeezed_shape</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">shape</span><span class="p">))):</span>
+        <span class="k">if</span> <span class="n">shape</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">i</span> <span class="o">!=</span> <span class="n">rows</span> <span class="ow">and</span> <span class="n">i</span> <span class="o">!=</span> <span class="n">cols</span><span class="p">:</span>
+            <span class="n">squeezed_shape</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">cols</span><span class="p">:</span>
+                <span class="n">cols</span> <span class="o">-=</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">rows</span><span class="p">:</span>
+                <span class="n">rows</span> <span class="o">-=</span> <span class="mi">1</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">squeezed_shape</span><span class="p">)</span>
+
+    <span class="n">size</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ndim</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">cols</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">rows</span> <span class="o">!=</span> <span class="n">size</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">cols</span> <span class="o">=</span> <span class="n">size</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">cols</span> <span class="o">=</span> <span class="n">size</span> <span class="o">-</span> <span class="mi">2</span>
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">rows</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">cols</span> <span class="o">!=</span> <span class="n">size</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">rows</span> <span class="o">=</span> <span class="n">size</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">rows</span> <span class="o">=</span> <span class="n">size</span> <span class="o">-</span> <span class="mi">2</span>
+
+    <span class="c"># Put the row and column axes to the end</span>
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">ndim</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="n">axes</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">size</span><span class="p">)</span> <span class="k">if</span> <span class="n">i</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="n">cols</span><span class="p">)]</span> <span class="o">+</span> <span class="p">[</span><span class="n">rows</span><span class="p">,</span> <span class="n">cols</span><span class="p">]</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="n">axes</span><span class="p">)</span>
+        <span class="c">#std = np.transpose(std, axes=axes)</span>
+
+    <span class="n">vmax</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">+</span> <span class="n">scale</span><span class="o">*</span><span class="n">std</span><span class="p">)</span>
+
+    <span class="n">kw</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">vmax</span><span class="o">=</span><span class="n">vmax</span><span class="p">,</span> <span class="n">square</span><span class="o">=</span><span class="n">square</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">scale</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">_subplots</span><span class="p">(</span><span class="n">_hinton</span><span class="p">,</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">fig</span><span class="o">=</span><span class="n">fig</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">=</span><span class="n">kw</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">def</span> <span class="nf">plotfunc</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">_hinton</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">error</span><span class="o">=</span><span class="n">e</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="n">_subplots</span><span class="p">(</span><span class="n">plotfunc</span><span class="p">,</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="n">scale</span><span class="o">*</span><span class="n">std</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">fig</span><span class="o">=</span><span class="n">fig</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">=</span><span class="n">kw</span><span class="p">)</span>
+
+
 <span class="c"># For backwards compatibility:</span>
 <span class="n">gaussian_array</span> <span class="o">=</span> <span class="n">gaussian_hinton</span>
 
@@ -771,6 +830,24 @@
         <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
             <span class="n">axes</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">i</span><span class="o">*</span><span class="n">N</span><span class="o">+</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
             <span class="n">_hinton</span><span class="p">(</span><span class="n">z</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">square</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="n">axes</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">gamma_hinton</span><span class="p">(</span><span class="n">alpha</span><span class="p">,</span> <span class="n">square</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Plot a beta distributed random variable as a Hinton diagram</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c"># Make sure that the node is beta</span>
+    <span class="n">alpha</span> <span class="o">=</span> <span class="n">alpha</span><span class="o">.</span><span class="n">_convert</span><span class="p">(</span><span class="n">GammaMoments</span><span class="p">)</span>
+
+    <span class="c"># Compute exp( &lt;log p&gt; )</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">alpha</span><span class="o">.</span><span class="n">get_moments</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="c"># Explicit broadcasting</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">x</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">alpha</span><span class="o">.</span><span class="n">plates</span><span class="p">)</span>
+
+    <span class="c"># Plot Hinton diagram</span>
+    <span class="k">return</span> <span class="n">_hinton_figure</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">square</span><span class="o">=</span><span class="n">square</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">beta_hinton</span><span class="p">(</span><span class="n">P</span><span class="p">,</span> <span class="n">square</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
@@ -862,40 +939,47 @@
 
     <span class="k">try</span><span class="p">:</span>
         <span class="n">X</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">_convert</span><span class="p">(</span><span class="n">GaussianMoments</span><span class="p">)</span>
-    <span class="k">except</span><span class="p">:</span>
+    <span class="k">except</span> <span class="n">Moments</span><span class="o">.</span><span class="n">NoConverterError</span><span class="p">:</span>
         <span class="k">pass</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">gaussian_hinton</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="k">try</span><span class="p">:</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">_convert</span><span class="p">(</span><span class="n">GammaMoments</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">Moments</span><span class="o">.</span><span class="n">NoConverterError</span><span class="p">:</span>
+        <span class="k">pass</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">gamma_hinton</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">try</span><span class="p">:</span>
         <span class="n">X</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">_convert</span><span class="p">(</span><span class="n">BetaMoments</span><span class="p">)</span>
-    <span class="k">except</span><span class="p">:</span>
+    <span class="k">except</span> <span class="n">Moments</span><span class="o">.</span><span class="n">NoConverterError</span><span class="p">:</span>
         <span class="k">pass</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">beta_hinton</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="k">try</span><span class="p">:</span>
         <span class="n">X</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">_convert</span><span class="p">(</span><span class="n">DirichletMoments</span><span class="p">)</span>
-    <span class="k">except</span><span class="p">:</span>
+    <span class="k">except</span> <span class="n">Moments</span><span class="o">.</span><span class="n">NoConverterError</span><span class="p">:</span>
         <span class="k">pass</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">dirichlet_hinton</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="k">try</span><span class="p">:</span>
         <span class="n">X</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">_convert</span><span class="p">(</span><span class="n">BernoulliMoments</span><span class="p">)</span>
-    <span class="k">except</span><span class="p">:</span>
+    <span class="k">except</span> <span class="n">Moments</span><span class="o">.</span><span class="n">NoConverterError</span><span class="p">:</span>
         <span class="k">pass</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">bernoulli_hinton</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="k">try</span><span class="p">:</span>
         <span class="n">X</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">_convert</span><span class="p">(</span><span class="n">CategoricalMoments</span><span class="p">)</span>
-    <span class="k">except</span><span class="p">:</span>
+    <span class="k">except</span> <span class="n">Moments</span><span class="o">.</span><span class="n">NoConverterError</span><span class="p">:</span>
         <span class="k">pass</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">categorical_hinton</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">_hinton</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">_hinton_figure</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
     
 </div>
 <div class="viewcode-block" id="Plotter"><a class="viewcode-back" href="../../user_api/generated/generated/bayespy.plot.Plotter.html#bayespy.plot.Plotter">[docs]</a><span class="k">class</span> <span class="nc">Plotter</span><span class="p">():</span>
@@ -1337,12 +1421,12 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">BayesPy v0.3.2 Documentation</a> &raquo;</li>
+        <li><a href="../../index.html">BayesPy v0.3.3 Documentation</a> &raquo;</li>
           <li><a href="../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2011-2015, Jaakko Luttinen, GPLv3.
+        &copy; Copyright 2011-2015, Jaakko Luttinen, MIT.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>
