@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>bayespy.nodes.Bernoulli &mdash; BayesPy v0.3.3 Documentation</title>
+    <title>bayespy.nodes.Bernoulli &mdash; BayesPy v0.3.4 Documentation</title>
     
     <link rel="stylesheet" href="../../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.3.3',
+        VERSION:     '0.3.4',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="BayesPy v0.3.3 Documentation" href="../../../index.html" />
+    <link rel="top" title="BayesPy v0.3.4 Documentation" href="../../../index.html" />
     <link rel="up" title="bayespy.nodes" href="../bayespy.nodes.html" />
     <link rel="next" title="bayespy.nodes.Bernoulli.__init__" href="generated/bayespy.nodes.Bernoulli.__init__.html" />
     <link rel="prev" title="bayespy.nodes.GaussianWishart.plates_multiplier" href="generated/bayespy.nodes.GaussianWishart.plates_multiplier.html" /> 
@@ -45,7 +45,7 @@
         <li class="right" >
           <a href="generated/bayespy.nodes.GaussianWishart.plates_multiplier.html" title="bayespy.nodes.GaussianWishart.plates_multiplier"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../../index.html">BayesPy v0.3.3 Documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">BayesPy v0.3.4 Documentation</a> &raquo;</li>
           <li><a href="../../user_api.html" >User API</a> &raquo;</li>
           <li><a href="../bayespy.nodes.html" accesskey="U">bayespy.nodes</a> &raquo;</li> 
       </ul>
@@ -107,14 +107,17 @@ probability <span class="math">\(p \in [0,1]\)</span> for value one:</p>
 </tbody>
 </table>
 <p class="rubric">Examples</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">bayespy.nodes</span> <span class="kn">import</span> <span class="n">Bernoulli</span><span class="p">,</span> <span class="n">Beta</span>
-<span class="n">p</span> <span class="o">=</span> <span class="n">Beta</span><span class="p">([</span><span class="mf">1e-3</span><span class="p">,</span> <span class="mf">1e-3</span><span class="p">])</span>
-<span class="n">z</span> <span class="o">=</span> <span class="n">Bernoulli</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">plates</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,))</span>
-<span class="n">z</span><span class="o">.</span><span class="n">observe</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
-<span class="n">p</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
-<span class="kn">import</span> <span class="nn">bayespy.plot</span> <span class="kn">as</span> <span class="nn">bpplt</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
-<span class="n">bpplt</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="mi">100</span><span class="p">))</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">warnings</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s">&#39;ignore&#39;</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="ne">RuntimeWarning</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">bayespy.nodes</span> <span class="kn">import</span> <span class="n">Bernoulli</span><span class="p">,</span> <span class="n">Beta</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p</span> <span class="o">=</span> <span class="n">Beta</span><span class="p">([</span><span class="mf">1e-3</span><span class="p">,</span> <span class="mf">1e-3</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">z</span> <span class="o">=</span> <span class="n">Bernoulli</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">plates</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">z</span><span class="o">.</span><span class="n">observe</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">bayespy.plot</span> <span class="kn">as</span> <span class="nn">bpplt</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">bpplt</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="mi">100</span><span class="p">))</span>
+<span class="go">[&lt;matplotlib.lines.Line2D object at 0x...&gt;]</span>
 </pre></div>
 </div>
 <dl class="method">
@@ -265,7 +268,7 @@ probability <span class="math">\(p \in [0,1]\)</span> for value one:</p>
         <li class="right" >
           <a href="generated/bayespy.nodes.GaussianWishart.plates_multiplier.html" title="bayespy.nodes.GaussianWishart.plates_multiplier"
              >previous</a> |</li>
-        <li><a href="../../../index.html">BayesPy v0.3.3 Documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">BayesPy v0.3.4 Documentation</a> &raquo;</li>
           <li><a href="../../user_api.html" >User API</a> &raquo;</li>
           <li><a href="../bayespy.nodes.html" >bayespy.nodes</a> &raquo;</li> 
       </ul>

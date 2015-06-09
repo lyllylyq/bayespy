@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>bayespy.inference.vmp.nodes.binomial &mdash; BayesPy v0.3.3 Documentation</title>
+    <title>bayespy.inference.vmp.nodes.binomial &mdash; BayesPy v0.3.4 Documentation</title>
     
     <link rel="stylesheet" href="../../../../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../../',
-        VERSION:     '0.3.3',
+        VERSION:     '0.3.4',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="../../../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="BayesPy v0.3.3 Documentation" href="../../../../../index.html" />
+    <link rel="top" title="BayesPy v0.3.4 Documentation" href="../../../../../index.html" />
     <link rel="up" title="bayespy.inference" href="../../../inference.html" /> 
   </head>
   <body>
@@ -37,7 +37,7 @@
         <li class="right" >
           <a href="../../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../../../index.html">BayesPy v0.3.3 Documentation</a> &raquo;</li>
+        <li><a href="../../../../../index.html">BayesPy v0.3.4 Documentation</a> &raquo;</li>
           <li><a href="../../../../index.html" >Module code</a> &raquo;</li>
           <li><a href="../../../inference.html" accesskey="U">bayespy.inference</a> &raquo;</li> 
       </ul>
@@ -234,16 +234,17 @@
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 
-<span class="sd">    .. code-block:: python</span>
-
-<span class="sd">        from bayespy.nodes import Binomial, Beta</span>
-<span class="sd">        p = Beta([1e-3, 1e-3])</span>
-<span class="sd">        x = Binomial(10, p)</span>
-<span class="sd">        x.observe(7)</span>
-<span class="sd">        p.update()</span>
-<span class="sd">        import bayespy.plot as bpplt</span>
-<span class="sd">        import numpy as np</span>
-<span class="sd">        bpplt.pdf(p, np.linspace(0, 1, num=100))</span>
+<span class="sd">    &gt;&gt;&gt; import warnings</span>
+<span class="sd">    &gt;&gt;&gt; warnings.filterwarnings(&#39;ignore&#39;, category=RuntimeWarning)</span>
+<span class="sd">    &gt;&gt;&gt; from bayespy.nodes import Binomial, Beta</span>
+<span class="sd">    &gt;&gt;&gt; p = Beta([1e-3, 1e-3])</span>
+<span class="sd">    &gt;&gt;&gt; x = Binomial(10, p)</span>
+<span class="sd">    &gt;&gt;&gt; x.observe(7)</span>
+<span class="sd">    &gt;&gt;&gt; p.update()</span>
+<span class="sd">    &gt;&gt;&gt; import bayespy.plot as bpplt</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">    &gt;&gt;&gt; bpplt.pdf(p, np.linspace(0, 1, num=100))</span>
+<span class="sd">    [&lt;matplotlib.lines.Line2D object at 0x...&gt;]</span>
 
 <span class="sd">    See also</span>
 <span class="sd">    --------</span>
@@ -310,7 +311,7 @@
         <li class="right" >
           <a href="../../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../../../index.html">BayesPy v0.3.3 Documentation</a> &raquo;</li>
+        <li><a href="../../../../../index.html">BayesPy v0.3.4 Documentation</a> &raquo;</li>
           <li><a href="../../../../index.html" >Module code</a> &raquo;</li>
           <li><a href="../../../inference.html" >bayespy.inference</a> &raquo;</li> 
       </ul>

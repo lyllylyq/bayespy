@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>bayespy.inference.vmp.nodes.dirichlet &mdash; BayesPy v0.3.3 Documentation</title>
+    <title>bayespy.inference.vmp.nodes.dirichlet &mdash; BayesPy v0.3.4 Documentation</title>
     
     <link rel="stylesheet" href="../../../../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../../',
-        VERSION:     '0.3.3',
+        VERSION:     '0.3.4',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="../../../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="BayesPy v0.3.3 Documentation" href="../../../../../index.html" />
+    <link rel="top" title="BayesPy v0.3.4 Documentation" href="../../../../../index.html" />
     <link rel="up" title="bayespy.inference" href="../../../inference.html" /> 
   </head>
   <body>
@@ -37,7 +37,7 @@
         <li class="right" >
           <a href="../../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../../../index.html">BayesPy v0.3.3 Documentation</a> &raquo;</li>
+        <li><a href="../../../../../index.html">BayesPy v0.3.4 Documentation</a> &raquo;</li>
           <li><a href="../../../../index.html" >Module code</a> &raquo;</li>
           <li><a href="../../../inference.html" accesskey="U">bayespy.inference</a> &raquo;</li> 
       </ul>
@@ -212,9 +212,24 @@
         <span class="k">return</span> <span class="n">u_alpha</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
 
     </div>
-<div class="viewcode-block" id="DirichletDistribution.compute_fixed_moments_and_f"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.dirichlet.DirichletDistribution.compute_fixed_moments_and_f.html#bayespy.inference.vmp.nodes.dirichlet.DirichletDistribution.compute_fixed_moments_and_f">[docs]</a>    <span class="k">def</span> <span class="nf">compute_fixed_moments_and_f</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+<div class="viewcode-block" id="DirichletDistribution.compute_fixed_moments_and_f"><a class="viewcode-back" href="../../../../../dev_api/generated/generated/bayespy.inference.vmp.nodes.dirichlet.DirichletDistribution.compute_fixed_moments_and_f.html#bayespy.inference.vmp.nodes.dirichlet.DirichletDistribution.compute_fixed_moments_and_f">[docs]</a>    <span class="k">def</span> <span class="nf">compute_fixed_moments_and_f</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
         <span class="sd">r&quot;&quot;&quot;</span>
 <span class="sd">        Compute the moments and :math:`f(x)` for a fixed value.</span>
+
+<span class="sd">        .. math::</span>
+
+<span class="sd">           u(p) =</span>
+<span class="sd">           \begin{bmatrix}</span>
+<span class="sd">             \log(p_1)</span>
+<span class="sd">             \\</span>
+<span class="sd">             \vdots</span>
+<span class="sd">             \\</span>
+<span class="sd">             \log(p_D)</span>
+<span class="sd">           \end{bmatrix}</span>
+
+<span class="sd">        .. math::</span>
+
+<span class="sd">           f(p) = - \sum_d \log(p_d)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c"># Check that probabilities are non-negative</span>
         <span class="n">p</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asanyarray</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
@@ -229,8 +244,7 @@
         <span class="c"># Message is log-probabilities</span>
         <span class="n">logp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
         <span class="n">u</span> <span class="o">=</span> <span class="p">[</span><span class="n">logp</span><span class="p">]</span>
-        <span class="n">f</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s">&quot;Check formula for f&quot;</span><span class="p">)</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">logp</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
         <span class="k">return</span> <span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
 
     </div>
@@ -342,7 +356,7 @@
         <li class="right" >
           <a href="../../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../../../index.html">BayesPy v0.3.3 Documentation</a> &raquo;</li>
+        <li><a href="../../../../../index.html">BayesPy v0.3.4 Documentation</a> &raquo;</li>
           <li><a href="../../../../index.html" >Module code</a> &raquo;</li>
           <li><a href="../../../inference.html" >bayespy.inference</a> &raquo;</li> 
       </ul>

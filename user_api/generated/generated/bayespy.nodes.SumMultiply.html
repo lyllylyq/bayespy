@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>bayespy.nodes.SumMultiply &mdash; BayesPy v0.3.3 Documentation</title>
+    <title>bayespy.nodes.SumMultiply &mdash; BayesPy v0.3.4 Documentation</title>
     
     <link rel="stylesheet" href="../../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.3.3',
+        VERSION:     '0.3.4',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="BayesPy v0.3.3 Documentation" href="../../../index.html" />
+    <link rel="top" title="BayesPy v0.3.4 Documentation" href="../../../index.html" />
     <link rel="up" title="bayespy.nodes" href="../bayespy.nodes.html" />
     <link rel="next" title="bayespy.nodes.SumMultiply.__init__" href="generated/bayespy.nodes.SumMultiply.__init__.html" />
     <link rel="prev" title="bayespy.nodes.Dot" href="bayespy.nodes.Dot.html" /> 
@@ -45,7 +45,7 @@
         <li class="right" >
           <a href="bayespy.nodes.Dot.html" title="bayespy.nodes.Dot"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../../index.html">BayesPy v0.3.3 Documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">BayesPy v0.3.4 Documentation</a> &raquo;</li>
           <li><a href="../../user_api.html" >User API</a> &raquo;</li>
           <li><a href="../bayespy.nodes.html" accesskey="U">bayespy.nodes</a> &raquo;</li> 
       </ul>
@@ -93,19 +93,38 @@
 <p>The node is similar to <cite>numpy.einsum</cite>, which is a very general
 function for computing dot products, sums, products and other sums
 of products of arrays.</p>
-<p>For instance, the equivalent of</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s">&#39;abc,bd,ca-&gt;da&#39;</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">Z</span><span class="p">)</span>
+<p>For instance, consider the following arrays:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>would be given as</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">SumMultiply</span><span class="p">(</span><span class="s">&#39;abc,bd,ca-&gt;da&#39;</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">Z</span><span class="p">)</span>
+<p>Then, the Einstein summation can be used as:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s">&#39;abc,bd,ca-&gt;da&#39;</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">Z</span><span class="p">)</span>
+<span class="go">array([[...]])</span>
+</pre></div>
+</div>
+<p>SumMultiply node can be used similarly for Gaussian nodes.  For instance,
+consider the following Gaussian nodes:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">bayespy.nodes</span> <span class="kn">import</span> <span class="n">GaussianARD</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">X</span> <span class="o">=</span> <span class="n">GaussianARD</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Y</span> <span class="o">=</span> <span class="n">GaussianARD</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Z</span> <span class="o">=</span> <span class="n">GaussianARD</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>Then, similarly to <cite>numpy.einsum</cite>, SumMultiply could be used as:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">bayespy.nodes</span> <span class="kn">import</span> <span class="n">SumMultiply</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">SumMultiply</span><span class="p">(</span><span class="s">&#39;abc,bd,ca-&gt;da&#39;</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">Z</span><span class="p">)</span>
+<span class="go">&lt;bayespy.inference.vmp.nodes.dot.SumMultiply object at 0x...&gt;</span>
 </pre></div>
 </div>
 <p>or</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">SumMultiply</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span> <span class="n">Y</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span> <span class="n">Z</span><span class="p">,</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">SumMultiply</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span> <span class="n">Y</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span> <span class="n">Z</span><span class="p">,</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span>
+<span class="go">&lt;bayespy.inference.vmp.nodes.dot.SumMultiply object at 0x...&gt;</span>
 </pre></div>
 </div>
-<p>which is similar to the other syntax of numpy.einsum.</p>
+<p>which is similar to the alternative syntax of numpy.einsum.</p>
 <p>This node operates similarly as numpy.einsum. However, you must use all the
 elements of each node, that is, an operation like np.einsum(&#8216;ii-&gt;i&#8217;,X) is
 not allowed. Thus, for each node, each axis must be given unique id. The id
@@ -123,8 +142,8 @@ is Gaussian-gamma.</p>
 complex operations, it is sometimes more efficient to split the operation
 into multiple nodes. For instance, the example above could probably be
 computed faster by</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">XZ</span> <span class="o">=</span> <span class="n">SumMultiply</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span> <span class="n">Z</span><span class="p">,</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span>
-<span class="n">F</span> <span class="o">=</span> <span class="n">SumMultiply</span><span class="p">(</span><span class="n">XZ</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span> <span class="n">Y</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">XZ</span> <span class="o">=</span> <span class="n">SumMultiply</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span> <span class="n">Z</span><span class="p">,</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">F</span> <span class="o">=</span> <span class="n">SumMultiply</span><span class="p">(</span><span class="n">XZ</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span> <span class="n">Y</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span>
 </pre></div>
 </div>
 <p>because the third axis (&#8216;c&#8217;) could be summed out already in the first
@@ -235,7 +254,7 @@ operation. This same effect applies also to numpy.einsum in general.</p>
         <li class="right" >
           <a href="bayespy.nodes.Dot.html" title="bayespy.nodes.Dot"
              >previous</a> |</li>
-        <li><a href="../../../index.html">BayesPy v0.3.3 Documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">BayesPy v0.3.4 Documentation</a> &raquo;</li>
           <li><a href="../../user_api.html" >User API</a> &raquo;</li>
           <li><a href="../bayespy.nodes.html" >bayespy.nodes</a> &raquo;</li> 
       </ul>

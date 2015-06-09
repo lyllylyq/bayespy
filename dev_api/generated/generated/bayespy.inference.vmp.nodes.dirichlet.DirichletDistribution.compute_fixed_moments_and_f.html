@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>bayespy.inference.vmp.nodes.dirichlet.DirichletDistribution.compute_fixed_moments_and_f &mdash; BayesPy v0.3.3 Documentation</title>
+    <title>bayespy.inference.vmp.nodes.dirichlet.DirichletDistribution.compute_fixed_moments_and_f &mdash; BayesPy v0.3.4 Documentation</title>
     
     <link rel="stylesheet" href="../../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.3.3',
+        VERSION:     '0.3.4',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="BayesPy v0.3.3 Documentation" href="../../../index.html" />
+    <link rel="top" title="BayesPy v0.3.4 Documentation" href="../../../index.html" />
     <link rel="up" title="bayespy.inference.vmp.nodes.dirichlet.DirichletDistribution" href="../bayespy.inference.vmp.nodes.dirichlet.DirichletDistribution.html" />
     <link rel="next" title="bayespy.inference.vmp.nodes.dirichlet.DirichletDistribution.compute_gradient" href="bayespy.inference.vmp.nodes.dirichlet.DirichletDistribution.compute_gradient.html" />
     <link rel="prev" title="bayespy.inference.vmp.nodes.dirichlet.DirichletDistribution.compute_cgf_from_parents" href="bayespy.inference.vmp.nodes.dirichlet.DirichletDistribution.compute_cgf_from_parents.html" /> 
@@ -45,7 +45,7 @@
         <li class="right" >
           <a href="bayespy.inference.vmp.nodes.dirichlet.DirichletDistribution.compute_cgf_from_parents.html" title="bayespy.inference.vmp.nodes.dirichlet.DirichletDistribution.compute_cgf_from_parents"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../../index.html">BayesPy v0.3.3 Documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">BayesPy v0.3.4 Documentation</a> &raquo;</li>
           <li><a href="../../dev_api.html" >Developer API</a> &raquo;</li>
           <li><a href="../../distributions.html" >Distributions</a> &raquo;</li>
           <li><a href="../bayespy.inference.vmp.nodes.dirichlet.DirichletDistribution.html" accesskey="U">bayespy.inference.vmp.nodes.dirichlet.DirichletDistribution</a> &raquo;</li> 
@@ -89,8 +89,19 @@
 <h1>bayespy.inference.vmp.nodes.dirichlet.DirichletDistribution.compute_fixed_moments_and_f<a class="headerlink" href="#bayespy-inference-vmp-nodes-dirichlet-dirichletdistribution-compute-fixed-moments-and-f" title="Permalink to this headline">¶</a></h1>
 <dl class="method">
 <dt id="bayespy.inference.vmp.nodes.dirichlet.DirichletDistribution.compute_fixed_moments_and_f">
-<tt class="descclassname">DirichletDistribution.</tt><tt class="descname">compute_fixed_moments_and_f</tt><big>(</big><em>x</em>, <em>mask=True</em><big>)</big><a class="reference internal" href="../../../_modules/bayespy/inference/vmp/nodes/dirichlet.html#DirichletDistribution.compute_fixed_moments_and_f"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bayespy.inference.vmp.nodes.dirichlet.DirichletDistribution.compute_fixed_moments_and_f" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">DirichletDistribution.</tt><tt class="descname">compute_fixed_moments_and_f</tt><big>(</big><em>p</em>, <em>mask=True</em><big>)</big><a class="reference internal" href="../../../_modules/bayespy/inference/vmp/nodes/dirichlet.html#DirichletDistribution.compute_fixed_moments_and_f"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bayespy.inference.vmp.nodes.dirichlet.DirichletDistribution.compute_fixed_moments_and_f" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the moments and <span class="math">\(f(x)\)</span> for a fixed value.</p>
+<div class="math">
+\[\begin{split}u(p) =
+\begin{bmatrix}
+  \log(p_1)
+  \\
+  \vdots
+  \\
+  \log(p_D)
+\end{bmatrix}\end{split}\]</div>
+<div class="math">
+\[f(p) = - \sum_d \log(p_d)\]</div>
 </dd></dl>
 
 </div>
@@ -116,7 +127,7 @@
         <li class="right" >
           <a href="bayespy.inference.vmp.nodes.dirichlet.DirichletDistribution.compute_cgf_from_parents.html" title="bayespy.inference.vmp.nodes.dirichlet.DirichletDistribution.compute_cgf_from_parents"
              >previous</a> |</li>
-        <li><a href="../../../index.html">BayesPy v0.3.3 Documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">BayesPy v0.3.4 Documentation</a> &raquo;</li>
           <li><a href="../../dev_api.html" >Developer API</a> &raquo;</li>
           <li><a href="../../distributions.html" >Distributions</a> &raquo;</li>
           <li><a href="../bayespy.inference.vmp.nodes.dirichlet.DirichletDistribution.html" >bayespy.inference.vmp.nodes.dirichlet.DirichletDistribution</a> &raquo;</li> 
